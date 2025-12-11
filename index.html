@@ -11,22 +11,29 @@
     <h1 class="text-2xl font-bold mb-4">Tra mã chỉ theo màu</h1>
 
     <!-- Chọn màu -->
-    <section class="mb-6">
-      <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
-      <div class="flex items-center gap-4 flex-wrap">
-        <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10" />
-        <input type="number" id="resultCount" value="3" min="1" max="10"
-               class="border rounded px-2 py-1 w-24" placeholder="Số kết quả" />
-        <button id="btnFindNearest"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
-          Tìm mã chỉ gần nhất
-        </button>
-        <button id="btnFindAllBrands"
-                class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
-          Tìm tất cả hãng chỉ gần giống
-        </button>
-      </div>
-    </section>
+   <section class="mb-6">
+  <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
+
+  <!-- Dòng 1: chọn màu + số kết quả -->
+  <div class="flex items-center gap-4 flex-wrap mb-3">
+    <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10" />
+    <input type="number" id="resultCount" value="3" min="1" max="10"
+           class="border rounded px-2 py-1 w-24" placeholder="Số kết quả" />
+  </div>
+
+  <!-- Dòng 2: các nút bấm -->
+  <div class="flex items-center gap-4 flex-wrap">
+    <button id="btnFindNearest"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
+      Tìm mã chỉ gần nhất
+    </button>
+    <button id="btnFindAllBrands"
+            class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
+      Tìm tất cả hãng chỉ gần giống
+    </button>
+  </div>
+</section>
+
 
     <!-- Tra theo mã chỉ -->
     <section class="mb-6">
