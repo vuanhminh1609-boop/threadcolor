@@ -13,11 +13,26 @@
     <h1 class="text-3xl font-bold text-indigo-700 mb-8 text-center">Tra mã chỉ thêu theo màu 🎨</h1>
 
     <!-- Chọn màu trực tiếp -->
-    <section class="mb-6">
-      <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
-      <div class="flex items-center gap-4">
-        <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10">
-        <button id="btnFindNearest" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
+   <section class="mb-6">
+  <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
+  <div class="flex items-center gap-4">
+    <!-- Ô chọn màu -->
+    <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10">
+
+    <!-- Ô nhập số lượng kết quả -->
+    <input type="number" id="resultCount" value="3" min="1" max="10" 
+           class="border rounded px-2 py-1 w-20" 
+           placeholder="Số kết quả">
+
+    <!-- Nút tìm màu -->
+    <button id="btnFindNearest" 
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md 
+                   hover:bg-blue-800 transition-transform transform hover:scale-105">
+      Tìm mã chỉ gần nhất
+    </button>
+  </div>
+</section>
+
           Tìm mã chỉ gần nhất
         </button>
       </div>
