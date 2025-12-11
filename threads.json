@@ -5,5 +5,9 @@
   { "brand": "Anchor", "code": "001", "name": "White", "hex": "#FFFFFF" },
   { "brand": "Anchor", "code": "403", "name": "Dark Red", "hex": "#A00030" },
   { "brand": "Gingko", "code": "3199", "name": "Xanh lá mạ", "hex": "#008000" },
-  { "brand": "Gingko", "code": "2459", "name": "Cam ánh đỏ", "hex": "#f4431f" }
+  { "brand": "Gingko", "code": "2459", "name": "Cam ánh đỏ", "hex": "#f4431f" },
+{ "brand": "Gingko", "code": "T415", "name": "Trắng tinh khôi", "hex": "#FFFFFF" },
+{ "brand": "Gingko", "code": "T420", "name": "Đen xì xì", "hex": "#000000" },
+{ "brand": "Gingko", "code": "Y2291", "name": "Đỏ ánh hồng", "hex": "#EA272F" },
+{ "brand": "Danh Tường", "code": "700", "name": "Đỏ tươi rói", "hex": "#FF0000" }
 ]
