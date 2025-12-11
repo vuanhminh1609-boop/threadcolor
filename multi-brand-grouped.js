@@ -67,22 +67,13 @@ function showGroupedResults(results, chosenHex) {
   document.getElementById('result').innerHTML = html;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('btnFindAllBrands');
-  if (!btn) {
-    console.warn('Không tìm thấy nút btnFindAllBrands');
-    return;
-  }
+document.getElementById('btnFindAllBrands').addEventListener('click', () => {
+  const chosenHex = document.getElementById('colorPicker').value;
+  const threshold = 20;
+  const matches = threads
+    .map(t => ({ ...t, diff: colorDistance(chosenHex, t.hex) }))
+    .filter(t => t.diff <= threshold)
+    .sort((a, b) => a.diff - b.diff);
 
-  btn.addEventListener('click', () => {
-    const chosenHex = document.getElementById('colorPicker').value;
-    const threshold = 20;
-    const matches = threads
-      .map(t => ({ ...t, diff: colorDistance(chosenHex, t.hex) }))
-      .filter(t => t.diff <= threshold)
-      .sort((a, b) => a.diff - b.diff);
-
-    showGroupedResults(matches, chosenHex);
-  });
+  showGroupedResults(matches, chosenHex);
 });
-
