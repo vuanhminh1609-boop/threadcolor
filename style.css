@@ -1,0 +1,79 @@
+/* Định dạng chung cho toàn trang */
+body {
+  font-family: Arial, sans-serif;   /* Font chữ dễ đọc */
+  margin: 20px;                     /* Khoảng cách lề */
+  line-height: 1.5;                 /* Độ cao dòng */
+  background-color: #f5f5f5;        /* Màu nền nhẹ nhàng */
+}
+
+/* Tiêu đề chính */
+h1 {
+  color: #333;                      /* Màu chữ xám đậm */
+  margin-bottom: 20px;
+}
+
+/* Các khối nội dung (section) */
+section {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;           /* Viền mảnh */
+  border-radius: 8px;               /* Bo góc */
+  background: #fff;                 /* Nền trắng */
+}
+
+/* Nhãn và input */
+label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+input, button {
+  margin-top: 5px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Nút bấm */
+button {
+  background-color: #007BFF;        /* Xanh dương */
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;        /* Xanh đậm khi hover */
+}
+
+/* Canvas hiển thị ảnh */
+#canvas {
+  display: block;
+  border: 1px solid #ccc;
+  max-width: 480px;
+  margin-top: 10px;
+}
+
+/* Kết quả hiển thị */
+#result {
+  margin-top: 20px;
+  padding: 10px;
+  background: #eef;
+  border: 1px solid #99c;
+  border-radius: 6px;
+}
+
+/* Mỗi dòng kết quả */
+#result .item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-bottom: 1px dashed #ccc;
+}
+
+/* Ô màu mẫu */
+.swatch {
+  width: 40px;
+  height: 24px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}

@@ -1,0 +1,9 @@
+[
+  { "brand": "DMC", "code": "310", "name": "Black", "hex": "#000000" },
+  { "brand": "DMC", "code": "321", "name": "Red", "hex": "#C00040" },
+  { "brand": "DMC", "code": "5200", "name": "Snow White", "hex": "#FFFFFF" },
+  { "brand": "Anchor", "code": "001", "name": "White", "hex": "#FFFFFF" },
+  { "brand": "Anchor", "code": "403", "name": "Dark Red", "hex": "#A00030" },
+  { "brand": "Gingko", "code": "3199", "name": "Xanh lá mạ", "hex": "#008000" },
+  { "brand": "Gingko", "code": "2459", "name": "Cam ánh đỏ", "hex": "#f4431f" }
+]
