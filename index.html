@@ -1,56 +1,52 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Tra mã chỉ thêu theo màu</title>
-  <!-- Tailwind CSS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tra mã chỉ theo màu</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen font-sans flex items-center justify-center">
+<body class="bg-gray-100 p-6">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Tra mã chỉ theo màu</h1>
 
-  <!-- Container chính -->
-  <div class="max-w-4xl w-full bg-white/80 backdrop-blur-md shadow-2xl rounded-xl p-8">
-    <h1 class="text-3xl font-bold text-indigo-700 mb-8 text-center">Tra mã chỉ thêu theo màu 🎨</h1>
-
-    <!-- Chọn màu trực tiếp -->
+    <!-- Chọn màu -->
     <section class="mb-6">
       <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
-      <div class="flex items-center gap-4">
-        <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10">
-        <button id="btnFindNearest" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
+      <div class="flex items-center gap-4 flex-wrap">
+        <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10" />
+        <input type="number" id="resultCount" value="3" min="1" max="10"
+               class="border rounded px-2 py-1 w-24" placeholder="Số kết quả" />
+        <button id="btnFindNearest"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
           Tìm mã chỉ gần nhất
+        </button>
+        <button id="btnFindAllBrands"
+                class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
+          Tìm tất cả hãng chỉ gần giống
         </button>
       </div>
     </section>
 
-    <!-- Chọn màu từ ảnh -->
+    <!-- Tra theo mã chỉ -->
     <section class="mb-6">
-      <h3 class="text-lg font-semibold mb-2">Chọn màu từ ảnh</h3>
-      <input type="file" id="imgInput" accept="image/*" class="mb-2">
-      <canvas id="canvas" class="border w-full max-w-md rounded-lg shadow-md"></canvas>
-    </section>
-
-    <!-- Tra ngược theo mã -->
-    <section class="mb-6">
-      <h3 class="text-lg font-semibold mb-2">Tra ngược theo mã chỉ</h3>
-      <div class="flex items-center gap-4">
-        <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="border rounded px-2 py-1 flex-1">
-        <button id="btnFindByCode" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
-          Tra cứu
+      <h3 class="text-lg font-semibold mb-2">Tra theo mã chỉ</h3>
+      <div class="flex items-center gap-4 flex-wrap">
+        <input type="text" id="codeInput" placeholder="Ví dụ: DMC 310"
+               class="border rounded px-2 py-1 w-48" />
+        <button id="btnFindByCode"
+                class="bg-purple-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-purple-800 transition-transform transform hover:scale-105">
+          Tìm màu theo mã
         </button>
       </div>
     </section>
 
     <!-- Kết quả -->
-    <section id="result" class="p-4 bg-gray-50 border rounded-lg shadow-inner"></section>
+    <section id="result" class="mt-6"></section>
   </div>
-<button id="btnFindAllBrands" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800">
-  Tìm tất cả hãng chỉ gần giống
-</button>
 
-
+  <!-- Scripts -->
   <script src="script.js"></script>
-<script src="multi-brand-grouped.js"></script>
-
+  <script src="multi-brand-grouped.js"></script>
 </body>
 </html>
