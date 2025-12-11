@@ -27,80 +27,43 @@ function colorDistance(hex1, hex2) {
   );
 }
 
-// Hàm tìm màu gần nhất
-function findNearestColor(chosenHex) {
-  let best = threads[0];
-  let bestDiff = Infinity;
+// Hàm tìm nhiều màu gần nhất
+function findNearestColors(chosenHex, topN = 3) {
+  const results = threads.map(t => ({
+    ...t,
+    diff: colorDistance(chosenHex, t.hex)
+  }));
 
-  threads.forEach(t => {
-    const diff = colorDistance(chosenHex, t.hex);
-    if(diff < bestDiff){ bestDiff = diff; best = t; }
-  });
+  results.sort((a, b) => a.diff - b.diff);
 
-  showResult(best, chosenHex);
+  const topResults = results.slice(0, topN);
+
+  showResults(topResults, chosenHex);
 }
 
 // Hiển thị kết quả
-function showResult(thread, chosenHex) {
-  document.getElementById('result').innerHTML = `
-    <div class="p-4 bg-white rounded-lg shadow-md flex items-center gap-4">
-      <div class="w-12 h-12 rounded-md border" style="background:${chosenHex}"></div>
-      <div>
-        <p class="font-semibold">Màu chọn: ${chosenHex}</p>
-        <p>Mã chỉ gần nhất: <b>${thread.brand} ${thread.code}</b> (${thread.name})</p>
-        <div class="w-12 h-12 rounded-md border mt-2" style="background:${thread.hex}"></div>
-      </div>
+function showResults(results, chosenHex) {
+  let html = `
+    <div class="p-4 bg-white rounded-lg shadow-md mb-4">
+      <p class="font-semibold mb-2">Màu chọn: ${chosenHex}</p>
+      <div class="w-12 h-12 rounded-md border mb-2" style="background:${chosenHex}"></div>
     </div>
   `;
+
+  results.forEach(r => {
+    html += `
+      <div class="p-4 bg-white rounded-lg shadow-md flex items-center gap-4 mb-4">
+        <div class="w-12 h-12 rounded-md border" style="background:${r.hex}"></div>
+        <div>
+          <p class="font-semibold">${r.brand} ${r.code} - ${r.name}</p>
+          <p class="text-sm text-gray-600">Mã màu: ${r.hex}</p>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('result').innerHTML = html;
 }
 
 // Sự kiện nút tìm màu từ color picker
 document.getElementById('btnFindNearest').addEventListener('click', () => {
-  const chosenHex = document.getElementById('colorPicker').value;
-  findNearestColor(chosenHex);
-});
-
-// Tra ngược theo mã
-document.getElementById('btnFindByCode').addEventListener('click', () => {
-  const code = document.getElementById('codeInput').value.trim().toUpperCase();
-  const found = threads.find(t => (`${t.brand} ${t.code}`).toUpperCase() === code);
-  if(found){
-    document.getElementById('result').innerHTML = `
-      <div class="p-4 bg-white rounded-lg shadow-md flex items-center gap-4">
-        <div class="w-12 h-12 rounded-md border" style="background:${found.hex}"></div>
-        <div>
-          <p class="font-semibold">${found.brand} ${found.code} - ${found.name}</p>
-          <p class="text-sm text-gray-600">Mã màu: ${found.hex}</p>
-        </div>
-      </div>
-    `;
-  } else {
-    document.getElementById('result').innerHTML = `<p class="text-red-600">Không tìm thấy mã chỉ này.</p>`;
-  }
-});
-
-// Chọn màu từ ảnh
-const imgInput = document.getElementById('imgInput');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-
-imgInput.onchange = e => {
-  const file = e.target.files[0];
-  const url = URL.createObjectURL(file);
-  const img = new Image();
-  img.onload = () => {
-    canvas.width = img.width; canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
-  };
-  img.src = url;
-};
-
-canvas.addEventListener('click', e => {
-  const rect = canvas.getBoundingClientRect();
-  const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
-  const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
-  const d = ctx.getImageData(x, y, 1, 1).data;
-  const hex = `#${[d[0],d[1],d[2]].map(v=>v.toString(16).padStart(2,'0')).join('')}`;
-  findNearestColor(hex);
-});
