@@ -822,11 +822,11 @@ async function loadLibraryList() {
     accountBtn?.click();
     return;
   }
-  libraryList.innerHTML = "<div class='text-gray-500'>�ang t?i...</div>";
+  libraryList.innerHTML = "<div class='text-gray-500'>Đang tải...</div>";
   try {
     const items = await listSavedSearches(api.db, user.uid, 50);
     if (!items.length) {
-      libraryList.innerHTML = "<div class='text-gray-500'>Chua c� b?n luu</div>";
+      libraryList.innerHTML = "<div class='text-gray-500'>Chưa có bản lưu</div>";
       return;
     }
     libraryList.innerHTML = items.map(it => {
@@ -843,7 +843,7 @@ async function loadLibraryList() {
     }).join("");
   } catch (err) {
     console.error("Load library failed", err);
-    const friendly = formatFirestoreError(err, "Kh�ng t?i du?c Library");
+    const friendly = formatFirestoreError(err, "Không tải được Library");
     libraryList.innerHTML = `<div class='text-red-600'>${friendly}</div>`;
   }
 }
@@ -866,7 +866,7 @@ async function handleSaveCurrent() {
   }
   if (!currentRendered.length || !lastChosenHex) {
 
-    showToast("Chua có k?t qu? d? luu");
+    showToast("Chưa có kết quả để lưu");
 
     return;
   }
