@@ -1,0 +1,224 @@
+🥇 NHÓM 1 — CHUẨN MỰC VỀ TRẢI NGHIỆM & PALETTE (UX / PRODUCT)
+1️⃣ Coolors
+
+🔗 https://coolors.co
+
+Vị thế:
+
+⭐ Chuẩn mực số 1 thế giới về palette hiện đại
+
+Điểm mạnh cốt lõi
+
+UX siêu nhanh, gần như không cần học
+
+Palette builder = trò chơi (space để random)
+
+Card màu to, rõ, đẹp
+
+Export rất đa dạng (PNG, PDF, ASE, CSS, SVG…)
+
+Vì sao bạn PHẢI học Coolors
+
+Cách màu là nhân vật chính, không phải nút bấm
+
+Cách bố cục palette là trung tâm sản phẩm
+
+Monetization rõ ràng (Pro, Export nâng cao)
+
+👉 Coolors = chuẩn UX cho PALETTE
+
+2️⃣ Adobe Color
+
+🔗 https://color.adobe.com
+
+Vị thế:
+
+Chuẩn công nghiệp, dùng trong thiết kế chuyên nghiệp
+
+Điểm mạnh
+
+Color Wheel (Complementary, Analogous…)
+
+Xuất palette trực tiếp cho Photoshop / Illustrator
+
+Có Explore + Community
+
+Điểm yếu
+
+UX nặng, không “vui”
+
+Không dành cho người mới
+
+👉 Adobe Color = chuẩn khoa học + hệ sinh thái
+
+3️⃣ Color Hunt
+
+🔗 https://colorhunt.co
+
+Vị thế:
+
+Pinterest của palette
+
+Điểm mạnh
+
+Curated palette (người thật chọn)
+
+Rất dễ xem – dễ lưu
+
+Viral tốt
+
+Điểm yếu
+
+Không có logic màu sâu
+
+Không có công cụ tra cứu
+
+👉 Color Hunt = cảm hứng, không phải công cụ
+
+🥈 NHÓM 2 — TRA MÀU CHUẨN, CHÍNH XÁC (HEX / LAB / COLOR SPACE)
+4️⃣ ColorHexa
+
+🔗 https://www.colorhexa.com
+
+Vị thế:
+
+Wikipedia của màu sắc
+
+Điểm mạnh
+
+Chuyển đổi: HEX ↔ RGB ↔ LAB ↔ XYZ
+
+Contrast, accessibility
+
+Shade / Tint / Tone
+
+Điểm yếu
+
+Giao diện cũ
+
+Không hướng UX
+
+👉 ColorHexa = chuẩn KỸ THUẬT
+
+5️⃣ Encycolorpedia
+
+🔗 https://encycolorpedia.com
+
+Vị thế:
+
+Thư viện màu khoa học
+
+Điểm mạnh
+
+CIE LAB, XYZ, CMYK
+
+So sánh màu cực chi tiết
+
+Dữ liệu chuẩn
+
+👉 Chuẩn để học ΔE, LAB, khoa học màu
+
+🥉 NHÓM 3 — TRA MÀU TỪ ẢNH (PICK COLOR)
+6️⃣ Image Color Picker
+
+🔗 https://imagecolorpicker.com
+
+Điểm mạnh
+
+Upload ảnh → pick màu
+
+Nhanh, đơn giản
+
+Điểm yếu
+
+Không có hệ sinh thái
+
+Không có palette nâng cao
+
+7️⃣ Canva Color Palette Generator
+
+🔗 https://www.canva.com/colors/color-palette-generator/
+
+Điểm mạnh
+
+Upload ảnh → palette đẹp
+
+Rất thân thiện người dùng
+
+Điểm yếu
+
+Không chuyên sâu kỹ thuật
+
+🧵 NHÓM 4 — MÀU VẬT LIỆU THẬT (SỢI – SƠN – VẢI)
+
+CỰC KỲ QUAN TRỌNG với dự án của bạn
+
+8️⃣ Pantone
+
+🔗 https://www.pantone.com
+
+Vị thế:
+
+Vua của màu vật lý
+
+Điểm mạnh
+
+Màu đo từ vật thể thật
+
+Chuẩn công nghiệp in ấn – dệt – sơn
+
+Điểm yếu
+
+Đắt
+
+Đóng hệ sinh thái
+
+👉 Pantone = thứ DMC / Gingko nên học theo
+
+9️⃣ Thread Color Converters (DMC/Anchor)
+
+Stitch Palettes
+
+Thread Colors Online
+
+Lord Libidan (DMC charts)
+
+👉 Các trang này rất xấu nhưng dữ liệu quý
+
+🧠 KẾT LUẬN QUAN TRỌNG (RẤT QUAN TRỌNG)
+❗ Không có website nào trên thế giới kết hợp tốt 3 thứ này:
+
+Palette UX đẹp như Coolors
+
+So sánh màu chuẩn LAB / ΔE
+
+Màu vật lý (chỉ thêu thật)
+
+👉 Khoảng trống thị trường ở đây.
+
+🎯 DỰ ÁN CỦA BẠN NÊN HỌC GÌ TỪ ĐÂU
+Thành phần	Học từ
+UX Palette	Coolors
+Logic màu	Adobe Color + Encycolorpedia
+Kỹ thuật	ColorHexa
+Màu vật lý	Pantone mindset
+Ngành chỉ	DMC / Anchor / Gingko
+🚀 HƯỚNG ĐI ĐÚNG CHO BẠN (tóm tắt)
+
+❌ Không làm “tool tra màu”
+
+✅ Làm “NỀN TẢNG MÀU SỢI + PALETTE”
+
+Palette = trung tâm
+
+Tra mã chỉ = plugin quan trọng
+
+Sau này:
+
+Pro palette
+
+Export cho máy thêu
+
+Đề xuất phối màu
+
+Bán dữ liệu màu chuẩn Gingko

@@ -1,0 +1,3253 @@
+[
+
+
+
+  { "brand": "Anchor", "code": "001", "name": "White", "hex": "#FFFFFF" },
+  { "brand": "Anchor", "code": "403", "name": "Dark Red", "hex": "#A00030" },
+
+ 
+{ "brand": "Danh Tường", "code": "700", "name": "Đỏ tươi", "hex": "#FF0000" },
+{ "brand": "Danh Tường", "code": "735", "name": "Nâu tan", "hex": "#c49c67" },
+{ "brand": "Danh Tường", "code": "483", "name": "Ghi sáng", "hex": "#c4c4c4" },
+{ "brand": "Danh Tường", "code": "484", "name": "Ghi sẫm", "hex": "#808080" },
+{ "brand": "Danh Tường", "code": "371", "name": "Xanh thiên thanh sáng", "hex": "#33ccff" },
+{ "brand": "Danh Tường", "code": "372", "name": "Xanh thiên thanh", "hex": "#00BFFF" },
+{ "brand": "Danh Tường", "code": "305", "name": "Xanh lam đậm", "hex": "#005991" },
+{ "brand": "Danh Tường", "code": "366", "name": "Xanh bích nhạt", "hex": "#3445db" },
+{ "brand": "Danh Tường", "code": "368", "name": "Xanh bích sẫm", "hex": "#00008b" },
+{ "brand": "Danh Tường", "code": "367", "name": "Xanh bích", "hex": "#2233c3" },
+{ "brand": "Gingko", "code": "T415", "name": "Trắng", "hex": "#FFFFFF" },
+{ "brand": "Gingko", "code": "T420", "name": "Đen", "hex": "#000000" },
+{ "brand": "Gingko", "code": "Y2168", "name": "Trắng", "hex": "#FFFFFF" },
+{ "brand": "Gingko", "code": "Y2170", "name": "Đen", "hex": "#000000" },
+{ "brand": "Gingko", "code": "Y2183", "name": "Hồng", "hex": "#FFC0CB" },
+{ "brand": "Gingko", "code": "Y2182", "name": "Hồng lợt", "hex": "#FFC6D0" },
+{ "brand": "Gingko", "code": "Y2181", "name": "Hồng lợt 1", "hex": "#FFCBD3" },
+{ "brand": "Gingko", "code": "Y2180", "name": "Hồng lợt 2", "hex": "#FFCFD7" },
+{ "brand": "Gingko", "code": "Y2203", "name": "Hồng sen", "hex": "#ff69b4" },
+{ "brand": "Gingko", "code": "Y2201", "name": "Hồng sen ánh tím", "hex": "#FF80C0" },
+{ "brand": "Gingko", "code": "Y2199", "name": "Hồng sen nhạt", "hex": "#FF76BA" },
+{ "brand": "Gingko", "code": "Y2196", "name": "Hồng sen ánh tím sáng", "hex": "#FF95CA" },
+{ "brand": "Gingko", "code": "Y2204", "name": "Hồng đậm", "hex": "#FF379B" },
+{ "brand": "Gingko", "code": "Y2206", "name": "Hồng đậm rực", "hex": "#E90074" },
+{ "brand": "Gingko", "code": "Y2206", "name": "Hồng đậm sẫm", "hex": "#B5005B" },
+{ "brand": "Gingko", "code": "Y2291", "name": "Đỏ ánh hồng", "hex": "#EA272F" },
+{ "brand": "Gingko", "code": "Y2192", "name": "Hồng nhạt", "hex": "#FFD5EA" },
+{ "brand": "Gingko", "code": "Y2190", "name": "Hồng nhạt ánh tím", "hex": "#FFD9EC" },
+{ "brand": "Gingko", "code": "Y2188", "name": "Trắng ánh hồng", "hex": "#FFE5F2" },
+{ "brand": "Gingko", "code": "Y2195", "name": "Hồng ánh tím", "hex": "#FFD6F9" },
+{ "brand": "Gingko", "code": "Y2193", "name": "Hồng ánh tím nhạt", "hex": "#FFC8E4" },
+{ "brand": "Gingko", "code": "Y2300", "name": "Đỏ đô sẫm", "hex": "#8b0000" },
+{ "brand": "Gingko", "code": "Y2413", "name": "Vàng gold", "hex": "#ffd700" },
+{ "brand": "Gingko", "code": "Y2420", "name": "Cam cà rốt đậm", "hex": "#E98128" },
+{ "brand": "Gingko", "code": "Y2424", "name": "Cam cà rốt", "hex": "#e99028" },
+ { "brand": "Gingko", "code": "Y2459", "name": "Cam đậm", "hex": "#f4431f" },
+{ "brand": "Gingko", "code": "Y2460", "name": "Đỏ ánh cam", "hex": "#FA3333" },
+{ "brand": "Gingko", "code": "Y2674", "name": "Nâu tan", "hex": "#c8a362" },
+{ "brand": "Gingko", "code": "Y2791", "name": "Nâu tan sẫm", "hex": "#b49d7d" },
+ { "brand": "Gingko", "code": "Y3199", "name": "Xanh lá mạ", "hex": "#008000" },
+{ "brand": "Gingko", "code": "Y3334", "name": "Ghi sẫm", "hex": "#8b8b8b" },
+{ "brand": "Gingko", "code": "Y3469", "name": "Xanh thiên thanh sáng", "hex": "#33ccff" },
+{ "brand": "Gingko", "code": "Y3645", "name": "Xanh lam đậm", "hex": "#005991" },
+{ "brand": "Gingko", "code": "Y3649", "name": "Xanh lam nhạt", "hex": "#71a5de" },
+{ "brand": "Gingko", "code": "Y3667", "name": "Xanh than đen", "hex": "#1a1e23" },
+{ "brand": "Gingko", "code": "Y3685", "name": "Xanh bích nhạt", "hex": "#3445db" },
+{ "brand": "Gingko", "code": "Y3686", "name": "Xanh bích sẫm", "hex": "#00008b" },
+{ "brand": "Gingko", "code": "Y2239", "name": "Hồng đậm ánh tím", "hex": "#b00d87" },
+{ "brand": "Gingko", "code": "Y3195", "name": "Xanh lawn", "hex": "#42B833" },
+{ "brand": "Gingko", "code": "Y3698", "name": "Xanh bích", "hex": "#2233c3" },
+{ "brand": "Gingko", "code": "Y2179", "name": "Pantone 698 C", "hex": "#FFD6EB" },
+{ "brand": "Gingko", "code": "Y2180", "name": "Pantone 196 C", "hex": "#FFBFF5" },
+{ "brand": "Gingko", "code": "Y2182", "name": "Pantone 1767 C", "hex": "#FFBAE0" },
+{ "brand": "Gingko", "code": "Y2183", "name": "Pantone 706 U", "hex": "#FFD4E6" },
+{ "brand": "Gingko", "code": "Y2187", "name": "Pantone 1765 C", "hex": "#FF9EC9" },
+{ "brand": "Gingko", "code": "Y2189", "name": "Pantone 705 C", "hex": "#FFE8F2" },
+{ "brand": "Gingko", "code": "Y2192", "name": "Pantone 692 C", "hex": "#FAC0E1" },
+{ "brand": "Gingko", "code": "Y2194", "name": "Pantone 1895 C", "hex": "#FFB8ED" },
+{ "brand": "Gingko", "code": "Y2202", "name": "Pantone 211 C", "hex": "#FF73EB" },
+{ "brand": "Gingko", "code": "Y2205", "name": "Pantone 224 C", "hex": "#FC5EFF" },
+{ "brand": "Gingko", "code": "Y2206", "name": "Pantone 226 C", "hex": "#FF00FF" },
+{ "brand": "Gingko", "code": "Y2209", "name": "Pantone 670 C", "hex": "#FFDEFF" },
+{ "brand": "Gingko", "code": "Y2212", "name": "Pantone 699 C", "hex": "#FFC2E6" },
+{ "brand": "Gingko", "code": "Y2214", "name": "Pantone 7433 C", "hex": "#D936B8" },
+{ "brand": "Gingko", "code": "Y2215", "name": "Pantone 204 C", "hex": "#FF6BF7" },
+{ "brand": "Gingko", "code": "Y2219", "name": "Pantone 219 C", "hex": "#FC1FFF" },
+{ "brand": "Gingko", "code": "Y2222", "name": "Pantone 1915 C", "hex": "#FF4ACC" },
+{ "brand": "Gingko", "code": "Y2224", "name": "Pantone 191 C", "hex": "#FF3D9E" },
+{ "brand": "Gingko", "code": "Y2229", "name": "Pantone 233 C", "hex": "#E300FF" },
+{ "brand": "Gingko", "code": "Y2231", "name": "Pantone 813 C", "hex": "#EB0DC9" },
+{ "brand": "Gingko", "code": "Y2232", "name": "Pantone 2385 C", "hex": "#CF36FF" },
+{ "brand": "Gingko", "code": "Y2235", "name": "Pantone 2375 C", "hex": "#E66EFF" },
+{ "brand": "Gingko", "code": "Y2236", "name": "Pantone 252 C", "hex": "#C270FF" },
+{ "brand": "Gingko", "code": "Y2238", "name": "Pantone 2395 C", "hex": "#BA0DFF" },
+{ "brand": "Gingko", "code": "Y2243", "name": "Pantone 676 C", "hex": "#BB00C7" },
+{ "brand": "Gingko", "code": "Y2246", "name": "Pantone 234 C", "hex": "#B100BD" },
+{ "brand": "Gingko", "code": "Y2247", "name": "Pantone 208 C", "hex": "#A10067" },
+{ "brand": "Gingko", "code": "Y2259", "name": "Pantone 178 C", "hex": "#FF6970" },
+{ "brand": "Gingko", "code": "Y2261", "name": "Pantone 711 C", "hex": "#FA0032" },
+{ "brand": "Gingko", "code": "Y2263", "name": "Pantone 170 C", "hex": "#FF998F" },
+{ "brand": "Gingko", "code": "Y2270", "name": "Pantone 1895 U", "hex": "#FFB8ED" },
+{ "brand": "Gingko", "code": "Y2274", "name": "Pantone 1777 C", "hex": "#FF6BA3" },
+{ "brand": "Gingko", "code": "Y2275", "name": "Pantone 192 U", "hex": "#FF0052" },
+{ "brand": "Gingko", "code": "Y2282", "name": "Pantone 1795 U", "hex": "#FF0F00" },
+{ "brand": "Gingko", "code": "Y2286", "name": "Pantone 194 C", "hex": "#AB003E" },
+{ "brand": "Gingko", "code": "Y2287", "name": "Pantone 188 C", "hex": "#800400" },
+{ "brand": "Gingko", "code": "Y2289", "name": "Pantone 1785 C", "hex": "#FF5480" },
+{ "brand": "Gingko", "code": "Y2290", "name": "Pantone 185 C", "hex": "#FF173D" },
+{ "brand": "Gingko", "code": "Y2291", "name": "Pantone 032 C", "hex": "#FF1A24" },
+{ "brand": "Gingko", "code": "Y2292", "name": "Pantone 1795 C", "hex": "#FF0F00" },
+{ "brand": "Gingko", "code": "Y2293", "name": "Pantone 485 C", "hex": "#FF0D00" },
+{ "brand": "Gingko", "code": "Y2294", "name": "Pantone 1797 C", "hex": "#F50002" },
+{ "brand": "Gingko", "code": "Y2297", "name": "Pantone 200 C", "hex": "#E00053" },
+{ "brand": "Gingko", "code": "Y2301", "name": "Pantone 187 C", "hex": "#CC002B" },
+{ "brand": "Gingko", "code": "Y2313", "name": "Pantone 702 C", "hex": "#F24BA0" },
+{ "brand": "Gingko", "code": "Y2316", "name": "Pantone 7426 C", "hex": "#D10073" },
+{ "brand": "Gingko", "code": "Y2318", "name": "Pantone 186 U", "hex": "#F5002F" },
+{ "brand": "Gingko", "code": "Y2320", "name": "Pantone 7423 C", "hex": "#FF73C7" },
+{ "brand": "Gingko", "code": "Y2324", "name": "Pantone 228 C", "hex": "#960090" },
+{ "brand": "Gingko", "code": "Y2329", "name": "Pantone 693 C", "hex": "#F0A8D3" },
+{ "brand": "Gingko", "code": "Y2330", "name": "Pantone 7431 C", "hex": "#F296ED" },
+{ "brand": "Gingko", "code": "Y2338", "name": "Pantone 215 C", "hex": "#BA0079" },
+{ "brand": "Gingko", "code": "Y2340", "name": "Pantone 216 C", "hex": "#82074E" },
+{ "brand": "Gingko", "code": "Y2341", "name": "Pantone 209 C", "hex": "#78004F" },
+{ "brand": "Gingko", "code": "Y2344", "name": "Pantone 1807 C", "hex": "#B80007" },
+{ "brand": "Gingko", "code": "Y2345", "name": "Pantone 1945 C", "hex": "#CF005B" },
+{ "brand": "Gingko", "code": "Y2347", "name": "Pantone 1955 C", "hex": "#A10040" },
+{ "brand": "Gingko", "code": "Y2352", "name": "Pantone 7499 C", "hex": "#FFFAD9" },
+{ "brand": "Gingko", "code": "Y2354", "name": "Pantone 7401 C", "hex": "#FFF5D1" },
+{ "brand": "Gingko", "code": "Y2355", "name": "Pantone 7499 C", "hex": "#FFFAD9" },
+{ "brand": "Gingko", "code": "Y2357", "name": "Pantone 7499 U", "hex": "#FFFAD9" },
+{ "brand": "Gingko", "code": "Y2360", "name": "Pantone 607 U", "hex": "#FCFCCF" },
+{ "brand": "Gingko", "code": "Y2364", "name": "Pantone 804 C", "hex": "#FF5914" },
+{ "brand": "Gingko", "code": "Y2366", "name": "Pantone 805 C", "hex": "#FF2138" },
+{ "brand": "Gingko", "code": "Y2373", "name": "Pantone 127 C", "hex": "#FFED80" },
+{ "brand": "Gingko", "code": "Y2374", "name": "Pantone 100 C", "hex": "#FFFF7D" },
+{ "brand": "Gingko", "code": "Y2375", "name": "Pantone 3955 C", "hex": "#F0FF00" },
+{ "brand": "Gingko", "code": "Y2376", "name": "Pantone 102 C", "hex": "#FFFC0D" },
+{ "brand": "Gingko", "code": "Y2379", "name": "Pantone 1215 C", "hex": "#FFE88C" },
+{ "brand": "Gingko", "code": "Y2380", "name": "Pantone 012 C", "hex": "#FECF00" },
+{ "brand": "Gingko", "code": "Y2381", "name": "Pantone 7405 C", "hex": "#FFE600" },
+{ "brand": "Gingko", "code": "Y2382", "name": "Pantone 113 U", "hex": "#FFED57" },
+{ "brand": "Gingko", "code": "Y2386", "name": "Pantone 1024 C", "hex": "#FFC20F" },
+{ "brand": "Gingko", "code": "Y2387", "name": "Pantone 122 C", "hex": "#FFD433" },
+{ "brand": "Gingko", "code": "Y2394", "name": "Pantone 1205 C", "hex": "#FFF2B0" },
+{ "brand": "Gingko", "code": "Y2398", "name": "Pantone 1215 C", "hex": "#FFE88C" },
+{ "brand": "Gingko", "code": "Y2399", "name": "Pantone 124 C", "hex": "#F0AD00" },
+{ "brand": "Gingko", "code": "Y2406", "name": "Pantone 605 C", "hex": "#EDE800" },
+{ "brand": "Gingko", "code": "Y2409", "name": "Pantone 148 C", "hex": "#FFD6A1" },
+{ "brand": "Gingko", "code": "Y2411", "name": "Pantone 121 U", "hex": "#FFE34F" },
+{ "brand": "Gingko", "code": "Y2414", "name": "Pantone 143 C", "hex": "#FFA626" },
+{ "brand": "Gingko", "code": "Y2415", "name": "Pantone 129 U", "hex": "#FFD63B" },
+{ "brand": "Gingko", "code": "Y2417", "name": "Pantone 1355 C", "hex": "#FFCC70" },
+{ "brand": "Gingko", "code": "Y2418", "name": "Pantone 1375 C", "hex": "#FF991A" },
+{ "brand": "Gingko", "code": "Y2419", "name": "Pantone 1365 C", "hex": "#FFB547" },
+{ "brand": "Gingko", "code": "Y2433", "name": "Pantone 162 C", "hex": "#FFD9C7" },
+{ "brand": "Gingko", "code": "Y2434", "name": "Pantone 486 C", "hex": "#FF8796" },
+{ "brand": "Gingko", "code": "Y2436", "name": "Pantone 1635 C", "hex": "#FF9C85" },
+{ "brand": "Gingko", "code": "Y2445", "name": "Pantone 180 C", "hex": "#E33000" },
+{ "brand": "Gingko", "code": "Y2446", "name": "Pantone 1805 C", "hex": "#C41200" },
+{ "brand": "Gingko", "code": "Y2448", "name": "Pantone 137 C", "hex": "#FFA61A" },
+{ "brand": "Gingko", "code": "Y2452", "name": "Pantone 137 U", "hex": "#FFA61A" },
+{ "brand": "Gingko", "code": "Y2456", "name": "Pantone 1575 C", "hex": "#FF8C47" },
+{ "brand": "Gingko", "code": "Y2457", "name": "Pantone 021 C", "hex": "#FF7800" },
+{ "brand": "Gingko", "code": "Y2458", "name": "Pantone 158 U", "hex": "#FF6308" },
+{ "brand": "Gingko", "code": "Y2460", "name": "Pantone 171 C", "hex": "#FF7852" },
+{ "brand": "Gingko", "code": "Y2463", "name": "Pantone 179 C", "hex": "#FF3600" },
+{ "brand": "Gingko", "code": "Y2465", "name": "Pantone 7416 C", "hex": "#FF6666" },
+{ "brand": "Gingko", "code": "Y2474", "name": "Pantone 1555 C", "hex": "#FFC7A8" },
+{ "brand": "Gingko", "code": "Y2475", "name": "Pantone 7507 C", "hex": "#FFE6B3" },
+{ "brand": "Gingko", "code": "Y2477", "name": "Pantone 1365 U", "hex": "#FFB547" },
+{ "brand": "Gingko", "code": "Y2479", "name": "Pantone 138 C", "hex": "#FC9200" },
+{ "brand": "Gingko", "code": "Y2481", "name": "Pantone 163 C", "hex": "#FFB08F" },
+{ "brand": "Gingko", "code": "Y2484", "name": "Pantone 1525 C", "hex": "#E66000" },
+{ "brand": "Gingko", "code": "Y2485", "name": "Pantone 1665 C", "hex": "#FF5200" },
+{ "brand": "Gingko", "code": "Y2493", "name": "Pantone 480 C", "hex": "#D9B5B0" },
+{ "brand": "Gingko", "code": "Y2507", "name": "Pantone 1605 C", "hex": "#B34F00" },
+{ "brand": "Gingko", "code": "Y2512", "name": "Pantone 488 C", "hex": "#FFBDCF" },
+{ "brand": "Gingko", "code": "Y2518", "name": "Pantone 169 C", "hex": "#FFCCCC" },
+{ "brand": "Gingko", "code": "Y2519", "name": "Pantone 7523 C", "hex": "#CC7A85" },
+{ "brand": "Gingko", "code": "Y2525", "name": "Pantone 179 U", "hex": "#FF3600" },
+{ "brand": "Gingko", "code": "Y2538", "name": "Pantone 685 C", "hex": "#F7BAF7" },
+{ "brand": "Gingko", "code": "Y2545", "name": "Pantone 493 C", "hex": "#F283BB" },
+{ "brand": "Gingko", "code": "Y2558", "name": "Pantone 1595 U", "hex": "#F26300" },
+{ "brand": "Gingko", "code": "Y2567", "name": "Pantone 1815 C", "hex": "#7D0C00" },
+{ "brand": "Gingko", "code": "Y2585", "name": "Pantone 174 C", "hex": "#A33100" },
+{ "brand": "Gingko", "code": "Y2587", "name": "Pantone 490 C", "hex": "#471300" },
+{ "brand": "Gingko", "code": "Y2596", "name": "Pantone 505 C", "hex": "#600000" },
+{ "brand": "Gingko", "code": "Y2598", "name": "Pantone 688 C", "hex": "#C459CF" },
+{ "brand": "Gingko", "code": "Y2600", "name": "Pantone 1817 C", "hex": "#570900" },
+{ "brand": "Gingko", "code": "Y2607", "name": "Pantone 504 C", "hex": "#320000" },
+{ "brand": "Gingko", "code": "Y2619", "name": "Pantone 187 U", "hex": "#CC002B" },
+{ "brand": "Gingko", "code": "Y2621", "name": "Pantone 1817 C", "hex": "#570900" },
+{ "brand": "Gingko", "code": "Y2623", "name": "Pantone 195 C", "hex": "#73002E" },
+{ "brand": "Gingko", "code": "Y2632", "name": "Pantone 7506 C", "hex": "#FFF2D9" },
+{ "brand": "Gingko", "code": "Y2633", "name": "Pantone 155 C", "hex": "#FFE0B8" },
+{ "brand": "Gingko", "code": "Y2644", "name": "Pantone 1685 C", "hex": "#8F2E00" },
+{ "brand": "Gingko", "code": "Y2651", "name": "Pantone 467 U", "hex": "#E8D9A8" },
+{ "brand": "Gingko", "code": "Y2654", "name": "Pantone 156 C", "hex": "#FFC794" },
+{ "brand": "Gingko", "code": "Y2658", "name": "Pantone 293 U", "hex": "#006BFA" },
+{ "brand": "Gingko", "code": "Y2672", "name": "Pantone 4655 C", "hex": "#D19B73" },
+{ "brand": "Gingko", "code": "Y2673", "name": "Pantone 7502 U", "hex": "#E6D395" },
+{ "brand": "Gingko", "code": "Y2679", "name": "Pantone 7522 C", "hex": "#D68196" },
+{ "brand": "Gingko", "code": "Y2685", "name": "Pantone 484 C", "hex": "#B50900" },
+{ "brand": "Gingko", "code": "Y2688", "name": "Pantone 468 C", "hex": "#F0E8C4" },
+{ "brand": "Gingko", "code": "Y2689", "name": "Pantone 4755 C", "hex": "#F0D8D3" },
+{ "brand": "Gingko", "code": "Y2691", "name": "Pantone 482 C", "hex": "#F2E0DE" },
+{ "brand": "Gingko", "code": "Y2692", "name": "Pantone 7502 C", "hex": "#E6D395" },
+{ "brand": "Gingko", "code": "Y2693", "name": "Pantone 7501 U", "hex": "#F0E6C0" },
+{ "brand": "Gingko", "code": "Y2701", "name": "Pantone 160 C", "hex": "#AD4200" },
+{ "brand": "Gingko", "code": "Y2709", "name": "Pantone 4685 C", "hex": "#F5E4D3" },
+{ "brand": "Gingko", "code": "Y2716", "name": "Pantone 142 C", "hex": "#FFB83D" },
+{ "brand": "Gingko", "code": "Y2718", "name": "Pantone 1385 C", "hex": "#ED8500" },
+{ "brand": "Gingko", "code": "Y2723", "name": "Pantone 7413 C", "hex": "#F57300" },
+{ "brand": "Gingko", "code": "Y2725", "name": "Pantone 144 C", "hex": "#FF8500" },
+{ "brand": "Gingko", "code": "Y2726", "name": "Pantone 718 C", "hex": "#EB6300" },
+{ "brand": "Gingko", "code": "Y2728", "name": "Pantone 727 C", "hex": "#F2CEA0" },
+{ "brand": "Gingko", "code": "Y2732", "name": "Pantone 729 C", "hex": "#D19052" },
+{ "brand": "Gingko", "code": "Y2733", "name": "Pantone 722 C", "hex": "#E89538" },
+{ "brand": "Gingko", "code": "Y2737", "name": "Pantone 4635 C", "hex": "#8F4A06" },
+{ "brand": "Gingko", "code": "Y2742", "name": "Pantone 1615 C", "hex": "#914000" },
+{ "brand": "Gingko", "code": "Y2744", "name": "Pantone 168 C", "hex": "#692D00" },
+{ "brand": "Gingko", "code": "Y2747", "name": "Pantone 1545 C", "hex": "#472200" },
+{ "brand": "Gingko", "code": "Y2758", "name": "Pantone 7512 C", "hex": "#AB5C00" },
+{ "brand": "Gingko", "code": "Y2759", "name": "Pantone 7504 C", "hex": "#997354" },
+{ "brand": "Gingko", "code": "Y2760", "name": "Pantone 464 U", "hex": "#955300" },
+{ "brand": "Gingko", "code": "Y2761", "name": "Pantone 161 C", "hex": "#5C2C00" },
+{ "brand": "Gingko", "code": "Y2771", "name": "Pantone 4645 C", "hex": "#B8743B" },
+{ "brand": "Gingko", "code": "Y2779", "name": "Pantone 1535 C", "hex": "#9E4A00" },
+{ "brand": "Gingko", "code": "Y2784", "name": "Pantone 4695 C", "hex": "#420D00" },
+{ "brand": "Gingko", "code": "Y2786", "name": "Pantone 4975 C", "hex": "#330E00" },
+{ "brand": "Gingko", "code": "Y2792", "name": "Pantone 463 U", "hex": "#6B3D00" },
+{ "brand": "Gingko", "code": "Y2808", "name": "Pantone 4735 C", "hex": "#D9A9A7" },
+{ "brand": "Gingko", "code": "Y2811", "name": "Pantone 7504 U", "hex": "#997354" },
+{ "brand": "Gingko", "code": "Y2813", "name": "Pantone 7531 C", "hex": "#80735D" },
+{ "brand": "Gingko", "code": "Y2814", "name": "Pantone 7532 C", "hex": "#594A2D" },
+{ "brand": "Gingko", "code": "Y2816", "name": "Pantone 7504 C", "hex": "#997354" },
+{ "brand": "Gingko", "code": "Y2828", "name": "Pantone 4535 C", "hex": "#E3DA9F" },
+{ "brand": "Gingko", "code": "Y2833", "name": "Pantone 110 C", "hex": "#EDD100" },
+{ "brand": "Gingko", "code": "Y2836", "name": "Pantone 139 C", "hex": "#C47C00" },
+{ "brand": "Gingko", "code": "Y2837", "name": "Pantone 4505 U", "hex": "#A38B24" },
+{ "brand": "Gingko", "code": "Y2838", "name": "Pantone 723 C", "hex": "#D4740B" },
+{ "brand": "Gingko", "code": "Y2839", "name": "Pantone 1395 C", "hex": "#A15F00" },
+{ "brand": "Gingko", "code": "Y2841", "name": "Pantone 154 C", "hex": "#A85B00" },
+{ "brand": "Gingko", "code": "Y2846", "name": "Pantone 499 C", "hex": "#853100" },
+{ "brand": "Gingko", "code": "Y2850", "name": "Pantone 4515 C", "hex": "#C2B061" },
+{ "brand": "Gingko", "code": "Y2854", "name": "Pantone 1255 C", "hex": "#A87B00" },
+{ "brand": "Gingko", "code": "Y2861", "name": "Pantone 7505 C", "hex": "#735022" },
+{ "brand": "Gingko", "code": "Y2867", "name": "Pantone 440 C", "hex": "#202700" },
+{ "brand": "Gingko", "code": "Y2869", "name": "Pantone 458 C", "hex": "#E6E645" },
+{ "brand": "Gingko", "code": "Y2874", "name": "Pantone 3975 C", "hex": "#B5B500" },
+{ "brand": "Gingko", "code": "Y2878", "name": "Pantone 5855 C", "hex": "#D1D190" },
+{ "brand": "Gingko", "code": "Y2881", "name": "Pantone 111 C", "hex": "#BAA600" },
+{ "brand": "Gingko", "code": "Y2885", "name": "Pantone 117 C", "hex": "#D9B200" },
+{ "brand": "Gingko", "code": "Y2888", "name": "Pantone 4535 C", "hex": "#E3DA9F" },
+{ "brand": "Gingko", "code": "Y2890", "name": "Pantone 4545 C", "hex": "#F0E9C2" },
+{ "brand": "Gingko", "code": "Y2897", "name": "Pantone 126 C", "hex": "#A17800" },
+{ "brand": "Gingko", "code": "Y2900", "name": "Pantone 119 C", "hex": "#827200" },
+{ "brand": "Gingko", "code": "Y2901", "name": "Pantone 4485 C", "hex": "#4F3A00" },
+{ "brand": "Gingko", "code": "Y2906", "name": "Pantone 4485 C", "hex": "#4F3A00" },
+{ "brand": "Gingko", "code": "Y2913", "name": "Pantone 434 C", "hex": "#EDE6E8" },
+{ "brand": "Gingko", "code": "Y2914", "name": "Pantone 414 C", "hex": "#B3B3A1" },
+{ "brand": "Gingko", "code": "Y2925", "name": "Pantone 448 C", "hex": "#2D3E00" },
+{ "brand": "Gingko", "code": "Y2928", "name": "Pantone 7535 C", "hex": "#CCC6AD" },
+{ "brand": "Gingko", "code": "Y2931", "name": "Pantone 7530 C", "hex": "#ADA089" },
+{ "brand": "Gingko", "code": "Y2935", "name": "Pantone 7536 C", "hex": "#ADA687" },
+{ "brand": "Gingko", "code": "Y2938", "name": "Pantone 7503 C", "hex": "#BFA87C" },
+{ "brand": "Gingko", "code": "Y2941", "name": "Pantone 451 C", "hex": "#ABB573" },
+{ "brand": "Gingko", "code": "Y2942", "name": "Pantone 5635 C", "hex": "#89A386" },
+{ "brand": "Gingko", "code": "Y2943", "name": "Pantone 7497 C", "hex": "#738639" },
+{ "brand": "Gingko", "code": "Y2951", "name": "Pantone 454 C", "hex": "#E8EDD6" },
+{ "brand": "Gingko", "code": "Y2954", "name": "Pantone 451 C", "hex": "#ABB573" },
+{ "brand": "Gingko", "code": "Y2958", "name": "Pantone 5773 C", "hex": "#909E5A" },
+{ "brand": "Gingko", "code": "Y2959", "name": "Pantone 5757 U", "hex": "#547306" },
+{ "brand": "Gingko", "code": "Y2961", "name": "Pantone 5615 C", "hex": "#2E522B" },
+{ "brand": "Gingko", "code": "Y2962", "name": "Pantone 418 C", "hex": "#3E402C" },
+{ "brand": "Gingko", "code": "Y2966", "name": "Pantone 438 C", "hex": "#394500" },
+{ "brand": "Gingko", "code": "Y2968", "name": "Pantone 452 C", "hex": "#C2CF9C" },
+{ "brand": "Gingko", "code": "Y2970", "name": "Pantone 5625 C", "hex": "#5A7D57" },
+{ "brand": "Gingko", "code": "Y2972", "name": "Pantone 444 C", "hex": "#7E947E" },
+{ "brand": "Gingko", "code": "Y2979", "name": "Pantone 7525 C", "hex": "#B36259" },
+{ "brand": "Gingko", "code": "Y2981", "name": "Pantone 450 C", "hex": "#506700" },
+{ "brand": "Gingko", "code": "Y2986", "name": "Pantone 462 C", "hex": "#402600" },
+{ "brand": "Gingko", "code": "Y2987", "name": "Pantone 1405 C", "hex": "#5E3C00" },
+{ "brand": "Gingko", "code": "Y2989", "name": "Pantone 5507 C", "hex": "#A1B5A8" },
+{ "brand": "Gingko", "code": "Y2990", "name": "Pantone 443 U", "hex": "#9DB39D" },
+{ "brand": "Gingko", "code": "Y2995", "name": "Pantone 7475 C", "hex": "#59B386" },
+{ "brand": "Gingko", "code": "Y3001", "name": "Pantone 5483 C", "hex": "#43B08B" },
+{ "brand": "Gingko", "code": "Y3007", "name": "Pantone 330 C", "hex": "#006635" },
+{ "brand": "Gingko", "code": "Y3010", "name": "Pantone 5477 C", "hex": "#1D4230" },
+{ "brand": "Gingko", "code": "Y3011", "name": "Pantone 626 C", "hex": "#175E22" },
+{ "brand": "Gingko", "code": "Y3012", "name": "Pantone 560 C", "hex": "#0D4018" },
+{ "brand": "Gingko", "code": "Y3016", "name": "Pantone 627 C", "hex": "#04290A" },
+{ "brand": "Gingko", "code": "Y3018", "name": "Pantone 7483 C", "hex": "#117300" },
+{ "brand": "Gingko", "code": "Y3019", "name": "Pantone 3435 C", "hex": "#005710" },
+{ "brand": "Gingko", "code": "Y3020", "name": "Pantone 3308 C", "hex": "#00471D" },
+{ "brand": "Gingko", "code": "Y3021", "name": "Pantone 350 C", "hex": "#0D4000" },
+{ "brand": "Gingko", "code": "Y3025", "name": "Pantone 5535 C", "hex": "#102E14" },
+{ "brand": "Gingko", "code": "Y3036", "name": "Pantone 356 U", "hex": "#09BA00" },
+{ "brand": "Gingko", "code": "Y3037", "name": "Pantone 555 C", "hex": "#187031" },
+{ "brand": "Gingko", "code": "Y3041", "name": "Pantone 349 C", "hex": "#00940D" },
+{ "brand": "Gingko", "code": "Y3044", "name": "Pantone 342 C", "hex": "#00912A" },
+{ "brand": "Gingko", "code": "Y3049", "name": "Pantone 3242 C", "hex": "#A1FFD1" },
+{ "brand": "Gingko", "code": "Y3051", "name": "Pantone 3395 C", "hex": "#63FF8C" },
+{ "brand": "Gingko", "code": "Y3056", "name": "Pantone 3292 C", "hex": "#008A46" },
+{ "brand": "Gingko", "code": "Y3057", "name": "Pantone 3262 C", "hex": "#4AFFAB" },
+{ "brand": "Gingko", "code": "Y3066", "name": "Pantone 3415 C", "hex": "#00C72E" },
+{ "brand": "Gingko", "code": "Y3073", "name": "Pantone 348 C", "hex": "#00C21D" },
+{ "brand": "Gingko", "code": "Y3074", "name": "Pantone 3275 C", "hex": "#0DFF87" },
+{ "brand": "Gingko", "code": "Y3077", "name": "Pantone 3288 C", "hex": "#00CC5E" },
+{ "brand": "Gingko", "code": "Y3078", "name": "Pantone 3405 C", "hex": "#26FF59" },
+{ "brand": "Gingko", "code": "Y3079", "name": "Pantone 339 C", "hex": "#29FF70" },
+{ "brand": "Gingko", "code": "Y3082", "name": "Pantone 3265 C", "hex": "#4FFFA1" },
+{ "brand": "Gingko", "code": "Y3096", "name": "Pantone 622 C", "hex": "#BAF5C6" },
+{ "brand": "Gingko", "code": "Y3099", "name": "Pantone 572 C", "hex": "#C4FFDB" },
+{ "brand": "Gingko", "code": "Y3101", "name": "Pantone 7479 C", "hex": "#73FF80" },
+{ "brand": "Gingko", "code": "Y3104", "name": "Pantone 340 C", "hex": "#00E84F" },
+{ "brand": "Gingko", "code": "Y3106", "name": "Pantone 347 C", "hex": "#00F723" },
+{ "brand": "Gingko", "code": "Y3111", "name": "Pantone 5787 C", "hex": "#CEDE99" },
+{ "brand": "Gingko", "code": "Y3112", "name": "Pantone 7492 C", "hex": "#D1ED77" },
+{ "brand": "Gingko", "code": "Y3115", "name": "Pantone 577 C", "hex": "#AEE67C" },
+{ "brand": "Gingko", "code": "Y3117", "name": "Pantone 7494 C", "hex": "#A3D982" },
+{ "brand": "Gingko", "code": "Y3125", "name": "Pantone 357 C", "hex": "#167000" },
+{ "brand": "Gingko", "code": "Y3129", "name": "Pantone 365 C", "hex": "#E0FFB5" },
+{ "brand": "Gingko", "code": "Y3131", "name": "Pantone 358 C", "hex": "#BAFF9E" },
+{ "brand": "Gingko", "code": "Y3136", "name": "Pantone 363 C", "hex": "#3EC200" },
+{ "brand": "Gingko", "code": "Y3137", "name": "Pantone 370 C", "hex": "#52BA00" },
+{ "brand": "Gingko", "code": "Y3138", "name": "Pantone 364 C", "hex": "#349400" },
+{ "brand": "Gingko", "code": "Y3140", "name": "Pantone 371 C", "hex": "#6BC200" },
+{ "brand": "Gingko", "code": "Y3142", "name": "Pantone 378 C", "hex": "#436600" },
+{ "brand": "Gingko", "code": "Y3153", "name": "Pantone 372 C", "hex": "#E6FFAB" },
+{ "brand": "Gingko", "code": "Y3154", "name": "Pantone 374 C", "hex": "#C2FF6E" },
+{ "brand": "Gingko", "code": "Y3155", "name": "Pantone 380 C", "hex": "#DEFF47" },
+{ "brand": "Gingko", "code": "Y3156", "name": "Pantone 381 C", "hex": "#CCFF17" },
+{ "brand": "Gingko", "code": "Y3164", "name": "Pantone 376 C", "hex": "#74F200" },
+{ "brand": "Gingko", "code": "Y3165", "name": "Pantone 370 U", "hex": "#52BA00" },
+{ "brand": "Gingko", "code": "Y3170", "name": "Pantone 614 C", "hex": "#F5F5C4" },
+{ "brand": "Gingko", "code": "Y3174", "name": "Pantone 390 C", "hex": "#B7EB00" },
+{ "brand": "Gingko", "code": "Y3175", "name": "Pantone 398 C", "hex": "#ABB800" },
+{ "brand": "Gingko", "code": "Y3176", "name": "Pantone 383 C", "hex": "#A5CF00" },
+{ "brand": "Gingko", "code": "Y3184", "name": "Pantone 384 C", "hex": "#90B000" },
+{ "brand": "Gingko", "code": "Y3186", "name": "Pantone 104 C", "hex": "#B3AD00" },
+{ "brand": "Gingko", "code": "Y3195", "name": "Pantone 365 U", "hex": "#E0FFB5" },
+{ "brand": "Gingko", "code": "Y3196", "name": "Pantone 7488 C", "hex": "#91FF66" },
+{ "brand": "Gingko", "code": "Y3197", "name": "Pantone 360 C", "hex": "#6BFF33" },
+{ "brand": "Gingko", "code": "Y3198", "name": "Pantone 361 C", "hex": "#4FFF00" },
+{ "brand": "Gingko", "code": "Y3202", "name": "Pantone 359 U", "hex": "#A3FF82" },
+{ "brand": "Gingko", "code": "Y3204", "name": "Pantone 354 C", "hex": "#33FF1A" },
+{ "brand": "Gingko", "code": "Y3208", "name": "Pantone 5777 C", "hex": "#A5B85E" },
+{ "brand": "Gingko", "code": "Y3216", "name": "Pantone 5763 C", "hex": "#5C6E1D" },
+{ "brand": "Gingko", "code": "Y3219", "name": "Pantone 4505 C", "hex": "#A38B24" },
+{ "brand": "Gingko", "code": "Y3222", "name": "Pantone 455 C", "hex": "#594A00" },
+{ "brand": "Gingko", "code": "Y3225", "name": "Pantone 455 U", "hex": "#594A00" },
+{ "brand": "Gingko", "code": "Y3230", "name": "Pantone 617 C", "hex": "#D4CF6E" },
+{ "brand": "Gingko", "code": "Y3242", "name": "Pantone 445 C", "hex": "#475947" },
+{ "brand": "Gingko", "code": "Y3247", "name": "Pantone 7477 C", "hex": "#105249" },
+{ "brand": "Gingko", "code": "Y3250", "name": "Pantone 420 C", "hex": "#D9D9D9" },
+{ "brand": "Gingko", "code": "Y3251", "name": "Pantone 428 C", "hex": "#CDD1D1" },
+{ "brand": "Gingko", "code": "Y3255", "name": "Pantone 417 C", "hex": "#585943" },
+{ "brand": "Gingko", "code": "Y3259", "name": "Pantone 7540 C", "hex": "#474747" },
+{ "brand": "Gingko", "code": "Y3267", "name": "Pantone 7546 C", "hex": "#304547" },
+{ "brand": "Gingko", "code": "Y3270", "name": "Pantone 414 U", "hex": "#B3B3A1" },
+{ "brand": "Gingko", "code": "Y3272", "name": "Pantone 416 C", "hex": "#80806B" },
+{ "brand": "Gingko", "code": "Y3276", "name": "Pantone 302 U", "hex": "#006080" },
+{ "brand": "Gingko", "code": "Y3279", "name": "Pantone 432 C", "hex": "#2D393B" },
+{ "brand": "Gingko", "code": "Y3281", "name": "Pantone 426 C", "hex": "#000000" },
+{ "brand": "Gingko", "code": "Y3282", "name": "Pantone 5395 U", "hex": "#00223D" },
+{ "brand": "Gingko", "code": "Y3285", "name": "Pantone 5265 C", "hex": "#20258A" },
+{ "brand": "Gingko", "code": "Y3287", "name": "Pantone 534 U", "hex": "#002CAA" },
+{ "brand": "Gingko", "code": "Y3293", "name": "Pantone 5455 C", "hex": "#DAE8E8" },
+{ "brand": "Gingko", "code": "Y3298", "name": "Pantone 5493 C", "hex": "#73C9AD" },
+{ "brand": "Gingko", "code": "Y3330", "name": "Pantone 401 C", "hex": "#C4BBAF" },
+{ "brand": "Gingko", "code": "Y3331", "name": "Pantone 414 C", "hex": "#B3B3A1" },
+{ "brand": "Gingko", "code": "Y3332", "name": "Pantone 402 C", "hex": "#B0A597" },
+{ "brand": "Gingko", "code": "Y3333", "name": "Pantone 406 C", "hex": "#D6CBC9" },
+{ "brand": "Gingko", "code": "Y3337", "name": "Pantone 421 C", "hex": "#BDBDBD" },
+{ "brand": "Gingko", "code": "Y3338", "name": "Pantone 422 C", "hex": "#ABABAB" },
+{ "brand": "Gingko", "code": "Y3341", "name": "Pantone 430 C", "hex": "#858C8C" },
+{ "brand": "Gingko", "code": "Y3342", "name": "Pantone 431 C", "hex": "#525B5C" },
+{ "brand": "Gingko", "code": "Y3344", "name": "Pantone 424 C", "hex": "#636363" },
+{ "brand": "Gingko", "code": "Y3345", "name": "Pantone 405 C", "hex": "#474030" },
+{ "brand": "Gingko", "code": "Y3349", "name": "Pantone 5445 C", "hex": "#CCDCDE" },
+{ "brand": "Gingko", "code": "Y3351", "name": "Pantone 5435 C", "hex": "#B8CDD4" },
+{ "brand": "Gingko", "code": "Y3353", "name": "Pantone 5415 C", "hex": "#5A8A96" },
+{ "brand": "Gingko", "code": "Y3357", "name": "Pantone 5405 C", "hex": "#3A728A" },
+{ "brand": "Gingko", "code": "Y3360", "name": "Pantone 647 U", "hex": "#0056C4" },
+{ "brand": "Gingko", "code": "Y3362", "name": "Pantone 647 C", "hex": "#0056C4" },
+{ "brand": "Gingko", "code": "Y3366", "name": "Pantone 289 C", "hex": "#00246B" },
+{ "brand": "Gingko", "code": "Y3375", "name": "Pantone 7543 C", "hex": "#A6B3B3" },
+{ "brand": "Gingko", "code": "Y3377", "name": "Pantone 423 C", "hex": "#8F8F8F" },
+{ "brand": "Gingko", "code": "Y3383", "name": "Pantone 5395 C", "hex": "#00223D" },
+{ "brand": "Gingko", "code": "Y3387", "name": "Pantone 412 C", "hex": "#050402" },
+{ "brand": "Gingko", "code": "Y3390", "name": "Pantone 7527 C", "hex": "#EDE8DF" },
+{ "brand": "Gingko", "code": "Y3393", "name": "Pantone 407 C", "hex": "#BDAEAC" },
+{ "brand": "Gingko", "code": "Y3394", "name": "Pantone 435 C", "hex": "#DED6DB" },
+{ "brand": "Gingko", "code": "Y3395", "name": "Pantone 408 C", "hex": "#A89796" },
+{ "brand": "Gingko", "code": "Y3398", "name": "Pantone 404 C", "hex": "#706758" },
+{ "brand": "Gingko", "code": "Y3404", "name": "Pantone 425 C", "hex": "#3B3B3B" },
+{ "brand": "Gingko", "code": "Y3406", "name": "Pantone 433 U", "hex": "#090C0D" },
+{ "brand": "Gingko", "code": "Y3415", "name": "Pantone 410 C", "hex": "#705C59" },
+{ "brand": "Gingko", "code": "Y3427", "name": "Pantone 276 C", "hex": "#020073" },
+{ "brand": "Gingko", "code": "Y3431", "name": "Pantone 535 U", "hex": "#94B3ED" },
+{ "brand": "Gingko", "code": "Y3432", "name": "Pantone 649 C", "hex": "#D9EDFC" },
+{ "brand": "Gingko", "code": "Y3436", "name": "Pantone 645 C", "hex": "#64A7E8" },
+{ "brand": "Gingko", "code": "Y3440", "name": "Pantone 5405 C", "hex": "#3A728A" },
+{ "brand": "Gingko", "code": "Y3442", "name": "Pantone 662 U", "hex": "#003BD1" },
+{ "brand": "Gingko", "code": "Y3444", "name": "Pantone 2768 C", "hex": "#001F8F" },
+{ "brand": "Gingko", "code": "Y3446", "name": "Pantone 533 C", "hex": "#00227B" },
+{ "brand": "Gingko", "code": "Y3447", "name": "Pantone 2965 C", "hex": "#00395C" },
+{ "brand": "Gingko", "code": "Y3450", "name": "Pantone 324 C", "hex": "#B8FFE0" },
+{ "brand": "Gingko", "code": "Y3461", "name": "Pantone 303 C", "hex": "#003B42" },
+{ "brand": "Gingko", "code": "Y3462", "name": "Pantone 302 C", "hex": "#006080" },
+{ "brand": "Gingko", "code": "Y3466", "name": "Pantone 5463 C", "hex": "#002B24" },
+{ "brand": "Gingko", "code": "Y3468", "name": "Pantone 325 C", "hex": "#70FFBD" },
+{ "brand": "Gingko", "code": "Y3469", "name": "Pantone 306 C", "hex": "#40FFED" },
+{ "brand": "Gingko", "code": "Y3470", "name": "Pantone 3125 C", "hex": "#2BFFC9" },
+{ "brand": "Gingko", "code": "Y3472", "name": "Pantone 306 U", "hex": "#40FFED" },
+{ "brand": "Gingko", "code": "Y3476", "name": "Pantone 3105 U", "hex": "#91FFE0" },
+{ "brand": "Gingko", "code": "Y3477", "name": "Pantone 3135 C", "hex": "#00E8C3" },
+{ "brand": "Gingko", "code": "Y3482", "name": "Pantone 5473 C", "hex": "#167A58" },
+{ "brand": "Gingko", "code": "Y3485", "name": "Pantone 3145 C", "hex": "#00C49F" },
+{ "brand": "Gingko", "code": "Y3487", "name": "Pantone 3025 C", "hex": "#00687D" },
+{ "brand": "Gingko", "code": "Y3488", "name": "Pantone 5575 C", "hex": "#A9D4B2" },
+{ "brand": "Gingko", "code": "Y3509", "name": "Pantone 317 C", "hex": "#D1FFEB" },
+{ "brand": "Gingko", "code": "Y3512", "name": "Pantone 317 C", "hex": "#D1FFEB" },
+{ "brand": "Gingko", "code": "Y3515", "name": "Pantone 332 C", "hex": "#B3FFCC" },
+{ "brand": "Gingko", "code": "Y3517", "name": "Pantone 3258 C", "hex": "#69FFAB" },
+{ "brand": "Gingko", "code": "Y3527", "name": "Pantone 316 C", "hex": "#00523C" },
+{ "brand": "Gingko", "code": "Y3530", "name": "Pantone 628 C", "hex": "#CFFFF0" },
+{ "brand": "Gingko", "code": "Y3533", "name": "Pantone 2975 C", "hex": "#B3FFF2" },
+{ "brand": "Gingko", "code": "Y3557", "name": "Pantone 319 C", "hex": "#7AFFCF" },
+{ "brand": "Gingko", "code": "Y3558", "name": "Pantone 3115 C", "hex": "#5EFFD1" },
+{ "brand": "Gingko", "code": "Y3563", "name": "Pantone 320 C", "hex": "#00EDA4" },
+{ "brand": "Gingko", "code": "Y3566", "name": "Pantone 323 C", "hex": "#008754" },
+{ "brand": "Gingko", "code": "Y3569", "name": "Pantone 2905 C", "hex": "#96FAFF" },
+{ "brand": "Gingko", "code": "Y3571", "name": "Pantone 305 C", "hex": "#7DFFE8" },
+{ "brand": "Gingko", "code": "Y3572", "name": "Pantone 297 C", "hex": "#82FCFF" },
+{ "brand": "Gingko", "code": "Y3577", "name": "Pantone 3005 C", "hex": "#00A0FA" },
+{ "brand": "Gingko", "code": "Y3578", "name": "Pantone 7461 C", "hex": "#38B8FF" },
+{ "brand": "Gingko", "code": "Y3581", "name": "Pantone 307 C", "hex": "#009CBA" },
+{ "brand": "Gingko", "code": "Y3583", "name": "Pantone 294 C", "hex": "#0055C9" },
+{ "brand": "Gingko", "code": "Y3585", "name": "Pantone 648 C", "hex": "#002D75" },
+{ "brand": "Gingko", "code": "Y3587", "name": "Pantone 2767 C", "hex": "#001A75" },
+{ "brand": "Gingko", "code": "Y3592", "name": "Pantone 2995 C", "hex": "#1AE3FF" },
+{ "brand": "Gingko", "code": "Y3594", "name": "Pantone 300 C", "hex": "#008FFF" },
+{ "brand": "Gingko", "code": "Y3597", "name": "Pantone 2727 C", "hex": "#52A8FF" },
+{ "brand": "Gingko", "code": "Y3599", "name": "Pantone 285 C", "hex": "#1C91FF" },
+{ "brand": "Gingko", "code": "Y3600", "name": "Pantone 2935 C", "hex": "#008AFF" },
+{ "brand": "Gingko", "code": "Y3601", "name": "Pantone 293 C", "hex": "#006BFA" },
+{ "brand": "Gingko", "code": "Y3605", "name": "Pantone 646 C", "hex": "#4696E3" },
+{ "brand": "Gingko", "code": "Y3609", "name": "Pantone 277 C", "hex": "#BAEDFF" },
+{ "brand": "Gingko", "code": "Y3612", "name": "Pantone 291 C", "hex": "#ABF7FF" },
+{ "brand": "Gingko", "code": "Y3614", "name": "Pantone 2915 C", "hex": "#69EDFF" },
+{ "brand": "Gingko", "code": "Y3615", "name": "Pantone 2925 C", "hex": "#26C2FF" },
+{ "brand": "Gingko", "code": "Y3622", "name": "Pantone 295 C", "hex": "#0045A1" },
+{ "brand": "Gingko", "code": "Y3624", "name": "Pantone 2955 C", "hex": "#0058A1" },
+{ "brand": "Gingko", "code": "Y3625", "name": "Pantone 295 U", "hex": "#0045A1" },
+{ "brand": "Gingko", "code": "Y3630", "name": "Pantone 290 C", "hex": "#BFFAFF" },
+{ "brand": "Gingko", "code": "Y3634", "name": "Pantone 283 C", "hex": "#A6E8FF" },
+{ "brand": "Gingko", "code": "Y3635", "name": "Pantone 278 C", "hex": "#9CDBFF" },
+{ "brand": "Gingko", "code": "Y3637", "name": "Pantone 644 C", "hex": "#8BCCF0" },
+{ "brand": "Gingko", "code": "Y3639", "name": "Pantone 651 C", "hex": "#95C5F0" },
+{ "brand": "Gingko", "code": "Y3640", "name": "Pantone 535 C", "hex": "#94B3ED" },
+{ "brand": "Gingko", "code": "Y3652", "name": "Pantone 2718 C", "hex": "#5496FF" },
+{ "brand": "Gingko", "code": "Y3655", "name": "Pantone 660 C", "hex": "#1A6EFF" },
+{ "brand": "Gingko", "code": "Y3658", "name": "Pantone 7455 C", "hex": "#3378FF" },
+{ "brand": "Gingko", "code": "Y3661", "name": "Pantone 2757 C", "hex": "#0020B3" },
+{ "brand": "Gingko", "code": "Y3662", "name": "Pantone 7684 C", "hex": "#375E9E" },
+{ "brand": "Gingko", "code": "Y3663", "name": "Pantone 286 C", "hex": "#0055FA" },
+{ "brand": "Gingko", "code": "Y3665", "name": "Pantone 288 U", "hex": "#0041C4" },
+{ "brand": "Gingko", "code": "Y3669", "name": "Pantone 643 C", "hex": "#B8E4F5" },
+{ "brand": "Gingko", "code": "Y3671", "name": "Pantone 2717 C", "hex": "#B5E0FF" },
+{ "brand": "Gingko", "code": "Y3675", "name": "Pantone 284 C", "hex": "#73CFFF" },
+{ "brand": "Gingko", "code": "Y3685", "name": "Pantone 2728 C", "hex": "#0A4FFF" },
+{ "brand": "Gingko", "code": "Y3686", "name": "Pantone 662 C", "hex": "#003BD1" },
+{ "brand": "Gingko", "code": "Y3687", "name": "Pantone 280 C", "hex": "#003BD1" },
+{ "brand": "Gingko", "code": "Y3692", "name": "Pantone 2716 C", "hex": "#8CB5FF" },
+{ "brand": "Gingko", "code": "Y3693", "name": "Pantone 7452 C", "hex": "#80ADFF" },
+{ "brand": "Gingko", "code": "Y3698", "name": "Pantone 2736 C", "hex": "#0017FF" },
+{ "brand": "Gingko", "code": "Y3701", "name": "Pantone 273 C", "hex": "#0009EB" },
+{ "brand": "Gingko", "code": "Y3702", "name": "Pantone 2738 C", "hex": "#0020FA" },
+{ "brand": "Gingko", "code": "Y3703", "name": "Pantone 2735 C", "hex": "#000DFF" },
+{ "brand": "Gingko", "code": "Y3705", "name": "Pantone 281 C", "hex": "#0031AD" },
+{ "brand": "Gingko", "code": "Y3710", "name": "Pantone 663 C", "hex": "#EDF0FF" },
+{ "brand": "Gingko", "code": "Y3712", "name": "Pantone 523 C", "hex": "#E6BDFF" },
+{ "brand": "Gingko", "code": "Y3714", "name": "Pantone 436 C", "hex": "#C2BFBF" },
+{ "brand": "Gingko", "code": "Y3724", "name": "Pantone 5135 C", "hex": "#8257B8" },
+{ "brand": "Gingko", "code": "Y3726", "name": "Pantone 5125 C", "hex": "#592482" },
+{ "brand": "Gingko", "code": "Y3730", "name": "Pantone 7443 C", "hex": "#F0F2FF" },
+{ "brand": "Gingko", "code": "Y3732", "name": "Pantone 2635 C", "hex": "#B8BAFF" },
+{ "brand": "Gingko", "code": "Y3735", "name": "Pantone 2705 C", "hex": "#ADC6F7" },
+{ "brand": "Gingko", "code": "Y3742", "name": "Pantone 2685 C", "hex": "#0900E6" },
+{ "brand": "Gingko", "code": "Y3751", "name": "Pantone 271 C", "hex": "#91A1FF" },
+{ "brand": "Gingko", "code": "Y3753", "name": "Pantone 2715 C", "hex": "#6E8CFF" },
+{ "brand": "Gingko", "code": "Y3761", "name": "Pantone 2635 U", "hex": "#B8BAFF" },
+{ "brand": "Gingko", "code": "Y3768", "name": "Pantone 263 C", "hex": "#E6DBFF" },
+{ "brand": "Gingko", "code": "Y3769", "name": "Pantone 522 C", "hex": "#D4A1FF" },
+{ "brand": "Gingko", "code": "Y3773", "name": "Pantone 2567 C", "hex": "#B5A3FF" },
+{ "brand": "Gingko", "code": "Y3777", "name": "Pantone 265 C", "hex": "#7570FF" },
+{ "brand": "Gingko", "code": "Y3778", "name": "Pantone 2607 C", "hex": "#2D00ED" },
+{ "brand": "Gingko", "code": "Y3779", "name": "Pantone 2587 C", "hex": "#6957FF" },
+{ "brand": "Gingko", "code": "Y3783", "name": "Pantone 269 C", "hex": "#2600AB" },
+{ "brand": "Gingko", "code": "Y3786", "name": "Pantone 5115 C", "hex": "#2B0041" },
+{ "brand": "Gingko", "code": "Y3790", "name": "Pantone 2562 C", "hex": "#CFA6FF" },
+{ "brand": "Gingko", "code": "Y3803", "name": "Pantone 2582 C", "hex": "#8A47FF" },
+{ "brand": "Gingko", "code": "Y3804", "name": "Pantone 2593 C", "hex": "#631CFF" },
+{ "brand": "Gingko", "code": "Y3810", "name": "Pantone 531 C", "hex": "#E6CCFF" },
+{ "brand": "Gingko", "code": "Y3811", "name": "Pantone 210 C", "hex": "#FF9CF0" },
+{ "brand": "Gingko", "code": "Y3812", "name": "Pantone 236 C", "hex": "#FCB3FF" },
+{ "brand": "Gingko", "code": "Y3814", "name": "Pantone 2563 C", "hex": "#C7ABFF" },
+{ "brand": "Gingko", "code": "Y3817", "name": "Pantone 237 C", "hex": "#F782FF" },
+{ "brand": "Gingko", "code": "Y3820", "name": "Pantone 238 C", "hex": "#F05EFF" },
+{ "brand": "Gingko", "code": "Y3826", "name": "Pantone 235 C", "hex": "#910099" },
+{ "brand": "Gingko", "code": "Y3827", "name": "Pantone 2622 C", "hex": "#3C008F" },
+{ "brand": "Gingko", "code": "Y3829", "name": "Pantone 677 C", "hex": "#FADEFF" },
+{ "brand": "Gingko", "code": "Y3832", "name": "Pantone 680 C", "hex": "#E18EFA" },
+{ "brand": "Gingko", "code": "Y3835", "name": "Pantone 689 C", "hex": "#9D27A8" },
+{ "brand": "Gingko", "code": "Y3837", "name": "Pantone 258 C", "hex": "#913DFF" },
+{ "brand": "Gingko", "code": "Y3838", "name": "Pantone 2622 C", "hex": "#3C008F" },
+{ "brand": "Gingko", "code": "Y3839", "name": "Pantone 249 C", "hex": "#6E00B8" },
+{ "brand": "Gingko", "code": "Y3840", "name": "Pantone 2627 C", "hex": "#2800B0" },
+{ "brand": "Gingko", "code": "Y3842", "name": "Pantone 229 C", "hex": "#660057" },
+{ "brand": "Gingko", "code": "Y3843", "name": "Pantone 511 C", "hex": "#3D0066" },
+{ "brand": "Gingko", "code": "2457", "name": "Pantone 021 U", "hex": "#FF7800" },
+{ "brand": "Gingko", "code": "2382", "name": "Pantone 106 C", "hex": "#FFFA4F" },
+{ "brand": "Gingko", "code": "2385", "name": "Pantone 109 C", "hex": "#FFE600" },
+{ "brand": "Gingko", "code": "2717", "name": "Pantone 118 C", "hex": "#BA9900" },
+{ "brand": "Gingko", "code": "2413", "name": "Pantone 2196 C", "hex": "#0068B2" },
+{ "brand": "Gingko", "code": "2339", "name": "Pantone 221 C", "hex": "#B30098" },
+{ "brand": "Gingko", "code": "3660", "name": "Pantone 2726", "hex": "#3657FF" },
+{ "brand": "Gingko", "code": "3760", "name": "Pantone 2745 C", "hex": "#000BD9" },
+{ "brand": "Gingko", "code": "2290", "name": "Pantone 32", "hex": "#FF1A24" },
+{ "brand": "Gingko", "code": "3260", "name": "Pantone 447 C", "hex": "#272E20" },
+{ "brand": "Gingko", "code": "2713", "name": "Pantone 466 C", "hex": "#E0C791" },
+{ "brand": "Gingko", "code": "3778", "name": "Pantone 526", "hex": "#3B00ED" },
+{ "brand": "Gingko", "code": "3407", "name": "Pantone 532 C", "hex": "#00193F" },
+{ "brand": "Gingko", "code": "2344", "name": "Pantone 7420", "hex": "#CC2976" },
+{ "brand": "Gingko", "code": "3625", "name": "Pantone 7693 C", "hex": "#004876" },
+{ "brand": "Gingko", "code": "2456", "name": "Pantone 811 C", "hex": "#FF2E14" },
+
+{ "brand": "Marathon", "code": "1001", "name": "Golden Dawn", "hex": "#FAFFE1" },
+{ "brand": "Marathon", "code": "1002", "name": "Lemon Juice", "hex": "#EBF0CD" },
+{ "brand": "Marathon", "code": "1003", "name": "Golden Lemon", "hex": "#F5F5A0" },
+{ "brand": "Marathon", "code": "1004", "name": "Ripe Lemon", "hex": "#F0F0A5" },
+{ "brand": "Marathon", "code": "1005", "name": "Bright Citrus", "hex": "#EBEB64" },
+{ "brand": "Marathon", "code": "1006", "name": "Lemon Cream", "hex": "#F5F0C3" },
+{ "brand": "Marathon", "code": "1007", "name": "Summer Citrus", "hex": "#F5E68C" },
+{ "brand": "Marathon", "code": "1008", "name": "Noon Sun", "hex": "#FAE173" },
+{ "brand": "Marathon", "code": "1009", "name": "Golden Dusk", "hex": "#FADC87" },
+{ "brand": "Marathon", "code": "1010", "name": "Spring Rays", "hex": "#EBD7BE" },
+{ "brand": "Marathon", "code": "1011", "name": "Bronze Sun", "hex": "#EBBE9B" },
+{ "brand": "Marathon", "code": "1012", "name": "Copper Orb", "hex": "#F0B487" },
+{ "brand": "Marathon", "code": "1013", "name": "Alloy Citrus", "hex": "#F0B49B" },
+{ "brand": "Marathon", "code": "1014", "name": "Acidic Bronze", "hex": "#E6B49B" },
+{ "brand": "Marathon", "code": "1015", "name": "Ratan Alloy", "hex": "#D2E669" },
+{ "brand": "Marathon", "code": "1016", "name": "Green Copper", "hex": "#AABEA0" },
+{ "brand": "Marathon", "code": "1017", "name": "Lanolin Gold", "hex": "#CDC8AA" },
+{ "brand": "Marathon", "code": "1018", "name": "Sunny Paddock", "hex": "#C8BE7D" },
+{ "brand": "Marathon", "code": "1019", "name": "Creamy Pink", "hex": "#FAE1E6" },
+{ "brand": "Marathon", "code": "1020", "name": "Milky Pink", "hex": "#F5C3CD" },
+{ "brand": "Marathon", "code": "1021", "name": "Dusky Pink", "hex": "#E6CDD2" },
+{ "brand": "Marathon", "code": "1022", "name": "Pink Musk", "hex": "#D7CDD2" },
+{ "brand": "Marathon", "code": "1023", "name": "Pinkish Mauve", "hex": "#E196AA" },
+{ "brand": "Marathon", "code": "1024", "name": "Light Cerise", "hex": "#E17891" },
+{ "brand": "Marathon", "code": "1025", "name": "Cerise", "hex": "#E15F82" },
+{ "brand": "Marathon", "code": "1026", "name": "Scarlet Pomp", "hex": "#D23C73" },
+{ "brand": "Marathon", "code": "1027", "name": "Pink Cerise", "hex": "#E18CBE" },
+{ "brand": "Marathon", "code": "1028", "name": "Dark Cerise", "hex": "#D25F87" },
+{ "brand": "Marathon", "code": "1029", "name": "Cloudy Hue", "hex": "#DCD2D7" },
+{ "brand": "Marathon", "code": "1030", "name": "Pinkish Linen", "hex": "#EBCDC8" },
+{ "brand": "Marathon", "code": "1031", "name": "Mauve Cloth", "hex": "#DCC3C8" },
+{ "brand": "Marathon", "code": "1032", "name": "Copper Mauve", "hex": "#DCB9BE" },
+{ "brand": "Marathon", "code": "1033", "name": "Copper Salmon", "hex": "#F5B4B9" },
+{ "brand": "Marathon", "code": "1034", "name": "Crimson Dawn", "hex": "#C896A5" },
+{ "brand": "Marathon", "code": "1035", "name": "Mauve Fog", "hex": "#CDA5AA" },
+{ "brand": "Marathon", "code": "1036", "name": "Crimson Copper", "hex": "#D26969" },
+{ "brand": "Marathon", "code": "1037", "name": "Peachy Fog", "hex": "#F0DCD7" },
+{ "brand": "Marathon", "code": "1038", "name": "Apricot Clouds", "hex": "#E6D2CD" },
+{ "brand": "Marathon", "code": "1039", "name": "Clouded Morn", "hex": "#DCC8BE" },
+{ "brand": "Marathon", "code": "1040", "name": "Slight Peach", "hex": "#E1B4A5" },
+{ "brand": "Marathon", "code": "1041", "name": "Copper Sun", "hex": "#DCA591" },
+{ "brand": "Marathon", "code": "1042", "name": "Carrot", "hex": "#FFB464" },
+{ "brand": "Marathon", "code": "1043", "name": "Dark Carrot", "hex": "#F09141" },
+{ "brand": "Marathon", "code": "1044", "name": "Orange", "hex": "#F09B50" },
+{ "brand": "Marathon", "code": "1045", "name": "Flame Tree", "hex": "#E18741" },
+{ "brand": "Marathon", "code": "1046", "name": "Charred Orange", "hex": "#E66432" },
+{ "brand": "Marathon", "code": "1047", "name": "Burnt Orange", "hex": "#E6505A" },
+{ "brand": "Marathon", "code": "1048", "name": "Orange Flame", "hex": "#D23C1E" },
+{ "brand": "Marathon", "code": "1049", "name": "Crimson Orange", "hex": "#DC3C1E" },
+{ "brand": "Marathon", "code": "1050", "name": "Scarlet", "hex": "#B93C50" },
+{ "brand": "Marathon", "code": "1051", "name": "Raw Pink", "hex": "#E1A5A5" },
+{ "brand": "Marathon", "code": "1052", "name": "Crimson Berry", "hex": "#C35573" },
+{ "brand": "Marathon", "code": "1053", "name": "Dusky Cerise", "hex": "#C85A73" },
+{ "brand": "Marathon", "code": "1054", "name": "Burnt Crimson", "hex": "#A53750" },
+{ "brand": "Marathon", "code": "1055", "name": "Calm Blue", "hex": "#D2E1F0" },
+{ "brand": "Marathon", "code": "1056", "name": "Blue Gravel", "hex": "#C3D2E6" },
+{ "brand": "Marathon", "code": "1057", "name": "Brook", "hex": "#C8D7EB" },
+{ "brand": "Marathon", "code": "1058", "name": "Cerulean Lake", "hex": "#A0AFD2" },
+{ "brand": "Marathon", "code": "1059", "name": "Torquoise Blue", "hex": "#64AFD2" },
+{ "brand": "Marathon", "code": "1060", "name": "Pale Creek", "hex": "#CDC8D2" },
+{ "brand": "Marathon", "code": "1061", "name": "Pale Cobalt", "hex": "#8CAAC8" },
+{ "brand": "Marathon", "code": "1062", "name": "Minted Blue", "hex": "#96AFB9" },
+{ "brand": "Marathon", "code": "1063", "name": "Beach Blue", "hex": "#6999CD" },
+{ "brand": "Marathon", "code": "1064", "name": "Autumn Sapphire", "hex": "#5A7DB4" },
+{ "brand": "Marathon", "code": "1065", "name": "Deep Sea Blue", "hex": "#3764AF" },
+{ "brand": "Marathon", "code": "1066", "name": "Blue Ink", "hex": "#32418C" },
+{ "brand": "Marathon", "code": "1067", "name": "Leaden Blue", "hex": "#375F8C" },
+{ "brand": "Marathon", "code": "1068", "name": "Cerulean Black", "hex": "#235578" },
+{ "brand": "Marathon", "code": "1069", "name": "Midnight Blue", "hex": "#232373" },
+{ "brand": "Marathon", "code": "1070", "name": "Abyss Blue", "hex": "#232355" },
+{ "brand": "Marathon", "code": "1071", "name": "Greenish Night", "hex": "#006469" },
+{ "brand": "Marathon", "code": "1072", "name": "Intense Teal", "hex": "#00505A" },
+{ "brand": "Marathon", "code": "1073", "name": "Berry Cream", "hex": "#DCCDDC" },
+{ "brand": "Marathon", "code": "1074", "name": "Dusky Berry", "hex": "#C89BB9" },
+{ "brand": "Marathon", "code": "1075", "name": "Purple Dusk", "hex": "#C396B4" },
+{ "brand": "Marathon", "code": "1076", "name": "Purple Cream", "hex": "#D2A5C3" },
+{ "brand": "Marathon", "code": "1077", "name": "Fruity Wine", "hex": "#A0699B" },
+{ "brand": "Marathon", "code": "1078", "name": "Purple Satin", "hex": "#BE69AA" },
+{ "brand": "Marathon", "code": "1079", "name": "Port Wine", "hex": "#78417D" },
+{ "brand": "Marathon", "code": "1080", "name": "Deep Purple", "hex": "#8C4B91" },
+{ "brand": "Marathon", "code": "1081", "name": "Imperial Purple", "hex": "#AF7DBE" },
+{ "brand": "Marathon", "code": "1082", "name": "Blueberry", "hex": "#875F96" },
+{ "brand": "Marathon", "code": "1083", "name": "Royal Purple", "hex": "#823791" },
+{ "brand": "Marathon", "code": "1084", "name": "Purple Dim", "hex": "#5A2D64" },
+{ "brand": "Marathon", "code": "1085", "name": "Bluish Purple", "hex": "#AF9BC8" },
+{ "brand": "Marathon", "code": "1086", "name": "Classic Purple", "hex": "#64329B" },
+{ "brand": "Marathon", "code": "1087", "name": "Bluish Gray", "hex": "#64648C" },
+{ "brand": "Marathon", "code": "1088", "name": "Swarthy Purple", "hex": "#6E648C" },
+{ "brand": "Marathon", "code": "1089", "name": "Copper Purple", "hex": "#693C55" },
+{ "brand": "Marathon", "code": "1090", "name": "Purple Night", "hex": "#5A3264" },
+{ "brand": "Marathon", "code": "1091", "name": "Cool Blue", "hex": "#C8DCE1" },
+{ "brand": "Marathon", "code": "1092", "name": "Wheaten Green", "hex": "#D7E1C8" },
+{ "brand": "Marathon", "code": "1093", "name": "Green Ice", "hex": "#C3DCC8" },
+{ "brand": "Marathon", "code": "1094", "name": "Glacier Blue", "hex": "#AFC3DC" },
+{ "brand": "Marathon", "code": "1095", "name": "Alpine Stream", "hex": "#0096AF" },
+{ "brand": "Marathon", "code": "1096", "name": "Pacific Blue", "hex": "#1E8CAF" },
+{ "brand": "Marathon", "code": "1097", "name": "Nautical Blue", "hex": "#6473BE" },
+{ "brand": "Marathon", "code": "1098", "name": "Ocean Depths", "hex": "#1E5F6E" },
+{ "brand": "Marathon", "code": "1099", "name": "Tropical Blue", "hex": "#AAD7D7" },
+{ "brand": "Marathon", "code": "1100", "name": "Aqua Blue", "hex": "#50B9C8" },
+{ "brand": "Marathon", "code": "1101", "name": "Deep Aqua", "hex": "#28AFBE" },
+{ "brand": "Marathon", "code": "1102", "name": "Lagoon", "hex": "#00A0B4" },
+{ "brand": "Marathon", "code": "1103", "name": "Atoll", "hex": "#1EA5B4" },
+{ "brand": "Marathon", "code": "1104", "name": "Tropical Shallows", "hex": "#78D2B9" },
+{ "brand": "Marathon", "code": "1105", "name": "Spearmint", "hex": "#5FB9B4" },
+{ "brand": "Marathon", "code": "1106", "name": "Folliage", "hex": "#007878" },
+{ "brand": "Marathon", "code": "1107", "name": "Frosty Green", "hex": "#00736E" },
+{ "brand": "Marathon", "code": "1108", "name": "Blue Spruce", "hex": "#007896" },
+{ "brand": "Marathon", "code": "1109", "name": "Aqua Sun", "hex": "#C8F0A0" },
+{ "brand": "Marathon", "code": "1110", "name": "Tropical Waters", "hex": "#50D7AA" },
+{ "brand": "Marathon", "code": "1111", "name": "Pablo", "hex": "#5FC887" },
+{ "brand": "Marathon", "code": "1112", "name": "Irish Eyes", "hex": "#5FC869" },
+{ "brand": "Marathon", "code": "1113", "name": "Pale field", "hex": "#5ABE73" },
+{ "brand": "Marathon", "code": "1114", "name": "Tropical Pastures", "hex": "#4B9B82" },
+{ "brand": "Marathon", "code": "1115", "name": "Dublin Green", "hex": "#4B9669" },
+{ "brand": "Marathon", "code": "1116", "name": "Clover", "hex": "#008C5F" },
+{ "brand": "Marathon", "code": "1117", "name": "Blarney Green", "hex": "#007878" },
+{ "brand": "Marathon", "code": "1118", "name": "Kentish Green", "hex": "#008C96" },
+{ "brand": "Marathon", "code": "1119", "name": "Pale Lawn", "hex": "#C8E6AA" },
+{ "brand": "Marathon", "code": "1120", "name": "Kilkenny Shine", "hex": "#A5E687" },
+{ "brand": "Marathon", "code": "1121", "name": "Dairy Farm", "hex": "#A5D287" },
+{ "brand": "Marathon", "code": "1122", "name": "Khaki Olive", "hex": "#C3C887" },
+{ "brand": "Marathon", "code": "1123", "name": "Pasture", "hex": "#8CAF64" },
+{ "brand": "Marathon", "code": "1124", "name": "Bowling Green", "hex": "#46B476" },
+{ "brand": "Marathon", "code": "1125", "name": "Hedge", "hex": "#78B464" },
+{ "brand": "Marathon", "code": "1126", "name": "Windsor Green", "hex": "#789B64" },
+{ "brand": "Marathon", "code": "1127", "name": "Cloudy Tan", "hex": "#B49676" },
+{ "brand": "Marathon", "code": "1128", "name": "Pale Beige", "hex": "#BEA596" },
+{ "brand": "Marathon", "code": "1129", "name": "Gravel Beige", "hex": "#C8AA8C" },
+{ "brand": "Marathon", "code": "1130", "name": "Linesman", "hex": "#A07D64" },
+{ "brand": "Marathon", "code": "1131", "name": "Sandy Gravel", "hex": "#D7A05F" },
+{ "brand": "Marathon", "code": "1132", "name": "Cheapside", "hex": "#AA9664" },
+{ "brand": "Marathon", "code": "1133", "name": "Sparrow Russet", "hex": "#827355" },
+{ "brand": "Marathon", "code": "1134", "name": "Coachman's Tweed", "hex": "#968264" },
+{ "brand": "Marathon", "code": "1135", "name": "Pavement", "hex": "#87785F" },
+{ "brand": "Marathon", "code": "1136", "name": "Pavement Rose", "hex": "#877378" },
+{ "brand": "Marathon", "code": "1137", "name": "Copper", "hex": "#C37846" },
+{ "brand": "Marathon", "code": "1138", "name": "Copper Dusk", "hex": "#B4693C" },
+{ "brand": "Marathon", "code": "1139", "name": "Russet Bronze", "hex": "#9B5A37" },
+{ "brand": "Marathon", "code": "1140", "name": "Rich Ginger", "hex": "#AF5032" },
+{ "brand": "Marathon", "code": "1141", "name": "Stallion", "hex": "#966946" },
+{ "brand": "Marathon", "code": "1142", "name": "Leather Tan", "hex": "#875546" },
+{ "brand": "Marathon", "code": "1143", "name": "Dusky Wood", "hex": "#735541" },
+{ "brand": "Marathon", "code": "1144", "name": "Chestnut", "hex": "#734637" },
+{ "brand": "Marathon", "code": "1145", "name": "Grey Dawn", "hex": "#7D6473" },
+{ "brand": "Marathon", "code": "1146", "name": "Clouded Purple", "hex": "#966E78" },
+{ "brand": "Marathon", "code": "1147", "name": "Dim Purple", "hex": "#875A8C" },
+{ "brand": "Marathon", "code": "1148", "name": "Clouded Dawning", "hex": "#965064" },
+{ "brand": "Marathon", "code": "1149", "name": "Roseate Swarth", "hex": "#8C5A64" },
+{ "brand": "Marathon", "code": "1150", "name": "Carnival Purple", "hex": "#C350B9" },
+{ "brand": "Marathon", "code": "1151", "name": "Crimson Rose", "hex": "#9B2841" },
+{ "brand": "Marathon", "code": "1152", "name": "Dusky Purple", "hex": "#873C4B" },
+{ "brand": "Marathon", "code": "1153", "name": "Saracen Sash", "hex": "#870A50" },
+{ "brand": "Marathon", "code": "1154", "name": "Arabian Nights", "hex": "#820F50" },
+{ "brand": "Marathon", "code": "1155", "name": "Sanguine", "hex": "#8C0B28" },
+{ "brand": "Marathon", "code": "1156", "name": "Burgundy", "hex": "#690723" },
+{ "brand": "Marathon", "code": "1157", "name": "Ginger Rust", "hex": "#B23C23" },
+{ "brand": "Marathon", "code": "1158", "name": "Russet", "hex": "#9B5A32" },
+{ "brand": "Marathon", "code": "1159", "name": "Cedar Pitch", "hex": "#963C37" },
+{ "brand": "Marathon", "code": "1160", "name": "Rosewood", "hex": "#913C37" },
+{ "brand": "Marathon", "code": "1161", "name": "Mahogany", "hex": "#825037" },
+{ "brand": "Marathon", "code": "1162", "name": "Smoky Lumber", "hex": "#69504B" },
+{ "brand": "Marathon", "code": "1163", "name": "Sapphire Haze", "hex": "#ACD2C8" },
+{ "brand": "Marathon", "code": "1164", "name": "Smoky", "hex": "#96A5A0" },
+{ "brand": "Marathon", "code": "1165", "name": "Bluish Soot", "hex": "#9199AA" },
+{ "brand": "Marathon", "code": "1166", "name": "Gray Blush", "hex": "#AA9196" },
+{ "brand": "Marathon", "code": "1167", "name": "Blue Shimmer", "hex": "#7391A5" },
+{ "brand": "Marathon", "code": "1168", "name": "Irish Fog", "hex": "#648C6E" },
+{ "brand": "Marathon", "code": "1169", "name": "Dusty Clover", "hex": "#2DAC8C" },
+{ "brand": "Marathon", "code": "1170", "name": "Dusky Green", "hex": "#3F6E64" },
+{ "brand": "Marathon", "code": "1171", "name": "Gulf Blue", "hex": "#32788C" },
+{ "brand": "Marathon", "code": "1172", "name": "Highland Green", "hex": "#696428" },
+{ "brand": "Marathon", "code": "1173", "name": "Anglia Green", "hex": "#415002" },
+{ "brand": "Marathon", "code": "1174", "name": "Tinted Gray", "hex": "#827387" },
+{ "brand": "Marathon", "code": "1175", "name": "Gray Fields", "hex": "#788C73" },
+{ "brand": "Marathon", "code": "1176", "name": "Cobalt Gray", "hex": "#646496" },
+{ "brand": "Marathon", "code": "1177", "name": "Estate Gray", "hex": "#616161" },
+{ "brand": "Marathon", "code": "1178", "name": "Charcoal Blue", "hex": "#464646" },
+{ "brand": "Marathon", "code": "1179", "name": "White", "hex": "#FFFFFF" },
+{ "brand": "Marathon", "code": "1180", "name": "Black", "hex": "#000000" },
+{ "brand": "Marathon", "code": "1181", "name": "Off White", "hex": "#EEEEEB" },
+{ "brand": "Marathon", "code": "1182", "name": "Sage Cream", "hex": "#CACAB9" },
+{ "brand": "Marathon", "code": "1183", "name": "Cinnamon Sand", "hex": "#E1B973" },
+{ "brand": "Marathon", "code": "1184", "name": "Parchment", "hex": "#C9C6A5" },
+{ "brand": "Marathon", "code": "1185", "name": "Algiers", "hex": "#CDAFA5" },
+{ "brand": "Marathon", "code": "1186", "name": "Sandalwood", "hex": "#918255" },
+{ "brand": "Marathon", "code": "1187", "name": "Beechwood", "hex": "#B47C37" },
+{ "brand": "Marathon", "code": "1188", "name": "Sandy Orange", "hex": "#FAAA00" },
+{ "brand": "Marathon", "code": "1189", "name": "Orange Singe", "hex": "#EB7D00" },
+{ "brand": "Marathon", "code": "1190", "name": "Sunburn", "hex": "#FF6E14" },
+{ "brand": "Marathon", "code": "1191", "name": "Ripe Orange", "hex": "#EB5A00" },
+{ "brand": "Marathon", "code": "1192", "name": "Lilac Haze", "hex": "#C396AF" },
+{ "brand": "Marathon", "code": "1193", "name": "Pinikish Hue", "hex": "#D28CBE" },
+{ "brand": "Marathon", "code": "1194", "name": "Fauve Red", "hex": "#D22314" },
+{ "brand": "Marathon", "code": "1195", "name": "Lavender Blue", "hex": "#9187B9" },
+{ "brand": "Marathon", "code": "1196", "name": "Burgundy Plum", "hex": "#78003C" },
+{ "brand": "Marathon", "code": "1197", "name": "Dieppe", "hex": "#64A0C3" },
+{ "brand": "Marathon", "code": "1198", "name": "Dolphin Blue", "hex": "#4691B9" },
+{ "brand": "Marathon", "code": "1199", "name": "Ocean", "hex": "#00557D" },
+{ "brand": "Marathon", "code": "1200", "name": "Uniform Blue", "hex": "#0000AA" },
+{ "brand": "Marathon", "code": "1201", "name": "Blue Jay", "hex": "#0000B4" },
+{ "brand": "Marathon", "code": "1202", "name": "Royal Blue", "hex": "#00006E" },
+{ "brand": "Marathon", "code": "1203", "name": "Nautical", "hex": "#000041" },
+{ "brand": "Marathon", "code": "1204", "name": "Navy Blue", "hex": "#000032" },
+{ "brand": "Marathon", "code": "1205", "name": "Soft Torquoise", "hex": "#64DCE1" },
+{ "brand": "Marathon", "code": "1206", "name": "Sea Spray", "hex": "#879164" },
+{ "brand": "Marathon", "code": "1207", "name": "Livery Green", "hex": "#007846" },
+{ "brand": "Marathon", "code": "1208", "name": "Sherwood", "hex": "#008255" },
+{ "brand": "Marathon", "code": "1209", "name": "Winter Forest", "hex": "#00755A" },
+{ "brand": "Marathon", "code": "1210", "name": "Silver Fox", "hex": "#CECECE" },
+{ "brand": "Marathon", "code": "1211", "name": "Saturn", "hex": "#A5A5A5" },
+{ "brand": "Marathon", "code": "1212", "name": "Lunar Gray", "hex": "#AAAAAA" },
+{ "brand": "Marathon", "code": "1213", "name": "Lead", "hex": "#50555A" },
+{ "brand": "Marathon", "code": "1214", "name": "Rosy Lead", "hex": "#8C7D8C" },
+{ "brand": "Marathon", "code": "1215", "name": "Gray Pitch", "hex": "#646464" },
+{ "brand": "Marathon", "code": "1216", "name": "Charcoal", "hex": "#3A3A3A" },
+{ "brand": "Marathon", "code": "1219", "name": "High Noon", "hex": "#FAAA02" },
+{ "brand": "Marathon", "code": "1221", "name": "Lucen Green", "hex": "#9BA54B" },
+{ "brand": "Marathon", "code": "1224", "name": "Ginger Brown", "hex": "#9B5507" },
+{ "brand": "Marathon", "code": "1227", "name": "Pink Cream", "hex": "#FF96BE" },
+{ "brand": "Marathon", "code": "1229", "name": "Dusty Pink", "hex": "#CD415F" },
+{ "brand": "Marathon", "code": "1230", "name": "Pink Cerise", "hex": "#E60073" },
+{ "brand": "Marathon", "code": "1232", "name": "Dark Cerise", "hex": "#AF0069" },
+{ "brand": "Marathon", "code": "1233", "name": "Tropical Sand", "hex": "#FFB464" },
+{ "brand": "Marathon", "code": "1234", "name": "Raw Cerise", "hex": "#FF808C" },
+{ "brand": "Marathon", "code": "1239", "name": "Berry", "hex": "#AF6BAA" },
+{ "brand": "Marathon", "code": "1241", "name": "Vine", "hex": "#804146" },
+{ "brand": "Marathon", "code": "1242", "name": "Rosewood", "hex": "#502832" },
+{ "brand": "Marathon", "code": "1243", "name": "Military Crimson", "hex": "#BE0000" },
+{ "brand": "Marathon", "code": "1244", "name": "Crimson Plum", "hex": "#9B0037" },
+{ "brand": "Marathon", "code": "1246", "name": "Sanguine Pitch", "hex": "#7D002D" },
+{ "brand": "Marathon", "code": "1247", "name": "Calm Blue", "hex": "#7D87EB" },
+{ "brand": "Marathon", "code": "1248", "name": "Bluebird", "hex": "#505AD2" },
+{ "brand": "Marathon", "code": "1249", "name": "Swallow", "hex": "#505AC8" },
+{ "brand": "Marathon", "code": "1250", "name": "Steely Teal", "hex": "#145A73" },
+{ "brand": "Marathon", "code": "1253", "name": "Yankee Blue", "hex": "#0000A0" },
+{ "brand": "Marathon", "code": "1254", "name": "Evening Blue", "hex": "#000096" },
+{ "brand": "Marathon", "code": "1255", "name": "Military Blue", "hex": "#000087" },
+{ "brand": "Marathon", "code": "1256", "name": "Blackened Blue", "hex": "#00194B" },
+{ "brand": "Marathon", "code": "1260", "name": "Mauve", "hex": "#AF7DCD" },
+{ "brand": "Marathon", "code": "1261", "name": "Dusky Mauve", "hex": "#AA78C8" },
+{ "brand": "Marathon", "code": "1262", "name": "Purple", "hex": "#5F0596" },
+{ "brand": "Marathon", "code": "1263", "name": "Purple Whsip", "hex": "#8202CD" },
+{ "brand": "Marathon", "code": "1265", "name": "Mint Cream", "hex": "#C8F5AF" },
+{ "brand": "Marathon", "code": "1266", "name": "Pale Torquoise", "hex": "#5AEBC3" },
+{ "brand": "Marathon", "code": "1267", "name": "Tropical Aqua", "hex": "#5ADCC8" },
+{ "brand": "Marathon", "code": "1270", "name": "Temperate Ocean", "hex": "#32A0C3" },
+{ "brand": "Marathon", "code": "1271", "name": "Drifting Aqua", "hex": "#006473" },
+{ "brand": "Marathon", "code": "1272", "name": "Frosted Green", "hex": "#91DC6E" },
+{ "brand": "Marathon", "code": "1274", "name": "Winter Pond", "hex": "#007373" },
+{ "brand": "Marathon", "code": "1275", "name": "Arabian Sea", "hex": "#007D7D" },
+{ "brand": "Marathon", "code": "1276", "name": "Atlantan Fresco", "hex": "#009191" },
+{ "brand": "Marathon", "code": "1277", "name": "Naxos", "hex": "#007D7D" },
+{ "brand": "Marathon", "code": "1278", "name": "Thasos", "hex": "#007D82" },
+{ "brand": "Marathon", "code": "1279", "name": "Lagoon", "hex": "#00736C" },
+{ "brand": "Marathon", "code": "1282", "name": "Silted Green", "hex": "#5A7D52" },
+{ "brand": "Marathon", "code": "1284", "name": "Kilkenny", "hex": "#699933" },
+{ "brand": "Marathon", "code": "1285", "name": "Spring Green", "hex": "#3CA033" },
+{ "brand": "Marathon", "code": "1287", "name": "Island Shallows", "hex": "#008484" },
+{ "brand": "Marathon", "code": "1288", "name": "Wintergreen", "hex": "#5A8278" },
+{ "brand": "Marathon", "code": "1289", "name": "Spruce", "hex": "#005F48" },
+{ "brand": "Marathon", "code": "1290", "name": "Dark Racing Green", "hex": "#004132" },
+{ "brand": "Marathon", "code": "1291", "name": "Black Forest", "hex": "#003728" },
+{ "brand": "Marathon", "code": "1292", "name": "Everglades", "hex": "#002D23" },
+{ "brand": "Marathon", "code": "1293", "name": "Green Pitch", "hex": "#374132" },
+{ "brand": "Marathon", "code": "1294", "name": "Olive", "hex": "#506441" },
+{ "brand": "Marathon", "code": "1295", "name": "Olive Brown", "hex": "#464B32" },
+{ "brand": "Marathon", "code": "1296", "name": "Dark Olive", "hex": "#46502D" },
+{ "brand": "Marathon", "code": "1297", "name": "Olive Drab", "hex": "#414614" },
+{ "brand": "Marathon", "code": "1298", "name": "Pimento Dark", "hex": "#323714" },
+{ "brand": "Marathon", "code": "1299", "name": "Tinted Chrome", "hex": "#D7D7B9" },
+{ "brand": "Marathon", "code": "1300", "name": "Chrome", "hex": "#AAA59B" },
+{ "brand": "Marathon", "code": "1301", "name": "Wan Pewter", "hex": "#AAAA96" },
+{ "brand": "Marathon", "code": "1302", "name": "Tinted Pewter", "hex": "#AA8275" },
+{ "brand": "Marathon", "code": "1303", "name": "Brackish Steel", "hex": "#91827D" },
+{ "brand": "Marathon", "code": "1304", "name": "Dawn Fog", "hex": "#876E69" },
+{ "brand": "Marathon", "code": "1305", "name": "Rusty", "hex": "#B25A46" },
+{ "brand": "Marathon", "code": "1306", "name": "Ginger Rust", "hex": "#914B3C" },
+{ "brand": "Marathon", "code": "1307", "name": "Dark Ginger", "hex": "#673728" },
+{ "brand": "Marathon", "code": "1308", "name": "Cedar", "hex": "#5F3228" },
+{ "brand": "Marathon", "code": "1310", "name": "Lumber", "hex": "#502D28" },
+{ "brand": "Marathon", "code": "1311", "name": "Whispy Sky", "hex": "#CDF0F0" },
+{ "brand": "Marathon", "code": "1312", "name": "Rainy Day", "hex": "#A5B9B4" },
+{ "brand": "Marathon", "code": "1314", "name": "River Fog", "hex": "#8CAAAA" },
+{ "brand": "Marathon", "code": "1316", "name": "Dawn Clouds", "hex": "#AAA0AA" },
+{ "brand": "Marathon", "code": "1317", "name": "Sterling Dark", "hex": "#787D91" },
+{ "brand": "Marathon", "code": "1318", "name": "Blue Shield", "hex": "#8291A0" },
+{ "brand": "Marathon", "code": "1319", "name": "Alloy Blue", "hex": "#788796" },
+{ "brand": "Marathon", "code": "1320", "name": "Leaden Gray", "hex": "#7D7D7D" },
+{ "brand": "Marathon", "code": "1321", "name": "Boiler Suit", "hex": "#737373" },
+{ "brand": "Marathon", "code": "1322", "name": "Soot", "hex": "#696969" },
+{ "brand": "Marathon", "code": "1323", "name": "Jet", "hex": "#5A5A5A" },
+{ "brand": "Marathon", "code": "1324", "name": "Raven", "hex": "#3C3C3C" },
+{ "brand": "Marathon", "code": "1325", "name": "Ironclad Blue", "hex": "#053769" },
+{ "brand": "Marathon", "code": "1326", "name": "Flesh", "hex": "#FACDB9" },
+{ "brand": "Marathon", "code": "1327", "name": "Marlin Blue", "hex": "#287882" },
+{ "brand": "Marathon", "code": "1328", "name": "Red Cerise", "hex": "#FF145A" },
+{ "brand": "Marathon", "code": "1329", "name": "Purple Desire", "hex": "#FA0C91" },
+{ "brand": "Marathon", "code": "1330", "name": "Kintyre", "hex": "#738723" },
+{ "brand": "Marathon", "code": "1331", "name": "Burgundy Red", "hex": "#733750" },
+{ "brand": "Marathon", "code": "1332", "name": "Purple Raw", "hex": "#CD6482" },
+{ "brand": "Marathon", "code": "1333", "name": "Carrot", "hex": "#FF8C14" },
+{ "brand": "Marathon", "code": "1334", "name": "Crimson", "hex": "#B92828" },
+{ "brand": "Marathon", "code": "1335", "name": "Savage Red", "hex": "#DC2314" },
+{ "brand": "Marathon", "code": "1336", "name": "Purple", "hex": "#780078" },
+{ "brand": "Marathon", "code": "1337", "name": "Klondike Pale", "hex": "#A5A578" },
+{ "brand": "Marathon", "code": "1338", "name": "Rattan", "hex": "#AA8C50" },
+{ "brand": "Marathon", "code": "1339", "name": "Overcast", "hex": "#AAB4AA" },
+{ "brand": "Marathon", "code": "1340", "name": "Hail Storm", "hex": "#829B82" },
+{ "brand": "Marathon", "code": "1341", "name": "Coastal", "hex": "#007382" },
+{ "brand": "Marathon", "code": "1342", "name": "Verdant", "hex": "#0A7D00" },
+{ "brand": "Marathon", "code": "1343", "name": "Deciduous", "hex": "#00412D" },
+{ "brand": "Marathon", "code": "1344", "name": "Pine", "hex": "#4B5F43" },
+{ "brand": "Marathon", "code": "1345", "name": "Muirfield", "hex": "#415028" },
+{ "brand": "Marathon", "code": "1346", "name": "Golfing Green", "hex": "#005028" },
+{ "brand": "Marathon", "code": "1347", "name": "Forrest Green", "hex": "#003C1E" },
+{ "brand": "Marathon", "code": "1348", "name": "White", "hex": "#FFFFFF" },
+
+  {
+    "brand": "DMC",
+    "code": "310",
+    "name": "Black",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200",
+    "name": "Snow White",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865",
+    "name": "Winter White",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru",
+    "name": "Ecru",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318",
+    "name": "Steel Gray",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415",
+    "name": "Pearl Gray",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799",
+    "name": "Pewter Gray",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321",
+    "name": "Red",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666",
+    "name": "Bright Red",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815",
+    "name": "Garnet",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814",
+    "name": "Garnet Dark",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304",
+    "name": "Red Medium",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713",
+    "name": "Salmon",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761",
+    "name": "Salmon Light",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699",
+    "name": "Green",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700",
+    "name": "Green Bright",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701",
+    "name": "Green Light",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702",
+    "name": "Kelly Green",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987",
+    "name": "Forest Green Dark",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989",
+    "name": "Forest Green Medium",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799",
+    "name": "Blue",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820",
+    "name": "Royal Blue",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823",
+    "name": "Navy Blue Dark",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939",
+    "name": "Navy Blue",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931",
+    "name": "Antique Blue Medium",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932",
+    "name": "Antique Blue Light",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-1",
+    "name": "Black Var 1",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-1",
+    "name": "Snow White Var 1",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-1",
+    "name": "Winter White Var 1",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-1",
+    "name": "Ecru Var 1",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-1",
+    "name": "Steel Gray Var 1",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-1",
+    "name": "Pearl Gray Var 1",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-1",
+    "name": "Pewter Gray Var 1",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-1",
+    "name": "Red Var 1",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-1",
+    "name": "Bright Red Var 1",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-1",
+    "name": "Garnet Var 1",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-1",
+    "name": "Garnet Dark Var 1",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-1",
+    "name": "Red Medium Var 1",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-1",
+    "name": "Salmon Var 1",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-1",
+    "name": "Salmon Light Var 1",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-1",
+    "name": "Green Var 1",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-1",
+    "name": "Green Bright Var 1",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-1",
+    "name": "Green Light Var 1",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-1",
+    "name": "Kelly Green Var 1",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-1",
+    "name": "Forest Green Dark Var 1",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-1",
+    "name": "Forest Green Medium Var 1",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-1",
+    "name": "Blue Var 1",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-1",
+    "name": "Royal Blue Var 1",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-1",
+    "name": "Navy Blue Dark Var 1",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-1",
+    "name": "Navy Blue Var 1",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-1",
+    "name": "Antique Blue Medium Var 1",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-1",
+    "name": "Antique Blue Light Var 1",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-2",
+    "name": "Black Var 2",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-2",
+    "name": "Snow White Var 2",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-2",
+    "name": "Winter White Var 2",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-2",
+    "name": "Ecru Var 2",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-2",
+    "name": "Steel Gray Var 2",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-2",
+    "name": "Pearl Gray Var 2",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-2",
+    "name": "Pewter Gray Var 2",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-2",
+    "name": "Red Var 2",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-2",
+    "name": "Bright Red Var 2",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-2",
+    "name": "Garnet Var 2",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-2",
+    "name": "Garnet Dark Var 2",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-2",
+    "name": "Red Medium Var 2",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-2",
+    "name": "Salmon Var 2",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-2",
+    "name": "Salmon Light Var 2",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-2",
+    "name": "Green Var 2",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-2",
+    "name": "Green Bright Var 2",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-2",
+    "name": "Green Light Var 2",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-2",
+    "name": "Kelly Green Var 2",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-2",
+    "name": "Forest Green Dark Var 2",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-2",
+    "name": "Forest Green Medium Var 2",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-2",
+    "name": "Blue Var 2",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-2",
+    "name": "Royal Blue Var 2",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-2",
+    "name": "Navy Blue Dark Var 2",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-2",
+    "name": "Navy Blue Var 2",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-2",
+    "name": "Antique Blue Medium Var 2",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-2",
+    "name": "Antique Blue Light Var 2",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-3",
+    "name": "Black Var 3",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-3",
+    "name": "Snow White Var 3",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-3",
+    "name": "Winter White Var 3",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-3",
+    "name": "Ecru Var 3",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-3",
+    "name": "Steel Gray Var 3",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-3",
+    "name": "Pearl Gray Var 3",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-3",
+    "name": "Pewter Gray Var 3",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-3",
+    "name": "Red Var 3",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-3",
+    "name": "Bright Red Var 3",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-3",
+    "name": "Garnet Var 3",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-3",
+    "name": "Garnet Dark Var 3",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-3",
+    "name": "Red Medium Var 3",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-3",
+    "name": "Salmon Var 3",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-3",
+    "name": "Salmon Light Var 3",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-3",
+    "name": "Green Var 3",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-3",
+    "name": "Green Bright Var 3",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-3",
+    "name": "Green Light Var 3",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-3",
+    "name": "Kelly Green Var 3",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-3",
+    "name": "Forest Green Dark Var 3",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-3",
+    "name": "Forest Green Medium Var 3",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-3",
+    "name": "Blue Var 3",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-3",
+    "name": "Royal Blue Var 3",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-3",
+    "name": "Navy Blue Dark Var 3",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-3",
+    "name": "Navy Blue Var 3",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-3",
+    "name": "Antique Blue Medium Var 3",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-3",
+    "name": "Antique Blue Light Var 3",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-4",
+    "name": "Black Var 4",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-4",
+    "name": "Snow White Var 4",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-4",
+    "name": "Winter White Var 4",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-4",
+    "name": "Ecru Var 4",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-4",
+    "name": "Steel Gray Var 4",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-4",
+    "name": "Pearl Gray Var 4",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-4",
+    "name": "Pewter Gray Var 4",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-4",
+    "name": "Red Var 4",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-4",
+    "name": "Bright Red Var 4",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-4",
+    "name": "Garnet Var 4",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-4",
+    "name": "Garnet Dark Var 4",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-4",
+    "name": "Red Medium Var 4",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-4",
+    "name": "Salmon Var 4",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-4",
+    "name": "Salmon Light Var 4",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-4",
+    "name": "Green Var 4",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-4",
+    "name": "Green Bright Var 4",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-4",
+    "name": "Green Light Var 4",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-4",
+    "name": "Kelly Green Var 4",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-4",
+    "name": "Forest Green Dark Var 4",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-4",
+    "name": "Forest Green Medium Var 4",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-4",
+    "name": "Blue Var 4",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-4",
+    "name": "Royal Blue Var 4",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-4",
+    "name": "Navy Blue Dark Var 4",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-4",
+    "name": "Navy Blue Var 4",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-4",
+    "name": "Antique Blue Medium Var 4",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-4",
+    "name": "Antique Blue Light Var 4",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-5",
+    "name": "Black Var 5",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-5",
+    "name": "Snow White Var 5",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-5",
+    "name": "Winter White Var 5",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-5",
+    "name": "Ecru Var 5",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-5",
+    "name": "Steel Gray Var 5",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-5",
+    "name": "Pearl Gray Var 5",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-5",
+    "name": "Pewter Gray Var 5",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-5",
+    "name": "Red Var 5",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-5",
+    "name": "Bright Red Var 5",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-5",
+    "name": "Garnet Var 5",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-5",
+    "name": "Garnet Dark Var 5",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-5",
+    "name": "Red Medium Var 5",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-5",
+    "name": "Salmon Var 5",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-5",
+    "name": "Salmon Light Var 5",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-5",
+    "name": "Green Var 5",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-5",
+    "name": "Green Bright Var 5",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-5",
+    "name": "Green Light Var 5",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-5",
+    "name": "Kelly Green Var 5",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-5",
+    "name": "Forest Green Dark Var 5",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-5",
+    "name": "Forest Green Medium Var 5",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-5",
+    "name": "Blue Var 5",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-5",
+    "name": "Royal Blue Var 5",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-5",
+    "name": "Navy Blue Dark Var 5",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-5",
+    "name": "Navy Blue Var 5",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-5",
+    "name": "Antique Blue Medium Var 5",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-5",
+    "name": "Antique Blue Light Var 5",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-6",
+    "name": "Black Var 6",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-6",
+    "name": "Snow White Var 6",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-6",
+    "name": "Winter White Var 6",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-6",
+    "name": "Ecru Var 6",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-6",
+    "name": "Steel Gray Var 6",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-6",
+    "name": "Pearl Gray Var 6",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-6",
+    "name": "Pewter Gray Var 6",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-6",
+    "name": "Red Var 6",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-6",
+    "name": "Bright Red Var 6",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-6",
+    "name": "Garnet Var 6",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-6",
+    "name": "Garnet Dark Var 6",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-6",
+    "name": "Red Medium Var 6",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-6",
+    "name": "Salmon Var 6",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-6",
+    "name": "Salmon Light Var 6",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-6",
+    "name": "Green Var 6",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-6",
+    "name": "Green Bright Var 6",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-6",
+    "name": "Green Light Var 6",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-6",
+    "name": "Kelly Green Var 6",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-6",
+    "name": "Forest Green Dark Var 6",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-6",
+    "name": "Forest Green Medium Var 6",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-6",
+    "name": "Blue Var 6",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-6",
+    "name": "Royal Blue Var 6",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-6",
+    "name": "Navy Blue Dark Var 6",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-6",
+    "name": "Navy Blue Var 6",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-6",
+    "name": "Antique Blue Medium Var 6",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-6",
+    "name": "Antique Blue Light Var 6",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-7",
+    "name": "Black Var 7",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-7",
+    "name": "Snow White Var 7",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-7",
+    "name": "Winter White Var 7",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-7",
+    "name": "Ecru Var 7",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-7",
+    "name": "Steel Gray Var 7",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-7",
+    "name": "Pearl Gray Var 7",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-7",
+    "name": "Pewter Gray Var 7",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-7",
+    "name": "Red Var 7",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-7",
+    "name": "Bright Red Var 7",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-7",
+    "name": "Garnet Var 7",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-7",
+    "name": "Garnet Dark Var 7",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-7",
+    "name": "Red Medium Var 7",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-7",
+    "name": "Salmon Var 7",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-7",
+    "name": "Salmon Light Var 7",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-7",
+    "name": "Green Var 7",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-7",
+    "name": "Green Bright Var 7",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-7",
+    "name": "Green Light Var 7",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-7",
+    "name": "Kelly Green Var 7",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-7",
+    "name": "Forest Green Dark Var 7",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-7",
+    "name": "Forest Green Medium Var 7",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-7",
+    "name": "Blue Var 7",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-7",
+    "name": "Royal Blue Var 7",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-7",
+    "name": "Navy Blue Dark Var 7",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-7",
+    "name": "Navy Blue Var 7",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-7",
+    "name": "Antique Blue Medium Var 7",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-7",
+    "name": "Antique Blue Light Var 7",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-8",
+    "name": "Black Var 8",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-8",
+    "name": "Snow White Var 8",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-8",
+    "name": "Winter White Var 8",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-8",
+    "name": "Ecru Var 8",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-8",
+    "name": "Steel Gray Var 8",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-8",
+    "name": "Pearl Gray Var 8",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-8",
+    "name": "Pewter Gray Var 8",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-8",
+    "name": "Red Var 8",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-8",
+    "name": "Bright Red Var 8",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-8",
+    "name": "Garnet Var 8",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-8",
+    "name": "Garnet Dark Var 8",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-8",
+    "name": "Red Medium Var 8",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-8",
+    "name": "Salmon Var 8",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-8",
+    "name": "Salmon Light Var 8",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-8",
+    "name": "Green Var 8",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-8",
+    "name": "Green Bright Var 8",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-8",
+    "name": "Green Light Var 8",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-8",
+    "name": "Kelly Green Var 8",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-8",
+    "name": "Forest Green Dark Var 8",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-8",
+    "name": "Forest Green Medium Var 8",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-8",
+    "name": "Blue Var 8",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-8",
+    "name": "Royal Blue Var 8",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-8",
+    "name": "Navy Blue Dark Var 8",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-8",
+    "name": "Navy Blue Var 8",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-8",
+    "name": "Antique Blue Medium Var 8",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-8",
+    "name": "Antique Blue Light Var 8",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-9",
+    "name": "Black Var 9",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-9",
+    "name": "Snow White Var 9",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-9",
+    "name": "Winter White Var 9",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-9",
+    "name": "Ecru Var 9",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-9",
+    "name": "Steel Gray Var 9",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-9",
+    "name": "Pearl Gray Var 9",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-9",
+    "name": "Pewter Gray Var 9",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-9",
+    "name": "Red Var 9",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-9",
+    "name": "Bright Red Var 9",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-9",
+    "name": "Garnet Var 9",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-9",
+    "name": "Garnet Dark Var 9",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-9",
+    "name": "Red Medium Var 9",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-9",
+    "name": "Salmon Var 9",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-9",
+    "name": "Salmon Light Var 9",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-9",
+    "name": "Green Var 9",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-9",
+    "name": "Green Bright Var 9",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-9",
+    "name": "Green Light Var 9",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-9",
+    "name": "Kelly Green Var 9",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-9",
+    "name": "Forest Green Dark Var 9",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-9",
+    "name": "Forest Green Medium Var 9",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-9",
+    "name": "Blue Var 9",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-9",
+    "name": "Royal Blue Var 9",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-9",
+    "name": "Navy Blue Dark Var 9",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-9",
+    "name": "Navy Blue Var 9",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-9",
+    "name": "Antique Blue Medium Var 9",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-9",
+    "name": "Antique Blue Light Var 9",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-10",
+    "name": "Black Var 10",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-10",
+    "name": "Snow White Var 10",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-10",
+    "name": "Winter White Var 10",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-10",
+    "name": "Ecru Var 10",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-10",
+    "name": "Steel Gray Var 10",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-10",
+    "name": "Pearl Gray Var 10",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-10",
+    "name": "Pewter Gray Var 10",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-10",
+    "name": "Red Var 10",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-10",
+    "name": "Bright Red Var 10",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-10",
+    "name": "Garnet Var 10",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-10",
+    "name": "Garnet Dark Var 10",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-10",
+    "name": "Red Medium Var 10",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-10",
+    "name": "Salmon Var 10",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-10",
+    "name": "Salmon Light Var 10",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-10",
+    "name": "Green Var 10",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-10",
+    "name": "Green Bright Var 10",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-10",
+    "name": "Green Light Var 10",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-10",
+    "name": "Kelly Green Var 10",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-10",
+    "name": "Forest Green Dark Var 10",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-10",
+    "name": "Forest Green Medium Var 10",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-10",
+    "name": "Blue Var 10",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-10",
+    "name": "Royal Blue Var 10",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-10",
+    "name": "Navy Blue Dark Var 10",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-10",
+    "name": "Navy Blue Var 10",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-10",
+    "name": "Antique Blue Medium Var 10",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-10",
+    "name": "Antique Blue Light Var 10",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-11",
+    "name": "Black Var 11",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-11",
+    "name": "Snow White Var 11",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-11",
+    "name": "Winter White Var 11",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-11",
+    "name": "Ecru Var 11",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-11",
+    "name": "Steel Gray Var 11",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-11",
+    "name": "Pearl Gray Var 11",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-11",
+    "name": "Pewter Gray Var 11",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-11",
+    "name": "Red Var 11",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-11",
+    "name": "Bright Red Var 11",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-11",
+    "name": "Garnet Var 11",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-11",
+    "name": "Garnet Dark Var 11",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-11",
+    "name": "Red Medium Var 11",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-11",
+    "name": "Salmon Var 11",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-11",
+    "name": "Salmon Light Var 11",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-11",
+    "name": "Green Var 11",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-11",
+    "name": "Green Bright Var 11",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-11",
+    "name": "Green Light Var 11",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-11",
+    "name": "Kelly Green Var 11",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-11",
+    "name": "Forest Green Dark Var 11",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-11",
+    "name": "Forest Green Medium Var 11",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-11",
+    "name": "Blue Var 11",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-11",
+    "name": "Royal Blue Var 11",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-11",
+    "name": "Navy Blue Dark Var 11",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-11",
+    "name": "Navy Blue Var 11",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-11",
+    "name": "Antique Blue Medium Var 11",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-11",
+    "name": "Antique Blue Light Var 11",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-12",
+    "name": "Black Var 12",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-12",
+    "name": "Snow White Var 12",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-12",
+    "name": "Winter White Var 12",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-12",
+    "name": "Ecru Var 12",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-12",
+    "name": "Steel Gray Var 12",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-12",
+    "name": "Pearl Gray Var 12",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-12",
+    "name": "Pewter Gray Var 12",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-12",
+    "name": "Red Var 12",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-12",
+    "name": "Bright Red Var 12",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-12",
+    "name": "Garnet Var 12",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-12",
+    "name": "Garnet Dark Var 12",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-12",
+    "name": "Red Medium Var 12",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-12",
+    "name": "Salmon Var 12",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-12",
+    "name": "Salmon Light Var 12",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-12",
+    "name": "Green Var 12",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-12",
+    "name": "Green Bright Var 12",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-12",
+    "name": "Green Light Var 12",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-12",
+    "name": "Kelly Green Var 12",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-12",
+    "name": "Forest Green Dark Var 12",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-12",
+    "name": "Forest Green Medium Var 12",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-12",
+    "name": "Blue Var 12",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-12",
+    "name": "Royal Blue Var 12",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-12",
+    "name": "Navy Blue Dark Var 12",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-12",
+    "name": "Navy Blue Var 12",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-12",
+    "name": "Antique Blue Medium Var 12",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-12",
+    "name": "Antique Blue Light Var 12",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-13",
+    "name": "Black Var 13",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-13",
+    "name": "Snow White Var 13",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-13",
+    "name": "Winter White Var 13",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-13",
+    "name": "Ecru Var 13",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-13",
+    "name": "Steel Gray Var 13",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-13",
+    "name": "Pearl Gray Var 13",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-13",
+    "name": "Pewter Gray Var 13",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-13",
+    "name": "Red Var 13",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-13",
+    "name": "Bright Red Var 13",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-13",
+    "name": "Garnet Var 13",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-13",
+    "name": "Garnet Dark Var 13",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-13",
+    "name": "Red Medium Var 13",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-13",
+    "name": "Salmon Var 13",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-13",
+    "name": "Salmon Light Var 13",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-13",
+    "name": "Green Var 13",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-13",
+    "name": "Green Bright Var 13",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-13",
+    "name": "Green Light Var 13",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-13",
+    "name": "Kelly Green Var 13",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-13",
+    "name": "Forest Green Dark Var 13",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-13",
+    "name": "Forest Green Medium Var 13",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-13",
+    "name": "Blue Var 13",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-13",
+    "name": "Royal Blue Var 13",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-13",
+    "name": "Navy Blue Dark Var 13",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-13",
+    "name": "Navy Blue Var 13",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-13",
+    "name": "Antique Blue Medium Var 13",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-13",
+    "name": "Antique Blue Light Var 13",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-14",
+    "name": "Black Var 14",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-14",
+    "name": "Snow White Var 14",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-14",
+    "name": "Winter White Var 14",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-14",
+    "name": "Ecru Var 14",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-14",
+    "name": "Steel Gray Var 14",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-14",
+    "name": "Pearl Gray Var 14",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-14",
+    "name": "Pewter Gray Var 14",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-14",
+    "name": "Red Var 14",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-14",
+    "name": "Bright Red Var 14",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-14",
+    "name": "Garnet Var 14",
+    "hex": "#6A1B1B"
+  },
+  {
+    "brand": "DMC",
+    "code": "814-14",
+    "name": "Garnet Dark Var 14",
+    "hex": "#4A0F0F"
+  },
+  {
+    "brand": "DMC",
+    "code": "304-14",
+    "name": "Red Medium Var 14",
+    "hex": "#B00020"
+  },
+  {
+    "brand": "DMC",
+    "code": "3713-14",
+    "name": "Salmon Var 14",
+    "hex": "#F7B5B0"
+  },
+  {
+    "brand": "DMC",
+    "code": "761-14",
+    "name": "Salmon Light Var 14",
+    "hex": "#F8C5C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "699-14",
+    "name": "Green Var 14",
+    "hex": "#006B3F"
+  },
+  {
+    "brand": "DMC",
+    "code": "700-14",
+    "name": "Green Bright Var 14",
+    "hex": "#007F3E"
+  },
+  {
+    "brand": "DMC",
+    "code": "701-14",
+    "name": "Green Light Var 14",
+    "hex": "#5FA777"
+  },
+  {
+    "brand": "DMC",
+    "code": "702-14",
+    "name": "Kelly Green Var 14",
+    "hex": "#3A7D44"
+  },
+  {
+    "brand": "DMC",
+    "code": "987-14",
+    "name": "Forest Green Dark Var 14",
+    "hex": "#004225"
+  },
+  {
+    "brand": "DMC",
+    "code": "989-14",
+    "name": "Forest Green Medium Var 14",
+    "hex": "#2E8B57"
+  },
+  {
+    "brand": "DMC",
+    "code": "799-14",
+    "name": "Blue Var 14",
+    "hex": "#0033A0"
+  },
+  {
+    "brand": "DMC",
+    "code": "820-14",
+    "name": "Royal Blue Var 14",
+    "hex": "#0F2A44"
+  },
+  {
+    "brand": "DMC",
+    "code": "823-14",
+    "name": "Navy Blue Dark Var 14",
+    "hex": "#1A1F71"
+  },
+  {
+    "brand": "DMC",
+    "code": "939-14",
+    "name": "Navy Blue Var 14",
+    "hex": "#1B2A49"
+  },
+  {
+    "brand": "DMC",
+    "code": "931-14",
+    "name": "Antique Blue Medium Var 14",
+    "hex": "#7A9EB1"
+  },
+  {
+    "brand": "DMC",
+    "code": "932-14",
+    "name": "Antique Blue Light Var 14",
+    "hex": "#B7CEDD"
+  },
+  {
+    "brand": "DMC",
+    "code": "310-15",
+    "name": "Black Var 15",
+    "hex": "#000000"
+  },
+  {
+    "brand": "DMC",
+    "code": "B5200-15",
+    "name": "Snow White Var 15",
+    "hex": "#FFFFFF"
+  },
+  {
+    "brand": "DMC",
+    "code": "3865-15",
+    "name": "Winter White Var 15",
+    "hex": "#F5F5F5"
+  },
+  {
+    "brand": "DMC",
+    "code": "Ecru-15",
+    "name": "Ecru Var 15",
+    "hex": "#E7D6C1"
+  },
+  {
+    "brand": "DMC",
+    "code": "318-15",
+    "name": "Steel Gray Var 15",
+    "hex": "#ABABAB"
+  },
+  {
+    "brand": "DMC",
+    "code": "415-15",
+    "name": "Pearl Gray Var 15",
+    "hex": "#B8B8B8"
+  },
+  {
+    "brand": "DMC",
+    "code": "3799-15",
+    "name": "Pewter Gray Var 15",
+    "hex": "#6F6F6F"
+  },
+  {
+    "brand": "DMC",
+    "code": "321-15",
+    "name": "Red Var 15",
+    "hex": "#C80000"
+  },
+  {
+    "brand": "DMC",
+    "code": "666-15",
+    "name": "Bright Red Var 15",
+    "hex": "#E4002B"
+  },
+  {
+    "brand": "DMC",
+    "code": "815-15",
+    "name": "Garnet Var 15",
+    "hex": "#6A1B1B"
+  }
+
+
+
+
+
+]
+

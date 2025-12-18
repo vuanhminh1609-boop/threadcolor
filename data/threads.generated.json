@@ -1,0 +1,478 @@
+[
+  {
+    "brand": "Isacord 30",
+    "code": "0010",
+    "name": "Parchment",
+    "hex": "#FFFFFA",
+    "rgb": {
+      "r": 255,
+      "g": 255,
+      "b": 250
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 2
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0015",
+    "name": "White",
+    "hex": "#FFFFFF",
+    "rgb": {
+      "r": 255,
+      "g": 255,
+      "b": 255
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 1
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0020",
+    "name": "Black",
+    "hex": "#000000",
+    "rgb": {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 28
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0111",
+    "name": "Dark Grey",
+    "hex": "#7F7F7F",
+    "rgb": {
+      "r": 127,
+      "g": 127,
+      "b": 127
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 26
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0124",
+    "name": "Light Grey Brown",
+    "hex": "#CCCCB9",
+    "rgb": {
+      "r": 204,
+      "g": 204,
+      "b": 185
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 25
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0142",
+    "name": "Silver Grey",
+    "hex": "#B2B2B2",
+    "rgb": {
+      "r": 178,
+      "g": 178,
+      "b": 178
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 27
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0600",
+    "name": "Yellow",
+    "hex": "#FFFF00",
+    "rgb": {
+      "r": 255,
+      "g": 255,
+      "b": 0
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 3
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0702",
+    "name": "Mid Gold",
+    "hex": "#FFE64B",
+    "rgb": {
+      "r": 255,
+      "g": 230,
+      "b": 75
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 4
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0704",
+    "name": "Darker Gold",
+    "hex": "#F5F066",
+    "rgb": {
+      "r": 245,
+      "g": 240,
+      "b": 102
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 5
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0761",
+    "name": "Light Grey Brown",
+    "hex": "#F5EBCC",
+    "rgb": {
+      "r": 245,
+      "g": 235,
+      "b": 204
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 22
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0800",
+    "name": "Orange Gold",
+    "hex": "#FFF500",
+    "rgb": {
+      "r": 255,
+      "g": 245,
+      "b": 0
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 6
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "0851",
+    "name": "Gold",
+    "hex": "#F0CC91",
+    "rgb": {
+      "r": 240,
+      "g": 204,
+      "b": 145
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 24
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1304",
+    "name": "Orange",
+    "hex": "#FF7D00",
+    "rgb": {
+      "r": 255,
+      "g": 125,
+      "b": 0
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 9
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1346",
+    "name": "Night Brown",
+    "hex": "#875A2D",
+    "rgb": {
+      "r": 135,
+      "g": 90,
+      "b": 45
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 8
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1355",
+    "name": "Dark Brown",
+    "hex": "#996633",
+    "rgb": {
+      "r": 153,
+      "g": 102,
+      "b": 51
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 7
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1703",
+    "name": "Red",
+    "hex": "#FF0000",
+    "rgb": {
+      "r": 255,
+      "g": 0,
+      "b": 0
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 10
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1876",
+    "name": "Brownish Green",
+    "hex": "#7D5A32",
+    "rgb": {
+      "r": 125,
+      "g": 90,
+      "b": 50
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 23
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1902",
+    "name": "Dark Red",
+    "hex": "#CC0000",
+    "rgb": {
+      "r": 204,
+      "g": 0,
+      "b": 0
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 11
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1912",
+    "name": "Plum",
+    "hex": "#AF004B",
+    "rgb": {
+      "r": 175,
+      "g": 0,
+      "b": 75
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 13
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "1913",
+    "name": "Brown Fox",
+    "hex": "#CC3300",
+    "rgb": {
+      "r": 204,
+      "g": 51,
+      "b": 0
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 12
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "2123",
+    "name": "Dark Plum",
+    "hex": "#870033",
+    "rgb": {
+      "r": 135,
+      "g": 0,
+      "b": 51
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 14
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "2241",
+    "name": "Plum Pink",
+    "hex": "#CC8C96",
+    "rgb": {
+      "r": 204,
+      "g": 140,
+      "b": 150
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 15
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "2250",
+    "name": "Mauve Pink",
+    "hex": "#FFCCD7",
+    "rgb": {
+      "r": 255,
+      "g": 204,
+      "b": 215
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 16
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "3355",
+    "name": "Navy",
+    "hex": "#000066",
+    "rgb": {
+      "r": 0,
+      "g": 0,
+      "b": 102
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 18
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "3543",
+    "name": "Marine Blue",
+    "hex": "#3300CC",
+    "rgb": {
+      "r": 51,
+      "g": 0,
+      "b": 204
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 17
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "3820",
+    "name": "Medium Blue",
+    "hex": "#96BEE6",
+    "rgb": {
+      "r": 150,
+      "g": 190,
+      "b": 230
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 19
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "5326",
+    "name": "Dark Leaf Green",
+    "hex": "#007350",
+    "rgb": {
+      "r": 0,
+      "g": 115,
+      "b": 80
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 21
+    }
+  },
+  {
+    "brand": "Isacord 30",
+    "code": "5422",
+    "name": "Teal Green",
+    "hex": "#3CAF78",
+    "rgb": {
+      "r": 60,
+      "g": 175,
+      "b": 120
+    },
+    "thickness": "B",
+    "source": {
+      "type": "TCH",
+      "file": "Ackerman Isacord 30.tch",
+      "line": 20
+    }
+  }
+]
