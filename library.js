@@ -14,18 +14,24 @@ import {
 
 export async function saveSearch(db, uid, payload) {
   if (!db || !uid || !payload) throw new Error("Missing db/uid/payload");
+  console.info("[saveSearch] projectId", db?.app?.options?.projectId);
+  console.info("[saveSearch] uid", uid, "path", collection(db, "users", uid, "savedSearches").path);
   const ref = collection(db, "users", uid, "savedSearches");
-  return addDoc(ref, { ...payload, createdAt: serverTimestamp() });
+  const docRef = await addDoc(ref, { ...payload, createdAt: serverTimestamp() });
+  console.info("[saveSearch] saved doc id", docRef.id);
+  return docRef;
 }
 
 export async function listSavedSearches(db, uid, limitN = 50) {
   if (!db || !uid) throw new Error("Missing db/uid");
+  console.info("[listSavedSearches] uid", uid, "path", collection(db, "users", uid, "savedSearches").path);
   const ref = collection(db, "users", uid, "savedSearches");
   let docs = [];
   try {
     const q = query(ref, orderBy("createdAt", "desc"), fsLimit(limitN));
     const snap = await getDocs(q);
     docs = snap.docs;
+    console.info("[listSavedSearches] count", snap.size);
   } catch (err) {
     console.error("listSavedSearches orderBy fallback", err);
     const snap = await getDocs(ref);
@@ -35,6 +41,8 @@ export async function listSavedSearches(db, uid, limitN = 50) {
       const tb = b.data()?.createdAt?.toMillis ? b.data().createdAt.toMillis() : 0;
       return tb - ta;
     });
+    console.info("[listSavedSearches] count (fallback)", docs.length);
+    throw err;
   }
 
   const items = [];

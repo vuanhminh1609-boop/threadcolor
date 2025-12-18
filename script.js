@@ -755,14 +755,14 @@ async function handleSaveCurrentEnhanced(saveBtn) {
       }))
     };
     const docRef = await saveSearch(api.db, user.uid, payload);
-    console.info("[save] saved doc id:", docRef?.id);
+    console.info("[save] saved doc id", docRef?.id);
     if (saveBtn) {
       saveBtn.textContent = "Saved ✓";
       setTimeout(() => resetSaveBtn("Save"), 1500);
     }
-    showToast("Đã lưu vào My Library");
+    showToast("Saved ✓");
     if (libraryModal && !libraryModal.classList.contains("hidden")) {
-      loadLibraryList();
+      await loadLibraryList();
     }
   } catch (err) {
     console.error("[save] failed", err);
@@ -1025,7 +1025,7 @@ async function handleOpenSaved(id) {
     currentDeltaThreshold = deltaVal;
     if (deltaSlider) deltaSlider.value = deltaVal;
 
- deltaValueEls.forEach(el => el.textContent = `~ ${currentDeltaThreshold.toFixed(1)}`);
+ deltaValueEls.forEach(el => el.textContent = `≈ ${currentDeltaThreshold.toFixed(1)}`);
     const brands = Array.isArray(data.selectedBrands) ? data.selectedBrands : [];
     document.querySelectorAll(".brand-filter").forEach(cb => {
       if (!brands.length) return;
@@ -1411,7 +1411,7 @@ btnFindNearest.addEventListener("click", () => {
 
 deltaSlider.addEventListener("input", () => {
   currentDeltaThreshold = parseFloat(deltaSlider.value);
-  deltaValueEls.forEach(el => el.textContent = `~ ${currentDeltaThreshold.toFixed(1)}`);
+  deltaValueEls.forEach(el => el.textContent = `≈ ${currentDeltaThreshold.toFixed(1)}`);
   if (!lastResults || !lastChosenHex) return;
   const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
   showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
