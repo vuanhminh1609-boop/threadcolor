@@ -554,8 +554,7 @@ function showGroupedResults(groups, chosenHex) {
   resultBox.innerHTML = `
     <div class="flex items-center gap-3 mb-6">
       <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
-<<<<<<< HEAD
-      <div class="font-semibold">Màu dã ch?n</div>
+      <div class="font-semibold">Màu dã chọn</div>
     </div>
     ${groups.map((group, i) => `
       <section class="mb-8">
