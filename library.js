@@ -17,7 +17,7 @@ export async function saveSearch(db, uid, payload) {
   return addDoc(ref, { ...payload, createdAt: serverTimestamp() });
 }
 
-export async function listSavedSearches(db, uid, limitN = 20) {
+export async function listSavedSearches(db, uid, limitN = 50) {
   if (!db || !uid) throw new Error("Missing db/uid");
   const ref = collection(db, "users", uid, "savedSearches");
   const q = query(ref, orderBy("createdAt", "desc"), fsLimit(limitN));

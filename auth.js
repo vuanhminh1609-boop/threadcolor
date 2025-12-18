@@ -127,6 +127,7 @@ try {
     limit,
     deleteDoc,
   };
+  window.dispatchEvent(new Event("firebase-auth-ready"));
 } catch (err) {
   console.error("Firebase init error", err);
   window.firebaseAuth = { initError: err };
