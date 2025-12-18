@@ -157,7 +157,7 @@ function formatFirestoreError(err, fallback = "Có lỗi Firestore") {
 
 function populateContributeBrands(brands = getUniqueBrands(threads)) {
   if (!contributeBrandSelect) return;
-  contributeBrandSelect.innerHTML = '<option value="">Ch?n brand</option>';
+  contributeBrandSelect.innerHTML = '<option value="">Chọn hãng chỉ</option>';
   brands.forEach(b => {
     const opt = document.createElement("option");
     opt.value = b;
@@ -215,9 +215,7 @@ async function loadPendingSubmissionsUI() {
 function renderVerifyList() {
   if (!verifyList) return;
   if (!pendingSubmissions.length) {
-
     verifyList.innerHTML = "<div class='text-gray-500'>Không có submissions ch?.</div>";
-
     return;
   }
   verifyList.innerHTML = pendingSubmissions.map(item => {
@@ -272,6 +270,7 @@ async function fetchVerifiedThreads() {
   if (!authApi?.db || typeof authApi.getDocs !== "function") return [];
   try {
     const ref = authApi.collection(authApi.db, "verifiedThreads");
+    console.info("[fetchVerifiedThreads] path", ref.path || "verifiedThreads");
     const snap = await authApi.getDocs(ref);
     const raws = [];
     snap.forEach(d => {
@@ -285,6 +284,10 @@ async function fetchVerifiedThreads() {
     });
     return normalizeAndDedupeThreads(raws, { source: { type: "CROWD_VERIFIED" }, confidence: 0.85 });
   } catch (err) {
+    if (isPermissionDenied(err)) {
+      console.info("[fetchVerifiedThreads] permission denied, skip verified threads");
+      return [];
+    }
     console.error(err);
     return [];
   }
@@ -419,6 +422,10 @@ const authApi = new Proxy({}, {
 function getAuthInitError() {
   return getAuthApi()?.initError || null;
 }
+function isPermissionDenied(err) {
+  const msg = String(err?.message || "");
+  return err?.code === "permission-denied" || msg.includes("Missing or insufficient permissions");
+}
 let hasBoundAuth = false;
 function bindAuth() {
   const err = getAuthInitError();
@@ -531,12 +538,16 @@ function renderColorCard(t, chosenHex) {
         <div class="flex-1 text-sm">
           <div class="font-semibold">${t.brand || ""} ${t.code || ""}</div>
           <div class="text-gray-600">${t.name || ""}</div>
+<<<<<<< HEAD
           <div class="text-xs text-gray-500">ΔE ${deltaText}</div>
+=======
+          <div class="text-xs text-gray-500">DE ${deltaText}</div>
+>>>>>>> 0605814 (Fix library save + UI feedback)
         </div>
       </div>
       <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
         <div class="w-4 h-4 rounded border" style="background:${chosenHex}"></div>
-        <span>so v?i</span>
+        <span>so với</span>
         <div class="w-4 h-4 rounded border" style="background:${t.hex}"></div>
       </div>
       <div class="mt-3 flex justify-end">
@@ -640,8 +651,6 @@ function populateInspector(data) {
   inspectorCode.textContent = code || "�";
   inspectorName.textContent = name || "�";
   inspectorDelta.textContent = delta ? `ΔE ${delta}` : "�";
-
-
   drawerTitle.textContent = "Color Inspector";
   drawer.dataset.hex = normalizedHex;
 }
@@ -690,10 +699,79 @@ function handleResultContainerClick(e) {
   if (saveBtn) {
     e.preventDefault();
     e.stopPropagation();
-    handleSaveCurrent();
+    handleSaveCurrentEnhanced(saveBtn);
     return;
   }
   handleResultClick(e);
+}
+
+async function handleSaveCurrentEnhanced(saveBtn) {
+  const initErr = getAuthInitError();
+  if (initErr) {
+    const msg = `${initErr?.name || "Firebase"}: ${initErr?.message || "Loi khoi tao"}`;
+    console.error(initErr);
+    showToast(msg);
+    showAuthError(msg);
+    return false;
+  }
+  if (!ensureAuthReady()) return;
+  const api = getAuthApi();
+  const user = api?.auth?.currentUser || currentUser;
+  if (!user) {
+    showAuthError("Login de luu");
+    accountBtn?.click();
+    return;
+  }
+  const card = saveBtn?.closest(".result-item");
+  const cardHex = normalizeHex(card?.dataset?.hex || lastChosenHex);
+  const cardBrand = card?.dataset?.brand || "";
+  const cardCode = card?.dataset?.code || "";
+  const cardName = card?.dataset?.name || "";
+  if (!currentRendered.length || !cardHex) {
+    showToast("Khong co du lieu de luu");
+    return;
+  }
+  console.info("[save] card data", { hex: cardHex, brand: cardBrand, code: cardCode, name: cardName });
+  showToast("Saving...");
+  const resetSaveBtn = (text = "Save") => {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = text;
+    }
+  };
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+  }
+  try {
+    const payload = {
+      inputHex: cardHex,
+      selectedBrands: getSelectedBrands(),
+      deltaThreshold: currentDeltaThreshold,
+      results: currentRendered.slice(0, 20).map(t => ({
+        brand: t.brand,
+        code: t.code,
+        name: t.name,
+        hex: t.hex,
+        delta: t.delta
+      }))
+    };
+    const docRef = await saveSearch(api.db, user.uid, payload);
+    console.info("[save] saved doc id:", docRef?.id);
+    if (saveBtn) {
+      saveBtn.textContent = "Saved ✓";
+      setTimeout(() => resetSaveBtn("Save"), 1500);
+    }
+    showToast("Đã lưu vào My Library");
+    if (libraryModal && !libraryModal.classList.contains("hidden")) {
+      loadLibraryList();
+    }
+  } catch (err) {
+    console.error("[save] failed", err);
+    const friendly = formatFirestoreError(err, "Luu that bai");
+    showToast(friendly);
+    resetSaveBtn("Save");
+  }
 }
 
 function updateUrlWithColor(hex) {
@@ -780,6 +858,8 @@ function closeAuthModal() {
   showAuthError("");
 }
 
+let lastAdminUid = null;
+let lastAdminValue = null;
 async function updateUserUI(user) {
   currentUser = user;
   const loggedIn = !!user;
@@ -792,14 +872,30 @@ async function updateUserUI(user) {
   }
   if (user) closeAuthModal();
   if (user && authApi?.db) {
+    if (lastAdminUid === user.uid && lastAdminValue !== null) {
+      isAdminUser = lastAdminValue;
+      return;
+    }
     try {
-      isAdminUser = await isAdmin(authApi.db, user.uid);
+      const val = await isAdmin(authApi.db, user.uid);
+      isAdminUser = !!val;
+      lastAdminUid = user.uid;
+      lastAdminValue = isAdminUser;
     } catch (err) {
-      console.error(err);
-      isAdminUser = false;
+      if (isPermissionDenied(err)) {
+        console.info("[isAdmin] permission denied -> treat as non-admin");
+        isAdminUser = false;
+        lastAdminUid = user.uid;
+        lastAdminValue = false;
+      } else {
+        console.error(err);
+        isAdminUser = false;
+      }
     }
   } else {
     isAdminUser = false;
+    lastAdminUid = null;
+    lastAdminValue = null;
   }
 }
 
@@ -854,30 +950,38 @@ async function loadLibraryList() {
 }
 
 //======================= SAVE CURRENT =======================
-async function handleSaveCurrent() {
+async function handleSaveCurrent(saveBtn) {
   const initErr = getAuthInitError();
   if (initErr) {
+    const msg = `${initErr?.name || "Firebase"}: ${initErr?.message || "Lỗi khởi tạo"}`;
     console.error(initErr);
-    showToast(`${initErr.name || "Firebase"}: ${initErr.message || "Loi"}`);
-    return;
+    showToast(msg);
+    showAuthError(msg);
+    return false;
   }
   if (!ensureAuthReady()) return;
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    showAuthError("Login d? luu");
+    showAuthError("Login de luu");
     accountBtn?.click();
     return;
   }
-  if (!currentRendered.length || !lastChosenHex) {
+const card = saveBtn?.closest(".result-item");
+const cardHex = normalizeHex(card?.dataset?.hex || lastChosenHex);
+const cardBrand = card?.dataset?.brand || "";
+const cardCode = card?.dataset?.code || "";
+const cardName = card?.dataset?.name || "";
 
-    showToast("Chưa có kết quả để lưu");
+if (!currentRendered.length || !cardHex) {
+  showToast("Không có dữ liệu để lưu");
+  return;
+}
 
-    return;
-  }
+  console.info("[save] card data", { hex: cardHex, brand: cardBrand, code: cardCode, name: cardName });
   try {
     const payload = {
-      inputHex: lastChosenHex,
+      inputHex: cardHex,
       selectedBrands: getSelectedBrands(),
       deltaThreshold: currentDeltaThreshold,
       results: currentRendered.slice(0, 20).map(t => ({
@@ -890,7 +994,7 @@ async function handleSaveCurrent() {
     };
     await saveSearch(api.db, user.uid, payload);
     showToast("Saved");
-  }   catch (err) {
+  } catch (err) {
     console.error("Save failed", err);
     const friendly = formatFirestoreError(err, "Luu that bai");
     showToast(friendly);
@@ -922,9 +1026,8 @@ async function handleOpenSaved(id) {
     const deltaVal = parseFloat(data.deltaThreshold) || currentDeltaThreshold;
     currentDeltaThreshold = deltaVal;
     if (deltaSlider) deltaSlider.value = deltaVal;
- deltaValueEls.forEach(el => el.textContent = ` ${deltaVal.toFixed(1)}`);
 
-
+ deltaValueEls.forEach(el => el.textContent = `~ ${currentDeltaThreshold.toFixed(1)}`);
     const brands = Array.isArray(data.selectedBrands) ? data.selectedBrands : [];
     document.querySelectorAll(".brand-filter").forEach(cb => {
       if (!brands.length) return;
@@ -1052,7 +1155,7 @@ if (libraryList) {
     const openBtn = e.target.closest("[data-action=\"open-saved\"]");
     if (openBtn) {
       e.preventDefault();
-      handleOpenSaved(openBtn.dataset.id);
+      handleOpenSaved(openBtn.dataset.id, openBtn);
       return;
     }
   });
@@ -1124,7 +1227,9 @@ if (contributeSubmit) {
     try {
       await submitThread(authApi.db, currentUser, { brand, code, name, hex: hex.toUpperCase() });
 
-      showToast("Ðã g?i, ch? xác minh");
+
+      showToast("Ðã gửi0, chờ xác minh");
+
 
       closeContributeModal();
     } catch (err) {
@@ -1141,7 +1246,7 @@ if (contributeOverlay) contributeOverlay.addEventListener("click", closeContribu
 if (btnVerify) {
   btnVerify.addEventListener("click", () => {
     if (!currentUser) {
-showAuthError("Login để đón góp dữ liệu");
+showAuthError("Login để đóng góp dữ liệu");
 
       accountBtn?.click();
       return;
@@ -1178,7 +1283,7 @@ if (verifyList) {
       }
       if (action === "approve") {
         if (!isAdminUser) {
-          showToast("Ch? admin m?i duy?t du?c");
+          showToast("Chỉ admin mới duyệt được");
           return;
         }
         if (!targetItem) {
@@ -1308,9 +1413,7 @@ btnFindNearest.addEventListener("click", () => {
 
 deltaSlider.addEventListener("input", () => {
   currentDeltaThreshold = parseFloat(deltaSlider.value);
-
-  deltaValueEls.forEach(el => el.textContent = ` ${currentDeltaThreshold.toFixed(1)}`);
-
+  deltaValueEls.forEach(el => el.textContent = `~ ${currentDeltaThreshold.toFixed(1)}`);
   if (!lastResults || !lastChosenHex) return;
   const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
   showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
@@ -1326,7 +1429,7 @@ document.addEventListener("keydown", e => {
   }
   const targetTag = (e.target.tagName || "").toLowerCase();
   const isTyping = targetTag === "input" || targetTag === "textarea";
-  const key = e.key.toLowerCase();
+  const key = (e.key || "").toLowerCase();
   if (!isTyping && key === "i") startEyeDropper();
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && key === "p") {
     e.preventDefault();
@@ -1369,7 +1472,9 @@ imgInput.addEventListener("change", e => {
 
 canvas.addEventListener("click", e => {
 
-  if (!isDataReady) return alert("Dữ liệuu chưa sẵn sàng");
+
+  if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
+
 
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
@@ -1413,7 +1518,3 @@ if (fallbackColorPicker) {
     copyToClipboard(hex, hex);
   });
 }
-
-
-
-
