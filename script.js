@@ -1,4 +1,4 @@
-import { saveSearch, getSavedSearch } from "./library.js";
+import { saveSearch, getSavedSearch, listSavedSearches } from "./library.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
   submitThread,
@@ -143,6 +143,18 @@ function getUniqueBrands(list) {
   return brands;
 }
 
+function formatFirestoreError(err, fallback = "Có lỗi Firestore") {
+  const msg = (err && (err.message || err.code)) || "";
+  const lower = msg.toLowerCase();
+  if (lower.includes("permission-denied")) {
+    return "Bạn chưa cấp quyền / rules đang chặn. Kiểm tra Firestore rules và đăng nhập.";
+  }
+  if (lower.includes("has not been used") || lower.includes("api not enabled")) {
+    return "Firestore chưa bật API. Bật Cloud Firestore và thử lại.";
+  }
+  return msg || fallback;
+}
+
 function populateContributeBrands(brands = getUniqueBrands(threads)) {
   if (!contributeBrandSelect) return;
   contributeBrandSelect.innerHTML = '<option value="">Ch?n brand</option>';
@@ -178,7 +190,11 @@ function closeContributeModal() {
 
 async function loadPendingSubmissionsUI() {
   if (!verifyList) return;
+<<<<<<< HEAD
   verifyList.innerHTML = "<div class='text-gray-500'>Ðang t?i...</div>";
+=======
+  verifyList.innerHTML = "<div class='text-gray-500'>�ang t?i...</div>";
+>>>>>>> b383213 (Fix script.js)
   if (!ensureAuthReady() || !authApi?.db || !currentUser) {
     verifyList.innerHTML = "<div class='text-gray-500'>C?n dang nh?p.</div>";
     return;
@@ -202,7 +218,11 @@ async function loadPendingSubmissionsUI() {
 function renderVerifyList() {
   if (!verifyList) return;
   if (!pendingSubmissions.length) {
+<<<<<<< HEAD
     verifyList.innerHTML = "<div class='text-gray-500'>Không có submissions ch?.</div>";
+=======
+    verifyList.innerHTML = "<div class='text-gray-500'>Kh�ng c� submissions ch?.</div>";
+>>>>>>> b383213 (Fix script.js)
     return;
   }
   verifyList.innerHTML = pendingSubmissions.map(item => {
@@ -404,6 +424,19 @@ const authApi = new Proxy({}, {
 function getAuthInitError() {
   return getAuthApi()?.initError || null;
 }
+let hasBoundAuth = false;
+function bindAuth() {
+  const err = getAuthInitError();
+  if (err) {
+    console.error("Auth init error", err);
+    return;
+  }
+  const api = getAuthApi();
+  if (!api || typeof api.onAuthStateChanged !== "function") return;
+  if (hasBoundAuth) return;
+  api.onAuthStateChanged(updateUserUI);
+  hasBoundAuth = true;
+}
 const libraryOverlay = document.getElementById("libraryOverlay");
 const libraryModal = document.getElementById("libraryModal");
 const libraryClose = document.getElementById("libraryClose");
@@ -424,7 +457,11 @@ const verifyModal = document.getElementById("verifyModal");
 const verifyClose = document.getElementById("verifyClose");
 const verifyList = document.getElementById("verifyList");
 
+<<<<<<< HEAD
 resultBox.innerHTML = "<p class='text-gray-500 text-center'>Ðang t?i d? li?u màu</p>";
+=======
+resultBox.innerHTML = "<p class='text-gray-500 text-center'>Đang tải, dữ liệu màu chưa sẵn sàng</p>";
+>>>>>>> b383213 (Fix script.js)
 
 //======================= DATA LOADING =======================
 fetch("threads.json")
@@ -445,7 +482,11 @@ fetch("threads.json")
       mergeVerifiedThreads(list);
     });
     isDataReady = true;
+<<<<<<< HEAD
     resultBox.innerHTML = "Xong. D? li?u màu dã s?n sàng.";
+=======
+    resultBox.innerHTML = "Xong. Dữ liệu màu đã sẵn sàng.";
+>>>>>>> b383213 (Fix script.js)
     restoreInspectorFromUrl();
   })
   .catch(() => {
@@ -522,11 +563,19 @@ function showGroupedResults(groups, chosenHex) {
   resultBox.innerHTML = `
     <div class="flex items-center gap-3 mb-6">
       <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
+<<<<<<< HEAD
       <div class="font-semibold">Màu dã ch?n</div>
     </div>
     ${groups.map((group, i) => `
       <section class="mb-8">
         <h3 class="font-semibold mb-3 text-gray-700">Nhóm ${i + 1}  ${group.items.length} màu</h3>
+=======
+      <div class="font-semibold">M�u d� ch?n</div>
+    </div>
+    ${groups.map((group, i) => `
+      <section class="mb-8">
+        <h3 class="font-semibold mb-3 text-gray-700">Nh�m ${i + 1} � ${group.items.length} m�u</h3>
+>>>>>>> b383213 (Fix script.js)
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           ${group.items.map(t => renderColorCard(t, chosenHex)).join("")}
         </div>
@@ -563,12 +612,20 @@ function copyToClipboard(text, label) {
     ta.style.opacity = "0";
     document.body.appendChild(ta);
     ta.select();
+<<<<<<< HEAD
     try { document.execCommand("copy"); showToast(`Ðã copy ${label}`); } catch (e) {}
+=======
+    try { document.execCommand("copy"); showToast(`�� copy ${label}`); } catch (e) {}
+>>>>>>> b383213 (Fix script.js)
     ta.remove();
   };
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(text).then(() => {
+<<<<<<< HEAD
       showToast(`Ðã copy ${label}`);
+=======
+      showToast(`�� copy ${label}`);
+>>>>>>> b383213 (Fix script.js)
     }).catch(() => fallbackCopy());
   } else {
     fallbackCopy();
@@ -593,10 +650,17 @@ function populateInspector(data) {
   inspectorLab.textContent = formatLab(labValues).join(", ");
   inspectorHsl.textContent = `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`;
 
+<<<<<<< HEAD
   inspectorBrand.textContent = brand || "";
   inspectorCode.textContent = code || "";
   inspectorName.textContent = name || "";
   inspectorDelta.textContent = delta ? `?E ${delta}` : "";
+=======
+  inspectorBrand.textContent = brand || "�";
+  inspectorCode.textContent = code || "�";
+  inspectorName.textContent = name || "�";
+  inspectorDelta.textContent = delta ? `?E ${delta}` : "�";
+>>>>>>> b383213 (Fix script.js)
 
   drawerTitle.textContent = "Color Inspector";
   drawer.dataset.hex = normalizedHex;
@@ -773,22 +837,64 @@ function ensureAuthReady() {
   }
   return true;
 }
+async function loadLibraryList() {
+  if (!libraryList) return;
+  const api = getAuthApi();
+  if (!ensureAuthReady()) return;
+  const user = api?.auth?.currentUser || currentUser;
+  if (!user) {
+    showAuthError("Login de xem Library");
+    accountBtn?.click();
+    return;
+  }
+  libraryList.innerHTML = "<div class='text-gray-500'>�ang t?i...</div>";
+  try {
+    const items = await listSavedSearches(api.db, user.uid, 50);
+    if (!items.length) {
+      libraryList.innerHTML = "<div class='text-gray-500'>Chua c� b?n luu</div>";
+      return;
+    }
+    libraryList.innerHTML = items.map(it => {
+      const ts = it.createdAt && typeof it.createdAt.toDate === "function" ? it.createdAt.toDate().toLocaleString() : "";
+      return `
+        <div class="border border-gray-200 rounded-lg p-3 flex items-center justify-between">
+          <div>
+            <div class="font-semibold text-gray-800">${it.inputHex || ""}</div>
+            <div class="text-xs text-gray-500">${ts}</div>
+          </div>
+          <button data-action="open-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border bg-white hover:bg-gray-50 text-indigo-700">Open</button>
+        </div>
+      `;
+    }).join("");
+  } catch (err) {
+    console.error("Load library failed", err);
+    const friendly = formatFirestoreError(err, "Kh�ng t?i du?c Library");
+    libraryList.innerHTML = `<div class='text-red-600'>${friendly}</div>`;
+  }
+}
 
 //======================= SAVE CURRENT =======================
 async function handleSaveCurrent() {
-  if (authInitError) {
-    showToast(`${authInitError.name || "Firebase"}: ${authInitError.message || "L?i"}`);
+  const initErr = getAuthInitError();
+  if (initErr) {
+    console.error(initErr);
+    showToast(`${initErr.name || "Firebase"}: ${initErr.message || "Loi"}`);
     return;
   }
   if (!ensureAuthReady()) return;
-  const user = authApi.auth?.currentUser || currentUser;
+  const api = getAuthApi();
+  const user = api?.auth?.currentUser || currentUser;
   if (!user) {
     showAuthError("Login d? luu");
     accountBtn?.click();
     return;
   }
   if (!currentRendered.length || !lastChosenHex) {
+<<<<<<< HEAD
     showToast("Chua có k?t qu? d? luu");
+=======
+    showToast("Chua c� k?t qu? d? luu");
+>>>>>>> b383213 (Fix script.js)
     return;
   }
   try {
@@ -804,29 +910,33 @@ async function handleSaveCurrent() {
         delta: t.delta
       }))
     };
-    await saveSearch(authApi.db, user.uid, payload);
+    await saveSearch(api.db, user.uid, payload);
     showToast("Saved");
-  } catch (err) {
-    console.error(err);
-    showToast(err?.message || "Luu th?t b?i");
+  }   catch (err) {
+    console.error("Save failed", err);
+    const friendly = formatFirestoreError(err, "Luu that bai");
+    showToast(friendly);
   }
 }
 
 //======================= OPEN SAVED =======================
 async function handleOpenSaved(id) {
-  if (authInitError) {
-    showToast(`${authInitError.name || "Firebase"}: ${authInitError.message || "Loi"}`);
+  const initErr = getAuthInitError();
+  if (initErr) {
+    console.error(initErr);
+    showToast(`${initErr.name || "Firebase"}: ${initErr.message || "Loi"}`);
     return;
   }
   if (!ensureAuthReady()) return;
-  const user = authApi.auth?.currentUser || currentUser;
+  const api = getAuthApi();
+  const user = api?.auth?.currentUser || currentUser;
   if (!user) {
     showAuthError("Login de mo");
     accountBtn?.click();
     return;
   }
   try {
-    const data = await getSavedSearch(authApi.db, user.uid, id);
+    const data = await getSavedSearch(api.db, user.uid, id);
     if (!data) {
       showToast("Khong tim thay ban luu");
       return;
@@ -834,7 +944,11 @@ async function handleOpenSaved(id) {
     const deltaVal = parseFloat(data.deltaThreshold) || currentDeltaThreshold;
     currentDeltaThreshold = deltaVal;
     if (deltaSlider) deltaSlider.value = deltaVal;
+<<<<<<< HEAD
     deltaValueEls.forEach(el => el.textContent = ` ${deltaVal.toFixed(1)}`);
+=======
+    deltaValueEls.forEach(el => el.textContent = `� ${deltaVal.toFixed(1)}`);
+>>>>>>> b383213 (Fix script.js)
 
     const brands = Array.isArray(data.selectedBrands) ? data.selectedBrands : [];
     document.querySelectorAll(".brand-filter").forEach(cb => {
@@ -875,9 +989,10 @@ async function handleOpenSaved(id) {
       libraryModal.classList.add("hidden");
       libraryModal.classList.remove("flex");
     }
-  } catch (err) {
-    console.error(err);
-    showToast(err?.message || "Mo ban luu that bai");
+  }   catch (err) {
+    console.error("Open saved failed", err);
+    const friendly = formatFirestoreError(err, "Mo ban luu that bai");
+    showToast(friendly);
   }
 }
 
@@ -903,14 +1018,17 @@ function startEyeDropper() {
   }).catch(err => {
     if (eyedropperHint) eyedropperHint.classList.add("hidden");
     if (err && err.name === "AbortError") return;
+<<<<<<< HEAD
     showToast("Không pick du?c màu");
+=======
+    showToast("Kh�ng pick du?c m�u");
+>>>>>>> b383213 (Fix script.js)
   });
 }
 
 //======================= EVENTS =======================
-if (authApi && !authInitError) {
-  authApi.onAuthStateChanged(updateUserUI);
-}
+window.addEventListener("firebase-auth-ready", bindAuth);
+bindAuth();
 
 if (accountBtn) {
   accountBtn.addEventListener("click", () => openAuthModal("login"));
@@ -937,7 +1055,25 @@ if (libraryOverlay) {
       libraryModal.classList.remove("flex");
     }
   });
+}if (btnLibrary) {
+  btnLibrary.addEventListener("click", () => {
+    if (!ensureAuthReady()) return;
+    const api = getAuthApi();
+    const user = api?.auth?.currentUser || currentUser;
+    if (!user) {
+      showAuthError("Login de xem Library");
+      accountBtn?.click();
+      return;
+    }
+    libraryOverlay?.classList.remove("hidden");
+    if (libraryModal) {
+      libraryModal.classList.remove("hidden");
+      libraryModal.classList.add("flex");
+    }
+    loadLibraryList();
+  });
 }
+
 
 if (libraryList) {
   libraryList.addEventListener("click", e => {
@@ -963,7 +1099,11 @@ if (verifiedOnlyToggle) {
 if (btnContribute) {
   btnContribute.addEventListener("click", () => {
     if (!currentUser) {
+<<<<<<< HEAD
       showAuthError("Login d? dóng góp d? li?u");
+=======
+      showAuthError("Login d? d�ng g�p d? li?u");
+>>>>>>> b383213 (Fix script.js)
       accountBtn?.click();
       return;
     }
@@ -981,13 +1121,19 @@ if (btnUseCurrentColor) {
 
 if (contributeSubmit) {
   contributeSubmit.addEventListener("click", async () => {
-    if (authInitError) {
-      showToast(`${authInitError.name || "Firebase"}: ${authInitError.message || "L?i"}`);
+    const initErr = getAuthInitError();
+    if (initErr) {
+      console.error(initErr);
+      showToast(`${initErr.name || "Firebase"}: ${initErr.message || "Loi"}`);
       return;
     }
     if (!ensureAuthReady()) return;
     if (!currentUser) {
+<<<<<<< HEAD
       showAuthError("Login d? dóng góp d? li?u");
+=======
+      showAuthError("Login d? d�ng g�p d? li?u");
+>>>>>>> b383213 (Fix script.js)
       accountBtn?.click();
       return;
     }
@@ -997,16 +1143,28 @@ if (contributeSubmit) {
     const hexRaw = (contributeHex?.value || "").trim();
     const hex = normalizeHex(hexRaw);
     if (!brand || !code || !hex) {
+<<<<<<< HEAD
       showToast("Brand, Code, Hex là b?t bu?c");
       return;
     }
     if (!/^#[0-9a-f]{6}$/i.test(hex)) {
       showToast("Hex không h?p l?");
+=======
+      showToast("Brand, Code, Hex l� b?t bu?c");
+      return;
+    }
+    if (!/^#[0-9a-f]{6}$/i.test(hex)) {
+      showToast("Hex kh�ng h?p l?");
+>>>>>>> b383213 (Fix script.js)
       return;
     }
     try {
       await submitThread(authApi.db, currentUser, { brand, code, name, hex: hex.toUpperCase() });
+<<<<<<< HEAD
       showToast("Ðã g?i, ch? xác minh");
+=======
+      showToast("�� g?i, ch? x�c minh");
+>>>>>>> b383213 (Fix script.js)
       closeContributeModal();
     } catch (err) {
       console.error(err);
@@ -1022,7 +1180,11 @@ if (contributeOverlay) contributeOverlay.addEventListener("click", closeContribu
 if (btnVerify) {
   btnVerify.addEventListener("click", () => {
     if (!currentUser) {
+<<<<<<< HEAD
       showAuthError("Login d? dóng góp d? li?u");
+=======
+      showAuthError("Login d? d�ng g�p d? li?u");
+>>>>>>> b383213 (Fix script.js)
       accountBtn?.click();
       return;
     }
@@ -1042,7 +1204,11 @@ if (verifyList) {
     const action = actionBtn.dataset.action;
     const targetItem = pendingSubmissions.find(p => p.id === id);
     if (!currentUser) {
+<<<<<<< HEAD
       showAuthError("Login d? xác minh");
+=======
+      showAuthError("Login d? x�c minh");
+>>>>>>> b383213 (Fix script.js)
       accountBtn?.click();
       return;
     }
@@ -1061,7 +1227,11 @@ if (verifyList) {
           return;
         }
         if (!targetItem) {
+<<<<<<< HEAD
           showToast("Không tìm th?y submission");
+=======
+          showToast("Kh�ng t�m th?y submission");
+>>>>>>> b383213 (Fix script.js)
           return;
         }
         const summary = targetItem?.summary || await getVoteSummary(authApi.db, id);
@@ -1075,7 +1245,11 @@ if (verifyList) {
       }
     } catch (err) {
       console.error(err);
+<<<<<<< HEAD
       showToast(err?.message || "L?i thao tác");
+=======
+      showToast(err?.message || "L?i thao t�c");
+>>>>>>> b383213 (Fix script.js)
     }
   });
 }
@@ -1085,12 +1259,21 @@ if (btnLogin) {
     if (!ensureAuthReady()) return;
     const email = loginEmail?.value.trim();
     const pass = loginPassword?.value;
+<<<<<<< HEAD
     if (!email || !pass) return showAuthError("Vui lòng nh?p email và m?t kh?u");
     try {
       await authApi.signInEmail(email, pass);
       showToast("Ðang nh?p thành công");
     } catch (err) {
       showAuthError(err?.message || "Ðang nh?p th?t b?i");
+=======
+    if (!email || !pass) return showAuthError("Vui l�ng nh?p email v� m?t kh?u");
+    try {
+      await authApi.signInEmail(email, pass);
+      showToast("�ang nh?p th�nh c�ng");
+    } catch (err) {
+      showAuthError(err?.message || "�ang nh?p th?t b?i");
+>>>>>>> b383213 (Fix script.js)
     }
   });
 }
@@ -1101,6 +1284,7 @@ if (btnRegister) {
     const email = registerEmail?.value.trim();
     const pass = registerPassword?.value;
     const confirm = registerConfirm?.value;
+<<<<<<< HEAD
     if (!email || !pass || !confirm) return showAuthError("Ði?n d?y d? thông tin");
     if (pass !== confirm) return showAuthError("M?t kh?u không trùng kh?p");
     try {
@@ -1108,6 +1292,15 @@ if (btnRegister) {
       showToast("T?o tài kho?n thành công");
     } catch (err) {
       showAuthError(err?.message || "T?o tài kho?n th?t b?i");
+=======
+    if (!email || !pass || !confirm) return showAuthError("�i?n d?y d? th�ng tin");
+    if (pass !== confirm) return showAuthError("M?t kh?u kh�ng tr�ng kh?p");
+    try {
+      await authApi.registerEmail(email, pass);
+      showToast("T?o t�i kho?n th�nh c�ng");
+    } catch (err) {
+      showAuthError(err?.message || "T?o t�i kho?n th?t b?i");
+>>>>>>> b383213 (Fix script.js)
     }
   });
 }
@@ -1119,9 +1312,15 @@ if (btnForgot) {
     if (!email) return showAuthError("Nh?p email d? d?t l?i m?t kh?u");
     try {
       await authApi.resetPassword(email);
+<<<<<<< HEAD
       showToast("Ðã g?i email d?t l?i m?t kh?u");
     } catch (err) {
       showAuthError(err?.message || "Không g?i du?c email");
+=======
+      showToast("�� g?i email d?t l?i m?t kh?u");
+    } catch (err) {
+      showAuthError(err?.message || "Kh�ng g?i du?c email");
+>>>>>>> b383213 (Fix script.js)
     }
   });
 }
@@ -1131,7 +1330,11 @@ if (btnGoogle) {
     if (!ensureAuthReady()) return;
     try {
       await authApi.signInGoogle();
+<<<<<<< HEAD
       showToast("Ðang nh?p Google thành công");
+=======
+      showToast("�ang nh?p Google th�nh c�ng");
+>>>>>>> b383213 (Fix script.js)
     } catch (err) {
       showAuthError(err?.message || "Google login th?t b?i");
     }
@@ -1143,7 +1346,11 @@ if (btnFacebook) {
     if (!ensureAuthReady()) return;
     try {
       await authApi.signInFacebook();
+<<<<<<< HEAD
       showToast("Ðang nh?p Facebook thành công");
+=======
+      showToast("�ang nh?p Facebook th�nh c�ng");
+>>>>>>> b383213 (Fix script.js)
     } catch (err) {
       showAuthError(err?.message || "Facebook login th?t b?i");
     }
@@ -1154,12 +1361,20 @@ if (btnLogout) {
   btnLogout.addEventListener("click", async () => {
     if (!ensureAuthReady()) return;
     await authApi.signOutUser();
+<<<<<<< HEAD
     showToast("Ðã dang xu?t");
+=======
+    showToast("�� dang xu?t");
+>>>>>>> b383213 (Fix script.js)
   });
 }
 
 btnFindNearest.addEventListener("click", () => {
+<<<<<<< HEAD
   if (!isDataReady) return alert("D? li?u chua s?n sàng");
+=======
+  if (!isDataReady) return alert("D? li?u chua s?n s�ng");
+>>>>>>> b383213 (Fix script.js)
   const hex = colorPicker.value;
   lastChosenHex = hex;
   lastResults = findNearestColors(hex, 100);
@@ -1169,7 +1384,11 @@ btnFindNearest.addEventListener("click", () => {
 
 deltaSlider.addEventListener("input", () => {
   currentDeltaThreshold = parseFloat(deltaSlider.value);
+<<<<<<< HEAD
   deltaValueEls.forEach(el => el.textContent = ` ${currentDeltaThreshold.toFixed(1)}`);
+=======
+  deltaValueEls.forEach(el => el.textContent = `� ${currentDeltaThreshold.toFixed(1)}`);
+>>>>>>> b383213 (Fix script.js)
   if (!lastResults || !lastChosenHex) return;
   const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
   showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
@@ -1227,7 +1446,11 @@ imgInput.addEventListener("change", e => {
 });
 
 canvas.addEventListener("click", e => {
+<<<<<<< HEAD
   if (!isDataReady) return alert("D? li?u chua s?n sàng");
+=======
+  if (!isDataReady) return alert("D? li?u chua s?n s�ng");
+>>>>>>> b383213 (Fix script.js)
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
@@ -1243,11 +1466,19 @@ canvas.addEventListener("click", e => {
 
 // Find by code
 btnFindByCode.addEventListener("click", () => {
+<<<<<<< HEAD
   if (!isDataReady) return alert("D? li?u chua s?n sàng");
   const query = codeInput.value.trim().toLowerCase();
   if (!query) return;
   const found = threads.find(t => `${t.brand} ${t.code}`.toLowerCase() === query);
   if (!found) return alert("Không tìm th?y mã này");
+=======
+  if (!isDataReady) return alert("D? li?u chua s?n s�ng");
+  const query = codeInput.value.trim().toLowerCase();
+  if (!query) return;
+  const found = threads.find(t => `${t.brand} ${t.code}`.toLowerCase() === query);
+  if (!found) return alert("Kh�ng t�m th?y m� n�y");
+>>>>>>> b383213 (Fix script.js)
   lastChosenHex = found.hex;
   lastResults = findNearestColors(found.hex, 100);
   const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
@@ -1268,4 +1499,7 @@ if (fallbackColorPicker) {
     copyToClipboard(hex, hex);
   });
 }
+
+
+
 
