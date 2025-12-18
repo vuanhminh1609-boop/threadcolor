@@ -558,7 +558,12 @@ function showGroupedResults(groups, chosenHex) {
     </div>
     ${groups.map((group, i) => `
       <section class="mb-8">
-        <h3 class="font-semibold mb-3 text-gray-700">Nhóm ${i + 1}  ${group.items.length} màu</h3>
+        <h3 class="font-semibold mb-3 text-gray-700 flex items-center gap-2">
+  <span>Nhóm ${i + 1}</span>
+  <span class="inline-block w-3 h-3 rounded-sm border" style="background:${chosenHex}"></span>
+  <span>${group.items.length} màu</span>
+</h3>
+
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           ${group.items.map(t => renderColorCard(t, chosenHex)).join("")}
