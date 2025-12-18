@@ -818,7 +818,7 @@ async function loadLibraryList() {
   if (!ensureAuthReady()) return;
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    showAuthError("Login de xem Library");
+    showAuthError("Login để xem Library");
     accountBtn?.click();
     return;
   }
