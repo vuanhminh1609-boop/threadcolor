@@ -538,11 +538,9 @@ function renderColorCard(t, chosenHex) {
         <div class="flex-1 text-sm">
           <div class="font-semibold">${t.brand || ""} ${t.code || ""}</div>
           <div class="text-gray-600">${t.name || ""}</div>
-<<<<<<< HEAD
+
           <div class="text-xs text-gray-500">ΔE ${deltaText}</div>
-=======
-          <div class="text-xs text-gray-500">DE ${deltaText}</div>
->>>>>>> 0605814 (Fix library save + UI feedback)
+
         </div>
       </div>
       <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
