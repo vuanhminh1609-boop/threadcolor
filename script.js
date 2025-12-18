@@ -190,7 +190,6 @@ function closeContributeModal() {
 
 async function loadPendingSubmissionsUI() {
   if (!verifyList) return;
-
   verifyList.innerHTML = "<div class='text-gray-500'>Ðang t?i...</div>";
 
   if (!ensureAuthReady() || !authApi?.db || !currentUser) {
