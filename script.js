@@ -178,7 +178,7 @@ function closeContributeModal() {
 
 async function loadPendingSubmissionsUI() {
   if (!verifyList) return;
-  verifyList.innerHTML = "<div class='text-gray-500'>–ang t?i...</div>";
+  verifyList.innerHTML = "<div class='text-gray-500'>√êang t?i...</div>";
   if (!ensureAuthReady() || !authApi?.db || !currentUser) {
     verifyList.innerHTML = "<div class='text-gray-500'>C?n dang nh?p.</div>";
     return;
@@ -202,7 +202,7 @@ async function loadPendingSubmissionsUI() {
 function renderVerifyList() {
   if (!verifyList) return;
   if (!pendingSubmissions.length) {
-    verifyList.innerHTML = "<div class='text-gray-500'>KhÙng cÛ submissions ch?.</div>";
+    verifyList.innerHTML = "<div class='text-gray-500'>Kh√¥ng c√≥ submissions ch?.</div>";
     return;
   }
   verifyList.innerHTML = pendingSubmissions.map(item => {
@@ -424,7 +424,7 @@ const verifyModal = document.getElementById("verifyModal");
 const verifyClose = document.getElementById("verifyClose");
 const verifyList = document.getElementById("verifyList");
 
-resultBox.innerHTML = "<p class='text-gray-500 text-center'>–ang t?i d? li?u m‡uÖ</p>";
+resultBox.innerHTML = "<p class='text-gray-500 text-center'>√êang t?i d? li?u m√†u¬Ö</p>";
 
 //======================= DATA LOADING =======================
 fetch("threads.json")
@@ -445,7 +445,7 @@ fetch("threads.json")
       mergeVerifiedThreads(list);
     });
     isDataReady = true;
-    resultBox.innerHTML = "Xong. D? li?u m‡u d„ s?n s‡ng.";
+    resultBox.innerHTML = "Xong. D? li?u m√†u d√£ s?n s√†ng.";
     restoreInspectorFromUrl();
   })
   .catch(() => {
@@ -522,11 +522,11 @@ function showGroupedResults(groups, chosenHex) {
   resultBox.innerHTML = `
     <div class="flex items-center gap-3 mb-6">
       <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
-      <div class="font-semibold">M‡u d„ ch?n</div>
+      <div class="font-semibold">M√†u d√£ ch?n</div>
     </div>
     ${groups.map((group, i) => `
       <section class="mb-8">
-        <h3 class="font-semibold mb-3 text-gray-700">NhÛm ${i + 1} ï ${group.items.length} m‡u</h3>
+        <h3 class="font-semibold mb-3 text-gray-700">Nh√≥m ${i + 1} ¬ï ${group.items.length} m√†u</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           ${group.items.map(t => renderColorCard(t, chosenHex)).join("")}
         </div>
@@ -563,12 +563,12 @@ function copyToClipboard(text, label) {
     ta.style.opacity = "0";
     document.body.appendChild(ta);
     ta.select();
-    try { document.execCommand("copy"); showToast(`–„ copy ${label}`); } catch (e) {}
+    try { document.execCommand("copy"); showToast(`√ê√£ copy ${label}`); } catch (e) {}
     ta.remove();
   };
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(text).then(() => {
-      showToast(`–„ copy ${label}`);
+      showToast(`√ê√£ copy ${label}`);
     }).catch(() => fallbackCopy());
   } else {
     fallbackCopy();
@@ -593,10 +593,10 @@ function populateInspector(data) {
   inspectorLab.textContent = formatLab(labValues).join(", ");
   inspectorHsl.textContent = `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`;
 
-  inspectorBrand.textContent = brand || "ó";
-  inspectorCode.textContent = code || "ó";
-  inspectorName.textContent = name || "ó";
-  inspectorDelta.textContent = delta ? `?E ${delta}` : "ó";
+  inspectorBrand.textContent = brand || "¬ó";
+  inspectorCode.textContent = code || "¬ó";
+  inspectorName.textContent = name || "¬ó";
+  inspectorDelta.textContent = delta ? `?E ${delta}` : "¬ó";
 
   drawerTitle.textContent = "Color Inspector";
   drawer.dataset.hex = normalizedHex;
@@ -763,7 +763,7 @@ function ensureAuthReady() {
   const initErr = getAuthInitError();
   if (initErr) {
     console.error(initErr);
-    showAuthError(${initErr.name || "Firebase"}: );
+    showAuthError(`${initErr?.name || "Firebase"}: ${initErr?.message || "L·ªói kh·ªüi t·∫°o"}`);
     return false;
   }
   const api = getAuthApi();
@@ -788,7 +788,7 @@ async function handleSaveCurrent() {
     return;
   }
   if (!currentRendered.length || !lastChosenHex) {
-    showToast("Chua cÛ k?t qu? d? luu");
+    showToast("Chua c√≥ k?t qu? d? luu");
     return;
   }
   try {
@@ -834,7 +834,7 @@ async function handleOpenSaved(id) {
     const deltaVal = parseFloat(data.deltaThreshold) || currentDeltaThreshold;
     currentDeltaThreshold = deltaVal;
     if (deltaSlider) deltaSlider.value = deltaVal;
-    deltaValueEls.forEach(el => el.textContent = `ò ${deltaVal.toFixed(1)}`);
+    deltaValueEls.forEach(el => el.textContent = `¬ò ${deltaVal.toFixed(1)}`);
 
     const brands = Array.isArray(data.selectedBrands) ? data.selectedBrands : [];
     document.querySelectorAll(".brand-filter").forEach(cb => {
@@ -903,7 +903,7 @@ function startEyeDropper() {
   }).catch(err => {
     if (eyedropperHint) eyedropperHint.classList.add("hidden");
     if (err && err.name === "AbortError") return;
-    showToast("KhÙng pick du?c m‡u");
+    showToast("Kh√¥ng pick du?c m√†u");
   });
 }
 
@@ -963,7 +963,7 @@ if (verifiedOnlyToggle) {
 if (btnContribute) {
   btnContribute.addEventListener("click", () => {
     if (!currentUser) {
-      showAuthError("Login d? dÛng gÛp d? li?u");
+      showAuthError("Login d? d√≥ng g√≥p d? li?u");
       accountBtn?.click();
       return;
     }
@@ -987,7 +987,7 @@ if (contributeSubmit) {
     }
     if (!ensureAuthReady()) return;
     if (!currentUser) {
-      showAuthError("Login d? dÛng gÛp d? li?u");
+      showAuthError("Login d? d√≥ng g√≥p d? li?u");
       accountBtn?.click();
       return;
     }
@@ -997,16 +997,16 @@ if (contributeSubmit) {
     const hexRaw = (contributeHex?.value || "").trim();
     const hex = normalizeHex(hexRaw);
     if (!brand || !code || !hex) {
-      showToast("Brand, Code, Hex l‡ b?t bu?c");
+      showToast("Brand, Code, Hex l√† b?t bu?c");
       return;
     }
     if (!/^#[0-9a-f]{6}$/i.test(hex)) {
-      showToast("Hex khÙng h?p l?");
+      showToast("Hex kh√¥ng h?p l?");
       return;
     }
     try {
       await submitThread(authApi.db, currentUser, { brand, code, name, hex: hex.toUpperCase() });
-      showToast("–„ g?i, ch? x·c minh");
+      showToast("√ê√£ g?i, ch? x√°c minh");
       closeContributeModal();
     } catch (err) {
       console.error(err);
@@ -1022,7 +1022,7 @@ if (contributeOverlay) contributeOverlay.addEventListener("click", closeContribu
 if (btnVerify) {
   btnVerify.addEventListener("click", () => {
     if (!currentUser) {
-      showAuthError("Login d? dÛng gÛp d? li?u");
+      showAuthError("Login d? d√≥ng g√≥p d? li?u");
       accountBtn?.click();
       return;
     }
@@ -1042,7 +1042,7 @@ if (verifyList) {
     const action = actionBtn.dataset.action;
     const targetItem = pendingSubmissions.find(p => p.id === id);
     if (!currentUser) {
-      showAuthError("Login d? x·c minh");
+      showAuthError("Login d? x√°c minh");
       accountBtn?.click();
       return;
     }
@@ -1061,7 +1061,7 @@ if (verifyList) {
           return;
         }
         if (!targetItem) {
-          showToast("KhÙng tÏm th?y submission");
+          showToast("Kh√¥ng t√¨m th?y submission");
           return;
         }
         const summary = targetItem?.summary || await getVoteSummary(authApi.db, id);
@@ -1075,7 +1075,7 @@ if (verifyList) {
       }
     } catch (err) {
       console.error(err);
-      showToast(err?.message || "L?i thao t·c");
+      showToast(err?.message || "L?i thao t√°c");
     }
   });
 }
@@ -1085,12 +1085,12 @@ if (btnLogin) {
     if (!ensureAuthReady()) return;
     const email = loginEmail?.value.trim();
     const pass = loginPassword?.value;
-    if (!email || !pass) return showAuthError("Vui lÚng nh?p email v‡ m?t kh?u");
+    if (!email || !pass) return showAuthError("Vui l√≤ng nh?p email v√† m?t kh?u");
     try {
       await authApi.signInEmail(email, pass);
-      showToast("–ang nh?p th‡nh cÙng");
+      showToast("√êang nh?p th√†nh c√¥ng");
     } catch (err) {
-      showAuthError(err?.message || "–ang nh?p th?t b?i");
+      showAuthError(err?.message || "√êang nh?p th?t b?i");
     }
   });
 }
@@ -1101,13 +1101,13 @@ if (btnRegister) {
     const email = registerEmail?.value.trim();
     const pass = registerPassword?.value;
     const confirm = registerConfirm?.value;
-    if (!email || !pass || !confirm) return showAuthError("–i?n d?y d? thÙng tin");
-    if (pass !== confirm) return showAuthError("M?t kh?u khÙng tr˘ng kh?p");
+    if (!email || !pass || !confirm) return showAuthError("√êi?n d?y d? th√¥ng tin");
+    if (pass !== confirm) return showAuthError("M?t kh?u kh√¥ng tr√πng kh?p");
     try {
       await authApi.registerEmail(email, pass);
-      showToast("T?o t‡i kho?n th‡nh cÙng");
+      showToast("T?o t√†i kho?n th√†nh c√¥ng");
     } catch (err) {
-      showAuthError(err?.message || "T?o t‡i kho?n th?t b?i");
+      showAuthError(err?.message || "T?o t√†i kho?n th?t b?i");
     }
   });
 }
@@ -1119,9 +1119,9 @@ if (btnForgot) {
     if (!email) return showAuthError("Nh?p email d? d?t l?i m?t kh?u");
     try {
       await authApi.resetPassword(email);
-      showToast("–„ g?i email d?t l?i m?t kh?u");
+      showToast("√ê√£ g?i email d?t l?i m?t kh?u");
     } catch (err) {
-      showAuthError(err?.message || "KhÙng g?i du?c email");
+      showAuthError(err?.message || "Kh√¥ng g?i du?c email");
     }
   });
 }
@@ -1131,7 +1131,7 @@ if (btnGoogle) {
     if (!ensureAuthReady()) return;
     try {
       await authApi.signInGoogle();
-      showToast("–ang nh?p Google th‡nh cÙng");
+      showToast("√êang nh?p Google th√†nh c√¥ng");
     } catch (err) {
       showAuthError(err?.message || "Google login th?t b?i");
     }
@@ -1143,7 +1143,7 @@ if (btnFacebook) {
     if (!ensureAuthReady()) return;
     try {
       await authApi.signInFacebook();
-      showToast("–ang nh?p Facebook th‡nh cÙng");
+      showToast("√êang nh?p Facebook th√†nh c√¥ng");
     } catch (err) {
       showAuthError(err?.message || "Facebook login th?t b?i");
     }
@@ -1154,12 +1154,12 @@ if (btnLogout) {
   btnLogout.addEventListener("click", async () => {
     if (!ensureAuthReady()) return;
     await authApi.signOutUser();
-    showToast("–„ dang xu?t");
+    showToast("√ê√£ dang xu?t");
   });
 }
 
 btnFindNearest.addEventListener("click", () => {
-  if (!isDataReady) return alert("D? li?u chua s?n s‡ng");
+  if (!isDataReady) return alert("D? li?u chua s?n s√†ng");
   const hex = colorPicker.value;
   lastChosenHex = hex;
   lastResults = findNearestColors(hex, 100);
@@ -1169,7 +1169,7 @@ btnFindNearest.addEventListener("click", () => {
 
 deltaSlider.addEventListener("input", () => {
   currentDeltaThreshold = parseFloat(deltaSlider.value);
-  deltaValueEls.forEach(el => el.textContent = `ò ${currentDeltaThreshold.toFixed(1)}`);
+  deltaValueEls.forEach(el => el.textContent = `¬ò ${currentDeltaThreshold.toFixed(1)}`);
   if (!lastResults || !lastChosenHex) return;
   const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
   showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
@@ -1227,7 +1227,7 @@ imgInput.addEventListener("change", e => {
 });
 
 canvas.addEventListener("click", e => {
-  if (!isDataReady) return alert("D? li?u chua s?n s‡ng");
+  if (!isDataReady) return alert("D? li?u chua s?n s√†ng");
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
@@ -1243,11 +1243,11 @@ canvas.addEventListener("click", e => {
 
 // Find by code
 btnFindByCode.addEventListener("click", () => {
-  if (!isDataReady) return alert("D? li?u chua s?n s‡ng");
+  if (!isDataReady) return alert("D? li?u chua s?n s√†ng");
   const query = codeInput.value.trim().toLowerCase();
   if (!query) return;
   const found = threads.find(t => `${t.brand} ${t.code}`.toLowerCase() === query);
-  if (!found) return alert("KhÙng tÏm th?y m„ n‡y");
+  if (!found) return alert("Kh√¥ng t√¨m th?y m√£ n√†y");
   lastChosenHex = found.hex;
   lastResults = findNearestColors(found.hex, 100);
   const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
