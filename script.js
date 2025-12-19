@@ -923,7 +923,7 @@ async function loadLibraryList() {
   }
   libraryList.innerHTML = "<div class='text-gray-500'>Đang tải...</div>";
   try {
-    const items = await listSavedSearches(api.db, user.uid, 50);
+    const { items } = await listSavedSearches(api.db, user.uid, 50);
     if (!items.length) {
       libraryList.innerHTML = "<div class='text-gray-500'>Chưa có bản lưu</div>";
       return;

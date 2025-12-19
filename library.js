@@ -42,7 +42,6 @@ export async function listSavedSearches(db, uid, limitN = 50) {
       return tb - ta;
     });
     console.info("[listSavedSearches] count (fallback)", docs.length);
-    throw err;
   }
 
   const items = [];
