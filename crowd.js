@@ -24,6 +24,23 @@ function ensureAuthUser(user) {
   }
 }
 
+function cleanUndefined(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map(v => cleanUndefined(v))
+      .filter(v => v !== undefined);
+  }
+  if (value && typeof value === "object") {
+    const out = {};
+    Object.entries(value).forEach(([k, v]) => {
+      const cleaned = cleanUndefined(v);
+      if (cleaned !== undefined) out[k] = cleaned;
+    });
+    return out;
+  }
+  return value === undefined ? undefined : value;
+}
+
 export async function submitThread(db, user, payload) {
   if (!db) throw new Error("Missing db");
   ensureAuthUser(user);
@@ -45,8 +62,13 @@ export async function submitThread(db, user, payload) {
     createdByPhotoURL: user.photoURL || "",
     createdAt: serverTimestamp()
   };
+  if (!data.rgb) {
+    console.warn("[submitThread] missing rgb, omitting field", { hex: data.hex });
+    delete data.rgb;
+  }
+  const cleaned = cleanUndefined(data);
   const ref = collection(db, "submissions");
-  return addDoc(ref, data);
+  return addDoc(ref, cleaned);
 }
 
 export async function listPendingSubmissions(db, limitN = 50) {
@@ -123,7 +145,7 @@ export async function promoteSubmissionToVerified(db, submissionDoc, summary, ad
   if (!normalized) throw new Error("Invalid submission payload");
 
   const verifiedRef = doc(db, "verifiedThreads", key);
-  await setDoc(verifiedRef, normalized, { merge: true });
+  await setDoc(verifiedRef, cleanUndefined(normalized), { merge: true });
 
   const submissionRef = doc(db, "submissions", submissionDoc.id);
   await setDoc(
