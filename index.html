@@ -1,365 +1,260 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="aurora">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THREADCOLOR UNIVERSE</title>
+  <title>ThreadColor • Universe Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="themes.css">
+  <script>
+    (function () {
+      const theme = localStorage.getItem("theme") || "aurora";
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root {
-      --glass: rgba(255, 255, 255, 0.08);
-      --stroke: rgba(255, 255, 255, 0.12);
-      --glow: 0 15px 45px rgba(0, 255, 204, 0.35);
-    }
     body {
-      font-family: "Space Grotesk", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at 20% 20%, rgba(0, 255, 204, 0.15), transparent 35%),
-                  radial-gradient(circle at 80% 0%, rgba(93, 0, 255, 0.2), transparent 40%),
-                  #050710;
+      font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
       min-height: 100vh;
-      color: #e6e8ff;
-      overflow-x: hidden;
     }
-    .grid-bg {
+    .starfield {
       position: fixed;
       inset: 0;
+      pointer-events: none;
       background-image:
-        linear-gradient(transparent 0%, rgba(255,255,255,0.05) 1px, transparent 0),
-        linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 1px, transparent 0);
-      background-size: 120px 120px;
-      mask-image: radial-gradient(circle at center, rgba(255,255,255,0.7), transparent 70%);
-      pointer-events: none;
+        radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1px 1px at 40% 70%, rgba(255, 255, 255, 0.35), transparent);
+      opacity: 0.6;
       z-index: 0;
     }
-    .aurora {
-      position: fixed;
-      inset: -20%;
-      filter: blur(80px);
-      opacity: 0.75;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(0, 255, 204, 0.2), transparent 40%),
-        radial-gradient(circle at 70% 40%, rgba(255, 0, 153, 0.2), transparent 45%),
-        radial-gradient(circle at 60% 70%, rgba(64, 112, 255, 0.25), transparent 40%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .glass {
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(14px);
-    }
-    .card {
-      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+    .portal-card {
       position: relative;
+      transition: transform 200ms ease, box-shadow 200ms ease;
       overflow: hidden;
     }
-    .card::after {
+    .portal-card::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(0, 255, 204, 0.14), transparent 55%);
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.12), transparent 55%);
       opacity: 0;
-      transition: opacity 200ms ease;
+      transition: opacity 150ms ease;
       pointer-events: none;
     }
-    .card:hover {
+    .portal-card:hover {
       transform: translateY(-4px);
-      border-color: rgba(0, 255, 204, 0.35);
-      box-shadow: var(--glow);
+      box-shadow: var(--portal-glow, 0 10px 40px rgba(0,0,0,0.25));
     }
-    .card:hover::after {
-      opacity: 1;
+    .portal-card:hover::after { opacity: 1; }
+    .swatch {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.25);
+      transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+      cursor: pointer;
     }
-    .fade-up {
-      animation: fadeUp 0.6s ease both;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .pill {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #d9e8ff;
+    .swatch.active {
+      transform: translateY(-2px) scale(1.05);
+      border-color: rgba(255,255,255,0.9);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
   </style>
 </head>
-<body class="relative">
-  <div class="grid-bg"></div>
-  <div class="aurora"></div>
-  <main class="relative z-10">
-    <!-- Hero -->
-    <header class="max-w-6xl mx-auto px-6 pt-10 pb-16 md:pb-20 fade-up">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-        <div class="space-y-6 md:max-w-2xl">
-          <p class="text-sm uppercase tracking-[0.35em] text-cyan-300">Portal</p>
-          <h1 class="text-4xl md:text-5xl font-semibold leading-tight text-white drop-shadow-lg">
-            THREADCOLOR UNIVERSE
-          </h1>
-          <p class="text-lg text-slate-200 max-w-2xl">
-            Thế giới không gian màu số — Tra mã chỉ đa hãng từ HEX/Pantone • Lấy màu từ ảnh • Lưu • Chia sẻ • Khám phá
+<body class="theme-body relative overflow-hidden">
+  <div class="starfield"></div>
+
+  <header class="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400/70 to-blue-600/70 shadow-lg"></div>
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-muted">Universe Hub</p>
+        <h1 class="text-xl md:text-2xl font-semibold text-text">ThreadColor</h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="hidden md:flex items-center gap-2" id="themeSwatches">
+        <div class="swatch" data-theme-key="aurora" title="Aurora"></div>
+        <div class="swatch" data-theme-key="neon" title="Neon"></div>
+        <div class="swatch" data-theme-key="zen" title="Zen"></div>
+        <div class="swatch" data-theme-key="ocean" title="Ocean"></div>
+        <div class="swatch" data-theme-key="botanical" title="Botanical"></div>
+        <div class="swatch" data-theme-key="desert" title="Desert"></div>
+        <div class="swatch" data-theme-key="retro" title="Retro"></div>
+        <div class="swatch" data-theme-key="royal" title="Royal"></div>
+      </div>
+      <div class="relative">
+        <button id="hubLogin" class="px-4 py-2 rounded-lg bg-panel text-text border border-border shadow-sm hover:opacity-90">Đăng nhập</button>
+        <div id="hubDropdown" class="hidden absolute right-0 mt-2 w-44 rounded-lg bg-panel border border-border shadow-lg">
+          <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/10">Profile (coming soon)</button>
+          <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/10">Settings</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10 max-w-6xl mx-auto px-6 pb-16">
+    <section class="glass-card rounded-3xl border border-border p-8 mb-10 shadow-2xl">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="space-y-4">
+          <p class="text-xs uppercase tracking-[0.35em] text-accent">Universe</p>
+          <h2 class="text-4xl font-semibold text-text">THREADCOLOR UNIVERSE</h2>
+          <p class="text-lg text-muted max-w-2xl">
+            Thế giới tra mã chỉ đa hãng, màu nào cũng tìm. Chọn cổng vũ trụ bạn thích, lưu theme và bước vào app với đúng không gian của mình.
           </p>
+          <div class="flex items-center gap-3 text-sm text-muted">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">Realtime ΔE</span>
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">Multi-brand</span>
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">My Library</span>
+          </div>
           <div class="flex flex-wrap gap-3">
-            <a href="app.html" class="inline-flex items-center px-5 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900 font-semibold shadow-lg hover:shadow-cyan-500/30 transition">
-              Bắt đầu tra mã
-            </a>
-            <a href="#gateway" class="inline-flex items-center px-5 py-3 rounded-full border border-cyan-200/40 text-cyan-100 hover:bg-cyan-100/10 transition">
-              Khám phá tính năng
-            </a>
+            <a href="app.html" class="inline-flex items-center px-5 py-3 rounded-full bg-accent text-black font-semibold shadow-lg hover:shadow-accent/40 transition">Vào tool ngay</a>
+            <a href="#portals" class="inline-flex items-center px-5 py-3 rounded-full border border-border text-text hover:bg-white/5 transition">Khám phá cổng</a>
           </div>
-          <div class="flex gap-4 text-sm text-slate-200/80">
-            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>Real-time color math</span>
-            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse"></span>Multi-brand library</span>
-          </div>
+          <p class="text-sm text-muted">Theme hiện tại: <span id="activeThemeName" class="text-text font-semibold">Aurora</span></p>
         </div>
-        <div class="glass card p-6 rounded-2xl border flex-1 shadow-xl">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 to-pink-500 blur-[1px]"></div>
-            <div>
-              <p class="text-sm text-cyan-200">Quick launch</p>
-              <p class="text-xl font-semibold text-white">Công cụ tra màu</p>
-            </div>
-          </div>
-          <p class="text-slate-200 text-sm leading-relaxed">
-            Tính toán ΔE chuẩn Lab, lọc theo hãng, lưu My Library, xác minh cộng đồng. Luồng giữ nguyên trên trang app.
-          </p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="pill px-3 py-1 rounded-full text-xs">HEX → Thread</span>
-            <span class="pill px-3 py-1 rounded-full text-xs">Pick from Image</span>
-            <span class="pill px-3 py-1 rounded-full text-xs">My Library</span>
-          </div>
-          <a href="app.html" class="mt-6 inline-flex items-center justify-center w-full px-4 py-3 rounded-xl bg-cyan-400 text-slate-900 font-semibold hover:shadow-cyan-400/40 transition shadow-lg">
-            Mở tool
-          </a>
-        </div>
-      </div>
-    </header>
-
-    <!-- Gateway -->
-    <section id="gateway" class="max-w-6xl mx-auto px-6 pb-12 md:pb-16 fade-up">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-semibold text-white">Gateway tính năng</h2>
-        <span class="text-xs uppercase tracking-[0.2em] text-cyan-200">Neon Grid</span>
-      </div>
-      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">⬡</div><span class="text-[10px] px-2 py-1 rounded-full bg-pink-500/20 text-pink-200 border border-pink-300/30">HOT</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">HEX → Thread</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Tra mã chỉ đa hãng từ màu bất kỳ.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">◉</div><span class="text-[10px] px-2 py-1 rounded-full bg-amber-500/20 text-amber-100 border border-amber-200/30">NEW</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">Pantone → Thread</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Nhập mã Pantone, tìm chỉ gần nhất.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">🖼</div><span class="text-[10px] px-2 py-1 rounded-full bg-cyan-500/15 text-cyan-100 border border-cyan-200/30">BETA</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">Pick from Image</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Chọn màu từ ảnh, tính ΔE tức thì.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">★</div><span class="text-[10px] px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-100 border border-emerald-200/30">SYNC</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">My Library</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Lưu & mở nhanh các kết quả yêu thích.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">∞</div><span class="text-[10px] px-2 py-1 rounded-full bg-purple-500/20 text-purple-100 border border-purple-200/30">LAB</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">Palette Playground</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Khám phá phối màu và deltaE.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">⚡</div><span class="text-[10px] px-2 py-1 rounded-full bg-pink-500/15 text-pink-100 border border-pink-200/30">SOON</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">Popular Picks</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Xem màu thịnh hành từ cộng đồng.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">⇆</div><span class="text-[10px] px-2 py-1 rounded-full bg-amber-500/15 text-amber-100 border border-amber-200/30">COMPARE</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">Compare Brands</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Đối chiếu bảng màu giữa các hãng.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-        <div class="glass card rounded-xl border p-4">
-          <div class="flex items-center justify-between">
-            <div class="text-cyan-300">⬈</div><span class="text-[10px] px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-100 border border-emerald-200/30">SHARE</span>
-          </div>
-          <h3 class="text-lg font-semibold mt-3 text-white">Export / Share</h3>
-          <p class="text-sm text-slate-200/80 mt-1">Chia sẻ kết quả hoặc xuất bảng mã.</p>
-          <a href="app.html" class="inline-flex mt-3 text-cyan-200 hover:text-cyan-100 text-sm">Open →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Mini demo -->
-    <section class="max-w-6xl mx-auto px-6 pb-14 md:pb-20 fade-up">
-      <div class="glass rounded-2xl border p-6 md:p-8 card">
-        <div class="flex flex-col md:flex-row gap-8 items-center">
-          <div class="flex-1 space-y-4 w-full">
-            <p class="text-sm uppercase tracking-[0.25em] text-cyan-200">Mini Demo</p>
-            <h3 class="text-2xl font-semibold text-white">Xem thử màu ngay</h3>
-            <div class="flex flex-col gap-3">
-              <label class="text-sm text-slate-200/80">Nhập HEX</label>
-              <div class="flex flex-col sm:flex-row gap-3">
-                <input id="demoHex" type="text" class="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-300" placeholder="#00ffcc">
-                <button id="btnPreview" class="px-5 py-3 rounded-xl bg-cyan-400 text-slate-900 font-semibold hover:shadow-cyan-400/30 transition">Preview</button>
-                <a id="btnOpenFull" href="app.html" class="px-5 py-3 rounded-xl border border-cyan-300 text-cyan-100 hover:bg-cyan-100/10 transition flex items-center justify-center">Open full tool</a>
-              </div>
-              <p id="demoError" class="text-sm text-pink-200 hidden">HEX không hợp lệ. Ví dụ: #00ffcc</p>
-            </div>
-            <p class="text-xs text-slate-300">Tip: Vũ trụ thứ 2 " không gian HEX sẽ tới sớm".</p>
-          </div>
-          <div class="flex-1 flex items-center justify-center w-full">
-            <div id="demoBlob" class="relative w-56 h-56 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 blur-[0px] shadow-[0_0_60px_rgba(0,255,204,0.35)] transition-all"></div>
+        <div class="h-48 md:h-56 lg:h-64 flex-1 rounded-2xl bg-gradient-to-br from-accent/40 via-transparent to-blue-500/25 border border-border relative overflow-hidden">
+          <div class="absolute inset-0 blur-3xl bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.15),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.12),transparent_35%)]"></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-32 h-32 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl shadow-[0_0_80px_rgba(255,255,255,0.18)]"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Trust strip -->
-    <section class="max-w-6xl mx-auto px-6 pb-16 fade-up space-y-6">
-      <div class="glass rounded-xl border p-4 flex flex-wrap items-center gap-3">
-        <span class="text-xs uppercase tracking-[0.2em] text-cyan-200">Supported Brands</span>
-        <div class="flex flex-wrap gap-2">
-          <span class="pill px-3 py-1 rounded-full text-xs">Isacord</span>
-          <span class="pill px-3 py-1 rounded-full text-xs">Madeira</span>
-          <span class="pill px-3 py-1 rounded-full text-xs">DMC</span>
-          <span class="pill px-3 py-1 rounded-full text-xs">ACK</span>
-          <span class="pill px-3 py-1 rounded-full text-xs">Thái Tuấn</span>
-          <span class="pill px-3 py-1 rounded-full text-xs">Aurifil</span>
-          <span class="pill px-3 py-1 rounded-full text-xs">Danh Tường</span>
-          <span class="pill px-3 py-1 rounded-full text-xs">... và hơn nữa</span>
+    <section id="portals" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="hex" data-theme="neon">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Neon District</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">HEX</span>
         </div>
-      </div>
-      <div class="grid md:grid-cols-3 gap-4">
-        <div class="glass rounded-xl border p-4 text-center">
-          <p class="text-3xl font-semibold text-white">18+</p>
-          <p class="text-slate-200/80 text-sm">Brands supported</p>
+        <h3 class="text-xl font-semibold text-text mt-2">HEX → Thread</h3>
+        <p class="text-sm text-muted mt-2">Tra mã chỉ đa hãng từ bất kỳ mã HEX.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="pantone" data-theme="aurora">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Aurora Lab</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Pantone</span>
         </div>
-        <div class="glass rounded-xl border p-4 text-center">
-          <p class="text-3xl font-semibold text-white">25K+</p>
-          <p class="text-slate-200/80 text-sm">Colors indexed</p>
+        <h3 class="text-xl font-semibold text-text mt-2">Pantone → Thread</h3>
+        <p class="text-sm text-muted mt-2">Nhập mã Pantone, tìm chỉ gần nhất.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="image" data-theme="ocean">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Ocean Abyss</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Image</span>
         </div>
-        <div class="glass rounded-xl border p-4 text-center">
-          <p class="text-3xl font-semibold text-white">3.2K</p>
-          <p class="text-slate-200/80 text-sm">Palettes created</p>
+        <h3 class="text-xl font-semibold text-text mt-2">Pick from Image</h3>
+        <p class="text-sm text-muted mt-2">Chọn màu từ ảnh, tính ΔE ngay.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="library" data-theme="zen">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Zen Ink</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Library</span>
         </div>
-      </div>
+        <h3 class="text-xl font-semibold text-text mt-2">My Library</h3>
+        <p class="text-sm text-muted mt-2">Lưu và mở nhanh bộ sưu tập của bạn.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="palette" data-theme="botanical">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Botanical Biolume</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Palette</span>
+        </div>
+        <h3 class="text-xl font-semibold text-text mt-2">Palette Playground</h3>
+        <p class="text-sm text-muted mt-2">Khám phá phối màu và deltaE.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="compare" data-theme="desert">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Desert Mirage</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Compare</span>
+        </div>
+        <h3 class="text-xl font-semibold text-text mt-2">Compare Brands</h3>
+        <p class="text-sm text-muted mt-2">Đối chiếu bảng màu giữa các hãng.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="export" data-theme="retro">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Retro Arcade</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Export</span>
+        </div>
+        <h3 class="text-xl font-semibold text-text mt-2">Export / Share</h3>
+        <p class="text-sm text-muted mt-2">Xuất kết quả và chia sẻ nhanh.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
+      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="verify" data-theme="royal">
+        <div class="flex items-center justify-between text-sm text-muted">
+          <span>Royal Atelier</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Verify</span>
+        </div>
+        <h3 class="text-xl font-semibold text-text mt-2">Crowd Verify</h3>
+        <p class="text-sm text-muted mt-2">Xác minh dữ liệu chỉ chuẩn nhất.</p>
+        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
+      </article>
     </section>
-
-    <!-- Footer -->
-    <footer class="max-w-6xl mx-auto px-6 pb-12 fade-up">
-      <div class="glass rounded-2xl border p-6 md:p-8 card grid gap-6 md:grid-cols-2">
-        <div class="space-y-3">
-          <p class="text-sm uppercase tracking-[0.25em] text-cyan-200">Roadmap</p>
-          <ul class="space-y-2 text-slate-200">
-            <li>• Popular Picks & cộng đồng chia sẻ</li>
-            <li>• Xác minh cộng đồng nâng cao</li>
-            <li>• Ứng dụng mobile & offline cache</li>
-          </ul>
-        </div>
-        <div class="space-y-3">
-          <p class="text-sm uppercase tracking-[0.25em] text-cyan-200">Liên hệ</p>
-          <div class="flex flex-wrap gap-3 text-sm">
-            <a href="mailto:hello@example.com" class="pill px-3 py-2 rounded-full hover:bg-white/15 transition">Feedback</a>
-            <a href="https://github.com" class="pill px-3 py-2 rounded-full hover:bg-white/15 transition">GitHub</a>
-            <a href="#" class="pill px-3 py-2 rounded-full hover:bg-white/15 transition">Privacy</a>
-          </div>
-          <p class="text-xs text-slate-400">Mobile : 0928541111 <a class="text-cyan-200 underline" href="app.html">app.html</a>.</p>
-        </div>
-      </div>
-      <p class="text-center text-xs text-slate-500 mt-6">THREADCOLOR UNIVERSE • Futuristic Color Space</p>
-    </footer>
   </main>
 
   <script>
-    const demoHex = document.getElementById("demoHex");
-    const demoBlob = document.getElementById("demoBlob");
-    const demoError = document.getElementById("demoError");
-    const btnPreview = document.getElementById("btnPreview");
-    const btnOpenFull = document.getElementById("btnOpenFull");
+    const themeNames = {
+      aurora: "Aurora",
+      neon: "Neon District",
+      zen: "Zen Ink",
+      ocean: "Ocean Abyss",
+      botanical: "Botanical Biolume",
+      desert: "Desert Mirage",
+      retro: "Retro Arcade",
+      royal: "Royal Atelier"
+    };
 
-    function isValidHex(v) {
-      if (!v) return false;
-      const hex = v.trim().toLowerCase();
-      return /^#?[0-9a-f]{6}$/.test(hex);
-    }
-    function normalizeHex(v) {
-      if (!isValidHex(v)) return null;
-      const hex = v.trim().toLowerCase();
-      return hex.startsWith("#") ? hex : "#" + hex;
-    }
-    function updateBlob(hex) {
-      demoBlob.style.background = `radial-gradient(circle at 30% 30%, ${hex}, transparent), radial-gradient(circle at 70% 70%, ${hex}cc, #0b1224)`;
-      demoBlob.style.boxShadow = `0 0 60px ${hex}66, 0 10px 40px ${hex}33`;
-    }
-    function showError(msg) {
-      demoError.textContent = msg;
-      demoError.classList.remove("hidden");
-    }
-    function hideError() {
-      demoError.classList.add("hidden");
+    function applyTheme(theme) {
+      const key = themeNames[theme] ? theme : "aurora";
+      document.documentElement.dataset.theme = key;
+      localStorage.setItem("theme", key);
+      const nameEl = document.getElementById("activeThemeName");
+      if (nameEl) nameEl.textContent = themeNames[key];
+      document.querySelectorAll(".swatch").forEach(sw => {
+        sw.classList.toggle("active", sw.dataset.themeKey === key);
+      });
     }
 
-    btnPreview?.addEventListener("click", () => {
-      const hex = normalizeHex(demoHex.value);
-      if (!hex) {
-        showError("HEX không hợp lệ. Ví dụ: #00ffcc");
-        return;
-      }
-      hideError();
-      updateBlob(hex);
+    document.querySelectorAll(".swatch").forEach(sw => {
+      const t = sw.dataset.themeKey;
+      sw.style.background = `var(--${t}-swatch, var(--accent))`;
+      sw.addEventListener("click", () => applyTheme(t));
     });
 
-    btnOpenFull?.addEventListener("click", (e) => {
-      const hex = normalizeHex(demoHex.value);
-      if (hex) {
-        e.preventDefault();
-        window.location.href = `app.html?color=${encodeURIComponent(hex)}`;
-      }
-    });
+    const stored = localStorage.getItem("theme") || "aurora";
+    applyTheme(stored);
 
-    document.querySelectorAll(".card").forEach(card => {
-      card.addEventListener("pointermove", e => {
+    document.querySelectorAll("[data-feature]").forEach(card => {
+      card.addEventListener("mousemove", e => {
         const rect = card.getBoundingClientRect();
-        const mx = ((e.clientX - rect.left) / rect.width) * 100;
-        const my = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty("--mx", `${mx}%`);
-        card.style.setProperty("--my", `${my}%`);
+        card.style.setProperty("--mx", `${((e.clientX - rect.left) / rect.width) * 100}%`);
+        card.style.setProperty("--my", `${((e.clientY - rect.top) / rect.height) * 100}%`);
+      });
+      card.querySelector("button")?.addEventListener("click", () => {
+        const theme = card.dataset.theme || document.documentElement.dataset.theme || "aurora";
+        const feature = card.dataset.feature || "hex";
+        localStorage.setItem("theme", theme);
+        const url = new URL("app.html", window.location.origin);
+        url.searchParams.set("feature", feature);
+        url.searchParams.set("theme", theme);
+        window.location.href = url.toString();
       });
     });
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener("click", e => {
-        const target = document.querySelector(anchor.getAttribute("href"));
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+    const hubLogin = document.getElementById("hubLogin");
+    const hubDropdown = document.getElementById("hubDropdown");
+    if (hubLogin && hubDropdown) {
+      hubLogin.addEventListener("click", e => {
+        e.stopPropagation();
+        hubDropdown.classList.toggle("hidden");
       });
-    });
+      document.addEventListener("click", () => hubDropdown.classList.add("hidden"));
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape") hubDropdown.classList.add("hidden");
+      });
+    }
   </script>
 </body>
 </html>

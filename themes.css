@@ -1,0 +1,116 @@
+:root {
+  --bg0: radial-gradient(circle at 20% 20%, rgba(96, 223, 255, 0.18), transparent 35%), radial-gradient(circle at 80% 0%, rgba(255, 140, 255, 0.2), transparent 40%), #060713;
+  --panel: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #e9f2ff;
+  --muted: #b9c4dd;
+  --accent: #7ae0ff;
+  --portal-glow: 0 15px 50px rgba(122, 224, 255, 0.35);
+  --aurora-swatch: linear-gradient(135deg, #7ae0ff, #c189ff);
+  --neon-swatch: linear-gradient(135deg, #00ffd1, #ff00ea);
+  --zen-swatch: linear-gradient(135deg, #9ad4c8, #3f6d6c);
+  --ocean-swatch: linear-gradient(135deg, #4ec2ff, #214b8f);
+  --botanical-swatch: linear-gradient(135deg, #7bff9b, #2c7a44);
+  --desert-swatch: linear-gradient(135deg, #ffc86b, #c06022);
+  --retro-swatch: linear-gradient(135deg, #ff6bb5, #6b9bff);
+  --royal-swatch: linear-gradient(135deg, #b08cff, #243b8b);
+}
+
+.theme-body {
+  background: var(--bg0);
+  color: var(--text);
+}
+
+.glass-card {
+  background: var(--panel);
+  border-color: var(--border);
+  backdrop-filter: blur(14px);
+}
+
+[data-theme="neon"] {
+  --bg0: radial-gradient(circle at 25% 20%, rgba(0, 255, 209, 0.18), transparent 35%), radial-gradient(circle at 80% 10%, rgba(255, 0, 234, 0.2), transparent 40%), #05030d;
+  --panel: rgba(0, 0, 0, 0.35);
+  --border: rgba(0, 255, 209, 0.25);
+  --text: #f0f5ff;
+  --muted: #9ad6d3;
+  --accent: #00ffd1;
+  --portal-glow: 0 15px 50px rgba(0, 255, 209, 0.35);
+}
+
+[data-theme="aurora"] {
+  --bg0: radial-gradient(circle at 20% 20%, rgba(122, 224, 255, 0.15), transparent 35%), radial-gradient(circle at 70% 40%, rgba(193, 137, 255, 0.18), transparent 45%), #060713;
+  --panel: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #e9f2ff;
+  --muted: #b9c4dd;
+  --accent: #7ae0ff;
+  --portal-glow: 0 15px 50px rgba(122, 224, 255, 0.35);
+}
+
+[data-theme="zen"] {
+  --bg0: linear-gradient(135deg, #0c1a1a, #0f2a2a);
+  --panel: rgba(255, 255, 255, 0.04);
+  --border: rgba(124, 192, 180, 0.3);
+  --text: #d9f2ec;
+  --muted: #9cc8bc;
+  --accent: #9ad4c8;
+  --portal-glow: 0 15px 50px rgba(154, 212, 200, 0.35);
+}
+
+[data-theme="ocean"] {
+  --bg0: radial-gradient(circle at 30% 15%, rgba(78, 194, 255, 0.18), transparent 35%), radial-gradient(circle at 80% 70%, rgba(33, 75, 143, 0.3), transparent 50%), #041021;
+  --panel: rgba(255, 255, 255, 0.05);
+  --border: rgba(78, 194, 255, 0.25);
+  --text: #dff2ff;
+  --muted: #9bc0e0;
+  --accent: #4ec2ff;
+  --portal-glow: 0 15px 50px rgba(78, 194, 255, 0.35);
+}
+
+[data-theme="botanical"] {
+  --bg0: linear-gradient(145deg, #07140f, #0f2d1b);
+  --panel: rgba(255, 255, 255, 0.04);
+  --border: rgba(123, 255, 155, 0.25);
+  --text: #e7ffe8;
+  --muted: #a3d8b0;
+  --accent: #7bff9b;
+  --portal-glow: 0 15px 50px rgba(123, 255, 155, 0.35);
+}
+
+[data-theme="desert"] {
+  --bg0: linear-gradient(160deg, #1f1206, #2d1b0a 50%, #5a3211 100%);
+  --panel: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 200, 107, 0.25);
+  --text: #ffeede;
+  --muted: #e4caa7;
+  --accent: #ffc86b;
+  --portal-glow: 0 15px 50px rgba(255, 200, 107, 0.35);
+}
+
+[data-theme="retro"] {
+  --bg0: radial-gradient(circle at 20% 20%, rgba(255, 107, 181, 0.16), transparent 35%), radial-gradient(circle at 80% 20%, rgba(107, 155, 255, 0.18), transparent 40%), #0b0a16;
+  --panel: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 107, 181, 0.25);
+  --text: #f0e8ff;
+  --muted: #cbb7e6;
+  --accent: #ff6bb5;
+  --portal-glow: 0 15px 50px rgba(255, 107, 181, 0.35);
+}
+
+[data-theme="royal"] {
+  --bg0: linear-gradient(150deg, #0b0e2a, #141a3f 50%, #1d2e63 100%);
+  --panel: rgba(255, 255, 255, 0.05);
+  --border: rgba(176, 140, 255, 0.3);
+  --text: #e9e6ff;
+  --muted: #bfc5ec;
+  --accent: #b08cff;
+  --portal-glow: 0 15px 50px rgba(176, 140, 255, 0.35);
+}
+
+.text-text { color: var(--text); }
+.text-muted { color: var(--muted); }
+.text-accent { color: var(--accent); }
+.bg-panel { background: var(--panel); }
+.border-border { border-color: var(--border); }
+.bg-accent { background: var(--accent); }
+
