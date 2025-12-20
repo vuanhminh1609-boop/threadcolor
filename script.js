@@ -1,4 +1,4 @@
-import { saveSearch, getSavedSearch, listSavedSearches } from "./library.js";
+﻿import { saveSearch, getSavedSearch, listSavedSearches } from "./library.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
   submitThread,
@@ -143,21 +143,21 @@ function getUniqueBrands(list) {
   return brands;
 }
 
-function formatFirestoreError(err, fallback = "Có lỗi Firestore") {
+function formatFirestoreError(err, fallback = "CÃ³ lá»—i Firestore") {
   const msg = (err && (err.message || err.code)) || "";
   const lower = msg.toLowerCase();
   if (lower.includes("permission-denied")) {
-    return "Bạn chưa cấp quyền / rules đang chặn. Kiểm tra Firestore rules và đăng nhập.";
+    return "Báº¡n chÆ°a cáº¥p quyá»n / rules Ä‘ang cháº·n. Kiá»ƒm tra Firestore rules vÃ  Ä‘Äƒng nháº­p.";
   }
   if (lower.includes("has not been used") || lower.includes("api not enabled")) {
-    return "Firestore chưa bật API. Bật Cloud Firestore và thử lại.";
+    return "Firestore chÆ°a báº­t API. Báº­t Cloud Firestore vÃ  thá»­ láº¡i.";
   }
   return msg || fallback;
 }
 
 function populateContributeBrands(brands = getUniqueBrands(threads)) {
   if (!contributeBrandSelect) return;
-  contributeBrandSelect.innerHTML = '<option value="">Chọn hãng chỉ</option>';
+  contributeBrandSelect.innerHTML = '<option value="">Chá»n hÃ£ng chá»‰</option>';
   brands.forEach(b => {
     const opt = document.createElement("option");
     opt.value = b;
@@ -190,16 +190,16 @@ function closeContributeModal() {
 
 async function loadPendingSubmissionsUI() {
   if (!verifyList) return;
-  verifyList.innerHTML = "<div class='text-gray-500'>Đang tải...</div>";
+  verifyList.innerHTML = "<div class='text-gray-500'>Äang táº£i...</div>";
 
   if (!ensureAuthReady() || !authApi?.db || !currentUser) {
-    verifyList.innerHTML = "<div class='text-gray-500'>Cần đăng nhập.</div>";
+    verifyList.innerHTML = "<div class='text-gray-500'>Cáº§n Ä‘Äƒng nháº­p.</div>";
     return;
   }
   try {
     await refreshAdmin(true);
     if (!isAdminUser) {
-      verifyList.innerHTML = "<div class='text-red-600'>Bạn không có quyền xác minh (cần admin).</div>";
+      verifyList.innerHTML = "<div class='text-red-600'>Báº¡n khÃ´ng cÃ³ quyá»n xÃ¡c minh (cáº§n admin).</div>";
       return;
     }
     const subs = await listPendingSubmissions(authApi.db, 50);
@@ -221,10 +221,10 @@ async function loadPendingSubmissionsUI() {
   } catch (err) {
     if (isPermissionDenied(err)) {
       console.info("[verify] permission denied", { code: err?.code, msg: err?.message });
-      verifyList.innerHTML = "<div class='text-red-600'>Bạn không có quyền xác minh (cần admin).</div>";
+      verifyList.innerHTML = "<div class='text-red-600'>Báº¡n khÃ´ng cÃ³ quyá»n xÃ¡c minh (cáº§n admin).</div>";
       return;
     }
-    const friendly = typeof formatFirestoreError === "function" ? formatFirestoreError(err, "Lỗi tải submissions") : (err?.message || "Lỗi tải submissions");
+    const friendly = typeof formatFirestoreError === "function" ? formatFirestoreError(err, "Lá»—i táº£i submissions") : (err?.message || "Lá»—i táº£i submissions");
     console.error(err);
     verifyList.innerHTML = `<div class='text-red-600'>${friendly}</div>`;
   }
@@ -233,7 +233,7 @@ async function loadPendingSubmissionsUI() {
 function renderVerifyList() {
   if (!verifyList) return;
   if (!pendingSubmissions.length) {
-    verifyList.innerHTML = "<div class='text-gray-500'>Không có submissions chỉ.</div>";
+    verifyList.innerHTML = "<div class='text-gray-500'>KhÃ´ng cÃ³ submissions chá»‰.</div>";
     return;
   }
   verifyList.innerHTML = pendingSubmissions.map(item => {
@@ -403,6 +403,8 @@ const eyedropperHint = document.getElementById("eyedropperHint");
 const eyedropperFallback = document.getElementById("eyedropperFallback");
 const fallbackColorPicker = document.getElementById("fallbackColorPicker");
 const accountBtn = document.getElementById("btnAccount");
+const accountMenuBtn = document.getElementById("accountMenuBtn");
+const accountMenu = document.getElementById("accountMenu");
 const userInfo = document.getElementById("userInfo");
 const userAvatar = document.getElementById("userAvatar");
 const userName = document.getElementById("userName");
@@ -478,7 +480,7 @@ const verifyClose = document.getElementById("verifyClose");
 const verifyList = document.getElementById("verifyList");
 
 
-resultBox.innerHTML = "<p class='text-gray-500 text-center'>Đang tải, dữ liệu màu chưa sẵn sàng</p>";
+resultBox.innerHTML = "<p class='text-gray-500 text-center'>Äang táº£i, dá»¯ liá»‡u mÃ u chÆ°a sáºµn sÃ ng</p>";
 
 
 //======================= DATA LOADING =======================
@@ -501,12 +503,12 @@ fetch("threads.json")
     });
     isDataReady = true;
 
-    resultBox.innerHTML = "Xong. Dữ liệu màu đã sẵn sàng.";
+    resultBox.innerHTML = "Xong. Dá»¯ liá»‡u mÃ u Ä‘Ã£ sáºµn sÃ ng.";
 
     restoreInspectorFromUrl();
   })
   .catch(() => {
-    resultBox.innerHTML = "<p class='text-red-600'>Lỗi tải dữ liệu</p>";
+    resultBox.innerHTML = "<p class='text-red-600'>Lá»—i táº£i dá»¯ liá»‡u</p>";
   });
 
 //======================= CORE LOGIC =======================
@@ -557,13 +559,13 @@ function renderColorCard(t, chosenHex) {
           <div class="font-semibold">${t.brand || ""} ${t.code || ""}</div>
           <div class="text-gray-600">${t.name || ""}</div>
 
-          <div class="text-xs text-gray-500">ΔE ${deltaText}</div>
+          <div class="text-xs text-gray-500">Î”E ${deltaText}</div>
 
         </div>
       </div>
       <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
         <div class="w-4 h-4 rounded border" style="background:${chosenHex}"></div>
-        <span>so với</span>
+        <span>so vá»›i</span>
         <div class="w-4 h-4 rounded border" style="background:${t.hex}"></div>
       </div>
       <div class="mt-3 flex justify-end">
@@ -581,14 +583,14 @@ function showGroupedResults(groups, chosenHex) {
   resultBox.innerHTML = `
     <div class="flex items-center gap-3 mb-6">
       <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
-      <div class="font-semibold">Màu dã chọn</div>
+      <div class="font-semibold">MÃ u dÃ£ chá»n</div>
     </div>
     ${groups.map((group, i) => `
       <section class="mb-8">
         <h3 class="font-semibold mb-3 text-gray-700 flex items-center gap-2">
-  <span>Nhóm ${i + 1}</span>
+  <span>NhÃ³m ${i + 1}</span>
   <span class="inline-block w-3 h-3 rounded-sm border" style="background:${chosenHex}"></span>
-  <span>${group.items.length} màu</span>
+  <span>${group.items.length} mÃ u</span>
 </h3>
 
 
@@ -629,14 +631,14 @@ function copyToClipboard(text, label) {
     document.body.appendChild(ta);
     ta.select();
 
-    try { document.execCommand("copy"); showToast(`Ðã copy ${label}`); } catch (e) {}
+    try { document.execCommand("copy"); showToast(`ÃÃ£ copy ${label}`); } catch (e) {}
 
     ta.remove();
   };
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(text).then(() => {
 
-      showToast(`Ðã copy ${label}`);
+      showToast(`ÃÃ£ copy ${label}`);
 
     }).catch(() => fallbackCopy());
   } else {
@@ -663,10 +665,10 @@ function populateInspector(data) {
   inspectorHsl.textContent = `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`;
 
 
-  inspectorBrand.textContent = brand || "�";
-  inspectorCode.textContent = code || "�";
-  inspectorName.textContent = name || "�";
-  inspectorDelta.textContent = delta ? `ΔE ${delta}` : "�";
+  inspectorBrand.textContent = brand || "ï¿½";
+  inspectorCode.textContent = code || "ï¿½";
+  inspectorName.textContent = name || "ï¿½";
+  inspectorDelta.textContent = delta ? `Î”E ${delta}` : "ï¿½";
   drawerTitle.textContent = "Color Inspector";
   drawer.dataset.hex = normalizedHex;
 }
@@ -775,10 +777,10 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     const docRef = await saveSearch(api.db, user.uid, payload);
     console.info("[save] saved doc id", docRef?.id);
     if (saveBtn) {
-      saveBtn.textContent = "Saved ✓";
+      saveBtn.textContent = "Saved âœ“";
       setTimeout(() => resetSaveBtn("Save"), 1500);
     }
-    showToast("Saved ✓");
+    showToast("Saved âœ“");
     if (libraryModal && !libraryModal.classList.contains("hidden")) {
       await loadLibraryList();
     }
@@ -890,13 +892,16 @@ async function updateUserUI(user) {
   if (user && authApi?.db) {
     if (lastAdminUid === user.uid && lastAdminValue === true) {
       isAdminUser = true;
-      return;
+    } else {
+      await refreshAdmin(true);
     }
-    await refreshAdmin(true);
+    if (btnVerify) btnVerify.classList.toggle("hidden", !isAdminUser);
   } else {
     isAdminUser = false;
     lastAdminUid = null;
     lastAdminValue = null;
+    if (btnVerify) btnVerify.classList.add("hidden");
+    if (accountMenu) accountMenu.classList.add("hidden");
   }
 }
 
@@ -941,7 +946,7 @@ function ensureAuthReady() {
   const initErr = getAuthInitError();
   if (initErr) {
     console.error(initErr);
-    showAuthError(`${initErr?.name || "Firebase"}: ${initErr?.message || "Lỗi khởi tạo"}`);
+    showAuthError(`${initErr?.name || "Firebase"}: ${initErr?.message || "Lá»—i khá»Ÿi táº¡o"}`);
     return false;
   }
   const api = getAuthApi();
@@ -957,15 +962,15 @@ async function loadLibraryList() {
   if (!ensureAuthReady()) return;
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    showAuthError("Login để xem Library");
+    showAuthError("Login Ä‘á»ƒ xem Library");
     accountBtn?.click();
     return;
   }
-  libraryList.innerHTML = "<div class='text-gray-500'>Đang tải...</div>";
+  libraryList.innerHTML = "<div class='text-gray-500'>Äang táº£i...</div>";
   try {
     const { items } = await listSavedSearches(api.db, user.uid, 50);
     if (!items.length) {
-      libraryList.innerHTML = "<div class='text-gray-500'>Chưa có bản lưu</div>";
+      libraryList.innerHTML = "<div class='text-gray-500'>ChÆ°a cÃ³ báº£n lÆ°u</div>";
       return;
     }
     libraryList.innerHTML = items.map(it => {
@@ -982,7 +987,7 @@ async function loadLibraryList() {
     }).join("");
   } catch (err) {
     console.error("Load library failed", err);
-    const friendly = formatFirestoreError(err, "Không tải được Library");
+    const friendly = formatFirestoreError(err, "KhÃ´ng táº£i Ä‘Æ°á»£c Library");
     libraryList.innerHTML = `<div class='text-red-600'>${friendly}</div>`;
   }
 }
@@ -991,7 +996,7 @@ async function loadLibraryList() {
 async function handleSaveCurrent(saveBtn) {
   const initErr = getAuthInitError();
   if (initErr) {
-    const msg = `${initErr?.name || "Firebase"}: ${initErr?.message || "Lỗi khởi tạo"}`;
+    const msg = `${initErr?.name || "Firebase"}: ${initErr?.message || "Lá»—i khá»Ÿi táº¡o"}`;
     console.error(initErr);
     showToast(msg);
     showAuthError(msg);
@@ -1012,7 +1017,7 @@ const cardCode = card?.dataset?.code || "";
 const cardName = card?.dataset?.name || "";
 
 if (!currentRendered.length || !cardHex) {
-  showToast("Không có dữ liệu để lưu");
+  showToast("KhÃ´ng cÃ³ dá»¯ liá»‡u Ä‘á»ƒ lÆ°u");
   return;
 }
 
@@ -1065,7 +1070,7 @@ async function handleOpenSaved(id) {
     currentDeltaThreshold = deltaVal;
     if (deltaSlider) deltaSlider.value = deltaVal;
 
- deltaValueEls.forEach(el => el.textContent = `≈ ${currentDeltaThreshold.toFixed(1)}`);
+ deltaValueEls.forEach(el => el.textContent = `â‰ˆ ${currentDeltaThreshold.toFixed(1)}`);
     const brands = Array.isArray(data.selectedBrands) ? data.selectedBrands : [];
     document.querySelectorAll(".brand-filter").forEach(cb => {
       if (!brands.length) return;
@@ -1135,7 +1140,7 @@ function startEyeDropper() {
     if (eyedropperHint) eyedropperHint.classList.add("hidden");
     if (err && err.name === "AbortError") return;
 
-    showToast("Không pick du?c ");
+    showToast("KhÃ´ng pick du?c ");
   });
 }
 
@@ -1145,6 +1150,21 @@ bindAuth();
 
 if (accountBtn) {
   accountBtn.addEventListener("click", () => openAuthModal("login"));
+}
+
+const closeAccountMenu = () => {
+  if (accountMenu) accountMenu.classList.add("hidden");
+};
+
+if (accountMenuBtn) {
+  accountMenuBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    accountMenu?.classList.toggle("hidden");
+  });
+  document.addEventListener("click", () => closeAccountMenu());
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeAccountMenu();
+  });
 }
 
 if (authClose) authClose.addEventListener("click", closeAuthModal);
@@ -1213,7 +1233,7 @@ if (btnContribute) {
   btnContribute.addEventListener("click", () => {
     if (!currentUser) {
 
-      showAuthError("Login để đóng góp dữ liệu");
+      showAuthError("Login Ä‘á»ƒ Ä‘Ã³ng gÃ³p dá»¯ liá»‡u");
 
       accountBtn?.click();
       return;
@@ -1241,7 +1261,7 @@ if (contributeSubmit) {
     if (!ensureAuthReady()) return;
     if (!currentUser) {
 
-      showAuthError("Login để đóng góp dữ liệu");
+      showAuthError("Login Ä‘á»ƒ Ä‘Ã³ng gÃ³p dá»¯ liá»‡u");
 
       accountBtn?.click();
       return;
@@ -1253,12 +1273,12 @@ if (contributeSubmit) {
     const hex = normalizeHex(hexRaw);
     if (!brand || !code || !hex) {
 
-      showToast("Brand, Code, Hex là b?t bu?c");
+      showToast("Brand, Code, Hex lÃ  b?t bu?c");
       return;
     }
 
     if (!/^#[0-9a-f]{6}$/i.test(hex)) {
-      showToast("Hex kh�ng h?p l?");
+      showToast("Hex khï¿½ng h?p l?");
 
       return;
     }
@@ -1266,7 +1286,7 @@ if (contributeSubmit) {
       await submitThread(authApi.db, currentUser, { brand, code, name, hex: hex.toUpperCase() });
 
 
-      showToast("Ðã gửi0, chờ xác minh");
+      showToast("ÃÃ£ gá»­i0, chá» xÃ¡c minh");
 
 
       closeContributeModal();
@@ -1284,7 +1304,7 @@ if (contributeOverlay) contributeOverlay.addEventListener("click", closeContribu
 if (btnVerify) {
   btnVerify.addEventListener("click", () => {
     if (!currentUser) {
-showAuthError("Login để đóng góp dữ liệu");
+showAuthError("Login Ä‘á»ƒ Ä‘Ã³ng gÃ³p dá»¯ liá»‡u");
 
       accountBtn?.click();
       return;
@@ -1306,7 +1326,7 @@ if (verifyList) {
     const targetItem = pendingSubmissions.find(p => p.id === id);
     if (!currentUser) {
 
-      showAuthError("Login để xác minh");
+      showAuthError("Login Ä‘á»ƒ xÃ¡c minh");
       accountBtn?.click();
       return;
     }
@@ -1334,12 +1354,12 @@ if (verifyList) {
       }
       if (action === "approve") {
         if (!isAdminUser) {
-          showToast("Chỉ admin mới duyệt được");
+          showToast("Chá»‰ admin má»›i duyá»‡t Ä‘Æ°á»£c");
           return;
         }
         if (!targetItem) {
 
-          showToast("Không tìm thấy submission");
+          showToast("KhÃ´ng tÃ¬m tháº¥y submission");
 
           return;
         }
@@ -1355,7 +1375,7 @@ if (verifyList) {
     } catch (err) {
       console.error(err);
 
-      showToast(err?.message || "Lỗi thao tác");
+      showToast(err?.message || "Lá»—i thao tÃ¡c");
 
     }
   });
@@ -1367,12 +1387,12 @@ if (btnLogin) {
     const email = loginEmail?.value.trim();
     const pass = loginPassword?.value;
 
-    if (!email || !pass) return showAuthError("Vui lòng nhập Email và mật khẩu");
+    if (!email || !pass) return showAuthError("Vui lÃ²ng nháº­p Email vÃ  máº­t kháº©u");
     try {
       await authApi.signInEmail(email, pass);
-      showToast("Ðang nh?p thành công");
+      showToast("Ãang nh?p thÃ nh cÃ´ng");
     } catch (err) {
-      showAuthError(err?.message || "Đăng nhập thất bại");
+      showAuthError(err?.message || "ÄÄƒng nháº­p tháº¥t báº¡i");
 
     }
   });
@@ -1385,13 +1405,13 @@ if (btnRegister) {
     const pass = registerPassword?.value;
     const confirm = registerConfirm?.value;
 
-    if (!email || !pass || !confirm) return showAuthError("Ðiền đầy đủ thông tin");
-    if (pass !== confirm) return showAuthError("Mật khẩu không trùng khớp");
+    if (!email || !pass || !confirm) return showAuthError("Ãiá»n Ä‘áº§y Ä‘á»§ thÃ´ng tin");
+    if (pass !== confirm) return showAuthError("Máº­t kháº©u khÃ´ng trÃ¹ng khá»›p");
     try {
       await authApi.registerEmail(email, pass);
-      showToast("Tạo tài kho?n thành công");
+      showToast("Táº¡o tÃ i kho?n thÃ nh cÃ´ng");
     } catch (err) {
-      showAuthError(err?.message || "Tạo tài khoản thất bại");
+      showAuthError(err?.message || "Táº¡o tÃ i khoáº£n tháº¥t báº¡i");
 
     }
   });
@@ -1401,13 +1421,13 @@ if (btnForgot) {
   btnForgot.addEventListener("click", async () => {
     if (!ensureAuthReady()) return;
     const email = loginEmail?.value.trim();
-    if (!email) return showAuthError("Nhập email để đặt lại mật khẩu");
+    if (!email) return showAuthError("Nháº­p email Ä‘á»ƒ Ä‘áº·t láº¡i máº­t kháº©u");
     try {
       await authApi.resetPassword(email);
 
-      showToast("Ðã gửi email đặt lại mật khẩu");
+      showToast("ÃÃ£ gá»­i email Ä‘áº·t láº¡i máº­t kháº©u");
     } catch (err) {
-      showAuthError(err?.message || "Không gửi được email");
+      showAuthError(err?.message || "KhÃ´ng gá»­i Ä‘Æ°á»£c email");
 
     }
   });
@@ -1419,10 +1439,10 @@ if (btnGoogle) {
     try {
       await authApi.signInGoogle();
 
-      showToast("Ðăng nhập Google thành công");
+      showToast("ÃÄƒng nháº­p Google thÃ nh cÃ´ng");
 
     } catch (err) {
-      showAuthError(err?.message || "Google login thất bại ");
+      showAuthError(err?.message || "Google login tháº¥t báº¡i ");
     }
   });
 }
@@ -1433,10 +1453,10 @@ if (btnFacebook) {
     try {
       await authApi.signInFacebook();
 
-      showToast("Ðang nhập Facebook thành công");
+      showToast("Ãang nháº­p Facebook thÃ nh cÃ´ng");
 
     } catch (err) {
-      showAuthError(err?.message || "Facebook login thất bại");
+      showAuthError(err?.message || "Facebook login tháº¥t báº¡i");
     }
   });
 }
@@ -1446,14 +1466,14 @@ if (btnLogout) {
     if (!ensureAuthReady()) return;
     await authApi.signOutUser();
 
-    showToast("Ðã đăng xuất");
+    showToast("ÃÃ£ Ä‘Äƒng xuáº¥t");
 
   });
 }
 
 btnFindNearest.addEventListener("click", () => {
 
-  if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
+  if (!isDataReady) return alert("Dá»¯ liá»‡u chÆ°a sáºµn sÃ ng");
 
   const hex = colorPicker.value;
   lastChosenHex = hex;
@@ -1464,7 +1484,7 @@ btnFindNearest.addEventListener("click", () => {
 
 deltaSlider.addEventListener("input", () => {
   currentDeltaThreshold = parseFloat(deltaSlider.value);
-  deltaValueEls.forEach(el => el.textContent = `≈ ${currentDeltaThreshold.toFixed(1)}`);
+  deltaValueEls.forEach(el => el.textContent = `â‰ˆ ${currentDeltaThreshold.toFixed(1)}`);
   if (!lastResults || !lastChosenHex) return;
   const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
   showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
@@ -1524,7 +1544,7 @@ imgInput.addEventListener("change", e => {
 canvas.addEventListener("click", e => {
 
 
-  if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
+  if (!isDataReady) return alert("Dá»¯ liá»‡u chÆ°a sáºµn sÃ ng");
 
 
   const rect = canvas.getBoundingClientRect();
@@ -1543,11 +1563,11 @@ canvas.addEventListener("click", e => {
 // Find by code
 btnFindByCode.addEventListener("click", () => {
 
-  if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
+  if (!isDataReady) return alert("Dá»¯ liá»‡u chÆ°a sáºµn sÃ ng");
   const query = codeInput.value.trim().toLowerCase();
   if (!query) return;
   const found = threads.find(t => `${t.brand} ${t.code}`.toLowerCase() === query);
-  if (!found) return alert("Không tìm thấy mã này");
+  if (!found) return alert("KhÃ´ng tÃ¬m tháº¥y mÃ£ nÃ y");
 
   lastChosenHex = found.hex;
   lastResults = findNearestColors(found.hex, 100);
