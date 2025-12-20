@@ -190,25 +190,43 @@ function closeContributeModal() {
 
 async function loadPendingSubmissionsUI() {
   if (!verifyList) return;
-  verifyList.innerHTML = "<div class='text-gray-500'>Ðang t?i...</div>";
+  verifyList.innerHTML = "<div class='text-gray-500'>Đang tải...</div>";
 
   if (!ensureAuthReady() || !authApi?.db || !currentUser) {
-    verifyList.innerHTML = "<div class='text-gray-500'>C?n dang nh?p.</div>";
+    verifyList.innerHTML = "<div class='text-gray-500'>Cần đăng nhập.</div>";
     return;
   }
   try {
+    await refreshAdmin(true);
+    if (!isAdminUser) {
+      verifyList.innerHTML = "<div class='text-red-600'>Bạn không có quyền xác minh (cần admin).</div>";
+      return;
+    }
     const subs = await listPendingSubmissions(authApi.db, 50);
     const withVotes = await Promise.all(
-      subs.map(async s => {
-        const summary = await getVoteSummary(authApi.db, s.id);
-        return { ...s, summary };
+      subs.map(async (s) => {
+        try {
+          const summary = await getVoteSummary(authApi.db, s.id);
+          return { ...s, summary };
+        } catch (err) {
+          if (isPermissionDenied(err)) {
+            return { ...s, summary: { confirmCount: 0, rejectCount: 0 } };
+          }
+          throw err;
+        }
       })
     );
     pendingSubmissions = withVotes;
     renderVerifyList();
   } catch (err) {
+    if (isPermissionDenied(err)) {
+      console.info("[verify] permission denied", { code: err?.code, msg: err?.message });
+      verifyList.innerHTML = "<div class='text-red-600'>Bạn không có quyền xác minh (cần admin).</div>";
+      return;
+    }
+    const friendly = typeof formatFirestoreError === "function" ? formatFirestoreError(err, "Lỗi tải submissions") : (err?.message || "Lỗi tải submissions");
     console.error(err);
-    verifyList.innerHTML = "<div class='text-red-600'>Lỗi tải submissions</div>";
+    verifyList.innerHTML = `<div class='text-red-600'>${friendly}</div>`;
   }
 }
 
@@ -870,30 +888,52 @@ async function updateUserUI(user) {
   }
   if (user) closeAuthModal();
   if (user && authApi?.db) {
-    if (lastAdminUid === user.uid && lastAdminValue !== null) {
-      isAdminUser = lastAdminValue;
+    if (lastAdminUid === user.uid && lastAdminValue === true) {
+      isAdminUser = true;
       return;
     }
-    try {
-      const val = await isAdmin(authApi.db, user.uid);
-      isAdminUser = !!val;
-      lastAdminUid = user.uid;
-      lastAdminValue = isAdminUser;
-    } catch (err) {
-      if (isPermissionDenied(err)) {
-        console.info("[isAdmin] permission denied -> treat as non-admin");
-        isAdminUser = false;
-        lastAdminUid = user.uid;
-        lastAdminValue = false;
-      } else {
-        console.error(err);
-        isAdminUser = false;
-      }
-    }
+    await refreshAdmin(true);
   } else {
     isAdminUser = false;
     lastAdminUid = null;
     lastAdminValue = null;
+  }
+}
+
+async function refreshAdmin(force = false) {
+  const user = authApi?.auth?.currentUser || currentUser;
+  if (!authApi?.db || !user?.uid) {
+    isAdminUser = false;
+    lastAdminUid = user?.uid || null;
+    lastAdminValue = null;
+    return false;
+  }
+  if (!force && lastAdminUid === user.uid && lastAdminValue === true) {
+    isAdminUser = true;
+    return true;
+  }
+  try {
+    if (typeof user.getIdToken === "function") {
+      await user.getIdToken();
+    }
+    const val = await isAdmin(authApi.db, user.uid);
+    isAdminUser = !!val;
+    lastAdminUid = user.uid;
+    lastAdminValue = isAdminUser;
+    return isAdminUser;
+  } catch (err) {
+    if (isPermissionDenied(err)) {
+      console.info("[isAdmin] permission denied -> treat as non-admin");
+      isAdminUser = false;
+      lastAdminUid = user.uid;
+      lastAdminValue = false;
+      return false;
+    }
+    console.error(err);
+    isAdminUser = false;
+    lastAdminUid = user.uid;
+    lastAdminValue = false;
+    return false;
   }
 }
 
