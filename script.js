@@ -238,7 +238,7 @@ function renderVerifyList() {
   }
   verifyList.innerHTML = pendingSubmissions.map(item => {
     const summary = item.summary || { confirmCount: 0, rejectCount: 0 };
-    const canApprove = isAdminUser && summary.confirmCount >= 3 && summary.rejectCount <= 1;
+    const canApprove = isAdminUser;
     const createdAt = item.createdAt?.toDate ? item.createdAt.toDate().toLocaleString() : "";
     return `
       <div class="border border-gray-200 rounded-xl p-3 shadow-sm">
