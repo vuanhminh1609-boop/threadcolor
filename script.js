@@ -1315,7 +1315,20 @@ if (verifyList) {
       if (action === "vote-confirm" || action === "vote-reject") {
         const vote = action === "vote-confirm" ? "confirm" : "reject";
         await voteOnSubmission(authApi.db, id, currentUser, vote);
-        const summary = await getVoteSummary(authApi.db, id);
+        let summary;
+        try {
+          summary = await getVoteSummary(authApi.db, id);
+        } catch (err) {
+          if (isPermissionDenied(err)) {
+            const old = targetItem?.summary || { confirmCount: 0, rejectCount: 0 };
+            summary = {
+              confirmCount: old.confirmCount + (vote === "confirm" ? 1 : 0),
+              rejectCount: old.rejectCount + (vote === "reject" ? 1 : 0)
+            };
+          } else {
+            throw err;
+          }
+        }
         if (targetItem) targetItem.summary = summary;
         renderVerifyList();
       }

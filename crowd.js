@@ -95,6 +95,7 @@ export async function voteOnSubmission(db, submissionId, user, vote) {
   ensureAuthUser(user);
   if (!submissionId || !vote) throw new Error("Missing submissionId/vote");
   const ref = doc(db, "submissions", submissionId, "votes", user.uid);
+  console.info("[voteOnSubmission] doc path =", ref.path);
   await setDoc(ref, { vote, createdAt: serverTimestamp() }, { merge: true });
 }
 
