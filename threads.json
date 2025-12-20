@@ -6942,8 +6942,8 @@
   {
     "brand": "Gingko",
     "code": "Y3281",
-    "name": "Pantone 426 C",
-    "hex": "#000000",
+    "name": "Đen ánh xanh lam",
+    "hex": "#000037",
     "lab": [
       0.0,
       0.0,
@@ -7462,8 +7462,8 @@
   {
     "brand": "Gingko",
     "code": "Y3387",
-    "name": "Pantone 412 C",
-    "hex": "#050402",
+    "name": "BlackGrayBrownBlend",
+    "hex": "#2f2b23",
     "lab": [
       1.1154,
       -0.0165,

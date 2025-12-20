@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tra mã chỉ thêu theo màu</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .animate-fade-in-up {
+      animation: fade-in-up 0.25s ease forwards;
+    }
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen font-sans flex items-center justify-center">
+
+  <!-- Container chính -->
+  <div class="max-w-4xl w-full bg-white/80 backdrop-blur-md shadow-2xl rounded-xl p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-indigo-700 text-center md:text-left">Tra mã chỉ thêu theo màu 🎨</h1>
+      <div class="flex items-center gap-3">
+        <div id="userInfo" class="hidden items-center gap-2 text-sm text-gray-700">
+          <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
+          <span id="userName" class="font-semibold"></span>
+          <button id="btnContribute" class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100">Đóng góp dữ liệu</button>
+          <button id="btnVerify" class="px-3 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100">Xác minh</button>
+          <button id="btnLibrary" class="px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100 hover:bg-indigo-100">My Library</button>
+          <button id="btnLogout" class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 border">Logout</button>
+        </div>
+        <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">Đăng nhập</button>
+      </div>
+    </div>
+
+    <!-- Chọn màu trực tiếp -->
+<section class="mb-6">
+  <h3 class="text-lg font-semibold mb-2">Chọn hãng chỉ</h3>
+
+  <div id="brandFilters" class="flex flex-wrap gap-3"></div>
+  <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
+    <input id="verifiedOnlyToggle" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+    <span>Chỉ verified</span>
+  </label>
+</section>
+<section class="mb-6">
+  <h3 class="text-lg font-semibold mb-2">
+    Độ tương đồng màu (ΔE)
+    <span id="deltaValue" class="text-sm text-gray-600">(≈ 3.0)</span>
+  </h3>
+
+  <input
+    type="range"
+    id="deltaSlider"
+    min="0.5"
+    max="30"
+    step="0.5"
+    value="3"
+    class="w-full"
+  />
+<span id="deltaValue">≈ 3.0</span>
+  <div class="flex justify-between text-xs text-gray-500 mt-1">
+    <span>Rất giống</span>
+    <span>Khác hơn</span>
+  </div>
+</section>
+
+
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
+      <div class="flex items-center gap-4">
+        <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10">
+        <button id="btnFindNearest" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
+          Tìm mã chỉ gần nhất
+        </button>
+        <button id="btnPickScreen" class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-transform transform hover:scale-105">
+          <span>🔍</span>
+          <span>Pick color</span>
+        </button>
+      </div>
+      <div class="mt-2 text-xs text-gray-600 hidden" id="eyedropperHint">Click anywhere to pick a color (Esc để hủy)</div>
+      <div class="mt-2 text-sm text-amber-700 hidden" id="eyedropperFallback">
+        Trình duyệt chưa hỗ trợ pick từ toàn màn hình. Dùng input màu bên dưới.
+      </div>
+      <input type="color" id="fallbackColorPicker" class="mt-2 hidden border rounded p-1 w-16 h-10">
+    </section>
+
+    <!-- Chọn màu từ ảnh -->
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Chọn màu từ ảnh</h3>
+      <input type="file" id="imgInput" accept="image/*" class="mb-2">
+      <canvas
+  id="canvas"
+  class="border rounded-lg max-w-full min-h-[200px] bg-gray-100">
+</canvas>
+<p class="text-sm text-gray-500 mb-1">
+  Chọn ảnh và click vào vị trí bất kỳ để lấy màu
+</p>
+
+    </section>
+
+    <!-- Tra ngược theo mã chỉ -->
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Tra ngược theo mã chỉ</h3>
+      <div class="flex items-center gap-4">
+        <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="border rounded px-2 py-1 flex-1">
+        <button id="btnFindByCode" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
+          Tra cứu
+        </button>
+      </div>
+    </section>
+
+    <!-- Kết quả -->
+    <section id="result" class="p-4 bg-gray-50 border rounded-lg shadow-inner"></section>
+  </div>
+
+  <!-- Overlay -->
+  <div id="inspectorOverlay" class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-opacity duration-200 z-40"></div>
+
+  <!-- Color Inspector Drawer -->
+  <div id="colorInspector" class="fixed z-50 inset-x-0 bottom-0 translate-y-full md:inset-y-0 md:right-0 md:w-[380px] md:translate-x-full transition-transform duration-300">
+    <div class="bg-white shadow-2xl rounded-t-2xl md:rounded-none border border-gray-200 h-[75vh] md:h-full flex flex-col">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+        <h2 id="inspectorTitle" class="text-lg font-semibold text-gray-800">Color Inspector</h2>
+        <button id="inspectorClose" class="p-2 rounded-full hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" aria-label="Đóng">
+          ✕
+        </button>
+      </div>
+      <div class="p-4 space-y-4 overflow-y-auto">
+        <div class="flex gap-3 items-center">
+          <div id="previewMain" class="w-16 h-16 rounded-xl border shadow-inner"></div>
+          <div class="flex-1 grid grid-cols-2 gap-2 text-xs text-gray-600">
+            <div class="p-2 rounded-lg border bg-gray-50">
+              <div class="text-[11px] uppercase tracking-wide text-gray-500">Nền sáng</div>
+              <div id="previewLight" class="mt-2 w-full h-10 rounded-md border bg-white"></div>
+            </div>
+            <div class="p-2 rounded-lg border bg-gray-900 text-white">
+              <div class="text-[11px] uppercase tracking-wide">Nền tối</div>
+              <div id="previewDark" class="mt-2 w-full h-10 rounded-md border border-gray-700 bg-gray-800"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="space-y-1">
+            <div class="text-xs text-gray-500">Hãng</div>
+            <div id="inspectorBrand" class="font-medium text-gray-800">—</div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-xs text-gray-500">Mã chỉ</div>
+            <div id="inspectorCode" class="font-medium text-gray-800">—</div>
+          </div>
+          <div class="space-y-1 col-span-2">
+            <div class="text-xs text-gray-500">Tên màu</div>
+            <div id="inspectorName" class="font-medium text-gray-800">—</div>
+          </div>
+          <div class="space-y-1 col-span-2">
+            <div class="text-xs text-gray-500">Độ lệch (ΔE)</div>
+            <div id="inspectorDelta" class="font-medium text-gray-800">—</div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-gray-200 bg-gray-50 p-3 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-semibold text-gray-800">Giá trị màu</span>
+            <button id="copyAll" class="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy tất cả</button>
+          </div>
+          <div class="grid grid-cols-1 gap-2 text-sm text-gray-800">
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">HEX</span> <span id="inspectorHex" class="font-semibold">—</span></div>
+              <button data-copy="Hex" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">RGB</span> <span id="inspectorRgb" class="font-semibold">—</span></div>
+              <button data-copy="Rgb" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">RGB str</span> <span id="inspectorRgbString" class="font-semibold">—</span></div>
+              <button data-copy="RgbString" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">LAB</span> <span id="inspectorLab" class="font-semibold">—</span></div>
+              <button data-copy="Lab" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">HSL</span> <span id="inspectorHsl" class="font-semibold">—</span></div>
+              <button data-copy="Hsl" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+
+  <!-- Library Modal -->
+  <div id="libraryOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
+  <div id="libraryModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800">My Library</h3>
+        <button id="libraryClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">✕</button>
+      </div>
+      <div class="p-4">
+        <div id="libraryList" class="space-y-3 text-sm text-gray-800">
+          <div class="text-gray-500">Đang tải...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contribute Modal -->
+  <div id="contributeOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
+  <div id="contributeModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800">Đóng góp dữ liệu</h3>
+        <button id="contributeClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">×</button>
+      </div>
+      <div class="p-5 space-y-4 text-sm text-gray-800">
+        <div class="space-y-1">
+          <label class="font-medium">Brand</label>
+          <select id="contributeBrandSelect" class="w-full border rounded-lg px-3 py-2">
+            <option value="">Chọn brand</option>
+          </select>
+          <input id="contributeBrandCustom" type="text" placeholder="Hoặc nhập brand mới" class="w-full border rounded-lg px-3 py-2 mt-2">
+        </div>
+        <div class="space-y-1">
+          <label class="font-medium">Code</label>
+          <input id="contributeCode" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Mã chỉ">
+        </div>
+        <div class="space-y-1">
+          <label class="font-medium">Name (tuỳ chọn)</label>
+          <input id="contributeName" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Tên màu">
+        </div>
+        <div class="space-y-2">
+          <label class="font-medium">Hex</label>
+          <div class="flex gap-2">
+            <input id="contributeHex" type="text" class="flex-1 border rounded-lg px-3 py-2" placeholder="#RRGGBB">
+            <button id="btnUseCurrentColor" class="px-3 py-2 rounded-lg border bg-gray-50 hover:bg-gray-100 text-gray-700">Use current color</button>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button id="contributeCancel" class="px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 text-gray-700">Huỷ</button>
+          <button id="contributeSubmit" class="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">Gửi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verify Modal -->
+  <div id="verifyOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
+  <div id="verifyModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800">Xác minh dữ liệu</h3>
+        <button id="verifyClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">×</button>
+      </div>
+      <div class="p-5 space-y-3 text-sm text-gray-800">
+        <div id="verifyList" class="space-y-3">
+          <div class="text-gray-500">Đang tải...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden"></div>
+  <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <div class="flex gap-2">
+          <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700">Login</button>
+          <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Register</button>
+        </div>
+        <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">✕</button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div id="authError" class="text-sm text-red-600 hidden"></div>
+
+        <div id="loginPanel" class="space-y-3">
+          <input id="loginEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Email">
+          <input id="loginPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Password">
+          <button id="btnLogin" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Login</button>
+          <button id="btnForgot" class="text-sm text-indigo-600 hover:underline">Forgot password?</button>
+        </div>
+
+        <div id="registerPanel" class="space-y-3 hidden">
+          <input id="registerEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Email">
+          <input id="registerPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Password">
+          <input id="registerConfirm" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Confirm password">
+          <button id="btnRegister" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Create account</button>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <span class="h-px flex-1 bg-gray-200"></span>
+          <span>Hoặc</span>
+          <span class="h-px flex-1 bg-gray-200"></span>
+        </div>
+
+        <button id="btnGoogle" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
+          <span>🔑</span><span>Continue with Google</span>
+        </button>
+        <button id="btnFacebook" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
+          <span>📘</span><span>Continue with Facebook</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>

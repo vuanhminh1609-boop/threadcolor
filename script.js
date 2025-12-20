@@ -208,14 +208,14 @@ async function loadPendingSubmissionsUI() {
     renderVerifyList();
   } catch (err) {
     console.error(err);
-    verifyList.innerHTML = "<div class='text-red-600'>L?i t?i submissions</div>";
+    verifyList.innerHTML = "<div class='text-red-600'>Lỗi tải submissions</div>";
   }
 }
 
 function renderVerifyList() {
   if (!verifyList) return;
   if (!pendingSubmissions.length) {
-    verifyList.innerHTML = "<div class='text-gray-500'>Không có submissions ch?.</div>";
+    verifyList.innerHTML = "<div class='text-gray-500'>Không có submissions chỉ.</div>";
     return;
   }
   verifyList.innerHTML = pendingSubmissions.map(item => {
