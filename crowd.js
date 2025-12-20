@@ -58,6 +58,12 @@ export async function listPendingSubmissions(db, limitN = 50) {
     orderBy("createdAt", "desc"),
     fsLimit(limitN)
   );
+  console.info("[listPendingSubmissions] query", {
+    path: ref.path || "submissions",
+    limit: limitN,
+    orderBy: "createdAt desc",
+    where: "status == pending"
+  });
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
@@ -74,6 +80,7 @@ export async function getVoteSummary(db, submissionId) {
   if (!db) throw new Error("Missing db");
   if (!submissionId) throw new Error("Missing submissionId");
   const ref = collection(db, "submissions", submissionId, "votes");
+  console.info("[getVoteSummary] query", { path: ref.path });
   const snap = await getDocs(ref);
   let confirmCount = 0;
   let rejectCount = 0;
@@ -87,10 +94,10 @@ export async function getVoteSummary(db, submissionId) {
 
 export async function isAdmin(db, uid) {
   if (!db || !uid) return false;
-  const ref = doc(db, "admins", uid);
-  const snap = await getDoc(ref);
-  return snap.exists();
+  const snap = await getDoc(doc(db, "admins", uid));
+  return snap.exists() && snap.data()?.enabled === true;
 }
+
 
 export async function promoteSubmissionToVerified(db, submissionDoc, summary, adminUser) {
   if (!db) throw new Error("Missing db");
