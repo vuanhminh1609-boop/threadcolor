@@ -1,260 +1,323 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="aurora">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ThreadColor • Universe Hub</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="themes.css">
-  <script>
-    (function () {
-      const theme = localStorage.getItem("theme") || "aurora";
-      document.documentElement.dataset.theme = theme;
-    })();
-  </script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Tra mã chỉ thêu theo màu</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
-      min-height: 100vh;
+    .animate-fade-in-up {
+      animation: fade-in-up 0.25s ease forwards;
     }
-    .starfield {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.4), transparent),
-        radial-gradient(1px 1px at 40% 70%, rgba(255, 255, 255, 0.35), transparent);
-      opacity: 0.6;
-      z-index: 0;
-    }
-    .portal-card {
-      position: relative;
-      transition: transform 200ms ease, box-shadow 200ms ease;
-      overflow: hidden;
-    }
-    .portal-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.12), transparent 55%);
-      opacity: 0;
-      transition: opacity 150ms ease;
-      pointer-events: none;
-    }
-    .portal-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--portal-glow, 0 10px 40px rgba(0,0,0,0.25));
-    }
-    .portal-card:hover::after { opacity: 1; }
-    .swatch {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      border: 2px solid rgba(255,255,255,0.25);
-      transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
-      cursor: pointer;
-    }
-    .swatch.active {
-      transform: translateY(-2px) scale(1.05);
-      border-color: rgba(255,255,255,0.9);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-<body class="theme-body relative overflow-hidden">
-  <div class="starfield"></div>
+<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen font-sans flex items-center justify-center">
 
-  <header class="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400/70 to-blue-600/70 shadow-lg"></div>
-      <div>
-        <p class="text-xs uppercase tracking-[0.3em] text-muted">Universe Hub</p>
-        <h1 class="text-xl md:text-2xl font-semibold text-text">ThreadColor</h1>
+  <!-- Container chính -->
+  <div class="max-w-4xl w-full bg-white/80 backdrop-blur-md shadow-2xl rounded-xl p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-indigo-700 text-center md:text-left">Tra mã chỉ thêu theo màu 🎨</h1>
+      <div class="flex items-center gap-3">
+        <div id="userInfo" class="hidden relative text-sm text-gray-700">
+          <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/80 border border-gray-200 shadow-sm hover:bg-white">
+            <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
+            <span id="userName" class="font-semibold"></span>
+            <span class="text-gray-500">▾</span>
+          </button>
+          <div id="accountMenu" class="hidden absolute right-0 mt-2 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
+            <button id="btnLibrary" class="w-full text-left px-3 py-2 hover:bg-gray-100">My Library</button>
+            <button id="btnContribute" class="w-full text-left px-3 py-2 hover:bg-gray-100">Đóng góp dữ liệu</button>
+            <button id="btnVerify" class="w-full text-left px-3 py-2 hover:bg-gray-100">Xác minh</button>
+            <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-gray-100">Logout</button>
+          </div>
+        </div>
+        <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">Đăng nhập</button>
       </div>
     </div>
-    <div class="flex items-center gap-4">
-      <div class="hidden md:flex items-center gap-2" id="themeSwatches">
-        <div class="swatch" data-theme-key="aurora" title="Aurora"></div>
-        <div class="swatch" data-theme-key="neon" title="Neon"></div>
-        <div class="swatch" data-theme-key="zen" title="Zen"></div>
-        <div class="swatch" data-theme-key="ocean" title="Ocean"></div>
-        <div class="swatch" data-theme-key="botanical" title="Botanical"></div>
-        <div class="swatch" data-theme-key="desert" title="Desert"></div>
-        <div class="swatch" data-theme-key="retro" title="Retro"></div>
-        <div class="swatch" data-theme-key="royal" title="Royal"></div>
-      </div>
-      <div class="relative">
-        <button id="hubLogin" class="px-4 py-2 rounded-lg bg-panel text-text border border-border shadow-sm hover:opacity-90">Đăng nhập</button>
-        <div id="hubDropdown" class="hidden absolute right-0 mt-2 w-44 rounded-lg bg-panel border border-border shadow-lg">
-          <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/10">Profile (coming soon)</button>
-          <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/10">Settings</button>
-        </div>
-      </div>
-    </div>
-  </header>
 
-  <main class="relative z-10 max-w-6xl mx-auto px-6 pb-16">
-    <section class="glass-card rounded-3xl border border-border p-8 mb-10 shadow-2xl">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div class="space-y-4">
-          <p class="text-xs uppercase tracking-[0.35em] text-accent">Universe</p>
-          <h2 class="text-4xl font-semibold text-text">THREADCOLOR UNIVERSE</h2>
-          <p class="text-lg text-muted max-w-2xl">
-            Thế giới tra mã chỉ đa hãng, màu nào cũng tìm. Chọn cổng vũ trụ bạn thích, lưu theme và bước vào app với đúng không gian của mình.
-          </p>
-          <div class="flex items-center gap-3 text-sm text-muted">
-            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">Realtime ΔE</span>
-            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">Multi-brand</span>
-            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">My Library</span>
-          </div>
-          <div class="flex flex-wrap gap-3">
-            <a href="app.html" class="inline-flex items-center px-5 py-3 rounded-full bg-accent text-black font-semibold shadow-lg hover:shadow-accent/40 transition">Vào tool ngay</a>
-            <a href="#portals" class="inline-flex items-center px-5 py-3 rounded-full border border-border text-text hover:bg-white/5 transition">Khám phá cổng</a>
-          </div>
-          <p class="text-sm text-muted">Theme hiện tại: <span id="activeThemeName" class="text-text font-semibold">Aurora</span></p>
-        </div>
-        <div class="h-48 md:h-56 lg:h-64 flex-1 rounded-2xl bg-gradient-to-br from-accent/40 via-transparent to-blue-500/25 border border-border relative overflow-hidden">
-          <div class="absolute inset-0 blur-3xl bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.15),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.12),transparent_35%)]"></div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="w-32 h-32 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl shadow-[0_0_80px_rgba(255,255,255,0.18)]"></div>
-          </div>
-        </div>
+    <!-- Chọn màu trực tiếp -->
+<section class="mb-6">
+  <h3 class="text-lg font-semibold mb-2">Chọn hãng chỉ</h3>
+
+  <div id="brandFilters" class="flex flex-wrap gap-3"></div>
+  <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
+    <input id="verifiedOnlyToggle" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+    <span>Chỉ verified</span>
+  </label>
+</section>
+<section class="mb-6">
+  <h3 class="text-lg font-semibold mb-2">
+    Độ tương đồng màu (ΔE)
+    <span id="deltaValue" class="text-sm text-gray-600">(≈ 3.0)</span>
+  </h3>
+
+  <input
+    type="range"
+    id="deltaSlider"
+    min="0.5"
+    max="30"
+    step="0.5"
+    value="3"
+    class="w-full"
+  />
+<span id="deltaValue">≈ 3.0</span>
+  <div class="flex justify-between text-xs text-gray-500 mt-1">
+    <span>Rất giống</span>
+    <span>Khác hơn</span>
+  </div>
+</section>
+
+
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
+      <div class="flex items-center gap-4">
+        <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10">
+        <button id="btnFindNearest" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
+          Tìm mã chỉ gần nhất
+        </button>
+        <button id="btnPickScreen" class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-transform transform hover:scale-105">
+          <span>🔍</span>
+          <span>Pick color</span>
+        </button>
+      </div>
+      <div class="mt-2 text-xs text-gray-600 hidden" id="eyedropperHint">Click anywhere to pick a color (Esc để hủy)</div>
+      <div class="mt-2 text-sm text-amber-700 hidden" id="eyedropperFallback">
+        Trình duyệt chưa hỗ trợ pick từ toàn màn hình. Dùng input màu bên dưới.
+      </div>
+      <input type="color" id="fallbackColorPicker" class="mt-2 hidden border rounded p-1 w-16 h-10">
+    </section>
+
+    <!-- Chọn màu từ ảnh -->
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Chọn màu từ ảnh</h3>
+      <input type="file" id="imgInput" accept="image/*" class="mb-2">
+      <canvas
+  id="canvas"
+  class="border rounded-lg max-w-full min-h-[200px] bg-gray-100">
+</canvas>
+<p class="text-sm text-gray-500 mb-1">
+  Chọn ảnh và click vào vị trí bất kỳ để lấy màu
+</p>
+
+    </section>
+
+    <!-- Tra ngược theo mã chỉ -->
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Tra ngược theo mã chỉ</h3>
+      <div class="flex items-center gap-4">
+        <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="border rounded px-2 py-1 flex-1">
+        <button id="btnFindByCode" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
+          Tra cứu
+        </button>
       </div>
     </section>
 
-    <section id="portals" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="hex" data-theme="neon">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Neon District</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">HEX</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">HEX → Thread</h3>
-        <p class="text-sm text-muted mt-2">Tra mã chỉ đa hãng từ bất kỳ mã HEX.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="pantone" data-theme="aurora">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Aurora Lab</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Pantone</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">Pantone → Thread</h3>
-        <p class="text-sm text-muted mt-2">Nhập mã Pantone, tìm chỉ gần nhất.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="image" data-theme="ocean">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Ocean Abyss</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Image</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">Pick from Image</h3>
-        <p class="text-sm text-muted mt-2">Chọn màu từ ảnh, tính ΔE ngay.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="library" data-theme="zen">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Zen Ink</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Library</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">My Library</h3>
-        <p class="text-sm text-muted mt-2">Lưu và mở nhanh bộ sưu tập của bạn.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="palette" data-theme="botanical">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Botanical Biolume</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Palette</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">Palette Playground</h3>
-        <p class="text-sm text-muted mt-2">Khám phá phối màu và deltaE.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="compare" data-theme="desert">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Desert Mirage</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Compare</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">Compare Brands</h3>
-        <p class="text-sm text-muted mt-2">Đối chiếu bảng màu giữa các hãng.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="export" data-theme="retro">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Retro Arcade</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Export</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">Export / Share</h3>
-        <p class="text-sm text-muted mt-2">Xuất kết quả và chia sẻ nhanh.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-      <article class="portal-card glass-card rounded-2xl border border-border p-5" data-feature="verify" data-theme="royal">
-        <div class="flex items-center justify-between text-sm text-muted">
-          <span>Royal Atelier</span><span class="px-2 py-1 text-[10px] rounded-full bg-accent/20 text-accent border border-accent/30">Verify</span>
-        </div>
-        <h3 class="text-xl font-semibold text-text mt-2">Crowd Verify</h3>
-        <p class="text-sm text-muted mt-2">Xác minh dữ liệu chỉ chuẩn nhất.</p>
-        <button class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-black font-semibold">Enter</button>
-      </article>
-    </section>
-  </main>
+    <!-- Kết quả -->
+    <section id="result" class="p-4 bg-gray-50 border rounded-lg shadow-inner"></section>
+  </div>
 
-  <script>
-    const themeNames = {
-      aurora: "Aurora",
-      neon: "Neon District",
-      zen: "Zen Ink",
-      ocean: "Ocean Abyss",
-      botanical: "Botanical Biolume",
-      desert: "Desert Mirage",
-      retro: "Retro Arcade",
-      royal: "Royal Atelier"
-    };
+  <!-- Overlay -->
+  <div id="inspectorOverlay" class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-opacity duration-200 z-40"></div>
 
-    function applyTheme(theme) {
-      const key = themeNames[theme] ? theme : "aurora";
-      document.documentElement.dataset.theme = key;
-      localStorage.setItem("theme", key);
-      const nameEl = document.getElementById("activeThemeName");
-      if (nameEl) nameEl.textContent = themeNames[key];
-      document.querySelectorAll(".swatch").forEach(sw => {
-        sw.classList.toggle("active", sw.dataset.themeKey === key);
-      });
-    }
+  <!-- Color Inspector Drawer -->
+  <div id="colorInspector" class="fixed z-50 inset-x-0 bottom-0 translate-y-full md:inset-y-0 md:right-0 md:w-[380px] md:translate-x-full transition-transform duration-300">
+    <div class="bg-white shadow-2xl rounded-t-2xl md:rounded-none border border-gray-200 h-[75vh] md:h-full flex flex-col">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+        <h2 id="inspectorTitle" class="text-lg font-semibold text-gray-800">Color Inspector</h2>
+        <button id="inspectorClose" class="p-2 rounded-full hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" aria-label="Đóng">
+          ✕
+        </button>
+      </div>
+      <div class="p-4 space-y-4 overflow-y-auto">
+        <div class="flex gap-3 items-center">
+          <div id="previewMain" class="w-16 h-16 rounded-xl border shadow-inner"></div>
+          <div class="flex-1 grid grid-cols-2 gap-2 text-xs text-gray-600">
+            <div class="p-2 rounded-lg border bg-gray-50">
+              <div class="text-[11px] uppercase tracking-wide text-gray-500">Nền sáng</div>
+              <div id="previewLight" class="mt-2 w-full h-10 rounded-md border bg-white"></div>
+            </div>
+            <div class="p-2 rounded-lg border bg-gray-900 text-white">
+              <div class="text-[11px] uppercase tracking-wide">Nền tối</div>
+              <div id="previewDark" class="mt-2 w-full h-10 rounded-md border border-gray-700 bg-gray-800"></div>
+            </div>
+          </div>
+        </div>
 
-    document.querySelectorAll(".swatch").forEach(sw => {
-      const t = sw.dataset.themeKey;
-      sw.style.background = `var(--${t}-swatch, var(--accent))`;
-      sw.addEventListener("click", () => applyTheme(t));
-    });
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="space-y-1">
+            <div class="text-xs text-gray-500">Hãng</div>
+            <div id="inspectorBrand" class="font-medium text-gray-800">—</div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-xs text-gray-500">Mã chỉ</div>
+            <div id="inspectorCode" class="font-medium text-gray-800">—</div>
+          </div>
+          <div class="space-y-1 col-span-2">
+            <div class="text-xs text-gray-500">Tên màu</div>
+            <div id="inspectorName" class="font-medium text-gray-800">—</div>
+          </div>
+          <div class="space-y-1 col-span-2">
+            <div class="text-xs text-gray-500">Độ lệch (ΔE)</div>
+            <div id="inspectorDelta" class="font-medium text-gray-800">—</div>
+          </div>
+        </div>
 
-    const stored = localStorage.getItem("theme") || "aurora";
-    applyTheme(stored);
+        <div class="rounded-xl border border-gray-200 bg-gray-50 p-3 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-semibold text-gray-800">Giá trị màu</span>
+            <button id="copyAll" class="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy tất cả</button>
+          </div>
+          <div class="grid grid-cols-1 gap-2 text-sm text-gray-800">
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">HEX</span> <span id="inspectorHex" class="font-semibold">—</span></div>
+              <button data-copy="Hex" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">RGB</span> <span id="inspectorRgb" class="font-semibold">—</span></div>
+              <button data-copy="Rgb" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">RGB str</span> <span id="inspectorRgbString" class="font-semibold">—</span></div>
+              <button data-copy="RgbString" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">LAB</span> <span id="inspectorLab" class="font-semibold">—</span></div>
+              <button data-copy="Lab" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <div><span class="text-xs uppercase text-gray-500">HSL</span> <span id="inspectorHsl" class="font-semibold">—</span></div>
+              <button data-copy="Hsl" class="text-xs px-2 py-1 rounded-full bg-white border hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    document.querySelectorAll("[data-feature]").forEach(card => {
-      card.addEventListener("mousemove", e => {
-        const rect = card.getBoundingClientRect();
-        card.style.setProperty("--mx", `${((e.clientX - rect.left) / rect.width) * 100}%`);
-        card.style.setProperty("--my", `${((e.clientY - rect.top) / rect.height) * 100}%`);
-      });
-      card.querySelector("button")?.addEventListener("click", () => {
-        const theme = card.dataset.theme || document.documentElement.dataset.theme || "aurora";
-        const feature = card.dataset.feature || "hex";
-        localStorage.setItem("theme", theme);
-        const url = new URL("app.html", window.location.origin);
-        url.searchParams.set("feature", feature);
-        url.searchParams.set("theme", theme);
-        window.location.href = url.toString();
-      });
-    });
+  <!-- Toasts -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
 
-    const hubLogin = document.getElementById("hubLogin");
-    const hubDropdown = document.getElementById("hubDropdown");
-    if (hubLogin && hubDropdown) {
-      hubLogin.addEventListener("click", e => {
-        e.stopPropagation();
-        hubDropdown.classList.toggle("hidden");
-      });
-      document.addEventListener("click", () => hubDropdown.classList.add("hidden"));
-      document.addEventListener("keydown", e => {
-        if (e.key === "Escape") hubDropdown.classList.add("hidden");
-      });
-    }
-  </script>
+  <!-- Library Modal -->
+  <div id="libraryOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
+  <div id="libraryModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800">My Library</h3>
+        <button id="libraryClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">✕</button>
+      </div>
+      <div class="p-4">
+        <div id="libraryList" class="space-y-3 text-sm text-gray-800">
+          <div class="text-gray-500">Đang tải...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contribute Modal -->
+  <div id="contributeOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
+  <div id="contributeModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800">Đóng góp dữ liệu</h3>
+        <button id="contributeClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">×</button>
+      </div>
+      <div class="p-5 space-y-4 text-sm text-gray-800">
+        <div class="space-y-1">
+          <label class="font-medium">Brand</label>
+          <select id="contributeBrandSelect" class="w-full border rounded-lg px-3 py-2">
+            <option value="">Chọn brand</option>
+          </select>
+          <input id="contributeBrandCustom" type="text" placeholder="Hoặc nhập brand mới" class="w-full border rounded-lg px-3 py-2 mt-2">
+        </div>
+        <div class="space-y-1">
+          <label class="font-medium">Code</label>
+          <input id="contributeCode" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Mã chỉ">
+        </div>
+        <div class="space-y-1">
+          <label class="font-medium">Name (tuỳ chọn)</label>
+          <input id="contributeName" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Tên màu">
+        </div>
+        <div class="space-y-2">
+          <label class="font-medium">Hex</label>
+          <div class="flex gap-2">
+            <input id="contributeHex" type="text" class="flex-1 border rounded-lg px-3 py-2" placeholder="#RRGGBB">
+            <button id="btnUseCurrentColor" class="px-3 py-2 rounded-lg border bg-gray-50 hover:bg-gray-100 text-gray-700">Use current color</button>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button id="contributeCancel" class="px-4 py-2 rounded-lg border bg-white hover:bg-gray-50 text-gray-700">Huỷ</button>
+          <button id="contributeSubmit" class="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">Gửi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verify Modal -->
+  <div id="verifyOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
+  <div id="verifyModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800">Xác minh dữ liệu</h3>
+        <button id="verifyClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">×</button>
+      </div>
+      <div class="p-5 space-y-3 text-sm text-gray-800">
+        <div id="verifyList" class="space-y-3">
+          <div class="text-gray-500">Đang tải...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden"></div>
+  <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <div class="flex gap-2">
+          <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700">Login</button>
+          <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Register</button>
+        </div>
+        <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">✕</button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div id="authError" class="text-sm text-red-600 hidden"></div>
+
+        <div id="loginPanel" class="space-y-3">
+          <input id="loginEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Email">
+          <input id="loginPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Password">
+          <button id="btnLogin" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Login</button>
+          <button id="btnForgot" class="text-sm text-indigo-600 hover:underline">Forgot password?</button>
+        </div>
+
+        <div id="registerPanel" class="space-y-3 hidden">
+          <input id="registerEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Email">
+          <input id="registerPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Password">
+          <input id="registerConfirm" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Confirm password">
+          <button id="btnRegister" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Create account</button>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <span class="h-px flex-1 bg-gray-200"></span>
+          <span>Hoặc</span>
+          <span class="h-px flex-1 bg-gray-200"></span>
+        </div>
+
+        <button id="btnGoogle" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
+          <span>🔑</span><span>Continue with Google</span>
+        </button>
+        <button id="btnFacebook" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
+          <span>📘</span><span>Continue with Facebook</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
