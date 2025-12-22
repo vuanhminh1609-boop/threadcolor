@@ -1,4 +1,4 @@
-﻿import { saveSearch, getSavedSearch, listSavedSearches } from "./library.js";
+import { saveSearch, getSavedSearch, listSavedSearches } from "./library.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
   submitThread,
