@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>C?ng dang nh?p</title>
+  <meta charset="utf-8">
+  <title>Cổng đăng nhập</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -20,25 +20,25 @@
   <!-- Container chính -->
   <div class="max-w-2xl w-full bg-white/80 backdrop-blur-md shadow-2xl rounded-xl p-8">
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-3xl font-bold text-indigo-700 text-center md:text-left">C?ng dang nh?p</h1>
+      <h1 class="text-3xl font-bold text-indigo-700 text-center md:text-left">Cổng đăng nhập</h1>
       <div class="flex items-center gap-3">
         <div id="userInfo" class="hidden relative text-sm text-gray-700">
           <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/80 border border-gray-200 shadow-sm hover:bg-white">
             <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
             <span id="userName" class="font-semibold"></span>
-            <span class="text-gray-500">?</span>
+            <span class="text-gray-500">▾</span>
           </button>
           <div id="accountMenu" class="hidden absolute right-0 mt-2 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
             <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-gray-100">Logout</button>
           </div>
         </div>
-        <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">Ðang nh?p</button>
+        <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">Đăng nhập</button>
       </div>
     </div>
 
     <div id="portalCtaWrap" class="hidden mt-10 text-center">
       <a id="portalCta" href="worlds/threadcolor.html" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-indigo-600 text-white font-semibold shadow-lg hover:bg-indigo-700 transition">
-        Vào 8 vu tr?
+        Vào 8 vũ trụ
       </a>
     </div>
   </div>
@@ -52,7 +52,7 @@
           <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700">Login</button>
           <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Register</button>
         </div>
-        <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">?</button>
+        <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">✕</button>
       </div>
       <div class="p-5 space-y-4">
         <div id="authError" class="text-sm text-red-600 hidden"></div>
@@ -73,15 +73,15 @@
 
         <div class="flex items-center gap-2 text-xs text-gray-500">
           <span class="h-px flex-1 bg-gray-200"></span>
-          <span>Ho?c</span>
+          <span>Hoặc</span>
           <span class="h-px flex-1 bg-gray-200"></span>
         </div>
 
         <button id="btnGoogle" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>?</span><span>Continue with Google</span>
+          <span>ⓖ</span><span>Continue with Google</span>
         </button>
         <button id="btnFacebook" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>?</span><span>Continue with Facebook</span>
+          <span>ⓕ</span><span>Continue with Facebook</span>
         </button>
       </div>
     </div>
@@ -91,4 +91,3 @@
   <script type="module" src="script.js"></script>
 </body>
 </html>
-
