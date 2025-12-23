@@ -9161,6 +9161,24 @@
   },
   {
     "brand": "Gingko",
+    "code": "Y3691",
+    "name": "Dusk Blue",
+    "hex": "#526395",
+    "lab": [
+      43, 7, -29
+    ],
+    "source": {
+      "type": "Zowsgroup",
+      "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+      "imported_at": "2025-12-18"
+    },
+    "rating": {
+      "score": null,
+      "votes": 0
+    }
+  },
+  {
+    "brand": "Gingko",
     "code": "Y3692",
     "name": "Pantone 2716 C",
     "hex": "#8CB5FF",
