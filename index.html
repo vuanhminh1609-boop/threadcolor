@@ -66,6 +66,38 @@
     .tc-v4.lowfx .tc-v4-blur { filter: none !important; }
     @keyframes tc-v4-pulse { 0% { filter: saturate(1); } 50% { filter: saturate(1.15); } 100% { filter: saturate(1); } }
   </style>
+  <style>
+    :root{
+      --bg:#050816;
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.66);
+      --glass:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius:24px;
+      --a1:34,211,238;
+      --a2:236,72,153;
+      --a3:139,92,246;
+      --btnBg: linear-gradient(135deg, rgba(var(--a1),.22), rgba(var(--a2),.18), rgba(var(--a3),.18));
+      --btnBorder: rgba(255,255,255,.18);
+      --btnShadow: 0 0 26px rgba(var(--a1),.14), 0 0 36px rgba(var(--a2),.10);
+    }
+    html, body { background: var(--bg) !important; color: var(--text); }
+    body { background-image: none !important; }
+    .bg-gradient-to-r,
+    .bg-gradient-to-br,
+    .bg-gradient-to-b,
+    .bg-gradient-to-t,
+    .bg-gradient-to-l,
+    .bg-gradient-to-bl,
+    .bg-gradient-to-tr { background-image: none !important; }
+    .from-indigo-500,
+    .via-purple-500,
+    .to-pink-500 { background-image: none !important; }
+    .gradient,
+    .bg-gradient,
+    .background-layer { background: none !important; }
+  </style>
 </head>
 <body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen font-sans flex items-center justify-center">
 
