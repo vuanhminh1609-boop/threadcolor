@@ -14,8 +14,36 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
+  <style>
+    .tc-v4 { min-height: 100vh; padding: 24px; }
+    .tc-v4.hidden { display: none !important; }
+    .tc-v4 .tc-hero { max-width: 860px; margin: 0 auto; padding: 48px 0; text-align: center; color: #f8fafc; }
+    .tc-v4 .tc-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: 0.02em; }
+    .tc-v4 .tc-sub { margin-top: 6px; font-size: 14px; color: rgba(248, 250, 252, 0.72); }
+    .tc-v4 .tc-desc { margin-top: 14px; font-size: 16px; line-height: 1.6; color: rgba(248, 250, 252, 0.86); }
+    .tc-v4 .tc-cta { display: inline-flex; align-items: center; justify-content: center; margin-top: 18px; padding: 12px 18px; border-radius: 999px; background: #3b82f6; color: #ffffff; font-weight: 600; text-decoration: none; }
+    .tc-v4 .tc-cta:hover { background: #2563eb; }
+    .tc-v4 { background: var(--tc-bg, #0b1020); color: var(--tc-text, #f8fafc); }
+    .tc-v4 .tc-worlds { max-width: 960px; margin: 0 auto; padding: 8px 0 32px; }
+    .tc-v4 .tc-worlds-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .tc-v4 .tc-worlds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    .tc-v4 .tc-world-card { border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 16px; padding: 14px; background: rgba(15, 23, 42, 0.5); color: inherit; text-align: left; cursor: pointer; }
+    .tc-v4 .tc-world-card:hover { border-color: rgba(148, 163, 184, 0.5); }
+    .tc-v4 .tc-world-name { font-weight: 700; font-size: 14px; }
+    .tc-v4 .tc-world-sub { font-size: 12px; color: rgba(248, 250, 252, 0.7); margin-top: 4px; }
+    .tc-v4[data-world="nebula"] { --tc-bg: #0b1020; --tc-accent: #67e8f9; }
+    .tc-v4[data-world="ocean"] { --tc-bg: #061421; --tc-accent: #38bdf8; }
+    .tc-v4[data-world="ink"] { --tc-bg: #0f0f12; --tc-accent: #e2e8f0; }
+    .tc-v4[data-world="origami"] { --tc-bg: #f8fafc; --tc-text: #0f172a; --tc-accent: #ef4444; }
+    .tc-v4[data-world="arcade"] { --tc-bg: #12061f; --tc-accent: #f472b6; }
+    .tc-v4[data-world="dunes"] { --tc-bg: #1b0d08; --tc-accent: #f59e0b; }
+    .tc-v4[data-world="chrome"] { --tc-bg: #0a0a0f; --tc-accent: #e5e7eb; }
+    .tc-v4[data-world="crystal"] { --tc-bg: #0b0b23; --tc-accent: #a78bfa; }
+  </style>
 </head>
 <body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen font-sans flex items-center justify-center">
+
+  <!-- LOGIN_BLOCK_START -->
 
   <!-- Container chính -->
   <div class="max-w-2xl w-full bg-white/80 backdrop-blur-md shadow-2xl rounded-xl p-8">
@@ -87,7 +115,168 @@
     </div>
   </div>
 
+  <!-- LOGIN_BLOCK_END -->
+  <main id="tcPortalV4" class="tc-v4 hidden" aria-label="ThreadColor Universe Portal">
+    <section class="tc-hero">
+      <h1 class="tc-title">ThreadColor Universe</h1>
+      <div class="tc-sub">Multiverse Portal Delight (v4)</div>
+      <p class="tc-desc">Cổng đa vũ trụ giúp bạn tra mã chỉ nhanh, rõ và nhất quán từ HEX hoặc Pantone, sẵn sàng cho mọi dự án thêu.</p>
+      <a class="tc-cta" href="world/threadcolor.html">Bắt đầu tra mã</a>
+    </section>
+    <section class="tc-worlds" aria-label="Chọn vũ trụ">
+      <div class="tc-worlds-title">Chọn vũ trụ</div>
+      <div class="tc-worlds-grid">
+        <button class="tc-world-card" type="button" data-world="nebula">
+          <div class="tc-world-name">Tinh vân</div>
+          <div class="tc-world-sub">Nebula</div>
+        </button>
+        <button class="tc-world-card" type="button" data-world="ocean">
+          <div class="tc-world-name">Đại dương</div>
+          <div class="tc-world-sub">Ocean</div>
+        </button>
+        <button class="tc-world-card" type="button" data-world="ink">
+          <div class="tc-world-name">Mực tàu</div>
+          <div class="tc-world-sub">Ink</div>
+        </button>
+        <button class="tc-world-card" type="button" data-world="origami">
+          <div class="tc-world-name">Origami</div>
+          <div class="tc-world-sub">Origami</div>
+        </button>
+        <button class="tc-world-card" type="button" data-world="arcade">
+          <div class="tc-world-name">Arcade</div>
+          <div class="tc-world-sub">Arcade</div>
+        </button>
+        <button class="tc-world-card" type="button" data-world="dunes">
+          <div class="tc-world-name">Đồi cát</div>
+          <div class="tc-world-sub">Dunes</div>
+        </button>
+        <button class="tc-world-card" type="button" data-world="chrome">
+          <div class="tc-world-name">Chrome</div>
+          <div class="tc-world-sub">Chrome</div>
+        </button>
+        <button class="tc-world-card" type="button" data-world="crystal">
+          <div class="tc-world-name">Pha lê</div>
+          <div class="tc-world-sub">Crystal</div>
+        </button>
+      </div>
+    </section>
+  </main>
+
   <script type="module" src="auth.js"></script>
   <script type="module" src="script.js"></script>
+  <script>
+    (function(){
+      var ns = window.TC_PORTAL_V4 = window.TC_PORTAL_V4 || {};
+      var portal = document.getElementById("tcPortalV4");
+
+      function tcV4ShowPortal(){
+        if (!portal) return;
+        portal.classList.remove("hidden");
+      }
+
+      function tcV4HidePortal(){
+        if (!portal) return;
+        portal.classList.add("hidden");
+      }
+
+      function tcV4IsLoggedInUI(){
+        var userInfo = document.getElementById("userInfo");
+        var ctaWrap = document.getElementById("portalCtaWrap");
+        var loggedWrap = document.getElementById("loggedInWrap");
+
+        function isVisible(el){
+          if (!el) return false;
+          if (el.classList.contains("hidden")) return false;
+          var style = window.getComputedStyle(el);
+          if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") return false;
+          return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+        }
+
+        return isVisible(userInfo) || isVisible(ctaWrap) || isVisible(loggedWrap);
+      }
+
+      ns.tcV4ShowPortal = tcV4ShowPortal;
+      ns.tcV4HidePortal = tcV4HidePortal;
+      ns.tcV4IsLoggedInUI = tcV4IsLoggedInUI;
+
+      var debounceId = null;
+      function checkLoginUI(){
+        if (tcV4IsLoggedInUI()) tcV4ShowPortal();
+        else tcV4HidePortal();
+      }
+      function scheduleCheck(){
+        if (debounceId) clearTimeout(debounceId);
+        debounceId = setTimeout(checkLoginUI, 100);
+      }
+
+      var observer = new MutationObserver(function(mutations){
+        for (var i = 0; i < mutations.length; i++) {
+          var m = mutations[i];
+          if (m.type === "childList") {
+            scheduleCheck();
+            return;
+          }
+          if (m.type === "attributes" && m.attributeName === "class") {
+            scheduleCheck();
+            return;
+          }
+        }
+      });
+
+      observer.observe(document.body, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        attributeFilter: ["class"]
+      });
+
+      scheduleCheck();
+    })();
+  </script>
+  <script>
+    (function(){
+      var ns = window.TC_PORTAL_V4 = window.TC_PORTAL_V4 || {};
+      var portal = document.getElementById("tcPortalV4");
+      if (!portal) return;
+
+      var KEY = "tc_v4_world";
+
+      function tcV4ApplyWorld(world){
+        if (!world) return;
+        portal.setAttribute("data-world", world);
+      }
+
+      function tcV4RestoreWorld(){
+        var saved = localStorage.getItem(KEY);
+        if (saved) tcV4ApplyWorld(saved);
+      }
+
+      function onWorldClick(e){
+        var btn = e.currentTarget;
+        var world = btn.getAttribute("data-world");
+        if (!world) return;
+        localStorage.setItem(KEY, world);
+        tcV4ApplyWorld(world);
+      }
+
+      var cards = portal.querySelectorAll(".tc-world-card[data-world]");
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].addEventListener("click", onWorldClick);
+      }
+
+      if (typeof ns.tcV4ShowPortal === "function") {
+        var prevShow = ns.tcV4ShowPortal;
+        ns.tcV4ShowPortal = function(){
+          prevShow();
+          tcV4RestoreWorld();
+        };
+      }
+
+      ns.tcV4ApplyWorld = tcV4ApplyWorld;
+      ns.tcV4RestoreWorld = tcV4RestoreWorld;
+
+      tcV4RestoreWorld();
+    })();
+  </script>
 </body>
 </html>
