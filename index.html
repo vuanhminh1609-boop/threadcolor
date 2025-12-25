@@ -1,141 +1,51 @@
 ﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cổng đăng nhập</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
-    .animate-fade-in-up {
-      animation: fade-in-up 0.25s ease forwards;
-    }
+    .animate-fade-in-up { animation: fade-in-up 0.25s ease forwards; }
     @keyframes fade-in-up {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-  </style>
-  <style>
-    .tc-v4 { min-height: 100vh; padding: 24px; }
-    .tc-v4.hidden { display: none !important; }
-    .tc-v4 .tc-hero { max-width: 860px; margin: 0 auto; padding: 48px 0; text-align: center; color: #f8fafc; }
-    .tc-v4 .tc-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: 0.02em; }
-    .tc-v4 .tc-sub { margin-top: 6px; font-size: 14px; color: rgba(248, 250, 252, 0.72); }
-    .tc-v4 .tc-desc { margin-top: 14px; font-size: 16px; line-height: 1.6; color: rgba(248, 250, 252, 0.86); }
-    .tc-v4 .tc-cta { display: inline-flex; align-items: center; justify-content: center; margin-top: 18px; padding: 12px 18px; border-radius: 999px; background: #3b82f6; color: #ffffff; font-weight: 600; text-decoration: none; }
-    .tc-v4 .tc-cta:hover { background: #2563eb; }
-    .tc-v4 { background: var(--tc-bg, #0b1020); color: var(--tc-text, #f8fafc); }
-    .tc-v4 .tc-worlds { max-width: 960px; margin: 0 auto; padding: 8px 0 32px; }
-    .tc-v4 .tc-worlds-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
-    .tc-v4 .tc-worlds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
-    .tc-v4 .tc-world-card { border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 16px; padding: 14px; background: rgba(15, 23, 42, 0.5); color: inherit; text-align: left; cursor: pointer; }
-    .tc-v4 .tc-world-card:hover { border-color: rgba(148, 163, 184, 0.5); }
-    .tc-v4 .tc-world-name { font-weight: 700; font-size: 14px; }
-    .tc-v4 .tc-world-sub { font-size: 12px; color: rgba(248, 250, 252, 0.7); margin-top: 4px; }
-    .tc-v4[data-world="nebula"] { --tc-bg: #0b1020; --tc-accent: #67e8f9; }
-    .tc-v4[data-world="ocean"] { --tc-bg: #061421; --tc-accent: #38bdf8; }
-    .tc-v4[data-world="ink"] { --tc-bg: #0f0f12; --tc-accent: #e2e8f0; }
-    .tc-v4[data-world="origami"] { --tc-bg: #f8fafc; --tc-text: #0f172a; --tc-accent: #ef4444; }
-    .tc-v4[data-world="arcade"] { --tc-bg: #12061f; --tc-accent: #f472b6; }
-    .tc-v4[data-world="dunes"] { --tc-bg: #1b0d08; --tc-accent: #f59e0b; }
-    .tc-v4[data-world="chrome"] { --tc-bg: #0a0a0f; --tc-accent: #e5e7eb; }
-    .tc-v4[data-world="crystal"] { --tc-bg: #0b0b23; --tc-accent: #a78bfa; }
-    .tc-v4 .tc-gallery-btn { display: inline-flex; align-items: center; justify-content: center; margin-left: 8px; margin-top: 18px; padding: 12px 16px; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.35); background: transparent; color: inherit; font-weight: 600; }
-    .tc-v4 .tc-gallery-btn:hover { border-color: rgba(148, 163, 184, 0.6); }
-    .tc-v4 .tc-modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(2, 6, 23, 0.6); }
-    .tc-v4 .tc-modal.hidden { display: none !important; }
-    .tc-v4 .tc-modal-card { width: 100%; max-width: 720px; border-radius: 16px; border: 1px solid rgba(148, 163, 184, 0.25); background: rgba(15, 23, 42, 0.95); color: inherit; padding: 16px; }
-    .tc-v4 .tc-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-    .tc-v4 .tc-modal-title { font-weight: 700; font-size: 18px; }
-    .tc-v4 .tc-modal-close { border: 1px solid rgba(148, 163, 184, 0.35); background: transparent; color: inherit; border-radius: 10px; padding: 6px 10px; }
-    .tc-v4 .tc-modal-close:hover { border-color: rgba(148, 163, 184, 0.6); }
-    .tc-v4 .tc-modal-body { font-size: 14px; line-height: 1.6; color: rgba(248, 250, 252, 0.86); }
-    .tc-v4 .tc-lowfx { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 12px; color: rgba(248, 250, 252, 0.75); }
-    .tc-v4 .tc-tools { max-width: 960px; margin: 0 auto; padding: 24px 0 12px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-    .tc-v4 .tc-panel { border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 16px; padding: 14px; background: rgba(15, 23, 42, 0.5); }
-    .tc-v4 .tc-panel-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
-    .tc-v4 .tc-panel-desc { font-size: 12px; color: rgba(248, 250, 252, 0.72); margin-bottom: 10px; }
-    .tc-v4 .tc-preview { height: 120px; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.2); background: linear-gradient(135deg, #22d3ee, #8b5cf6, #ec4899); }
-    .tc-v4 .tc-panel-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-    .tc-v4 .tc-btn { border-radius: 999px; padding: 8px 12px; border: 1px solid rgba(148, 163, 184, 0.35); background: transparent; color: inherit; font-size: 12px; font-weight: 600; }
-    .tc-v4 .tc-btn:hover { border-color: rgba(148, 163, 184, 0.6); }
-    .tc-v4 .tc-swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
-    .tc-v4 .tc-swatch { height: 36px; border-radius: 8px; border: 1px solid rgba(148, 163, 184, 0.2); }
-    .tc-v4 .tc-v4-anim { transition: background 200ms ease; }
-    .tc-v4.tc-v4-fx .tc-v4-anim { animation: tc-v4-pulse 6s ease-in-out infinite; }
-    .tc-v4.lowfx .tc-v4-anim { animation: none !important; }
-    .tc-v4.lowfx .tc-v4-blur { filter: none !important; }
-    @keyframes tc-v4-pulse { 0% { filter: saturate(1); } 50% { filter: saturate(1.15); } 100% { filter: saturate(1); } }
-  </style>
-  <style>
-    :root{
-      --bg:#050816;
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.66);
-      --glass:rgba(255,255,255,.06);
-      --stroke:rgba(255,255,255,.14);
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
-      --radius:24px;
-      --a1:34,211,238;
-      --a2:236,72,153;
-      --a3:139,92,246;
-      --btnBg: linear-gradient(135deg, rgba(var(--a1),.22), rgba(var(--a2),.18), rgba(var(--a3),.18));
-      --btnBorder: rgba(255,255,255,.18);
-      --btnShadow: 0 0 26px rgba(var(--a1),.14), 0 0 36px rgba(var(--a2),.10);
-    }
-    html, body { background: var(--bg) !important; color: var(--text); }
-    body { background-image: none !important; }
-    .bg-gradient-to-r,
-    .bg-gradient-to-br,
-    .bg-gradient-to-b,
-    .bg-gradient-to-t,
-    .bg-gradient-to-l,
-    .bg-gradient-to-bl,
-    .bg-gradient-to-tr { background-image: none !important; }
-    .from-indigo-500,
-    .via-purple-500,
-    .to-pink-500 { background-image: none !important; }
-    .gradient,
-    .bg-gradient,
-    .background-layer { background: none !important; }
-  </style>
-  <style>
-    .max-w-2xl.w-full.bg-white\/80 {
-      background: transparent !important;
-      background-color: transparent !important;
-      box-shadow: none !important;
-      border: none !important;
-    }
-    .max-w-2xl h1 {
-      display: none !important;
+    .tc-auth-float{
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 99999;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
     }
   </style>
 </head>
-<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen font-sans flex items-center justify-center">
+
+<body class="min-h-screen font-sans">
 
   <!-- LOGIN_BLOCK_START -->
-
-  <!-- Container chính -->
-  <div class="max-w-2xl w-full bg-white/80 backdrop-blur-md shadow-2xl rounded-xl p-8">
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-3xl font-bold text-indigo-700 text-center md:text-left">Cổng đăng nhập</h1>
-      <div class="flex items-center gap-3">
-        <div id="userInfo" class="hidden relative text-sm text-gray-700">
-          <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/80 border border-gray-200 shadow-sm hover:bg-white">
-            <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
-            <span id="userName" class="font-semibold"></span>
-            <span class="text-gray-500">▾</span>
-          </button>
-          <div id="accountMenu" class="hidden absolute right-0 mt-2 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
-            <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-gray-100">Logout</button>
-          </div>
+  <div class="tc-auth-float">
+    <div class="flex items-center gap-3">
+      <div id="userInfo" class="hidden relative text-sm text-gray-700">
+        <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/80 border border-gray-200 shadow-sm hover:bg-white">
+          <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
+          <span id="userName" class="font-semibold"></span>
+          <span class="text-gray-500">▾</span>
+        </button>
+        <div id="accountMenu" class="hidden absolute right-0 mt-2 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
+          <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-gray-100">Logout</button>
         </div>
-        <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">Đăng nhập</button>
       </div>
+      <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">
+        Đăng nhập
+      </button>
     </div>
-
   </div>
 
-  <!-- Auth Modal -->
   <div id="authOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden"></div>
   <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
@@ -146,6 +56,7 @@
         </div>
         <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">✕</button>
       </div>
+
       <div class="p-5 space-y-4">
         <div id="authError" class="text-sm text-red-600 hidden"></div>
 
@@ -178,333 +89,9 @@
       </div>
     </div>
   </div>
-
   <!-- LOGIN_BLOCK_END -->
-  <main id="tcPortalV4" class="tc-v4 hidden" aria-label="ThreadColor Universe Portal">
-    <section class="tc-hero">
-      <h1 class="tc-title">ThreadColor Universe</h1>
-      <div class="tc-sub">Multiverse Portal Delight (v4)</div>
-      <p class="tc-desc">Cổng đa vũ trụ giúp bạn tra mã chỉ nhanh, rõ và nhất quán từ HEX hoặc Pantone, sẵn sàng cho mọi dự án thêu.</p>
-     <a id="portalCta" href="worlds/threadcolor.html" class="tc-cta" href="world/threadcolor.html">Bắt đầu tra mã</a>
-      <button class="tc-gallery-btn" type="button" id="tcV4GalleryBtn">World Gallery</button>
-      <label class="tc-lowfx">
-        <input type="checkbox" id="tcV4LowFx" />
-        Hiệu ứng nhẹ
-      </label>
-    </section>
-    <section class="tc-worlds" aria-label="Chọn vũ trụ">
-      <div class="tc-worlds-title">Chọn vũ trụ</div>
-      <div class="tc-worlds-grid">
-        <button class="tc-world-card" type="button" data-world="nebula">
-          <div class="tc-world-name">Tinh vân</div>
-          <div class="tc-world-sub">Nebula</div>
-        </button>
-        <button class="tc-world-card" type="button" data-world="ocean">
-          <div class="tc-world-name">Đại dương</div>
-          <div class="tc-world-sub">Ocean</div>
-        </button>
-        <button class="tc-world-card" type="button" data-world="ink">
-          <div class="tc-world-name">Mực tàu</div>
-          <div class="tc-world-sub">Ink</div>
-        </button>
-        <button class="tc-world-card" type="button" data-world="origami">
-          <div class="tc-world-name">Origami</div>
-          <div class="tc-world-sub">Origami</div>
-        </button>
-        <button class="tc-world-card" type="button" data-world="arcade">
-          <div class="tc-world-name">Arcade</div>
-          <div class="tc-world-sub">Arcade</div>
-        </button>
-        <button class="tc-world-card" type="button" data-world="dunes">
-          <div class="tc-world-name">Đồi cát</div>
-          <div class="tc-world-sub">Dunes</div>
-        </button>
-        <button class="tc-world-card" type="button" data-world="chrome">
-          <div class="tc-world-name">Chrome</div>
-          <div class="tc-world-sub">Chrome</div>
-        </button>
-        <button class="tc-world-card" type="button" data-world="crystal">
-          <div class="tc-world-name">Pha lê</div>
-          <div class="tc-world-sub">Crystal</div>
-        </button>
-      </div>
-    </section>
-    <section class="tc-tools" aria-label="Roulette và Forge">
-      <div class="tc-panel">
-        <div class="tc-panel-title">Gradient Roulette</div>
-        <div class="tc-panel-desc">Quay nhanh một dải màu để lấy cảm hứng.</div>
-        <div class="tc-preview tc-v4-anim tc-v4-blur" id="tcV4RoulettePreview"></div>
-        <div class="tc-panel-actions">
-          <button class="tc-btn" type="button" id="tcV4Spin">Quay màu</button>
-          <a id="portalCta" href="worlds/threadcolor.html" class="tc-btn" href="world/threadcolor.html">Mở tool</a>
-        </div>
-      </div>
-      <div class="tc-panel">
-        <div class="tc-panel-title">Palette Forge</div>
-        <div class="tc-panel-desc">Rèn 5 màu từ gradient hiện tại.</div>
-        <div class="tc-swatches" id="tcV4Swatches">
-          <div class="tc-swatch" style="background:#22d3ee"></div>
-          <div class="tc-swatch" style="background:#38bdf8"></div>
-          <div class="tc-swatch" style="background:#8b5cf6"></div>
-          <div class="tc-swatch" style="background:#ec4899"></div>
-          <div class="tc-swatch" style="background:#f59e0b"></div>
-        </div>
-        <div class="tc-panel-actions">
-          <button class="tc-btn" type="button" id="tcV4Forge">Rèn palette</button>
-          <a class="tc-btn" href="world/threadcolor.html">Bắt đầu tra mã</a>
-        </div>
-      </div>
-    </section>
-    <div id="tcV4GalleryModal" class="tc-modal hidden" role="dialog" aria-modal="true" aria-label="World Gallery">
-      <div class="tc-modal-card">
-        <div class="tc-modal-head">
-          <div class="tc-modal-title">World Gallery</div>
-          <button class="tc-modal-close" type="button" id="tcV4GalleryClose">Đóng</button>
-        </div>
-        <div class="tc-modal-body">
-          Khám phá 8 vũ trụ màu sắc với phong cách khác nhau. Chọn một world để thay đổi không khí của Portal.
-        </div>
-      </div>
-    </div>
-  </main>
 
   <script type="module" src="auth.js"></script>
   <script type="module" src="script.js"></script>
-  <script>
-    (function(){
-      var ns = window.TC_PORTAL_V4 = window.TC_PORTAL_V4 || {};
-      var portal = document.getElementById("tcPortalV4");
-
-      function tcV4ShowPortal(){
-        if (!portal) return;
-        portal.classList.remove("hidden");
-      }
-
-      function tcV4HidePortal(){
-        if (!portal) return;
-        portal.classList.add("hidden");
-      }
-
-      function tcV4IsLoggedInUI(){
-        var userInfo = document.getElementById("userInfo");
-        var ctaWrap = document.getElementById("portalCtaWrap");
-        var loggedWrap = document.getElementById("loggedInWrap");
-
-        function isVisible(el){
-          if (!el) return false;
-          if (el.classList.contains("hidden")) return false;
-          var style = window.getComputedStyle(el);
-          if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") return false;
-          return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-        }
-
-        return isVisible(userInfo) || isVisible(ctaWrap) || isVisible(loggedWrap);
-      }
-
-      ns.tcV4ShowPortal = tcV4ShowPortal;
-      ns.tcV4HidePortal = tcV4HidePortal;
-      ns.tcV4IsLoggedInUI = tcV4IsLoggedInUI;
-
-      var debounceId = null;
-      function checkLoginUI(){
-        if (tcV4IsLoggedInUI()) tcV4ShowPortal();
-        else tcV4HidePortal();
-      }
-      function scheduleCheck(){
-        if (debounceId) clearTimeout(debounceId);
-        debounceId = setTimeout(checkLoginUI, 100);
-      }
-
-      var observer = new MutationObserver(function(mutations){
-        for (var i = 0; i < mutations.length; i++) {
-          var m = mutations[i];
-          if (m.type === "childList") {
-            scheduleCheck();
-            return;
-          }
-          if (m.type === "attributes" && m.attributeName === "class") {
-            scheduleCheck();
-            return;
-          }
-        }
-      });
-
-      observer.observe(document.body, {
-        attributes: true,
-        childList: true,
-        subtree: true,
-        attributeFilter: ["class"]
-      });
-
-      scheduleCheck();
-    })();
-  </script>
-  <script>
-    (function(){
-      var ns = window.TC_PORTAL_V4 = window.TC_PORTAL_V4 || {};
-      var portal = document.getElementById("tcPortalV4");
-      if (!portal) return;
-
-      var KEY = "tc_v4_world";
-
-      function tcV4ApplyWorld(world){
-        if (!world) return;
-        portal.setAttribute("data-world", world);
-      }
-
-      function tcV4RestoreWorld(){
-        var saved = localStorage.getItem(KEY);
-        if (saved) tcV4ApplyWorld(saved);
-      }
-
-      function onWorldClick(e){
-        var btn = e.currentTarget;
-        var world = btn.getAttribute("data-world");
-        if (!world) return;
-        localStorage.setItem(KEY, world);
-        tcV4ApplyWorld(world);
-      }
-
-      var cards = portal.querySelectorAll(".tc-world-card[data-world]");
-      for (var i = 0; i < cards.length; i++) {
-        cards[i].addEventListener("click", onWorldClick);
-      }
-
-      if (typeof ns.tcV4ShowPortal === "function") {
-        var prevShow = ns.tcV4ShowPortal;
-        ns.tcV4ShowPortal = function(){
-          prevShow();
-          tcV4RestoreWorld();
-        };
-      }
-
-      ns.tcV4ApplyWorld = tcV4ApplyWorld;
-      ns.tcV4RestoreWorld = tcV4RestoreWorld;
-
-      tcV4RestoreWorld();
-    })();
-  </script>
-  <script>
-    (function(){
-      var ns = window.TC_PORTAL_V4 = window.TC_PORTAL_V4 || {};
-      var portal = document.getElementById("tcPortalV4");
-      if (!portal) return;
-
-      var btn = portal.querySelector("#tcV4GalleryBtn");
-      var modal = portal.querySelector("#tcV4GalleryModal");
-      var closeBtn = portal.querySelector("#tcV4GalleryClose");
-      var lastFocus = null;
-
-      function openModal(){
-        if (!modal) return;
-        lastFocus = document.activeElement;
-        modal.classList.remove("hidden");
-        closeBtn && closeBtn.focus();
-      }
-
-      function closeModal(){
-        if (!modal) return;
-        modal.classList.add("hidden");
-        if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
-      }
-
-      function onKeydown(e){
-        if (e.key === "Escape") closeModal();
-      }
-
-      if (btn) btn.addEventListener("click", openModal);
-      if (closeBtn) closeBtn.addEventListener("click", closeModal);
-      if (modal) modal.addEventListener("click", function(e){ if (e.target === modal) closeModal(); });
-      document.addEventListener("keydown", onKeydown);
-
-      ns.tcV4OpenGallery = openModal;
-      ns.tcV4CloseGallery = closeModal;
-    })();
-  </script>
-  <script>
-    (function(){
-      var ns = window.TC_PORTAL_V4 = window.TC_PORTAL_V4 || {};
-      var portal = document.getElementById("tcPortalV4");
-      if (!portal) return;
-
-      var KEY_LOWFX = "tc_v4_lowfx";
-      var toggle = portal.querySelector("#tcV4LowFx");
-      var preview = portal.querySelector("#tcV4RoulettePreview");
-      var swatches = portal.querySelector("#tcV4Swatches");
-      var spinBtn = portal.querySelector("#tcV4Spin");
-      var forgeBtn = portal.querySelector("#tcV4Forge");
-      var hasShown = false;
-      var fxTimer = null;
-
-      function setLowFx(on){
-        if (on) portal.classList.add("lowfx");
-        else portal.classList.remove("lowfx");
-        localStorage.setItem(KEY_LOWFX, on ? "1" : "0");
-      }
-
-      function initLowFx(){
-        var saved = localStorage.getItem(KEY_LOWFX) === "1";
-        if (toggle) toggle.checked = saved;
-        setLowFx(saved);
-      }
-
-      function applyGradient(colors){
-        if (!preview) return;
-        preview.style.background = "linear-gradient(135deg, " + colors.join(", ") + ")";
-      }
-
-      function spinRoulette(){
-        var h = Math.floor(Math.random() * 360);
-        var c1 = "hsl(" + h + " 80% 60%)";
-        var c2 = "hsl(" + ((h + 50) % 360) + " 80% 60%)";
-        var c3 = "hsl(" + ((h + 120) % 360) + " 75% 55%)";
-        applyGradient([c1, c2, c3]);
-        return [c1, c2, c3];
-      }
-
-      function forgePalette(){
-        var colors = spinRoulette();
-        if (!swatches) return;
-        var nodes = swatches.querySelectorAll(".tc-swatch");
-        for (var i = 0; i < nodes.length; i++) {
-          nodes[i].style.background = colors[i % colors.length];
-        }
-      }
-
-      function startFxOnce(){
-        if (hasShown) return;
-        hasShown = true;
-        if (portal.classList.contains("lowfx")) return;
-        if (fxTimer) clearInterval(fxTimer);
-        fxTimer = setInterval(function(){
-          spinRoulette();
-        }, 4000);
-      }
-
-      if (toggle) {
-        toggle.addEventListener("change", function(){
-          setLowFx(!!toggle.checked);
-          if (toggle.checked && fxTimer) { clearInterval(fxTimer); fxTimer = null; }
-          if (!toggle.checked && hasShown) startFxOnce();
-        });
-      }
-
-      if (spinBtn) spinBtn.addEventListener("click", spinRoulette);
-      if (forgeBtn) forgeBtn.addEventListener("click", forgePalette);
-
-      initLowFx();
-      applyGradient(["#22d3ee", "#8b5cf6", "#ec4899"]);
-
-      var obs = new MutationObserver(function(){
-        if (!portal.classList.contains("hidden")) startFxOnce();
-      });
-      obs.observe(portal, { attributes: true, attributeFilter: ["class"] });
-
-      if (!portal.classList.contains("hidden")) startFxOnce();
-
-      ns.tcV4SpinRoulette = spinRoulette;
-      ns.tcV4ForgePalette = forgePalette;
-    })();
-  </script>
 </body>
 </html>
