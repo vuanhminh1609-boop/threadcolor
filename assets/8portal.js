@@ -4,6 +4,80 @@
 
   var allowed = ["nebula","ocean","ink","origami","arcade","dunes","chrome","crystal"];
   var KEY = "tc_world";
+  var demoMap = {
+    nebula: {
+      hex: "#7c3aed",
+      nearest: { brand: "Gingko", code: "N108", de: "1.3" },
+      runner: { brand: "MS", code: "P402", de: "1.8" },
+      alt: { brand: "Anchor", code: "149", de: "2.2" }
+    },
+    ocean: {
+      hex: "#22d3ee",
+      nearest: { brand: "Coats", code: "A927", de: "1.1" },
+      runner: { brand: "MS", code: "471", de: "1.6" },
+      alt: { brand: "Gingko", code: "M233", de: "2.0" }
+    },
+    ink: {
+      hex: "#0f172a",
+      nearest: { brand: "Anchor", code: "403", de: "0.9" },
+      runner: { brand: "DMC", code: "310", de: "1.4" },
+      alt: { brand: "MS", code: "777", de: "2.1" }
+    },
+    origami: {
+      hex: "#f97316",
+      nearest: { brand: "Gingko", code: "S511", de: "1.0" },
+      runner: { brand: "Coats", code: "G219", de: "1.5" },
+      alt: { brand: "Anchor", code: "822", de: "2.1" }
+    },
+    arcade: {
+      hex: "#f43f5e",
+      nearest: { brand: "MS", code: "241", de: "1.2" },
+      runner: { brand: "Gingko", code: "R707", de: "1.7" },
+      alt: { brand: "Anchor", code: "123", de: "2.0" }
+    },
+    dunes: {
+      hex: "#f59e0b",
+      nearest: { brand: "Coats", code: "E317", de: "1.1" },
+      runner: { brand: "MS", code: "682", de: "1.6" },
+      alt: { brand: "Gingko", code: "D204", de: "2.2" }
+    },
+    chrome: {
+      hex: "#cbd5f5",
+      nearest: { brand: "Anchor", code: "031", de: "1.4" },
+      runner: { brand: "Coats", code: "B004", de: "1.9" },
+      alt: { brand: "MS", code: "022", de: "2.3" }
+    },
+    crystal: {
+      hex: "#22ffb4",
+      nearest: { brand: "Gingko", code: "X909", de: "1.1" },
+      runner: { brand: "MS", code: "318", de: "1.5" },
+      alt: { brand: "Anchor", code: "279", de: "2.0" }
+    }
+  };
+
+  function setText(id, value){
+    var el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function updateDemo(world){
+    var data = demoMap[world] || demoMap.origami;
+    if (!data) return;
+    var swatch = document.getElementById("tcDemoSwatch");
+    if (swatch) {
+      swatch.style.background = "linear-gradient(135deg, " + data.hex + ", rgba(var(--a2),.45), rgba(var(--a3),.45))";
+    }
+    setText("tcDemoHex", data.hex);
+    setText("tcDemoNearestBrand", data.nearest.brand);
+    setText("tcDemoNearestCode", data.nearest.code);
+    setText("tcDemoNearestDe", data.nearest.de);
+    setText("tcDemoRunnerBrand", data.runner.brand);
+    setText("tcDemoRunnerCode", data.runner.code);
+    setText("tcDemoRunnerDe", data.runner.de);
+    setText("tcDemoAltBrand", data.alt.brand);
+    setText("tcDemoAltCode", data.alt.code);
+    setText("tcDemoAltDe", data.alt.de);
+  }
 
   function isAllowed(world){
     return allowed.indexOf(world) !== -1;
@@ -18,6 +92,7 @@
     var next = isAllowed(world) ? world : "origami";
     localStorage.setItem(KEY, next);
     portal.dataset.world = next;
+    updateDemo(next);
     return next;
   }
 
@@ -39,6 +114,7 @@
   }
 
   applyWorld();
+  updateDemo(portal.dataset.world);
 
   var openGallery = document.getElementById("tcOpenGallery");
   var openRoulette = document.getElementById("tcOpenRoulette");
