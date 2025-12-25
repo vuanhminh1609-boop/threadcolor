@@ -62,10 +62,10 @@
   --a3: 180,180,200;
 }
 #tcPortal[data-world="crystal"]{
-  --bg: #040713;
-  --a1: 99,102,241;
-  --a2: 236,72,153;
-  --a3: 34,211,238;
+  --bg: #03060e;
+  --a1: 34,255,180;
+  --a2: 45,212,255;
+  --a3: 167,90,255;
 }
 #tcPortal[data-world="origami"]{
   --bg: #f7f8fb;
@@ -110,6 +110,30 @@
   opacity: .22;
   mix-blend-mode: screen;
 }
+#tcPortal .tc-bg-circuit{
+  opacity: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(0deg, rgba(var(--a2),.08) 0 1px, transparent 1px 82px),
+    repeating-linear-gradient(90deg, rgba(var(--a1),.08) 0 1px, transparent 1px 82px),
+    linear-gradient(90deg, transparent 0 20%, rgba(var(--a1),.12) 20% 21%, transparent 21% 100%),
+    linear-gradient(0deg, transparent 0 35%, rgba(var(--a2),.10) 35% 36%, transparent 36% 100%),
+    linear-gradient(135deg, transparent 0 55%, rgba(var(--a3),.10) 55% 56%, transparent 56% 100%),
+    linear-gradient(45deg, transparent 0 64%, rgba(var(--a2),.08) 64% 65%, transparent 65% 100%),
+    radial-gradient(circle at 18% 28%, rgba(var(--a1),.28) 0 2px, transparent 3px),
+    radial-gradient(circle at 68% 22%, rgba(var(--a2),.22) 0 2px, transparent 3px),
+    radial-gradient(circle at 44% 74%, rgba(var(--a3),.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 62%, rgba(var(--a1),.18) 0 2px, transparent 3px);
+  mix-blend-mode: screen;
+  filter: saturate(1.35) contrast(1.18);
+  pointer-events: none;
+}
+
+#tcPortal[data-world="crystal"] .tc-bg-circuit { opacity: 1; }
+#tcPortal[data-world="crystal"] .tc-bg-nebula { opacity: 0.08; }
+#tcPortal[data-world="crystal"] .tc-bg-haze { opacity: 0.10; }
+#tcPortal[data-world="crystal"] .tc-bg-stars{ opacity: 0.18; }
 
 #tcPortal .tc-content {
   position: relative;
@@ -188,6 +212,32 @@
   outline: 2px solid rgba(var(--a1), .6);
   outline-offset: 2px;
 }
+#tcPortal .tc-btn-cta{
+  padding: 12px 16px;
+  gap: 10px;
+}
+#tcPortal .tc-cta-icon{
+  width: 30px; height: 30px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius: 10px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 0 18px rgba(var(--a1),.14);
+}
+#tcPortal .tc-cta-text{
+  display:flex; flex-direction:column;
+  line-height: 1.05;
+}
+#tcPortal .tc-cta-title{
+  font-size: 13px;
+  font-weight: 800;
+}
+#tcPortal .tc-cta-sub{
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
 /* CTA primary: nổi hơn hẳn các nút khác */
 #tcPortal .tc-btn-primary{
   position: relative;
@@ -412,6 +462,27 @@
     0 0 18px rgba(var(--a1), .18),
     0 0 34px rgba(var(--a2), .14),
     0 0 52px rgba(var(--a3), .12);
+}
+/* ==== CTA pulse (nhịp thở) ==== */
+@keyframes tcPulse {
+  0%,100% {
+    box-shadow: 0 14px 40px rgba(0,0,0,.30),
+                0 0 26px rgba(var(--a1),.20),
+                0 0 44px rgba(var(--a2),.12);
+  }
+  50% {
+    box-shadow: 0 16px 46px rgba(0,0,0,.33),
+                0 0 34px rgba(var(--a1),.26),
+                0 0 58px rgba(var(--a2),.18);
+  }
+}
+
+#tcPortal .tc-btn-primary{
+  animation: tcPulse 2.6s ease-in-out infinite;
+}
+
+#tcPortal .tc-btn-primary:hover{
+  animation: none;
 }
 
 
