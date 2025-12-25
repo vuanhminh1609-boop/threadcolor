@@ -5,6 +5,7 @@
   <title>Cổng đăng nhập</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/8portal.css">
   <style>
     .animate-fade-in-up {
       animation: fade-in-up 0.25s ease forwards;
@@ -93,7 +94,200 @@
   </div>
 
   <!-- LOGIN_BLOCK_END -->
+  <!-- THEME: 8portal / Portal Container START -->
+  <main id="tcPortal" class="tc-portal" aria-label="ThreadColor Universe — 8portal">
+    <div class="tc-bg" aria-hidden="true">
+      <div class="tc-bg-layer tc-bg-nebula"></div>
+      <div class="tc-bg-layer tc-bg-haze"></div>
+      <div class="tc-bg-layer tc-bg-stars"></div>
+    </div>
 
+    <div class="tc-content">
+      <div class="tc-wrap">
+        <header class="tc-hero">
+          <div class="tc-pill">ThreadColor Universe</div>
+          <h1 class="tc-title">ThreadColor Universe</h1>
+          <p class="tc-sub">Multiverse Portal Delight (v4)</p>
+          <p class="tc-desc">
+            Cổng đa vũ trụ dành cho màu sắc chỉ thêu: tra mã từ HEX hoặc Pantone, chọn world và bắt đầu hành trình màu.
+          </p>
+          <div class="tc-actions">
+            <a class="tc-btn tc-btn-primary" href="worlds/threadcolor.html">Bắt đầu tra mã</a>
+            <button class="tc-btn tc-btn-ghost" type="button" id="tcOpenGallery">World Gallery</button>
+            <button class="tc-btn tc-btn-ghost" type="button" id="tcOpenRoulette">Gradient Roulette</button>
+            <button class="tc-btn tc-btn-ghost" type="button" id="tcOpenForge">Palette Forge</button>
+          </div>
+        </header>
+
+        <section class="tc-worlds" aria-label="8 worlds">
+          <div class="tc-section-head">
+            <h2 class="tc-section-title">8 Vũ trụ</h2>
+            <p class="tc-muted">Chọn một world để đổi bầu không khí của portal.</p>
+          </div>
+          <div class="tc-world-grid">
+            <button class="tc-world-card" type="button" data-world="nebula">
+              <div class="tc-world-name">Nebula</div>
+              <div class="tc-world-sub">Tinh vân</div>
+            </button>
+            <button class="tc-world-card" type="button" data-world="ocean">
+              <div class="tc-world-name">Ocean</div>
+              <div class="tc-world-sub">Đại dương</div>
+            </button>
+            <button class="tc-world-card" type="button" data-world="ink">
+              <div class="tc-world-name">Ink</div>
+              <div class="tc-world-sub">Mực tàu</div>
+            </button>
+            <button class="tc-world-card" type="button" data-world="origami">
+              <div class="tc-world-name">Origami</div>
+              <div class="tc-world-sub">Thành phố giấy</div>
+            </button>
+            <button class="tc-world-card" type="button" data-world="arcade">
+              <div class="tc-world-name">Arcade</div>
+              <div class="tc-world-sub">Retro pixel</div>
+            </button>
+            <button class="tc-world-card" type="button" data-world="dunes">
+              <div class="tc-world-name">Dunes</div>
+              <div class="tc-world-sub">Đồi cát</div>
+            </button>
+            <button class="tc-world-card" type="button" data-world="chrome">
+              <div class="tc-world-name">Chrome</div>
+              <div class="tc-world-sub">Kim loại lỏng</div>
+            </button>
+            <button class="tc-world-card" type="button" data-world="crystal">
+              <div class="tc-world-name">Crystal</div>
+              <div class="tc-world-sub">Pha lê</div>
+            </button>
+          </div>
+        </section>
+
+        <section class="tc-panels" aria-label="Creative tools">
+          <div class="tc-panel">
+            <div class="tc-panel-title">Gradient Roulette</div>
+            <div class="tc-panel-desc">Quay nhanh để có dải màu gợi cảm hứng.</div>
+            <div class="tc-preview" id="tcRoulettePreview"></div>
+            <div class="tc-panel-actions">
+              <button class="tc-btn tc-btn-ghost" type="button" id="tcRouletteSpin">Spin</button>
+              <button class="tc-btn tc-btn-ghost" type="button" id="tcOpenRouletteInline">Mở bảng</button>
+            </div>
+          </div>
+          <div class="tc-panel">
+            <div class="tc-panel-title">Palette Forge</div>
+            <div class="tc-panel-desc">Rèn 5 màu từ gradient hiện tại.</div>
+            <div class="tc-swatches" id="tcForgeSwatches">
+              <div class="tc-swatch"></div>
+              <div class="tc-swatch"></div>
+              <div class="tc-swatch"></div>
+              <div class="tc-swatch"></div>
+              <div class="tc-swatch"></div>
+            </div>
+            <div class="tc-panel-actions">
+              <button class="tc-btn tc-btn-ghost" type="button" id="tcForgeGenerate">Forge</button>
+              <button class="tc-btn tc-btn-ghost" type="button" id="tcOpenForgeInline">Mở bảng</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="tcGalleryModal" class="tc-modal" role="dialog" aria-modal="true" aria-hidden="true" data-open="0">
+      <div class="tc-modal-backdrop" data-close="1"></div>
+      <div class="tc-modal-card" role="document">
+        <div class="tc-modal-head">
+          <div>
+            <div class="tc-modal-title">World Gallery</div>
+            <div class="tc-muted">Chọn world để đổi bối cảnh.</div>
+          </div>
+          <button class="tc-btn tc-btn-ghost" type="button" id="tcGalleryClose">Đóng</button>
+        </div>
+        <div class="tc-world-grid tc-world-grid-modal">
+          <button class="tc-world-card" type="button" data-world="nebula">
+            <div class="tc-world-name">Nebula</div>
+            <div class="tc-world-sub">Tinh vân</div>
+          </button>
+          <button class="tc-world-card" type="button" data-world="ocean">
+            <div class="tc-world-name">Ocean</div>
+            <div class="tc-world-sub">Đại dương</div>
+          </button>
+          <button class="tc-world-card" type="button" data-world="ink">
+            <div class="tc-world-name">Ink</div>
+            <div class="tc-world-sub">Mực tàu</div>
+          </button>
+          <button class="tc-world-card" type="button" data-world="origami">
+            <div class="tc-world-name">Origami</div>
+            <div class="tc-world-sub">Thành phố giấy</div>
+          </button>
+          <button class="tc-world-card" type="button" data-world="arcade">
+            <div class="tc-world-name">Arcade</div>
+            <div class="tc-world-sub">Retro pixel</div>
+          </button>
+          <button class="tc-world-card" type="button" data-world="dunes">
+            <div class="tc-world-name">Dunes</div>
+            <div class="tc-world-sub">Đồi cát</div>
+          </button>
+          <button class="tc-world-card" type="button" data-world="chrome">
+            <div class="tc-world-name">Chrome</div>
+            <div class="tc-world-sub">Kim loại lỏng</div>
+          </button>
+          <button class="tc-world-card" type="button" data-world="crystal">
+            <div class="tc-world-name">Crystal</div>
+            <div class="tc-world-sub">Pha lê</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tcRouletteModal" class="tc-modal" role="dialog" aria-modal="true" aria-hidden="true" data-open="0">
+      <div class="tc-modal-backdrop" data-close="1"></div>
+      <div class="tc-modal-card" role="document">
+        <div class="tc-modal-head">
+          <div>
+            <div class="tc-modal-title">Gradient Roulette</div>
+            <div class="tc-muted">Spin để lấy một gradient mới.</div>
+          </div>
+          <button class="tc-btn tc-btn-ghost" type="button" id="tcRouletteClose">Đóng</button>
+        </div>
+        <div class="tc-roulette">
+          <div class="tc-roulette-preview" id="tcRoulettePreviewModal"></div>
+          <div class="tc-roulette-meta">
+            <div class="tc-code" id="tcRouletteCss">linear-gradient(...)</div>
+            <div class="tc-panel-actions">
+              <button class="tc-btn tc-btn-ghost" type="button" id="tcRouletteSpinModal">Spin</button>
+              <button class="tc-btn tc-btn-ghost" type="button" id="tcRouletteCopy">Copy CSS</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tcForgeModal" class="tc-modal" role="dialog" aria-modal="true" aria-hidden="true" data-open="0">
+      <div class="tc-modal-backdrop" data-close="1"></div>
+      <div class="tc-modal-card" role="document">
+        <div class="tc-modal-head">
+          <div>
+            <div class="tc-modal-title">Palette Forge</div>
+            <div class="tc-muted">Tạo palette 5 màu từ gradient.</div>
+          </div>
+          <button class="tc-btn tc-btn-ghost" type="button" id="tcForgeClose">Đóng</button>
+        </div>
+        <div class="tc-forge">
+          <div class="tc-swatches tc-swatches-lg" id="tcForgeSwatchesModal">
+            <div class="tc-swatch"></div>
+            <div class="tc-swatch"></div>
+            <div class="tc-swatch"></div>
+            <div class="tc-swatch"></div>
+            <div class="tc-swatch"></div>
+          </div>
+          <div class="tc-panel-actions">
+            <button class="tc-btn tc-btn-ghost" type="button" id="tcForgeGenerateModal">Forge</button>
+            <button class="tc-btn tc-btn-ghost" type="button" id="tcForgeCopy">Copy HEX</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- THEME: 8portal / Portal Container END -->
+
+  <script type="module" src="assets/8portal.js"></script>
   <script type="module" src="auth.js"></script>
   <script type="module" src="script.js"></script>
 </body>

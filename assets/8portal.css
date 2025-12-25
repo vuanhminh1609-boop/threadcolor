@@ -1,0 +1,366 @@
+#tcPortal.tc-portal {
+  --bg: #050816;
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.66);
+  --glass: rgba(255,255,255,.06);
+  --stroke: rgba(255,255,255,.14);
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+  --radius: 24px;
+  --a1: 34,211,238;
+  --a2: 236,72,153;
+  --a3: 139,92,246;
+  --btnBg: linear-gradient(135deg, rgba(var(--a1),.22), rgba(var(--a2),.18), rgba(var(--a3),.18));
+  --btnBorder: rgba(255,255,255,.18);
+  --btnShadow: 0 0 26px rgba(var(--a1),.14), 0 0 36px rgba(var(--a2),.10);
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+
+#tcPortal[data-world="nebula"]{
+  --bg: #050816;
+  --a1: 34,211,238;
+  --a2: 236,72,153;
+  --a3: 139,92,246;
+}
+#tcPortal[data-world="arcade"]{
+  --bg: #0b0614;
+  --glass: rgba(0,0,0,.42);
+  --stroke: rgba(255,255,255,.18);
+  --a1: 255,64,196;
+  --a2: 83,255,246;
+  --a3: 255,222,89;
+}
+#tcPortal[data-world="ink"]{
+  --bg: #fbfbf7;
+  --text: rgba(10,14,40,.92);
+  --muted: rgba(10,14,40,.62);
+  --glass: rgba(255,255,255,.78);
+  --stroke: rgba(10,14,40,.12);
+  --a1: 20,20,20;
+  --a2: 50,50,50;
+  --a3: 80,80,80;
+}
+#tcPortal[data-world="ocean"]{
+  --bg: #020b16;
+  --a1: 64,224,208;
+  --a2: 59,130,246;
+  --a3: 34,197,94;
+}
+#tcPortal[data-world="dunes"]{
+  --bg: #120a08;
+  --a1: 251,146,60;
+  --a2: 244,63,94;
+  --a3: 245,208,118;
+}
+#tcPortal[data-world="chrome"]{
+  --bg: #06060a;
+  --a1: 200,200,255;
+  --a2: 255,255,255;
+  --a3: 180,180,200;
+}
+#tcPortal[data-world="crystal"]{
+  --bg: #040713;
+  --a1: 99,102,241;
+  --a2: 236,72,153;
+  --a3: 34,211,238;
+}
+#tcPortal[data-world="origami"]{
+  --bg: #f7f8fb;
+  --text: rgba(10,14,40,.92);
+  --muted: rgba(10,14,40,.62);
+  --glass: rgba(255,255,255,.78);
+  --stroke: rgba(10,14,40,.10);
+  --a1: 59,130,246;
+  --a2: 239,68,68;
+  --a3: 234,179,8;
+}
+
+#tcPortal .tc-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#tcPortal .tc-bg-layer {
+  position: absolute;
+  inset: -20%;
+}
+#tcPortal .tc-bg-nebula {
+  background:
+    radial-gradient(circle at 18% 25%, rgba(var(--a1),.36), transparent 58%),
+    radial-gradient(circle at 82% 20%, rgba(var(--a2),.26), transparent 60%),
+    radial-gradient(circle at 60% 82%, rgba(var(--a3),.24), transparent 62%),
+    radial-gradient(circle at 40% 60%, rgba(255,255,255,.06), transparent 60%);
+}
+#tcPortal .tc-bg-haze {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 45%),
+    radial-gradient(circle at 35% 70%, rgba(255,255,255,.05), transparent 60%);
+  opacity: .6;
+}
+#tcPortal .tc-bg-stars {
+  background:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.75) 50%, transparent 52%),
+    radial-gradient(1px 1px at 65% 18%, rgba(255,255,255,.60) 50%, transparent 52%),
+    radial-gradient(1px 1px at 82% 45%, rgba(255,255,255,.55) 50%, transparent 52%),
+    radial-gradient(1px 1px at 40% 72%, rgba(255,255,255,.45) 50%, transparent 52%);
+  opacity: .22;
+  mix-blend-mode: screen;
+}
+
+#tcPortal .tc-content {
+  position: relative;
+  z-index: 10;
+}
+#tcPortal .tc-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 96px 24px 80px;
+}
+
+#tcPortal .tc-hero {
+  max-width: 760px;
+}
+#tcPortal .tc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  background: var(--glass);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+#tcPortal .tc-title {
+  font-size: clamp(32px, 5vw, 60px);
+  line-height: 1.05;
+  margin: 14px 0 0;
+  font-weight: 800;
+}
+#tcPortal .tc-sub {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+#tcPortal .tc-desc {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  opacity: .92;
+}
+#tcPortal .tc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+#tcPortal .tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--btnBorder);
+  background: var(--glass);
+  color: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--btnShadow);
+}
+#tcPortal .tc-btn-primary {
+  background: var(--btnBg);
+}
+#tcPortal .tc-btn-ghost {
+  background: var(--glass);
+  box-shadow: none;
+}
+#tcPortal .tc-btn:focus-visible {
+  outline: 2px solid rgba(var(--a1), .6);
+  outline-offset: 2px;
+}
+
+#tcPortal .tc-section-head {
+  margin-top: 36px;
+  margin-bottom: 12px;
+}
+#tcPortal .tc-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+#tcPortal .tc-muted {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+#tcPortal .tc-world-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+#tcPortal .tc-world-card {
+  text-align: left;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: var(--glass);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+#tcPortal .tc-world-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(var(--a1), .35);
+  box-shadow: 0 18px 40px rgba(0,0,0,.25);
+}
+#tcPortal .tc-world-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+#tcPortal .tc-world-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+#tcPortal .tc-panels {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+#tcPortal .tc-panel {
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: var(--glass);
+  padding: 14px;
+}
+#tcPortal .tc-panel-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+#tcPortal .tc-panel-desc {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+#tcPortal .tc-preview {
+  height: 120px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  margin-top: 10px;
+  background: linear-gradient(135deg, rgba(var(--a1),.9), rgba(var(--a2),.85), rgba(var(--a3),.85));
+}
+#tcPortal .tc-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+#tcPortal .tc-swatches {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+#tcPortal .tc-swatches-lg {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+#tcPortal .tc-swatch {
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.12);
+}
+
+#tcPortal .tc-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 35;
+}
+#tcPortal .tc-modal[data-open="1"] {
+  display: flex;
+}
+#tcPortal .tc-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.62);
+  z-index: 30;
+}
+#tcPortal .tc-modal-card {
+  position: relative;
+  z-index: 35;
+  width: min(960px, 92vw);
+  background: var(--bg);
+  border-radius: 20px;
+  border: 1px solid var(--stroke);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+#tcPortal .tc-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+#tcPortal .tc-modal-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+#tcPortal .tc-world-grid-modal {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+#tcPortal .tc-roulette {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 12px;
+}
+#tcPortal .tc-roulette-preview {
+  height: 220px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(135deg, rgba(var(--a1),.9), rgba(var(--a2),.85), rgba(var(--a3),.85));
+}
+#tcPortal .tc-roulette-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#tcPortal .tc-code {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: var(--glass);
+}
+#tcPortal .tc-forge {
+  display: grid;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  #tcPortal .tc-roulette {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  #tcPortal .tc-wrap {
+    padding: 80px 16px 60px;
+  }
+}
