@@ -353,6 +353,21 @@
   display: grid;
   gap: 12px;
 }
+#tcPortal .neon-text{
+  /* Gradient chữ theo 3 accent của từng world */
+  background: linear-gradient(90deg, rgb(var(--a1)), rgb(var(--a2)), rgb(var(--a3)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Glow “sang” nhưng không chói */
+  text-shadow:
+    0 0 18px rgba(var(--a1), .18),
+    0 0 34px rgba(var(--a2), .14),
+    0 0 52px rgba(var(--a3), .12);
+}
+
+
 
 @media (max-width: 900px) {
   #tcPortal .tc-roulette {

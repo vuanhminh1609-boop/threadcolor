@@ -11,11 +11,11 @@
 
   function getWorld(){
     var saved = localStorage.getItem(KEY);
-    return isAllowed(saved) ? saved : "nebula";
+    return isAllowed(saved) ? saved : "origami";
   }
 
   function setWorld(world){
-    var next = isAllowed(world) ? world : "nebula";
+    var next = isAllowed(world) ? world : "origami";
     localStorage.setItem(KEY, next);
     portal.dataset.world = next;
     return next;
