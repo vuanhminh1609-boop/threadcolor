@@ -25,69 +25,7 @@
 </head>
 <body class="min-h-screen font-sans">
 
-  <!-- LOGIN_BLOCK_START -->
-  <div class="tc-auth-float" data-dock="topbar">
-    <div class="flex items-center gap-3">
-      <div id="userInfo" class="hidden relative text-sm text-gray-700">
-        <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/80 border border-gray-200 shadow-sm hover:bg-white">
-          <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
-          <span id="userName" class="font-semibold"></span>
-          <span class="text-gray-500">&#9662;</span>
-        </button>
-        <div id="accountMenu" class="hidden absolute right-0 mt-3 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden origin-top-right">
-          <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-gray-100">&#272;&#259;ng xu&#7845;t</button>
-        </div>
-      </div>
-      <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">
-        &#272;&#259;ng nh&#7853;p
-      </button>
-    </div>
-  </div>
-
-  <div id="authOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden"></div>
-  <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-        <div class="flex gap-2">
-          <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700">&#272;&#259;ng nh&#7853;p</button>
-          <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100">&#272;&#259;ng k&#253;</button>
-        </div>
-        <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">&times;</button>
-      </div>
-
-      <div class="p-5 space-y-4">
-        <div id="authError" class="text-sm text-red-600 hidden"></div>
-
-        <div id="loginPanel" class="space-y-3">
-          <input id="loginEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Email">
-          <input id="loginPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="M&#7853;t kh&#7849;u">
-          <button id="btnLogin" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">&#272;&#259;ng nh&#7853;p</button>
-          <button id="btnForgot" class="text-sm text-indigo-600 hover:underline">Qu&#234;n m&#7853;t kh&#7849;u?</button>
-        </div>
-
-        <div id="registerPanel" class="space-y-3 hidden">
-          <input id="registerEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Email">
-          <input id="registerPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="M&#7853;t kh&#7849;u">
-          <input id="registerConfirm" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Nh&#7853;p l&#7841;i m&#7853;t kh&#7849;u">
-          <button id="btnRegister" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">T&#7841;o t&#224;i kho&#7843;n</button>
-        </div>
-
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-          <span class="h-px flex-1 bg-gray-200"></span>
-          <span>Ho&#7863;c</span>
-          <span class="h-px flex-1 bg-gray-200"></span>
-        </div>
-
-        <button id="btnGoogle" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>G</span><span>Ti&#7871;p t&#7909;c v&#7899;i Google</span>
-        </button>
-        <button id="btnFacebook" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>f</span><span>Ti&#7871;p t&#7909;c v&#7899;i Facebook</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <!-- LOGIN_BLOCK_END -->
+  <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end"></div>
 
   <script type="module" src="auth.js"></script>
   <script type="module" src="script.js"></script>
