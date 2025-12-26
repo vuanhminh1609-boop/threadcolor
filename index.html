@@ -384,6 +384,20 @@
         return path.split(".").reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : null), obj);
       };
 
+      const updateWorldTexts = (dict, key) => {
+        const worldKey = key || document.documentElement?.dataset?.world;
+        document.querySelectorAll("#worldMenu [data-world]").forEach((node) => {
+          const itemKey = node.getAttribute("data-world");
+          const label = dict.worlds?.[itemKey]?.label;
+          if (label) node.textContent = label;
+        });
+        if (worldKey) {
+          const label = dict.worlds?.[worldKey]?.label;
+          const worldLabel = document.getElementById("worldLabel");
+          if (label && worldLabel) worldLabel.textContent = label;
+        }
+      };
+
       const applyI18n = (lang) => {
         const dict = I18N[lang];
         if (!dict) return;
@@ -401,20 +415,16 @@
           const desc = dict.worlds?.[key]?.desc;
           if (desc) node.textContent = desc;
         });
-        document.querySelectorAll("#worldMenu [data-world]").forEach((node) => {
-          const key = node.getAttribute("data-world");
-          const label = dict.worlds?.[key]?.label;
-          if (label) node.textContent = label;
-        });
-        const currentWorld = document.documentElement?.dataset?.world;
-        if (currentWorld) {
-          const label = dict.worlds?.[currentWorld]?.label;
-          const worldLabel = document.getElementById("worldLabel");
-          if (label && worldLabel) worldLabel.textContent = label;
-        }
+        updateWorldTexts(dict);
       };
 
       document.addEventListener("DOMContentLoaded", () => applyI18n("vi"));
+      document.addEventListener("tc-world-changed", (event) => {
+        const dict = I18N.vi;
+        if (!dict) return;
+        const next = event?.detail?.world;
+        updateWorldTexts(dict, next);
+      });
     })();
   </script>
   <script>
@@ -426,22 +436,19 @@
       const storageKey = "tc_world";
       const worlds = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
       const getItems = () => Array.from(worldMenu.querySelectorAll(".tc-world-item"));
-      const getLabelForWorld = (key) => {
-        const item = worldMenu.querySelector(`[data-world="${key}"]`);
-        return item ? item.textContent.trim() : "";
-      };
       const applyWorld = (key) => {
         const current = document.documentElement.dataset.world;
         const next = worlds.includes(key)
           ? key
           : (worlds.includes(current) ? current : "origami");
+        const prev = document.documentElement.getAttribute("data-world");
         document.documentElement.setAttribute("data-world", next);
         try {
           localStorage.setItem(storageKey, next);
         } catch (err) {}
-        const label = getLabelForWorld(next);
-        const labelEl = worldBtn.querySelector("#worldLabel");
-        if (label && labelEl) labelEl.textContent = label;
+        if (prev !== next) {
+          document.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world: next } }));
+        }
       };
       const setMenuOpen = (open) => {
         worldMenu.dataset.open = open ? "1" : "0";
