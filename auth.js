@@ -215,6 +215,63 @@ function ensureAuthFallbackStyle() {
   right: 16px;
   z-index: 70;
 }
+#topbarAuthSlot .tc-chip{
+  background: var(--glass, rgba(255,255,255,.75));
+  border: 1px solid var(--stroke, rgba(0,0,0,.12));
+  color: var(--text, #111827);
+}
+#topbarAuthSlot .tc-btn{
+  border-radius: 0.75rem;
+  border: 1px solid var(--stroke, rgba(0,0,0,.12));
+  background: var(--glass, rgba(255,255,255,.75));
+  color: var(--text, #111827);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  line-height: 1;
+  transition: filter .15s ease, transform .05s ease, box-shadow .15s ease;
+}
+#topbarAuthSlot .tc-btn-primary{
+  background: linear-gradient(135deg, var(--a1, #6366f1), var(--a2, #8b5cf6));
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.18);
+}
+#topbarAuthSlot .tc-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--a1, #6366f1), var(--a2, #8b5cf6), var(--a3, #ec4899));
+  box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+}
+#topbarAuthSlot .tc-btn:hover,
+#topbarAuthSlot .tc-chip:hover{ filter: brightness(1.03); }
+#topbarAuthSlot .tc-btn:active{ transform: translateY(1px); }
+#topbarAuthSlot .tc-btn:focus-visible,
+#topbarAuthSlot #accountMenu button:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1, #6366f1);
+}
+#topbarAuthSlot #accountMenu{
+  background: var(--glass, rgba(255,255,255,.75));
+  border: 1px solid var(--stroke, rgba(0,0,0,.12));
+  color: var(--text, #111827);
+}
+#topbarAuthSlot #accountMenu button{
+  padding: .6rem .75rem;
+  line-height: 1.1;
+}
+#topbarAuthSlot #accountMenu button:hover{
+  background: rgba(255,255,255,.10);
+}
+#topbarAuthSlot #accountMenu button + button{
+  border-top: 1px solid var(--stroke, rgba(0,0,0,.12));
+  opacity: .35;
+}
+@media (prefers-reduced-motion: reduce){
+  #topbarAuthSlot .tc-btn,
+  #topbarAuthSlot .tc-chip{
+    transition: none !important;
+  }
+}
 @media (prefers-reduced-motion: reduce){
   #authModal *{ transition: none !important; }
 }
