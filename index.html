@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>8portal v4-By SpaceColors</title>
+  <title>8Portal v4</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -270,8 +270,16 @@
       loading="eager"
       decoding="async"
     />
+    <span class="hidden sm:inline text-lg">SpaceColors</span>
   </a>
+
+  <span class="tc-muted text-sm hidden md:inline">/</span>
+
+  <span class="tc-muted text-sm hidden md:inline" aria-label="Landingpage">
+    8Portal
+  </span>
 </div>
+
 
       <div class="flex-1 flex items-center justify-center">
         <div class="relative" id="worldSwitcher">
@@ -306,9 +314,9 @@
     <!-- HERO -->
     <section class="max-w-6xl mx-auto px-4 pt-14 pb-12">
       <div class="tc-card p-8 md:p-10">
-        <p class="text-xs uppercase tracking-[0.3em] tc-muted">8portal v4</p>
-        <h1 class="text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title">Không gian Thế giới sợi chỉ, công cụ và cộng đồng.</h1>
-        <p class="mt-4 tc-muted max-w-2xl" data-i18n="hero.desc">Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.</p>
+        <p class="text-xs uppercase tracking-[0.3em] tc-muted">8Portal v4</p>
+        <h1 class="text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title">Không gian màu vô hạn.</h1>
+        <p class="mt-4 tc-muted max-w-2xl" data-i18n="hero.desc">Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện màu đa dạng(màu chỉ,palette,HEX).</p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaPrimary">Mở công cụ</a>
           <button class="tc-btn tc-chip px-5 py-3" data-i18n="hero.ctaSecondary">Khám phá Thế giới</button>
@@ -321,7 +329,7 @@
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold" data-i18n="quick.title">Hành động nhanh</h2>
-          <p class="tc-muted text-sm mt-1" data-i18n="quick.desc">Truy cập nhanh các tác vụ chính của 8portal.</p>
+          <p class="tc-muted text-sm mt-1" data-i18n="quick.desc">Truy cập nhanh các tác vụ chính của 8Portal.</p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -493,7 +501,7 @@
   <!-- FOOTER -->
   <footer class="max-w-6xl mx-auto px-4 pb-10">
     <div class="tc-card p-4 text-sm tc-muted flex items-center justify-between">
-      <span data-i18n="footer.left">8portal v4 — Khung A1→A3</span>
+      <span data-i18n="footer.left">8Portal v4 — Khung A1→A3</span>
       <span data-i18n="footer.right">Token thế giới đã sẵn sàng</span>
     </div>
   </footer>
@@ -504,8 +512,8 @@
       const I18N = {
         vi: {
           hero: {
-            title: "Không gian Thế giới sợi chỉ, công cụ và cộng đồng.",
-            desc: "Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.",
+            title: "Không gian màu vô hạn.",
+            desc: "Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện màu đa dạng(màu chỉ,palette,HEX).",
             ctaPrimary: "Mở công cụ",
             ctaSecondary: "Khám phá Thế giới"
           },
@@ -516,7 +524,7 @@
           },
           quick: {
             title: "Hành động nhanh",
-            desc: "Truy cập nhanh các tác vụ chính của 8portal.",
+            desc: "Truy cập nhanh các tác vụ chính của 8Portal.",
             items: {
               threadcolor: {
                 title: "Tra mã chỉ",
@@ -559,7 +567,7 @@
             copied: "Đã sao chép!"
           },
           footer: {
-            left: "8portal v4 — Khung A1→A3",
+            left: "8Portal v4 — Khung A1→A3",
             right: "Token thế giới đã sẵn sàng"
           },
           worlds: {
