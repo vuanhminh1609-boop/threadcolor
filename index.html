@@ -205,14 +205,14 @@
             <span aria-hidden="true">&#9662;</span>
           </button>
           <div id="worldMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vÃ¢n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Äáº¡i dÆ°Æ¡ng</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Má»±c tÃ u</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Äá»“i cÃ¡t</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Máº¡ch Ä‘iá»‡n</button>
           </div>
         </div>
       </div>
@@ -227,89 +227,89 @@
     <section class="max-w-6xl mx-auto px-4 pt-14 pb-12">
       <div class="tc-card p-8 md:p-10">
         <p class="text-xs uppercase tracking-[0.3em] tc-muted">8portal v4</p>
-        <h1 class="text-4xl md:text-5xl font-bold mt-3">Không gian thế giới sợi chỉ, công cụ và cộng đồng.</h1>
-        <p class="mt-4 tc-muted max-w-2xl">
-          Chuyển world để cảm nhận thẩm mỹ, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.
+        <h1 class="text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title">Không gian Thế giới sợi chỉ, công cụ và cộng đồng.</h1>
+        <p class="mt-4 tc-muted max-w-2xl" data-i18n="hero.desc">
+          Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
-          <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/threadcolor.html">Mở công cụ</a>
-          <button class="tc-btn tc-chip px-5 py-3">Khám phá không gian</button>
+          <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaPrimary">Mở công cụ</a>
+          <button class="tc-btn tc-chip px-5 py-3" data-i18n="hero.ctaSecondary">Khám phá Thế giới</button>
         </div>
       </div>
     </section>
 
-    <!-- GALLERY -->
+  <!-- GALLERY -->
     <section class="max-w-6xl mx-auto px-4 pb-16">
       <div class="flex items-end justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-semibold">World gallery</h2>
-          <p class="tc-muted text-sm mt-1">8 thế giới, 8 sắc thái cảm giác.</p>
+          <h2 class="text-2xl font-semibold" data-i18n="gallery.title">Bộ sưu tập Thế giới</h2>
+          <p class="tc-muted text-sm mt-1" data-i18n="gallery.desc">8 Thế giới, 8 sắc thái cảm giác.</p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Nebula</h3>
+            <h3 class="font-semibold" data-world-label="nebula">Tinh vân</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Vũ trụ lạnh, ánh tím xanh sâu thẳm.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="nebula">Tinh vân huyền ảo, ánh tím xanh sâu thẳm.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Ocean</h3>
+            <h3 class="font-semibold" data-world-label="ocean">Đại dương</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Làn nước mát, cảm giác sáng sạch.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="ocean">Đại dương mát lành, cảm giác sáng sạch.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Ink</h3>
+            <h3 class="font-semibold" data-world-label="ink">Mực tàu</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Tối giản, mực tàu và độ sâu.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="ink">Tối giản, mực tàu và độ sâu.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Origami</h3>
+            <h3 class="font-semibold" data-world-label="origami">Origami</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Giấy gấp, ấm áp và nhẹ nhàng.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="origami">Giấy gấp, ấm áp và nhẹ nhàng.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Arcade</h3>
+            <h3 class="font-semibold" data-world-label="arcade">Arcade</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Neon năng lượng, nhịp nhanh.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="arcade">Nê-on năng lượng, nhịp nhanh.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Dunes</h3>
+            <h3 class="font-semibold" data-world-label="dunes">Đồi cát</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Sa mạc, nắng vàng, yên tĩnh.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="dunes">Sa mạc, nắng vàng, yên tĩnh.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Chrome</h3>
+            <h3 class="font-semibold" data-world-label="chrome">Chrome</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Kim loại sáng, chuẩn xác, sạch.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="chrome">Kim loại sáng, chuẩn xác, sạch.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold">Circuit</h3>
+            <h3 class="font-semibold" data-world-label="circuit">Mạch điện</h3>
           </div>
-          <p class="tc-muted text-sm mt-2">Mạch điện, xanh lục kỹ thuật.</p>
-          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+          <p class="tc-muted text-sm mt-2" data-world-desc="circuit">Mạch điện, xanh lục kỹ thuật.</p>
+          <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
       </div>
     </section>
@@ -318,19 +318,131 @@
   <!-- FOOTER -->
   <footer class="max-w-6xl mx-auto px-4 pb-10">
     <div class="tc-card p-4 text-sm tc-muted flex items-center justify-between">
-      <span>8portal v4 — Skeleton A1→A3</span>
-      <span>World tokens ready</span>
+      <span data-i18n="footer.left">8portal v4 — Khung A1→A3</span>
+      <span data-i18n="footer.right">Token thế giới đã sẵn sàng</span>
     </div>
   </footer>
 
   <script type="module" src="./auth.js"></script>
   <script>
     (() => {
+      const I18N = {
+        vi: {
+          hero: {
+            title: "Không gian Thế giới sợi chỉ, công cụ và cộng đồng.",
+            desc: "Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.",
+            ctaPrimary: "Mở công cụ",
+            ctaSecondary: "Khám phá Thế giới"
+          },
+          gallery: {
+            title: "Bộ sưu tập Thế giới",
+            desc: "8 Thế giới, 8 sắc thái cảm giác.",
+            activate: "Kích hoạt"
+          },
+          footer: {
+            left: "8portal v4 — Khung A1→A3",
+            right: "Token thế giới đã sẵn sàng"
+          },
+          worlds: {
+            nebula: {
+              label: "Tinh vân",
+              desc: "Tinh vân huyền ảo, ánh tím xanh sâu thẳm."
+            },
+            ocean: {
+              label: "Đại dương",
+              desc: "Đại dương mát lành, cảm giác sáng sạch."
+            },
+            ink: {
+              label: "Mực tàu",
+              desc: "Tối giản, mực tàu và độ sâu."
+            },
+            origami: {
+              label: "Origami",
+              desc: "Giấy gấp, ấm áp và nhẹ nhàng."
+            },
+            arcade: {
+              label: "Arcade",
+              desc: "Nê-on năng lượng, nhịp nhanh."
+            },
+            dunes: {
+              label: "Đồi cát",
+              desc: "Sa mạc, nắng vàng, yên tĩnh."
+            },
+            chrome: {
+              label: "Chrome",
+              desc: "Kim loại sáng, chuẩn xác, sạch."
+            },
+            circuit: {
+              label: "Mạch điện",
+              desc: "Mạch điện, xanh lục kỹ thuật."
+            }
+          }
+        }
+      };
+
+      const getByPath = (obj, path) => {
+        return path.split(".").reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : null), obj);
+      };
+
+      const applyI18n = (lang) => {
+        const dict = I18N[lang];
+        if (!dict) return;
+        document.querySelectorAll("[data-i18n]").forEach((node) => {
+          const value = getByPath(dict, node.getAttribute("data-i18n"));
+          if (value) node.textContent = value;
+        });
+        document.querySelectorAll("[data-world-label]").forEach((node) => {
+          const key = node.getAttribute("data-world-label");
+          const label = dict.worlds?.[key]?.label;
+          if (label) node.textContent = label;
+        });
+        document.querySelectorAll("[data-world-desc]").forEach((node) => {
+          const key = node.getAttribute("data-world-desc");
+          const desc = dict.worlds?.[key]?.desc;
+          if (desc) node.textContent = desc;
+        });
+        document.querySelectorAll("#worldMenu [data-world]").forEach((node) => {
+          const key = node.getAttribute("data-world");
+          const label = dict.worlds?.[key]?.label;
+          if (label) node.textContent = label;
+        });
+        const currentWorld = document.documentElement?.dataset?.world;
+        if (currentWorld) {
+          const label = dict.worlds?.[currentWorld]?.label;
+          const worldLabel = document.getElementById("worldLabel");
+          if (label && worldLabel) worldLabel.textContent = label;
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", () => applyI18n("vi"));
+    })();
+  </script>
+  <script>
+    (() => {
       const worldBtn = document.getElementById("worldBtn");
       const worldMenu = document.getElementById("worldMenu");
       const switcher = document.getElementById("worldSwitcher");
       if (!worldBtn || !worldMenu || !switcher) return;
+      const storageKey = "tc_world";
+      const worlds = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
       const getItems = () => Array.from(worldMenu.querySelectorAll(".tc-world-item"));
+      const getLabelForWorld = (key) => {
+        const item = worldMenu.querySelector(`[data-world="${key}"]`);
+        return item ? item.textContent.trim() : "";
+      };
+      const applyWorld = (key) => {
+        const current = document.documentElement.dataset.world;
+        const next = worlds.includes(key)
+          ? key
+          : (worlds.includes(current) ? current : "origami");
+        document.documentElement.setAttribute("data-world", next);
+        try {
+          localStorage.setItem(storageKey, next);
+        } catch (err) {}
+        const label = getLabelForWorld(next);
+        const labelEl = worldBtn.querySelector("#worldLabel");
+        if (label && labelEl) labelEl.textContent = label;
+      };
       const setMenuOpen = (open) => {
         worldMenu.dataset.open = open ? "1" : "0";
         worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
@@ -343,6 +455,7 @@
         const item = event.target.closest(".tc-world-item");
         if (!item || !worldMenu.contains(item)) return;
         event.preventDefault();
+        applyWorld(item.getAttribute("data-world"));
         setMenuOpen(false);
         worldBtn.focus();
       });
@@ -377,6 +490,15 @@
           : (currentIndex - 1 + items.length) % items.length;
         items[nextIndex]?.focus();
       });
+      let storedWorld = null;
+      try {
+        storedWorld = localStorage.getItem(storageKey);
+      } catch (err) {}
+      if (worlds.includes(storedWorld)) {
+        applyWorld(storedWorld);
+      } else {
+        applyWorld(document.documentElement.dataset.world);
+      }
       setMenuOpen(false);
     })();
   </script>
