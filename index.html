@@ -1,33 +1,384 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C&#7893;ng &#273;&#259;ng nh&#7853;p</title>
+  <title>8portal v4</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .animate-fade-in-up { animation: fade-in-up 0.25s ease forwards; }
-    @keyframes fade-in-up {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+    :root {
+      --bg: #f6f1e9;
+      --text: #201a14;
+      --muted: #6b5d4b;
+      --glass: rgba(255, 255, 255, 0.72);
+      --stroke: rgba(32, 26, 20, 0.08);
+      --a1: #c27b4b;
+      --a2: #d59e6d;
+      --a3: #8c6d54;
     }
-    .tc-auth-float{
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 99999;
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      justify-content: flex-end;
+    html[data-world="nebula"] {
+      --bg: #0c1123;
+      --text: #eef2ff;
+      --muted: #b6bfe3;
+      --glass: rgba(18, 26, 48, 0.72);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --a1: #6ee7ff;
+      --a2: #8b5cf6;
+      --a3: #f472b6;
+    }
+    html[data-world="ocean"] {
+      --bg: #e7f6ff;
+      --text: #0b2b3a;
+      --muted: #4b6b7b;
+      --glass: rgba(255, 255, 255, 0.7);
+      --stroke: rgba(11, 43, 58, 0.12);
+      --a1: #1fb6ff;
+      --a2: #0ea5a8;
+      --a3: #4dd4ff;
+    }
+    html[data-world="ink"] {
+      --bg: #0f1115;
+      --text: #f4f4f6;
+      --muted: #9aa0a9;
+      --glass: rgba(24, 26, 31, 0.72);
+      --stroke: rgba(255, 255, 255, 0.1);
+      --a1: #e2e8f0;
+      --a2: #94a3b8;
+      --a3: #64748b;
+    }
+    html[data-world="origami"] {
+      --bg: #f6f1e9;
+      --text: #201a14;
+      --muted: #6b5d4b;
+      --glass: rgba(255, 255, 255, 0.72);
+      --stroke: rgba(32, 26, 20, 0.08);
+      --a1: #c27b4b;
+      --a2: #d59e6d;
+      --a3: #8c6d54;
+    }
+    html[data-world="arcade"] {
+      --bg: #0b0b14;
+      --text: #fef7ff;
+      --muted: #c9b9e8;
+      --glass: rgba(20, 18, 36, 0.78);
+      --stroke: rgba(255, 255, 255, 0.14);
+      --a1: #ff3dcd;
+      --a2: #7c3aed;
+      --a3: #20e3b2;
+    }
+    html[data-world="dunes"] {
+      --bg: #f7f0e1;
+      --text: #3a2d1a;
+      --muted: #7a644a;
+      --glass: rgba(255, 255, 255, 0.7);
+      --stroke: rgba(58, 45, 26, 0.12);
+      --a1: #d39b54;
+      --a2: #e3b87b;
+      --a3: #b3743d;
+    }
+    html[data-world="chrome"] {
+      --bg: #f1f4f8;
+      --text: #1c232b;
+      --muted: #5f6b79;
+      --glass: rgba(255, 255, 255, 0.68);
+      --stroke: rgba(28, 35, 43, 0.12);
+      --a1: #3b82f6;
+      --a2: #94a3b8;
+      --a3: #0f172a;
+    }
+    html[data-world="circuit"] {
+      --bg: #0b1410;
+      --text: #e9fff3;
+      --muted: #9ec4ad;
+      --glass: rgba(12, 24, 18, 0.72);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --a1: #22c55e;
+      --a2: #16a34a;
+      --a3: #86efac;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .tc-topbar {
+      background: var(--glass);
+      border-bottom: 1px solid var(--stroke);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .tc-topbar::after{
+      content:"";
+      position:absolute; left:0; right:0; bottom:-1px; height:1px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      opacity: .35;
+    }
+    .tc-brand {
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      text-shadow: 0 1px 0 rgba(255,255,255,.15);
+    }
+    .tc-chip{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-chip:hover{ filter: brightness(1.03); }
+    .tc-btn{
+      border-radius: 0.75rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      font-weight: 650;
+      letter-spacing: -0.005em;
+      line-height: 1;
+      transition: filter .15s ease, transform .05s ease, box-shadow .15s ease;
+    }
+    .tc-btn:hover{ filter: brightness(1.03); }
+    .tc-btn:active{ transform: translateY(1px); }
+    .tc-btn:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    .tc-btn-primary{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .tc-btn-primary:hover{ filter: brightness(1.06); }
+    .tc-dot{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
+      box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+    }
+    .tc-muted{ color: var(--muted); }
+    .tc-card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+    }
+    #worldMenu[data-open="0"] { display: none; }
+    #worldMenu[data-open="1"] { display: block; }
+    #worldMenu .tc-world-item{
+      color: var(--text);
+      transition: background-color .15s ease;
+    }
+    #worldMenu .tc-world-item:hover{ background: rgba(255,255,255,.10); }
+    #worldMenu .tc-world-item:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      border-radius: 0.6rem;
+      background: rgba(255,255,255,.08);
+    }
+    @media (prefers-reduced-motion: reduce){
+      .tc-btn,
+      #worldMenu .tc-world-item{
+        transition: none;
+      }
     }
   </style>
 </head>
-<body class="min-h-screen font-sans">
+<body class="font-sans">
+  <!-- TOPBAR -->
+  <header class="tc-topbar relative">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <a class="tc-brand text-lg" href="./index.html">8portal</a>
+      </div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="relative" id="worldSwitcher">
+          <button id="worldBtn"
+            class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
+            aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
+            <span class="flex items-center gap-2">
+              <span class="tc-dot" aria-hidden="true"></span>
+              <span id="worldLabel">Origami</span>
+            </span>
+            <span aria-hidden="true">&#9662;</span>
+          </button>
+          <div id="worldMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end min-w-[210px]">
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
+      </div>
+    </div>
+  </header>
 
-  <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end"></div>
+  <main>
+    <!-- HERO -->
+    <section class="max-w-6xl mx-auto px-4 pt-14 pb-12">
+      <div class="tc-card p-8 md:p-10">
+        <p class="text-xs uppercase tracking-[0.3em] tc-muted">8portal v4</p>
+        <h1 class="text-4xl md:text-5xl font-bold mt-3">Không gian thế giới sợi chỉ, công cụ và cộng đồng.</h1>
+        <p class="mt-4 tc-muted max-w-2xl">
+          Chuyển world để cảm nhận thẩm mỹ, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/threadcolor.html">Mở công cụ</a>
+          <button class="tc-btn tc-chip px-5 py-3">Khám phá không gian</button>
+        </div>
+      </div>
+    </section>
 
-  <script type="module" src="auth.js"></script>
-  <script type="module" src="script.js"></script>
+    <!-- GALLERY -->
+    <section class="max-w-6xl mx-auto px-4 pb-16">
+      <div class="flex items-end justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold">World gallery</h2>
+          <p class="tc-muted text-sm mt-1">8 thế giới, 8 sắc thái cảm giác.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Nebula</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Vũ trụ lạnh, ánh tím xanh sâu thẳm.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Ocean</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Làn nước mát, cảm giác sáng sạch.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Ink</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Tối giản, mực tàu và độ sâu.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Origami</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Giấy gấp, ấm áp và nhẹ nhàng.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Arcade</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Neon năng lượng, nhịp nhanh.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Dunes</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Sa mạc, nắng vàng, yên tĩnh.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Chrome</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Kim loại sáng, chuẩn xác, sạch.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+        <div class="tc-card p-5">
+          <div class="flex items-center gap-2">
+            <span class="tc-dot"></span>
+            <h3 class="font-semibold">Circuit</h3>
+          </div>
+          <p class="tc-muted text-sm mt-2">Mạch điện, xanh lục kỹ thuật.</p>
+          <span class="text-xs mt-4 inline-block tc-muted">Activate</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="max-w-6xl mx-auto px-4 pb-10">
+    <div class="tc-card p-4 text-sm tc-muted flex items-center justify-between">
+      <span>8portal v4 — Skeleton A1→A3</span>
+      <span>World tokens ready</span>
+    </div>
+  </footer>
+
+  <script type="module" src="./auth.js"></script>
+  <script>
+    (() => {
+      const worldBtn = document.getElementById("worldBtn");
+      const worldMenu = document.getElementById("worldMenu");
+      const switcher = document.getElementById("worldSwitcher");
+      if (!worldBtn || !worldMenu || !switcher) return;
+      const getItems = () => Array.from(worldMenu.querySelectorAll(".tc-world-item"));
+      const setMenuOpen = (open) => {
+        worldMenu.dataset.open = open ? "1" : "0";
+        worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      worldBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setMenuOpen(worldMenu.dataset.open !== "1");
+      });
+      worldMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-world-item");
+        if (!item || !worldMenu.contains(item)) return;
+        event.preventDefault();
+        setMenuOpen(false);
+        worldBtn.focus();
+      });
+      document.addEventListener("click", (event) => {
+        if (!switcher.contains(event.target)) {
+          setMenuOpen(false);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        const items = getItems();
+        const isOpen = worldMenu.dataset.open === "1";
+        if (event.key === "Escape") {
+          if (isOpen) {
+            setMenuOpen(false);
+            worldBtn.focus();
+          }
+          return;
+        }
+        if (event.key === "ArrowDown" && document.activeElement === worldBtn) {
+          event.preventDefault();
+          setMenuOpen(true);
+          if (!items.length) return;
+          items[0]?.focus();
+          return;
+        }
+        if (!isOpen || (event.key !== "ArrowDown" && event.key !== "ArrowUp")) return;
+        const currentIndex = items.indexOf(document.activeElement);
+        if (currentIndex === -1) return;
+        event.preventDefault();
+        const nextIndex = event.key === "ArrowDown"
+          ? (currentIndex + 1) % items.length
+          : (currentIndex - 1 + items.length) % items.length;
+        items[nextIndex]?.focus();
+      });
+      setMenuOpen(false);
+    })();
+  </script>
 </body>
 </html>
