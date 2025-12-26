@@ -249,6 +249,10 @@
       }
       .tc-toast{
         transition: none;
+        transform: none;
+      }
+      .tc-toast.is-visible{
+        transform: none;
       }
     }
   </style>
@@ -272,14 +276,14 @@
             <span aria-hidden="true">&#9662;</span>
           </button>
           <div id="worldMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vÃ¢n</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Äáº¡i dÆ°Æ¡ng</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Má»±c tÃ u</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Äá»“i cÃ¡t</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Máº¡ch Ä‘iá»‡n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
           </div>
         </div>
       </div>
@@ -295,9 +299,7 @@
       <div class="tc-card p-8 md:p-10">
         <p class="text-xs uppercase tracking-[0.3em] tc-muted">8portal v4</p>
         <h1 class="text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title">Không gian Thế giới sợi chỉ, công cụ và cộng đồng.</h1>
-        <p class="mt-4 tc-muted max-w-2xl" data-i18n="hero.desc">
-          Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.
-        </p>
+        <p class="mt-4 tc-muted max-w-2xl" data-i18n="hero.desc">Chuyển Thế giới để cảm nhận sắc thái mới, khám phá các công cụ và thư viện dữ liệu sợi chỉ theo phong cách 8portal.</p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaPrimary">Mở công cụ</a>
           <button class="tc-btn tc-chip px-5 py-3" data-i18n="hero.ctaSecondary">Khám phá Thế giới</button>
@@ -498,59 +500,59 @@
             ctaPrimary: "Mở công cụ",
             ctaSecondary: "Khám phá Thế giới"
           },
-        gallery: {
-          title: "Bộ sưu tập Thế giới",
-          desc: "8 Thế giới, 8 sắc thái cảm giác.",
-          activate: "Kích hoạt"
-        },
-        quick: {
-          title: "Hành động nhanh",
-          desc: "Truy cập nhanh các tác vụ chính của 8portal.",
-          items: {
-            threadcolor: {
-              title: "Tra mã chỉ",
-              desc: "Tra cứu màu chỉ theo ảnh, mã hoặc màu chọn.",
-              cta: "Mở công cụ"
-            },
-            library: {
-              title: "Thư viện",
-              desc: "Lưu và xem lại các lần tra cứu của bạn.",
-              cta: "Sắp ra mắt"
-            },
-            contribute: {
-              title: "Đóng góp dữ liệu",
-              desc: "Gửi màu và mã chỉ mới cho cộng đồng.",
-              cta: "Bắt đầu"
-            },
-            verify: {
-              title: "Xác minh",
-              desc: "Dành cho admin duyệt dữ liệu cộng đồng.",
-              cta: "Đi tới"
+          gallery: {
+            title: "Bộ sưu tập Thế giới",
+            desc: "8 Thế giới, 8 sắc thái cảm giác.",
+            activate: "Kích hoạt"
+          },
+          quick: {
+            title: "Hành động nhanh",
+            desc: "Truy cập nhanh các tác vụ chính của 8portal.",
+            items: {
+              threadcolor: {
+                title: "Tra mã chỉ",
+                desc: "Tra cứu màu chỉ theo ảnh, mã hoặc màu chọn.",
+                cta: "Mở công cụ"
+              },
+              library: {
+                title: "Thư viện",
+                desc: "Lưu và xem lại các lần tra cứu của bạn.",
+                cta: "Sắp ra mắt"
+              },
+              contribute: {
+                title: "Đóng góp dữ liệu",
+                desc: "Gửi màu và mã chỉ mới cho cộng đồng.",
+                cta: "Bắt đầu"
+              },
+              verify: {
+                title: "Xác minh",
+                desc: "Dành cho admin duyệt dữ liệu cộng đồng.",
+                cta: "Đi tới"
+              }
             }
-          }
-        },
-        roulette: {
-          title: "Vòng quay màu",
-          desc: "Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.",
-          spin: "Quay màu",
-          reset: "Đặt lại"
-        },
-        forge: {
-          title: "Lò rèn bảng màu",
-          desc: "Tuỳ chỉnh bộ màu nhấn để phù hợp với gu của bạn.",
-          a1: { label: "Màu nhấn 1" },
-          a2: { label: "Màu nhấn 2" },
-          a3: { label: "Màu nhấn 3" },
-          preview: "Xem trước gradient",
-          copy: "Sao chép CSS"
-        },
-        toast: {
-          copied: "Đã sao chép!"
-        },
-        footer: {
-          left: "8portal v4 — Khung A1→A3",
-          right: "Token thế giới đã sẵn sàng"
-        },
+          },
+          roulette: {
+            title: "Vòng quay màu",
+            desc: "Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.",
+            spin: "Quay màu",
+            reset: "Đặt lại"
+          },
+          forge: {
+            title: "Lò rèn bảng màu",
+            desc: "Tuỳ chỉnh bộ màu nhấn để phù hợp với gu của bạn.",
+            a1: { label: "Màu nhấn 1" },
+            a2: { label: "Màu nhấn 2" },
+            a3: { label: "Màu nhấn 3" },
+            preview: "Xem trước gradient",
+            copy: "Sao chép CSS"
+          },
+          toast: {
+            copied: "Đã sao chép!"
+          },
+          footer: {
+            left: "8portal v4 — Khung A1→A3",
+            right: "Token thế giới đã sẵn sàng"
+          },
           worlds: {
             nebula: {
               label: "Tinh vân",
@@ -877,12 +879,16 @@
 
       const showToast = (message) => {
         const toast = ensureToast();
-        toast.textContent = message;
-        toast.classList.add("is-visible");
+        toast.textContent = "";
         window.clearTimeout(showToast._t);
-        showToast._t = window.setTimeout(() => {
-          toast.classList.remove("is-visible");
-        }, 1400);
+        const raf = window.requestAnimationFrame || ((fn) => setTimeout(fn, 0));
+        raf(() => {
+          toast.textContent = message;
+          toast.classList.add("is-visible");
+          showToast._t = window.setTimeout(() => {
+            toast.classList.remove("is-visible");
+          }, 1400);
+        });
       };
 
       const getCopyText = () => {
@@ -930,12 +936,14 @@
       inputA3.addEventListener("input", onForgeInput);
 
       copyBtn.addEventListener("click", () => {
-        const message = document.querySelector('[data-i18n="toast.copied"]')?.textContent || "Đã sao chép!";
+        const messageNode = document.querySelector('[data-i18n="toast.copied"]');
+        const message = messageNode ? messageNode.textContent : "Đã sao chép!";
         copyToClipboard(getCopyText()).then(() => showToast(message));
       });
 
       refreshForgeUI();
     })();
   </script>
+  <span class="sr-only" data-i18n="toast.copied">Đã sao chép!</span>
 </body>
 </html>
