@@ -142,6 +142,22 @@ function resolveToolUrl() {
   return path.includes("/worlds/") ? "threadcolor.html" : "./worlds/threadcolor.html";
 }
 
+async function safeSignOut() {
+  const api = getAuthApi();
+  if (!api) return;
+  try {
+    if (typeof api?.signOut === "function") {
+      await api.signOut();
+      return;
+    }
+    if (typeof api?.auth?.signOut === "function") {
+      await api.auth.signOut();
+    }
+  } catch (err) {
+    console.error("Sign out failed", err);
+  }
+}
+
 function exposeAuthPublicApi() {
   if (window.tcAuth?.version === "v1") return;
   const getApi = () => window.firebaseAuth || window.firebaseAuthApi || null;
@@ -382,6 +398,54 @@ function ensureTopbarAuthDock() {
   }
   slot.dataset.authDocked = "1";
   return changed;
+}
+
+function bindTopbarAuthDelegation() {
+  const slot = document.getElementById("topbarAuthSlot");
+  if (!slot || slot.dataset.authDelegationBound === "1") return;
+  slot.dataset.authDelegationBound = "1";
+  let redispatching = false;
+
+  const closeMenu = () => {
+    const menu = document.getElementById("accountMenu");
+    if (menu) menu.classList.add("hidden");
+  };
+
+  slot.addEventListener("click", async (event) => {
+    if (redispatching) return;
+    const accountBtn = event.target.closest("#accountMenuBtn");
+    if (accountBtn) {
+      event.stopPropagation();
+      const menu = document.getElementById("accountMenu");
+      menu?.classList.toggle("hidden");
+      return;
+    }
+    const logoutBtn = event.target.closest("#btnLogout");
+    if (logoutBtn) {
+      event.stopPropagation();
+      await safeSignOut();
+      closeMenu();
+      return;
+    }
+    const menuActionBtn = event.target.closest("#btnLibrary, #btnContribute, #btnVerify");
+    if (menuActionBtn && slot.contains(menuActionBtn)) {
+      event.stopPropagation();
+      closeMenu();
+      redispatching = true;
+      try {
+        menuActionBtn.click();
+      } finally {
+        redispatching = false;
+      }
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!slot.contains(event.target)) closeMenu();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
 }
 
 function ensureAuthModalExists() {
@@ -647,6 +711,7 @@ function initAuthDocking() {
   if (injectedModal || injectedAccount) {
     bindAuthUiEvents();
   }
+  bindTopbarAuthDelegation();
   bindAuthState();
 }
 
@@ -657,5 +722,6 @@ window.addEventListener("firebase-auth-ready", () => {
   if (injectedAccount) {
     bindAuthUiEvents();
   }
+  bindTopbarAuthDelegation();
   bindAuthState();
 });
