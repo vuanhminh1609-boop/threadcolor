@@ -151,6 +151,13 @@
     }
     #worldMenu .tc-world-item {
       position: relative;
+      color: var(--text);
+      padding-top: 0.6rem;
+      padding-bottom: 0.6rem;
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    #worldMenu {
+      border: 1px solid var(--stroke);
     }
     #worldMenu .tc-world-item.is-active::before {
       content: "";
@@ -177,6 +184,47 @@
     #worldMenu .tc-world-item.is-active {
       padding-left: 1.1rem;
       padding-right: 1.6rem;
+    }
+    #worldMenu .tc-world-item:hover {
+      background: rgba(255,255,255,.10);
+    }
+    #worldMenu .tc-world-item:active {
+      transform: translateY(1px);
+    }
+    #worldMenu .tc-world-item:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      border-radius: 0.6rem;
+      background: rgba(255,255,255,.08);
+    }
+    #worldMenu .tc-world-item + .tc-world-item {
+      border-top: 1px solid var(--stroke);
+      opacity: .35;
+    }
+    #accountMenu {
+      border: 1px solid var(--stroke);
+    }
+    #accountMenu button {
+      color: var(--text);
+      padding: 0.6rem 0.75rem;
+      line-height: 1.1;
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    #accountMenu button:hover {
+      background: rgba(255,255,255,.10);
+    }
+    #accountMenu button:active {
+      transform: translateY(1px);
+    }
+    #accountMenu button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      border-radius: 0.6rem;
+      background: rgba(255,255,255,.08);
+    }
+    #accountMenu button + button {
+      border-top: 1px solid var(--stroke);
+      opacity: .35;
     }
     /* --- Topbar UI tokens (8portal-ready) --- */
     .tc-topbar { position: sticky; top: 0; }
@@ -229,7 +277,6 @@
       background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
       box-shadow: 0 0 0 2px rgba(255,255,255,.5);
     }
-    .tc-world-item:focus-visible,
     #accountMenu button:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
