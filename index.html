@@ -165,6 +165,47 @@
       border-radius: 1rem;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
     }
+    .tc-color-input{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 0.75rem;
+      width: 3rem;
+      height: 2.25rem;
+      padding: 0.15rem;
+    }
+    .tc-preview-swatch{
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.9rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+    }
+    .tc-gradient-preview{
+      border-radius: 0.9rem;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
+      height: 70px;
+    }
+    .tc-toast{
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 80;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 0.9rem;
+      padding: 0.6rem 0.9rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,.18);
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .tc-toast.is-visible{
+      opacity: 1;
+      transform: translateY(0);
+    }
     [data-world-card="1"]{
       cursor: pointer;
       transition: transform .12s ease, box-shadow .18s ease, filter .18s ease;
@@ -205,6 +246,9 @@
       [data-world-card="1"]:hover,
       [data-world-card="1"]:active{
         transform: none;
+      }
+      .tc-toast{
+        transition: none;
       }
     }
   </style>
@@ -289,6 +333,71 @@
           <h3 class="font-semibold" data-i18n="quick.items.verify.title">Xác minh</h3>
           <p class="tc-muted text-sm mt-2" data-i18n="quick.items.verify.desc">Dành cho admin duyệt dữ liệu cộng đồng.</p>
           <button class="tc-btn tc-chip px-4 py-2 mt-4 inline-flex" data-qa-action="verify" data-i18n="quick.items.verify.cta">Đi tới</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROULETTE -->
+    <section class="max-w-6xl mx-auto px-4 pb-12">
+      <div class="flex items-end justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold" data-i18n="roulette.title">Vòng quay màu</h2>
+          <p class="tc-muted text-sm mt-1" data-i18n="roulette.desc">Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.</p>
+        </div>
+      </div>
+      <div class="tc-card p-6 md:p-8">
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div class="tc-preview-swatch" style="background: var(--a1);"></div>
+            <div class="tc-preview-swatch" style="background: var(--a2);"></div>
+            <div class="tc-preview-swatch" style="background: var(--a3);"></div>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button id="rouletteSpin" class="tc-btn tc-btn-primary px-4 py-2" data-i18n="roulette.spin">Quay màu</button>
+            <button id="rouletteReset" class="tc-btn tc-chip px-4 py-2" data-i18n="roulette.reset">Đặt lại</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORGE -->
+    <section class="max-w-6xl mx-auto px-4 pb-16">
+      <div class="flex items-end justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold" data-i18n="forge.title">Lò rèn bảng màu</h2>
+          <p class="tc-muted text-sm mt-1" data-i18n="forge.desc">Tuỳ chỉnh bộ màu nhấn để phù hợp với gu của bạn.</p>
+        </div>
+      </div>
+      <div class="tc-card p-6 md:p-8 space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold" data-i18n="forge.a1.label">Màu nhấn 1</div>
+              <div class="tc-muted text-xs mt-1" data-accent-value="a1">--</div>
+            </div>
+            <input id="forgeA1" type="color" class="tc-color-input" value="#000000" aria-label="Màu nhấn 1">
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold" data-i18n="forge.a2.label">Màu nhấn 2</div>
+              <div class="tc-muted text-xs mt-1" data-accent-value="a2">--</div>
+            </div>
+            <input id="forgeA2" type="color" class="tc-color-input" value="#000000" aria-label="Màu nhấn 2">
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="text-sm font-semibold" data-i18n="forge.a3.label">Màu nhấn 3</div>
+              <div class="tc-muted text-xs mt-1" data-accent-value="a3">--</div>
+            </div>
+            <input id="forgeA3" type="color" class="tc-color-input" value="#000000" aria-label="Màu nhấn 3">
+          </div>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-2" data-i18n="forge.preview">Xem trước gradient</div>
+          <div id="forgePreview" class="tc-gradient-preview"></div>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button id="forgeCopy" class="tc-btn tc-chip px-4 py-2" data-i18n="forge.copy">Sao chép CSS</button>
         </div>
       </div>
     </section>
@@ -419,6 +528,24 @@
               cta: "Đi tới"
             }
           }
+        },
+        roulette: {
+          title: "Vòng quay màu",
+          desc: "Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.",
+          spin: "Quay màu",
+          reset: "Đặt lại"
+        },
+        forge: {
+          title: "Lò rèn bảng màu",
+          desc: "Tuỳ chỉnh bộ màu nhấn để phù hợp với gu của bạn.",
+          a1: { label: "Màu nhấn 1" },
+          a2: { label: "Màu nhấn 2" },
+          a3: { label: "Màu nhấn 3" },
+          preview: "Xem trước gradient",
+          copy: "Sao chép CSS"
+        },
+        toast: {
+          copied: "Đã sao chép!"
         },
         footer: {
           left: "8portal v4 — Khung A1→A3",
@@ -653,6 +780,161 @@
 
       bindQuickAction(contributeBtn);
       bindQuickAction(verifyBtn);
+    })();
+  </script>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const spinBtn = document.getElementById("rouletteSpin");
+      const resetBtn = document.getElementById("rouletteReset");
+      const inputA1 = document.getElementById("forgeA1");
+      const inputA2 = document.getElementById("forgeA2");
+      const inputA3 = document.getElementById("forgeA3");
+      const copyBtn = document.getElementById("forgeCopy");
+      const valueEls = {
+        a1: document.querySelector('[data-accent-value="a1"]'),
+        a2: document.querySelector('[data-accent-value="a2"]'),
+        a3: document.querySelector('[data-accent-value="a3"]')
+      };
+      if (!spinBtn || !resetBtn || !inputA1 || !inputA2 || !inputA3 || !copyBtn) return;
+
+      const presets = [
+        ["#ff6b6b", "#ffd166", "#6ee7b7"],
+        ["#60a5fa", "#a78bfa", "#f472b6"],
+        ["#22c55e", "#84cc16", "#14b8a6"],
+        ["#f97316", "#facc15", "#fb7185"],
+        ["#38bdf8", "#0ea5e9", "#6366f1"],
+        ["#f59e0b", "#ef4444", "#fb7185"],
+        ["#2dd4bf", "#60a5fa", "#a78bfa"]
+      ];
+
+      const setAccent = (a1, a2, a3) => {
+        root.style.setProperty("--a1", a1);
+        root.style.setProperty("--a2", a2);
+        root.style.setProperty("--a3", a3);
+      };
+
+      const resetAccent = () => {
+        root.style.removeProperty("--a1");
+        root.style.removeProperty("--a2");
+        root.style.removeProperty("--a3");
+      };
+
+      const parseRgb = (value) => {
+        const match = value.replace(/\s+/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
+        if (!match) return null;
+        const r = Number(match[1]);
+        const g = Number(match[2]);
+        const b = Number(match[3]);
+        if ([r, g, b].some((v) => Number.isNaN(v))) return null;
+        return [r, g, b];
+      };
+
+      const toHex = (value) => {
+        if (!value) return "#000000";
+        const raw = value.trim();
+        if (raw.startsWith("#")) {
+          if (raw.length === 4) {
+            return "#" + raw.slice(1).split("").map((c) => c + c).join("");
+          }
+          if (raw.length === 7) return raw;
+        }
+        const rgb = parseRgb(raw);
+        if (!rgb) return "#000000";
+        return "#" + rgb.map((v) => v.toString(16).padStart(2, "0")).join("");
+      };
+
+      const getAccent = () => {
+        const styles = getComputedStyle(root);
+        return {
+          a1: toHex(styles.getPropertyValue("--a1")),
+          a2: toHex(styles.getPropertyValue("--a2")),
+          a3: toHex(styles.getPropertyValue("--a3"))
+        };
+      };
+
+      const refreshForgeUI = () => {
+        const current = getAccent();
+        inputA1.value = current.a1;
+        inputA2.value = current.a2;
+        inputA3.value = current.a3;
+        if (valueEls.a1) valueEls.a1.textContent = current.a1.toUpperCase();
+        if (valueEls.a2) valueEls.a2.textContent = current.a2.toUpperCase();
+        if (valueEls.a3) valueEls.a3.textContent = current.a3.toUpperCase();
+      };
+
+      const ensureToast = () => {
+        let toast = document.getElementById("tcToast");
+        if (toast) return toast;
+        toast = document.createElement("div");
+        toast.id = "tcToast";
+        toast.className = "tc-toast";
+        toast.setAttribute("role", "status");
+        toast.setAttribute("aria-live", "polite");
+        document.body.appendChild(toast);
+        return toast;
+      };
+
+      const showToast = (message) => {
+        const toast = ensureToast();
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        window.clearTimeout(showToast._t);
+        showToast._t = window.setTimeout(() => {
+          toast.classList.remove("is-visible");
+        }, 1400);
+      };
+
+      const getCopyText = () => {
+        const current = getAccent();
+        return `--a1: ${current.a1};\n--a2: ${current.a2};\n--a3: ${current.a3};`;
+      };
+
+      const copyToClipboard = (text) => {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise((resolve) => {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand("copy");
+          } catch (err) {}
+          ta.remove();
+          resolve();
+        });
+      };
+
+      spinBtn.addEventListener("click", () => {
+        const preset = presets[Math.floor(Math.random() * presets.length)];
+        if (!preset) return;
+        setAccent(preset[0], preset[1], preset[2]);
+        refreshForgeUI();
+      });
+
+      resetBtn.addEventListener("click", () => {
+        resetAccent();
+        refreshForgeUI();
+      });
+
+      const onForgeInput = () => {
+        setAccent(inputA1.value, inputA2.value, inputA3.value);
+        refreshForgeUI();
+      };
+      inputA1.addEventListener("input", onForgeInput);
+      inputA2.addEventListener("input", onForgeInput);
+      inputA3.addEventListener("input", onForgeInput);
+
+      copyBtn.addEventListener("click", () => {
+        const message = document.querySelector('[data-i18n="toast.copied"]')?.textContent || "Đã sao chép!";
+        copyToClipboard(getCopyText()).then(() => showToast(message));
+      });
+
+      refreshForgeUI();
     })();
   </script>
 </body>
