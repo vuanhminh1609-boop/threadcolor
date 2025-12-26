@@ -389,6 +389,93 @@
       #result .result-item,
       #result .btn-save { transition: none; }
     }
+    /* --- Auth modal (tokenized) --- */
+    #authOverlay{
+      background: rgba(0,0,0,.45);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+    }
+    #authModal{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 1.25rem;
+      box-shadow: 0 22px 70px rgba(0,0,0,.28);
+    }
+    #authClose{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      border-radius: .75rem;
+    }
+    #authClose:hover{ filter: brightness(1.03); }
+    #authClose:active{ transform: translateY(1px); }
+    #authClose:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    #authModal input{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: .9rem;
+    }
+    #authModal input::placeholder{ color: var(--muted); opacity: .85; }
+    #authModal input:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    #tabLogin, #tabRegister{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      border-radius: .9rem;
+    }
+    #tabLogin:hover, #tabRegister:hover{ filter: brightness(1.03); }
+    #tabLogin.bg-indigo-50, #tabRegister.bg-indigo-50{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      border-color: rgba(255,255,255,.18);
+    }
+    #tabLogin.text-indigo-700, #tabRegister.text-indigo-700{
+      color: #fff !important;
+    }
+    #btnLogin, #btnRegister{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: .9rem;
+    }
+    #btnLogin:hover, #btnRegister:hover{ filter: brightness(1.06); }
+    #btnLogin:active, #btnRegister:active{ transform: translateY(1px); }
+    #btnLogin:focus-visible, #btnRegister:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    #btnGoogle, #btnFacebook{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: .9rem;
+    }
+    #btnGoogle:hover, #btnFacebook:hover{ filter: brightness(1.03); }
+    #btnGoogle:active, #btnFacebook:active{ transform: translateY(1px); }
+    #btnGoogle:focus-visible, #btnFacebook:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    #btnForgot{
+      color: var(--muted);
+    }
+    #btnForgot:hover{ filter: brightness(1.08); }
+    #authError{
+      color: #ef4444;
+      background: rgba(239,68,68,.10);
+      border: 1px solid rgba(239,68,68,.22);
+      border-radius: .9rem;
+    }
+    @media (prefers-reduced-motion: reduce){
+      #authModal *{ transition: none !important; }
+    }
     #accountMenu button:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
