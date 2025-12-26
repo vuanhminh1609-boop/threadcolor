@@ -277,6 +277,118 @@
       background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
       box-shadow: 0 0 0 2px rgba(255,255,255,.5);
     }
+    .tc-muted { color: var(--muted); }
+    .tc-gradient-text{
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .tc-field{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 0.9rem;
+      padding: 0.6rem 0.75rem;
+      outline: none;
+    }
+    .tc-field:focus-visible{
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    .tc-color{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 0.9rem;
+      padding: 0.15rem;
+      width: 4rem;
+      height: 2.5rem;
+    }
+    .tc-check{
+      accent-color: var(--a1);
+    }
+    .tc-range{
+      accent-color: var(--a1);
+    }
+    main h3 { color: var(--text); }
+    main .tc-helper { color: var(--muted); }
+    #result {
+      border: 1px solid var(--stroke);
+    }
+    #brandFilters label{
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      cursor: pointer;
+      user-select: none;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+    }
+    #brandFilters label:hover{ filter: brightness(1.03); }
+    #brandFilters input[type="checkbox"] { accent-color: var(--a1); }
+    /* --- Result UI (tokenized, premium) --- */
+    #result .result-item{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+      transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
+    }
+    #result .result-item:hover{
+      transform: translateY(-1px) !important;
+      box-shadow: 0 18px 50px rgba(0,0,0,.16);
+      filter: brightness(1.02);
+    }
+    #result .result-item:active{
+      transform: translateY(1px) !important;
+    }
+    #result .result-item[data-selected="true"]{
+      border-color: var(--a1);
+      box-shadow: 0 18px 55px rgba(0,0,0,.20);
+    }
+    #result .result-item:focus-visible{
+      outline: none;
+      box-shadow:
+        0 0 0 3px rgba(0,0,0,.12),
+        0 0 0 6px var(--a1),
+        0 18px 55px rgba(0,0,0,.18);
+    }
+    #result .text-gray-700{ color: var(--text); }
+    #result .text-gray-600,
+    #result .text-gray-500,
+    #result .text-gray-400{ color: var(--muted); }
+    #result .result-item .border{
+      border-color: var(--stroke);
+    }
+    /* Save button inside result cards */
+    #result .btn-save{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      border-radius: 0.75rem;
+      font-weight: 650;
+      letter-spacing: -0.005em;
+      transition: filter .15s ease, transform .05s ease, box-shadow .15s ease;
+    }
+    #result .btn-save:hover{ filter: brightness(1.03); }
+    #result .btn-save:active{ transform: translateY(1px); }
+    #result .btn-save:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    #result .btn-save:disabled{
+      opacity: .6;
+      cursor: not-allowed;
+      filter: none;
+      transform: none;
+    }
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      #result .result-item,
+      #result .btn-save { transition: none; }
+    }
     #accountMenu button:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
@@ -342,21 +454,21 @@
   <main class="mx-auto max-w-4xl px-4 pt-6 pb-10">
     <div class="tc-card rounded-2xl p-6 md:p-8">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-indigo-700 text-center md:text-left">Tra mã chỉ thêu theo màu</h1>
+        <h1 class="text-3xl font-bold tc-gradient-text text-center md:text-left">Tra mã chỉ thêu theo màu</h1>
       </div>
 
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2">Chọn hãng chỉ</h3>
         <div id="brandFilters" class="flex flex-wrap gap-3"></div>
-        <label class="mt-3 inline-flex items-center gap-2 text-sm text-gray-700">
-          <input id="verifiedOnlyToggle" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+        <label class="mt-3 inline-flex items-center gap-2 text-sm tc-muted">
+          <input id="verifiedOnlyToggle" type="checkbox" class="tc-check">
           <span>Chỉ đã xác minh</span>
         </label>
       </section>
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2">
           Độ tương đồng màu (ΔE)
-          <span id="deltaValue" class="text-sm text-gray-600">(ΔE 3.0)</span>
+          <span id="deltaValue" class="text-sm tc-muted">(ΔE 3.0)</span>
         </h3>
 
         <input
@@ -366,10 +478,10 @@
           max="30"
           step="0.5"
           value="3"
-          class="w-full"
+          class="tc-range w-full"
         />
-        <span id="deltaValueText">ΔE 3.0</span>
-        <div class="flex justify-between text-xs text-gray-500 mt-1">
+        <span id="deltaValueText" class="tc-muted">ΔE 3.0</span>
+        <div class="flex justify-between text-xs tc-muted mt-1">
           <span>Rất giống</span>
           <span>Khác hẳn</span>
         </div>
@@ -378,20 +490,20 @@
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
         <div class="flex items-center gap-4">
-          <input type="color" id="colorPicker" class="border rounded p-1 w-16 h-10">
-          <button id="btnFindNearest" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-800 transition-transform transform hover:scale-105">
+          <input type="color" id="colorPicker" class="tc-color">
+          <button id="btnFindNearest" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md">
             Tìm mã chỉ gần nhất
           </button>
-          <button id="btnPickScreen" class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-transform transform hover:scale-105">
+          <button id="btnPickScreen" class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md">
             <span>o</span>
             <span>Chọn màu</span>
           </button>
         </div>
-        <div class="mt-2 text-xs text-gray-600 hidden" id="eyedropperHint">Bấm vào bất kỳ đâu để chọn màu (Esc để hủy)</div>
+        <div class="mt-2 text-xs tc-muted hidden" id="eyedropperHint">Bấm vào bất kỳ đâu để chọn màu (Esc để hủy)</div>
         <div class="mt-2 text-sm text-amber-700 hidden" id="eyedropperFallback">
           Trình duyệt chưa hỗ trợ chọn màu toàn màn hình. Dùng input màu bên dưới.
         </div>
-        <input type="color" id="fallbackColorPicker" class="mt-2 hidden border rounded p-1 w-16 h-10">
+        <input type="color" id="fallbackColorPicker" class="mt-2 hidden tc-field p-1 w-16 h-10">
       </section>
 
       <section class="mb-6">
@@ -401,7 +513,7 @@
           id="canvas"
           class="border rounded-lg max-w-full min-h-[200px] bg-gray-100">
         </canvas>
-        <p class="text-sm text-gray-500 mb-1">
+        <p class="text-sm tc-muted mb-1">
           Chọn ảnh và bấm vào bất kỳ điểm nào để lấy màu
         </p>
       </section>
@@ -409,14 +521,14 @@
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2">Tra ngược theo mã chỉ</h3>
         <div class="flex items-center gap-4">
-          <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="border rounded px-2 py-1 flex-1">
-          <button id="btnFindByCode" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
+          <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="tc-field flex-1">
+          <button id="btnFindByCode" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md">
             Tra cứu
           </button>
         </div>
       </section>
 
-      <section id="result" class="p-4 bg-gray-50 border rounded-lg shadow-inner"></section>
+      <section id="result" class="p-4 tc-chip rounded-lg shadow-inner"></section>
     </div>
   </main>
 
