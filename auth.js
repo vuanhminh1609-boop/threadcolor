@@ -404,7 +404,6 @@ function bindTopbarAuthDelegation() {
   const slot = document.getElementById("topbarAuthSlot");
   if (!slot || slot.dataset.authDelegationBound === "1") return;
   slot.dataset.authDelegationBound = "1";
-  let redispatching = false;
 
   const closeMenu = () => {
     const menu = document.getElementById("accountMenu");
@@ -412,7 +411,6 @@ function bindTopbarAuthDelegation() {
   };
 
   slot.addEventListener("click", async (event) => {
-    if (redispatching) return;
     const accountBtn = event.target.closest("#accountMenuBtn");
     if (accountBtn) {
       event.stopPropagation();
@@ -431,11 +429,13 @@ function bindTopbarAuthDelegation() {
     if (menuActionBtn && slot.contains(menuActionBtn)) {
       event.stopPropagation();
       closeMenu();
-      redispatching = true;
-      try {
-        menuActionBtn.click();
-      } finally {
-        redispatching = false;
+      const inToolWorld = !!(
+        document.getElementById("libraryModal") ||
+        document.getElementById("contributeModal") ||
+        document.getElementById("verifyModal")
+      );
+      if (!inToolWorld) {
+        window.location.href = resolveToolUrl();
       }
     }
   });
