@@ -367,7 +367,7 @@ function mergeVerifiedThreads(list) {
 
 const resultBox = document.getElementById("result");
 const deltaSlider = document.getElementById("deltaSlider");
-const deltaValueEls = document.querySelectorAll("#deltaValue");
+const deltaValueEls = document.querySelectorAll("#deltaValue, #deltaValueText");
 const brandFilters = document.getElementById("brandFilters");
 const verifiedOnlyToggle = document.getElementById("verifiedOnlyToggle");
 const btnFindNearest = document.getElementById("btnFindNearest");
@@ -1607,7 +1607,6 @@ if (fallbackColorPicker) {
     copyToClipboard(hex, hex);
   });
 }
-
 
 
 

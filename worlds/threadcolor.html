@@ -141,10 +141,47 @@
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
       color: var(--text);
     }
+    /* --- Topbar UI tokens (8portal-ready) --- */
+    .tc-topbar { position: sticky; top: 0; }
+    .tc-topbar::after{
+      content:"";
+      position:absolute; left:0; right:0; bottom:-1px; height:1px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      opacity: .35;
+    }
+    .tc-chip{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-chip:hover{ filter: brightness(1.03); }
+    .tc-btn{
+      border-radius: 0.75rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+    }
+    .tc-btn:hover{ filter: brightness(1.03); }
+    .tc-btn:active{ transform: translateY(1px); }
+    .tc-btn:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    .tc-btn-primary{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .tc-btn-primary:hover{ filter: brightness(1.06); }
+    .tc-dot{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
+      box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+    }
   </style>
 </head>
 <body class="font-sans">
-  <header class="tc-topbar sticky top-0 z-30">
+  <header class="tc-topbar sticky top-0 z-30 relative">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <a class="tc-brand text-lg" href="../index.html">8portal</a>
@@ -157,35 +194,42 @@
       </nav>
       <div class="flex items-center gap-3">
         <div class="relative" id="worldSwitcher">
-          <button id="worldBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg border border-black/10 bg-white/70 text-sm font-semibold hover:bg-white" aria-expanded="false">
-            <span id="worldLabel">Origami</span>
+          <button id="worldBtn"
+            class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
+            aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
+            <span class="flex items-center gap-2">
+              <span class="tc-dot" aria-hidden="true"></span>
+              <span id="worldLabel">Origami</span>
+            </span>
             <span aria-hidden="true">&#9662;</span>
           </button>
-          <div id="worldMenu" data-open="0" class="absolute right-0 mt-2 w-48 rounded-lg border border-black/10 bg-white/90 backdrop-blur-md shadow-xl p-1 text-sm">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="nebula">Tinh vân</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="ocean">Đại dương</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="ink">Mực tàu</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="origami">Origami</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="arcade">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="dunes">Đồi cát</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="chrome">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-black/5" data-world="circuit">Mạch điện</button>
+          <div id="worldMenu" data-open="0" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="nebula">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="ocean">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="ink">Mực tàu</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="origami">Origami</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="arcade">Arcade</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="dunes">Đồi cát</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="chrome">Chrome</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="circuit">Mạch điện</button>
           </div>
         </div>
-        <div id="userInfo" class="hidden relative text-sm text-gray-700">
-          <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/80 border border-gray-200 shadow-sm hover:bg-white">
-            <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
-            <span id="userName" class="font-semibold"></span>
-            <span class="text-gray-500">&#9662;</span>
-          </button>
-          <div id="accountMenu" class="hidden absolute right-0 mt-3 w-44 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden origin-top-right">
-            <button id="btnLibrary" class="w-full text-left px-3 py-2 hover:bg-gray-100">Thư viện của tôi</button>
-            <button id="btnContribute" class="w-full text-left px-3 py-2 hover:bg-gray-100">Đóng góp dữ liệu</button>
-            <button id="btnVerify" class="w-full text-left px-3 py-2 hover:bg-gray-100">Xác minh</button>
-            <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-gray-100">Đăng xuất</button>
+        <div class="flex items-center gap-3 min-w-[210px] justify-end">
+          <div id="userInfo" class="hidden relative text-sm">
+            <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg shadow-sm tc-chip tc-btn">
+              <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
+              <span id="userName" class="font-semibold max-w-[110px] truncate"></span>
+              <span class="opacity-70">&#9662;</span>
+            </button>
+            <div id="accountMenu" class="hidden absolute right-0 mt-3 w-44 rounded-lg shadow-lg overflow-hidden origin-top-right tc-chip">
+              <button id="btnLibrary" class="w-full text-left px-3 py-2 hover:bg-white/10">Thư viện của tôi</button>
+              <button id="btnContribute" class="w-full text-left px-3 py-2 hover:bg-white/10">Đóng góp dữ liệu</button>
+              <button id="btnVerify" class="w-full text-left px-3 py-2 hover:bg-white/10">Xác minh</button>
+              <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-white/10">Đăng xuất</button>
+            </div>
           </div>
+          <button id="btnAccount" class="tc-btn tc-btn-primary px-4 py-2">Đăng nhập</button>
         </div>
-        <button id="btnAccount" class="px-4 py-2 rounded-lg bg-white text-indigo-700 border border-indigo-200 shadow-sm hover:bg-indigo-50">Đăng nhập</button>
       </div>
     </div>
   </header>
@@ -219,7 +263,7 @@
           value="3"
           class="w-full"
         />
-        <span id="deltaValue">ΔE 3.0</span>
+        <span id="deltaValueText">ΔE 3.0</span>
         <div class="flex justify-between text-xs text-gray-500 mt-1">
           <span>Rất giống</span>
           <span>Khác hẳn</span>
