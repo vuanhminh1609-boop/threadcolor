@@ -165,6 +165,22 @@
       border-radius: 1rem;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
     }
+    [data-world-card="1"]{
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .18s ease, filter .18s ease;
+    }
+    [data-world-card="1"]:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.16);
+      filter: brightness(1.02);
+    }
+    [data-world-card="1"]:active{
+      transform: translateY(1px);
+    }
+    [data-world-card="1"]:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1), 0 18px 50px rgba(0,0,0,.16);
+    }
     #worldMenu[data-open="0"] { display: none; }
     #worldMenu[data-open="1"] { display: block; }
     #worldMenu .tc-world-item{
@@ -182,6 +198,13 @@
       .tc-btn,
       #worldMenu .tc-world-item{
         transition: none;
+      }
+      [data-world-card="1"]{
+        transition: none;
+      }
+      [data-world-card="1"]:hover,
+      [data-world-card="1"]:active{
+        transform: none;
       }
     }
   </style>
@@ -238,7 +261,39 @@
       </div>
     </section>
 
-  <!-- GALLERY -->
+    <!-- QUICK ACTIONS -->
+    <section class="max-w-6xl mx-auto px-4 pb-12">
+      <div class="flex items-end justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold" data-i18n="quick.title">Hành động nhanh</h2>
+          <p class="tc-muted text-sm mt-1" data-i18n="quick.desc">Truy cập nhanh các tác vụ chính của 8portal.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="tc-card p-5">
+          <h3 class="font-semibold" data-i18n="quick.items.threadcolor.title">Tra mã chỉ</h3>
+          <p class="tc-muted text-sm mt-2" data-i18n="quick.items.threadcolor.desc">Tra cứu màu chỉ theo ảnh, mã hoặc màu chọn.</p>
+          <a class="tc-btn tc-btn-primary px-4 py-2 mt-4 inline-flex" href="./worlds/threadcolor.html" data-i18n="quick.items.threadcolor.cta">Mở công cụ</a>
+        </div>
+        <div class="tc-card p-5">
+          <h3 class="font-semibold" data-i18n="quick.items.library.title">Thư viện</h3>
+          <p class="tc-muted text-sm mt-2" data-i18n="quick.items.library.desc">Lưu và xem lại các lần tra cứu của bạn.</p>
+          <button class="tc-btn tc-chip px-4 py-2 mt-4 inline-flex opacity-60 cursor-not-allowed" disabled data-i18n="quick.items.library.cta">Sắp ra mắt</button>
+        </div>
+        <div class="tc-card p-5">
+          <h3 class="font-semibold" data-i18n="quick.items.contribute.title">Đóng góp dữ liệu</h3>
+          <p class="tc-muted text-sm mt-2" data-i18n="quick.items.contribute.desc">Gửi màu và mã chỉ mới cho cộng đồng.</p>
+          <button class="tc-btn tc-chip px-4 py-2 mt-4 inline-flex" data-qa-action="contribute" data-i18n="quick.items.contribute.cta">Bắt đầu</button>
+        </div>
+        <div class="tc-card p-5">
+          <h3 class="font-semibold" data-i18n="quick.items.verify.title">Xác minh</h3>
+          <p class="tc-muted text-sm mt-2" data-i18n="quick.items.verify.desc">Dành cho admin duyệt dữ liệu cộng đồng.</p>
+          <button class="tc-btn tc-chip px-4 py-2 mt-4 inline-flex" data-qa-action="verify" data-i18n="quick.items.verify.cta">Đi tới</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
     <section class="max-w-6xl mx-auto px-4 pb-16">
       <div class="flex items-end justify-between mb-6">
         <div>
@@ -246,8 +301,8 @@
           <p class="tc-muted text-sm mt-1" data-i18n="gallery.desc">8 Thế giới, 8 sắc thái cảm giác.</p>
         </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="tc-card p-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-world-grid="1">
+        <div class="tc-card p-5" data-world-card="1" data-world="nebula" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Tinh vân">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="nebula">Tinh vân</h3>
@@ -255,7 +310,7 @@
           <p class="tc-muted text-sm mt-2" data-world-desc="nebula">Tinh vân huyền ảo, ánh tím xanh sâu thẳm.</p>
           <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
-        <div class="tc-card p-5">
+        <div class="tc-card p-5" data-world-card="1" data-world="ocean" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Đại dương">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="ocean">Đại dương</h3>
@@ -263,7 +318,7 @@
           <p class="tc-muted text-sm mt-2" data-world-desc="ocean">Đại dương mát lành, cảm giác sáng sạch.</p>
           <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
-        <div class="tc-card p-5">
+        <div class="tc-card p-5" data-world-card="1" data-world="ink" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Mực tàu">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="ink">Mực tàu</h3>
@@ -271,7 +326,7 @@
           <p class="tc-muted text-sm mt-2" data-world-desc="ink">Tối giản, mực tàu và độ sâu.</p>
           <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
-        <div class="tc-card p-5">
+        <div class="tc-card p-5" data-world-card="1" data-world="origami" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Origami">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="origami">Origami</h3>
@@ -279,7 +334,7 @@
           <p class="tc-muted text-sm mt-2" data-world-desc="origami">Giấy gấp, ấm áp và nhẹ nhàng.</p>
           <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
-        <div class="tc-card p-5">
+        <div class="tc-card p-5" data-world-card="1" data-world="arcade" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Arcade">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="arcade">Arcade</h3>
@@ -287,7 +342,7 @@
           <p class="tc-muted text-sm mt-2" data-world-desc="arcade">Nê-on năng lượng, nhịp nhanh.</p>
           <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
-        <div class="tc-card p-5">
+        <div class="tc-card p-5" data-world-card="1" data-world="dunes" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Đồi cát">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="dunes">Đồi cát</h3>
@@ -295,7 +350,7 @@
           <p class="tc-muted text-sm mt-2" data-world-desc="dunes">Sa mạc, nắng vàng, yên tĩnh.</p>
           <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
-        <div class="tc-card p-5">
+        <div class="tc-card p-5" data-world-card="1" data-world="chrome" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Chrome">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="chrome">Chrome</h3>
@@ -303,7 +358,7 @@
           <p class="tc-muted text-sm mt-2" data-world-desc="chrome">Kim loại sáng, chuẩn xác, sạch.</p>
           <span class="text-xs mt-4 inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
-        <div class="tc-card p-5">
+        <div class="tc-card p-5" data-world-card="1" data-world="circuit" role="button" tabindex="0" aria-label="Kích hoạt Thế giới: Mạch điện">
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
             <h3 class="font-semibold" data-world-label="circuit">Mạch điện</h3>
@@ -334,15 +389,41 @@
             ctaPrimary: "Mở công cụ",
             ctaSecondary: "Khám phá Thế giới"
           },
-          gallery: {
-            title: "Bộ sưu tập Thế giới",
-            desc: "8 Thế giới, 8 sắc thái cảm giác.",
-            activate: "Kích hoạt"
-          },
-          footer: {
-            left: "8portal v4 — Khung A1→A3",
-            right: "Token thế giới đã sẵn sàng"
-          },
+        gallery: {
+          title: "Bộ sưu tập Thế giới",
+          desc: "8 Thế giới, 8 sắc thái cảm giác.",
+          activate: "Kích hoạt"
+        },
+        quick: {
+          title: "Hành động nhanh",
+          desc: "Truy cập nhanh các tác vụ chính của 8portal.",
+          items: {
+            threadcolor: {
+              title: "Tra mã chỉ",
+              desc: "Tra cứu màu chỉ theo ảnh, mã hoặc màu chọn.",
+              cta: "Mở công cụ"
+            },
+            library: {
+              title: "Thư viện",
+              desc: "Lưu và xem lại các lần tra cứu của bạn.",
+              cta: "Sắp ra mắt"
+            },
+            contribute: {
+              title: "Đóng góp dữ liệu",
+              desc: "Gửi màu và mã chỉ mới cho cộng đồng.",
+              cta: "Bắt đầu"
+            },
+            verify: {
+              title: "Xác minh",
+              desc: "Dành cho admin duyệt dữ liệu cộng đồng.",
+              cta: "Đi tới"
+            }
+          }
+        },
+        footer: {
+          left: "8portal v4 — Khung A1→A3",
+          right: "Token thế giới đã sẵn sàng"
+        },
           worlds: {
             nebula: {
               label: "Tinh vân",
@@ -466,6 +547,28 @@
         setMenuOpen(false);
         worldBtn.focus();
       });
+      const galleryGrid = document.querySelector('[data-world-grid="1"]');
+      if (galleryGrid) {
+        galleryGrid.addEventListener("click", (event) => {
+          const card = event.target.closest('[data-world-card="1"]');
+          if (!card || !galleryGrid.contains(card)) return;
+          applyWorld(card.dataset.world);
+          if (worldMenu.dataset.open === "1") {
+            setMenuOpen(false);
+          }
+        });
+        galleryGrid.addEventListener("keydown", (event) => {
+          const card = event.target.closest('[data-world-card="1"]');
+          if (!card || !galleryGrid.contains(card) || document.activeElement !== card) return;
+          if (event.key === "Enter" || event.key === " " || event.key === "Spacebar" || event.key === "Space") {
+            event.preventDefault();
+            applyWorld(card.dataset.world);
+            if (worldMenu.dataset.open === "1") {
+              setMenuOpen(false);
+            }
+          }
+        });
+      }
       document.addEventListener("click", (event) => {
         if (!switcher.contains(event.target)) {
           setMenuOpen(false);
@@ -507,6 +610,49 @@
         applyWorld(document.documentElement.dataset.world);
       }
       setMenuOpen(false);
+    })();
+  </script>
+  <script>
+    (() => {
+      const contributeBtn = document.querySelector('[data-qa-action="contribute"]');
+      const verifyBtn = document.querySelector('[data-qa-action="verify"]');
+      if (!contributeBtn && !verifyBtn) return;
+
+      const isLoggedIn = () => {
+        if (window.tcAuth?.isLoggedIn?.()) return true;
+        const api = (window.firebaseAuth || window.firebaseAuthApi || null);
+        if (api?.auth?.currentUser) return true;
+        if (api?.user?.uid || api?.user?.email) return true;
+        const userInfo = document.getElementById("userInfo");
+        return !!userInfo && !userInfo.classList.contains("hidden");
+      };
+
+      const openLoginOrGo = () => {
+        const btnAccount = document.getElementById("btnAccount");
+        if (btnAccount) {
+          btnAccount.click();
+          return;
+        }
+        window.location.href = "./worlds/threadcolor.html";
+      };
+
+      const goThreadcolor = () => {
+        window.location.href = "./worlds/threadcolor.html";
+      };
+
+      const bindQuickAction = (button) => {
+        if (!button) return;
+        button.addEventListener("click", () => {
+          if (isLoggedIn()) {
+            goThreadcolor();
+            return;
+          }
+          openLoginOrGo();
+        });
+      };
+
+      bindQuickAction(contributeBtn);
+      bindQuickAction(verifyBtn);
     })();
   </script>
 </body>

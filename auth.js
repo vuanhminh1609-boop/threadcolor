@@ -134,7 +134,40 @@ try {
 }
 
 function getAuthApi() {
-  return window.firebaseAuth || null;
+  return window.firebaseAuth || window.firebaseAuthApi || null;
+}
+
+function resolveToolUrl() {
+  const path = window.location.pathname || "";
+  return path.includes("/worlds/") ? "threadcolor.html" : "./worlds/threadcolor.html";
+}
+
+function exposeAuthPublicApi() {
+  if (window.tcAuth?.version === "v1") return;
+  const getApi = () => window.firebaseAuth || window.firebaseAuthApi || null;
+  window.tcAuth = {
+    version: "v1",
+    getApi,
+    getUser: () => {
+      const api = getApi();
+      return api?.auth?.currentUser || api?.user || null;
+    },
+    isLoggedIn: () => {
+      const user = window.tcAuth.getUser();
+      return !!(user?.uid || user?.email);
+    },
+    openAuth: () => {
+      const btnAccount = document.getElementById("btnAccount");
+      if (btnAccount) {
+        btnAccount.click();
+        return;
+      }
+      window.location.href = resolveToolUrl();
+    },
+    goTool: () => {
+      window.location.href = resolveToolUrl();
+    }
+  };
 }
 
 function ensureAuthFallbackStyle() {
@@ -449,7 +482,25 @@ function closeAuthModal() {
   showAuthError("");
 }
 
+let lastAuthSignature = null;
+function emitAuthChanged(user) {
+  const payload = user ? {
+    uid: user.uid || null,
+    email: user.email || null,
+    displayName: user.displayName || null,
+    photoURL: user.photoURL || null
+  } : null;
+  const signature = payload ? `${payload.uid || ""}|${payload.email || ""}` : "guest";
+  if (signature === lastAuthSignature) return;
+  lastAuthSignature = signature;
+  document.dispatchEvent(new CustomEvent("tc-auth-changed", { detail: { user: payload } }));
+}
+
 function updateAuthUI(user) {
+  const api = getAuthApi();
+  if (api) {
+    api.user = user || null;
+  }
   const userInfo = document.getElementById("userInfo");
   const btnAccount = document.getElementById("btnAccount");
   const btnLogout = document.getElementById("btnLogout");
@@ -464,6 +515,7 @@ function updateAuthUI(user) {
     userAvatar.src = user.photoURL || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.displayName || user.email || "U");
   }
   if (loggedIn) closeAuthModal();
+  emitAuthChanged(user || null);
 }
 
 function bindAuthUiEvents() {
@@ -588,6 +640,7 @@ function bindAuthState() {
 }
 
 function initAuthDocking() {
+  exposeAuthPublicApi();
   ensureAuthFallbackStyle();
   const injectedModal = ensureAuthModalExists();
   const injectedAccount = ensureTopbarAuthDock();
@@ -599,6 +652,7 @@ function initAuthDocking() {
 
 document.addEventListener("DOMContentLoaded", initAuthDocking);
 window.addEventListener("firebase-auth-ready", () => {
+  exposeAuthPublicApi();
   const injectedAccount = ensureTopbarAuthDock();
   if (injectedAccount) {
     bindAuthUiEvents();
