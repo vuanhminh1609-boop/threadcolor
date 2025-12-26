@@ -476,6 +476,72 @@
     @media (prefers-reduced-motion: reduce){
       #authModal *{ transition: none !important; }
     }
+    /* --- Library modal (tokenized) --- */
+    #libraryOverlay{
+      background: rgba(0,0,0,.45);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+    }
+    #libraryModal > div{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 1.25rem;
+      box-shadow: 0 22px 70px rgba(0,0,0,.28);
+    }
+    #libraryClose{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      border-radius: .75rem;
+    }
+    #libraryClose:hover{ filter: brightness(1.03); }
+    #libraryClose:active{ transform: translateY(1px); }
+    #libraryClose:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    #libraryList > div{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 0.9rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+      transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
+    }
+    #libraryList > div:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.16);
+      filter: brightness(1.02);
+    }
+    #libraryList .text-gray-500{ color: var(--muted); }
+    #libraryList .text-gray-800{ color: var(--text); }
+    #libraryList .text-gray-500.text-xs{ color: var(--muted); }
+    #libraryList button{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      border-radius: 0.75rem;
+      font-weight: 650;
+      letter-spacing: -0.005em;
+      transition: filter .15s ease, transform .05s ease, box-shadow .15s ease;
+    }
+    #libraryList button:hover{ filter: brightness(1.03); }
+    #libraryList button:active{ transform: translateY(1px); }
+    #libraryList button:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    #libraryList .text-red-600{
+      color: #ef4444;
+      background: rgba(239,68,68,.10);
+      border: 1px solid rgba(239,68,68,.22);
+      border-radius: .9rem;
+      padding: .75rem;
+    }
+    @media (prefers-reduced-motion: reduce){
+      #libraryModal *{ transition: none !important; }
+    }
     #accountMenu button:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);

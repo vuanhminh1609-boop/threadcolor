@@ -491,6 +491,11 @@ function bindAuthUiEvents() {
   const btnLibrary = document.getElementById("btnLibrary");
   const btnContribute = document.getElementById("btnContribute");
   const btnVerify = document.getElementById("btnVerify");
+  const isToolWorld = () => !!(
+    document.getElementById("libraryModal") ||
+    document.getElementById("contributeModal") ||
+    document.getElementById("verifyModal")
+  );
 
   btnAccount?.addEventListener("click", () => openAuthModal("login"));
   authClose?.addEventListener("click", closeAuthModal);
@@ -564,13 +569,7 @@ function bindAuthUiEvents() {
   }
 
   const fallbackToTool = () => {
-    if (
-      document.getElementById("libraryModal") ||
-      document.getElementById("contributeModal") ||
-      document.getElementById("verifyModal")
-    ) {
-      return;
-    }
+    if (isToolWorld()) return;
     window.location.href = "worlds/threadcolor.html";
   };
   btnLibrary?.addEventListener("click", () => fallbackToTool());
