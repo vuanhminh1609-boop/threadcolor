@@ -327,23 +327,22 @@
   <header class="tc-topbar relative">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
       <div class="flex items-center gap-3">
-  <a class="tc-brand flex items-center gap-3" href="./index.html" aria-label="SpaceColors">
-    <img
-      src="./assets/spacecolors-logo-topbar.png"
-      alt="SpaceColors"
-      class="h-10 w-auto"
-      loading="eager"
-      decoding="async"
-    />
-    <span class="hidden sm:inline text-lg">SpaceColors</span>
-  </a>
-
-  <span class="tc-muted text-sm hidden md:inline">/</span>
-
-  <span class="tc-muted text-sm hidden md:inline" aria-label="Landingpage">
-    8Portal
-  </span>
-</div>
+        <a href="./index.html" class="flex items-center gap-3 min-w-0">
+          <img
+            src="./assets/spacecolors-logo-topbar.png"
+            alt="SpaceColors"
+            class="h-10 w-10 rounded-xl select-none"
+            loading="eager"
+            decoding="async"
+          />
+          <span class="min-w-0 flex flex-col justify-center leading-tight">
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors · 8Portal</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">
+              Một chạm mở không gian màu vô hạn
+            </span>
+          </span>
+        </a>
+      </div>
 
 
       <div class="flex-1 flex items-center justify-center">
@@ -656,6 +655,10 @@
             desc: "8 cổng tính năng dẫn bạn đến 8 Thế giới sắc màu — mỗi Thế giới là một không gian riêng.\nThế giới màu chỉ: Chọn màu/HEX/ảnh → Mã chỉ đa hãng → Dùng ngay cho sản xuất.\nThế giới dải màu (sắp ra mắt): Tạo dải màu → Lưu bộ sưu tập → Xuất dữ liệu theo nhu cầu.\nKhám phá 8 thế giới đầy cảm hứng và tạo không gian màu mang bản sắc của riêng bạn.",
             ctaPrimary: "Mở công cụ",
             ctaSecondary: "Khám phá Thế giới"
+          },
+          topbar: {
+            brand: "SpaceColors · 8Portal",
+            slogan: "Một chạm mở không gian màu vô hạn"
           },
           gallery: {
             title: "Bộ sưu tập Thế giới",
