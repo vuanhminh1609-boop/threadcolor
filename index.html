@@ -17,80 +17,145 @@
       --a3: #8c6d54;
     }
     html[data-world="nebula"] {
-      --bg: #0c1123;
+      --bg:
+        radial-gradient(circle, rgba(255,255,255,.26) 0 1px, transparent 1.2px) 0 0/ 160px 160px repeat,
+        radial-gradient(circle, rgba(255,255,255,.14) 0 1px, transparent 1.2px) 60px 90px/ 260px 260px repeat,
+        repeating-linear-gradient(135deg, rgba(110,231,255,.045) 0 1px, transparent 1px 10px) 0 0/ 420px 420px repeat,
+        radial-gradient(1200px circle at 18% 12%, rgba(110,231,255,.26), transparent 60%) 50% 50%/ cover no-repeat,
+        radial-gradient(1100px circle at 86% 22%, rgba(139,92,246,.26), transparent 62%) 50% 50%/ cover no-repeat,
+        radial-gradient(900px circle at 62% 88%, rgba(244,114,182,.20), transparent 62%) 50% 50%/ cover no-repeat,
+        conic-gradient(from 220deg at 60% 35%, rgba(139,92,246,.18), transparent 30%, rgba(110,231,255,.14), transparent 62%, rgba(244,114,182,.16)) 50% 50%/ cover no-repeat,
+        radial-gradient(1600px circle at 50% 55%, rgba(0,0,0,0) 0 55%, rgba(0,0,0,.55) 100%) 50% 50%/ cover no-repeat,
+        #040512;
       --text: #eef2ff;
-      --muted: #b6bfe3;
-      --glass: rgba(18, 26, 48, 0.72);
-      --stroke: rgba(255, 255, 255, 0.12);
+      --muted: #b8c2ff;
+      --glass: rgba(12, 16, 34, 0.72);
+      --stroke: rgba(255, 255, 255, 0.14);
       --a1: #6ee7ff;
       --a2: #8b5cf6;
       --a3: #f472b6;
     }
     html[data-world="ocean"] {
-      --bg: #e7f6ff;
-      --text: #0b2b3a;
-      --muted: #4b6b7b;
-      --glass: rgba(255, 255, 255, 0.7);
-      --stroke: rgba(11, 43, 58, 0.12);
+      --bg:
+        radial-gradient(circle, rgba(255,255,255,.22) 0 2px, transparent 2.6px) 0 0/ 220px 220px repeat,
+        repeating-linear-gradient(160deg, rgba(255,255,255,.10) 0 2px, transparent 2px 14px) 0 0/ 520px 520px repeat,
+        radial-gradient(1100px circle at 18% 14%, rgba(31,182,255,.24), transparent 62%) 50% 50%/ cover no-repeat,
+        radial-gradient(1000px circle at 86% 28%, rgba(14,165,168,.20), transparent 64%) 50% 50%/ cover no-repeat,
+        radial-gradient(900px circle at 52% 90%, rgba(77,212,255,.18), transparent 64%) 50% 50%/ cover no-repeat,
+        linear-gradient(180deg, rgba(255,255,255,.68), rgba(255,255,255,0) 45%) 50% 50%/ cover no-repeat,
+        conic-gradient(from 200deg at 50% 10%, rgba(77,212,255,.22), transparent 35%, rgba(31,182,255,.14), transparent 70%, rgba(14,165,168,.14)) 50% 50%/ cover no-repeat,
+        radial-gradient(1600px circle at 50% 0%, rgba(255,255,255,.55), transparent 55%) 50% 50%/ cover no-repeat,
+        #dff6ff;
+      --text: #062a3a;
+      --muted: #3f6b7f;
+      --glass: rgba(255, 255, 255, 0.76);
+      --stroke: rgba(6, 42, 58, 0.12);
       --a1: #1fb6ff;
       --a2: #0ea5a8;
       --a3: #4dd4ff;
     }
     html[data-world="ink"] {
-      --bg: #0f1115;
-      --text: #f4f4f6;
-      --muted: #9aa0a9;
-      --glass: rgba(24, 26, 31, 0.72);
-      --stroke: rgba(255, 255, 255, 0.1);
+      --bg:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 6px) 0 0/ 100% 100% repeat,
+        repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 10px) 0 0/ 100% 100% repeat,
+        radial-gradient(1200px circle at 20% 20%, rgba(226,232,240,.10), transparent 62%) 50% 50%/ cover no-repeat,
+        radial-gradient(1000px circle at 82% 26%, rgba(148,163,184,.10), transparent 66%) 50% 50%/ cover no-repeat,
+        radial-gradient(850px circle at 52% 92%, rgba(100,116,139,.12), transparent 66%) 50% 50%/ cover no-repeat,
+        radial-gradient(1400px circle at 50% 55%, rgba(0,0,0,0) 0 52%, rgba(0,0,0,.62) 100%) 50% 50%/ cover no-repeat,
+        linear-gradient(180deg, #0b0d12, #07080c) 50% 50%/ cover no-repeat;
+      --text: #f4f6fb;
+      --muted: #a6afbd;
+      --glass: rgba(16, 18, 24, 0.76);
+      --stroke: rgba(255, 255, 255, 0.12);
       --a1: #e2e8f0;
       --a2: #94a3b8;
       --a3: #64748b;
     }
     html[data-world="origami"] {
-      --bg: #f6f1e9;
+      --bg:
+        repeating-linear-gradient(0deg, rgba(32,26,20,.025) 0 1px, transparent 1px 7px) 0 0/ 100% 100% repeat,
+        repeating-linear-gradient(90deg, rgba(32,26,20,.018) 0 1px, transparent 1px 11px) 0 0/ 100% 100% repeat,
+        linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,0) 48%) 50% 50%/ cover no-repeat,
+        linear-gradient(315deg, rgba(140,109,84,.10), transparent 55%) 50% 50%/ cover no-repeat,
+        radial-gradient(1000px circle at 22% 16%, rgba(194,123,75,.18), transparent 64%) 50% 50%/ cover no-repeat,
+        radial-gradient(950px circle at 84% 26%, rgba(213,158,109,.16), transparent 66%) 50% 50%/ cover no-repeat,
+        radial-gradient(900px circle at 52% 92%, rgba(140,109,84,.12), transparent 66%) 50% 50%/ cover no-repeat,
+        linear-gradient(180deg, #f7f2ea, #f1e6d6) 50% 50%/ cover no-repeat;
       --text: #201a14;
       --muted: #6b5d4b;
-      --glass: rgba(255, 255, 255, 0.72);
-      --stroke: rgba(32, 26, 20, 0.08);
+      --glass: rgba(255, 255, 255, 0.74);
+      --stroke: rgba(32, 26, 20, 0.10);
       --a1: #c27b4b;
       --a2: #d59e6d;
       --a3: #8c6d54;
     }
     html[data-world="arcade"] {
-      --bg: #0b0b14;
-      --text: #fef7ff;
-      --muted: #c9b9e8;
-      --glass: rgba(20, 18, 36, 0.78);
-      --stroke: rgba(255, 255, 255, 0.14);
+      --bg:
+        radial-gradient(circle, rgba(255,255,255,.18) 0 1px, transparent 1.2px) 0 0/ 180px 180px repeat,
+        repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 4px) 0 0/ 100% 100% repeat,
+        repeating-linear-gradient(90deg, rgba(255,61,205,.05) 0 1px, transparent 1px 18px) 0 0/ 520px 520px repeat,
+        radial-gradient(1100px circle at 18% 14%, rgba(255,61,205,.26), transparent 62%) 50% 50%/ cover no-repeat,
+        radial-gradient(1050px circle at 86% 18%, rgba(124,58,237,.26), transparent 64%) 50% 50%/ cover no-repeat,
+        radial-gradient(950px circle at 52% 92%, rgba(32,227,178,.18), transparent 66%) 50% 50%/ cover no-repeat,
+        conic-gradient(from 210deg at 56% 30%, rgba(255,61,205,.18), transparent 28%, rgba(124,58,237,.16), transparent 60%, rgba(32,227,178,.16)) 50% 50%/ cover no-repeat,
+        radial-gradient(1600px circle at 50% 55%, rgba(0,0,0,0) 0 54%, rgba(0,0,0,.60) 100%) 50% 50%/ cover no-repeat,
+        #05040f;
+      --text: #fff7ff;
+      --muted: #d8c9f6;
+      --glass: rgba(14, 12, 28, 0.80);
+      --stroke: rgba(255, 255, 255, 0.16);
       --a1: #ff3dcd;
       --a2: #7c3aed;
       --a3: #20e3b2;
     }
     html[data-world="dunes"] {
-      --bg: #f7f0e1;
+      --bg:
+        radial-gradient(circle, rgba(255,255,255,.18) 0 2px, transparent 2.6px) 0 0/ 260px 260px repeat,
+        repeating-linear-gradient(165deg, rgba(179,116,61,.06) 0 2px, transparent 2px 16px) 0 0/ 680px 680px repeat,
+        radial-gradient(1200px circle at 78% 10%, rgba(255,245,215,.75), transparent 60%) 50% 50%/ cover no-repeat,
+        radial-gradient(1050px circle at 20% 22%, rgba(211,155,84,.18), transparent 66%) 50% 50%/ cover no-repeat,
+        radial-gradient(950px circle at 86% 36%, rgba(227,184,123,.16), transparent 68%) 50% 50%/ cover no-repeat,
+        radial-gradient(900px circle at 52% 92%, rgba(179,116,61,.14), transparent 70%) 50% 50%/ cover no-repeat,
+        linear-gradient(180deg, #f8f2e3, #f2e4c7) 50% 50%/ cover no-repeat;
       --text: #3a2d1a;
       --muted: #7a644a;
-      --glass: rgba(255, 255, 255, 0.7);
+      --glass: rgba(255, 255, 255, 0.74);
       --stroke: rgba(58, 45, 26, 0.12);
       --a1: #d39b54;
       --a2: #e3b87b;
       --a3: #b3743d;
     }
     html[data-world="chrome"] {
-      --bg: #f1f4f8;
+      --bg:
+        radial-gradient(circle, rgba(255,255,255,.20) 0 2px, transparent 2.6px) 0 0/ 280px 280px repeat,
+        repeating-linear-gradient(135deg, rgba(15,23,42,.03) 0 1px, transparent 1px 12px) 0 0/ 720px 720px repeat,
+        radial-gradient(1100px circle at 22% 14%, rgba(59,130,246,.14), transparent 66%) 50% 50%/ cover no-repeat,
+        radial-gradient(900px circle at 82% 26%, rgba(148,163,184,.16), transparent 68%) 50% 50%/ cover no-repeat,
+        linear-gradient(120deg, rgba(255,255,255,.75), rgba(255,255,255,0) 42%) 50% 50%/ cover no-repeat,
+        linear-gradient(300deg, rgba(15,23,42,.08), transparent 55%) 50% 50%/ cover no-repeat,
+        linear-gradient(180deg, #f6f9ff, #eef3f8) 50% 50%/ cover no-repeat;
       --text: #1c232b;
       --muted: #5f6b79;
-      --glass: rgba(255, 255, 255, 0.68);
+      --glass: rgba(255, 255, 255, 0.72);
       --stroke: rgba(28, 35, 43, 0.12);
       --a1: #3b82f6;
       --a2: #94a3b8;
       --a3: #0f172a;
     }
     html[data-world="circuit"] {
-      --bg: #0b1410;
-      --text: #e9fff3;
-      --muted: #9ec4ad;
-      --glass: rgba(12, 24, 18, 0.72);
+      --bg:
+        repeating-linear-gradient(0deg, rgba(134,239,172,.06) 0 1px, transparent 1px 18px) 0 0/ 100% 100% repeat,
+        repeating-linear-gradient(90deg, rgba(34,197,94,.05) 0 1px, transparent 1px 22px) 0 0/ 100% 100% repeat,
+        radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1.2px) 0 0/ 200px 200px repeat,
+        radial-gradient(1100px circle at 20% 14%, rgba(34,197,94,.22), transparent 64%) 50% 50%/ cover no-repeat,
+        radial-gradient(1000px circle at 86% 22%, rgba(22,163,74,.20), transparent 66%) 50% 50%/ cover no-repeat,
+        radial-gradient(900px circle at 52% 92%, rgba(134,239,172,.16), transparent 68%) 50% 50%/ cover no-repeat,
+        conic-gradient(from 220deg at 56% 30%, rgba(34,197,94,.16), transparent 30%, rgba(134,239,172,.12), transparent 62%, rgba(22,163,74,.14)) 50% 50%/ cover no-repeat,
+        radial-gradient(1600px circle at 50% 55%, rgba(0,0,0,0) 0 54%, rgba(0,0,0,.58) 100%) 50% 50%/ cover no-repeat,
+        #04110a;
+      --text: #eafff2;
+      --muted: #a6d6bb;
+      --glass: rgba(8, 20, 14, 0.76);
       --stroke: rgba(255, 255, 255, 0.12);
       --a1: #22c55e;
       --a2: #16a34a;
@@ -320,6 +385,81 @@
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaPrimary">Mở công cụ</a>
           <button class="tc-btn tc-chip px-5 py-3" data-i18n="hero.ctaSecondary">Khám phá Thế giới</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTAL HUB -->
+    <section class="max-w-6xl mx-auto px-4 pb-12">
+      <div class="flex items-end justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold">8 Cổng SpaceColors</h2>
+          <p class="tc-muted text-sm mt-1">Chọn cổng để bước vào một Thế giới sắc màu khác.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <h3 class="font-semibold">Thế giới màu chỉ</h3>
+            <p class="tc-muted text-sm mt-2">Tra cứu mã chỉ theo ảnh, màu và mã.</p>
+          </div>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-max" href="./worlds/threadcolor.html">Mở</a>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
+            <h3 class="font-semibold mt-3">Thế giới dải màu</h3>
+            <p class="tc-muted text-sm mt-2">Khám phá bảng màu theo dải và cảm xúc.</p>
+          </div>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
+            <h3 class="font-semibold mt-3">Thế giới ngọc</h3>
+            <p class="tc-muted text-sm mt-2">Tông màu quý, ánh kim và chiều sâu.</p>
+          </div>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
+            <h3 class="font-semibold mt-3">Thế giới tơ lụa</h3>
+            <p class="tc-muted text-sm mt-2">Bảng màu mềm, mịn và mơ màng.</p>
+          </div>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
+            <h3 class="font-semibold mt-3">Thế giới thủ công</h3>
+            <p class="tc-muted text-sm mt-2">Sắc màu truyền thống, ấm và gần gũi.</p>
+          </div>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
+            <h3 class="font-semibold mt-3">Thế giới ánh sáng</h3>
+            <p class="tc-muted text-sm mt-2">Dải màu rực rỡ, phản quang và sáng bừng.</p>
+          </div>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
+            <h3 class="font-semibold mt-3">Thế giới tối giản</h3>
+            <p class="tc-muted text-sm mt-2">Bảng màu tối giản, tinh gọn và sang.</p>
+          </div>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
+            <h3 class="font-semibold mt-3">Thế giới ký ức</h3>
+            <p class="tc-muted text-sm mt-2">Màu sắc hoài niệm và chất liệu xưa.</p>
+          </div>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
         </div>
       </div>
     </section>
