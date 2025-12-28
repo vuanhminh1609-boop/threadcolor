@@ -1,0 +1,23 @@
+# PROJECT_BIBLE — Luật bất biến (ThreadColor Universe — 8portal)
+
+## Luật UI bất biến
+- Luôn Việt hoá toàn bộ nội dung/nhãn.
+- Landing 8portal: luôn giữ luồng đăng nhập ổn định và nút “Đăng nhập” ở góc phải phía trên (TOP-right).
+- World 1 ThreadColor nằm tại: worlds/threadcolor.html.
+
+## FIX PROTOCOL (BẮT BUỘC KHI SỬA BUG)
+1) Tái hiện bug theo mô tả người dùng và mở DevTools Console.
+   - Console còn error => CHƯA FIX.
+2) Sửa tối thiểu (minimal diff). Không refactor lan man.
+3) Sau sửa bắt buộc test lại đúng flow tái hiện:
+   - UI có phản hồi (render kết quả hoặc thông báo fallback).
+   - Console sạch.
+4) Bắt buộc cập nhật:
+   - 99 — Buglog & Fix Journal
+   - 00B — REGRESSION CHECKLIST
+5) Nếu không cập nhật Buglog/Checklist => coi như chưa hoàn thành.
+
+## Quy tắc chống tái phạm do Codex gây ra
+- i18n: `t()` là hàm dịch. TUYỆT ĐỐI không dùng tên biến/param `t` cho item trong render/map.
+  - Dùng: item/res/row/result.
+- Không “nuốt lỗi” im lặng: nếu không có kết quả, phải show toast/thông báo lý do (chưa chọn hãng, chưa nhập màu, data chưa load…).

@@ -1,0 +1,14 @@
+# 00B — REGRESSION CHECKLIST (Test chống bay)
+
+## A. Luồng tìm màu (World 1 — ThreadColor)
+- [ ] Nhập/chọn màu bất kỳ + chọn ít nhất 1 hãng → click “Tìm màu chỉ gần nhất” → có kết quả hoặc thông báo fallback.
+- [ ] Không có lỗi Console khi click tìm kiếm.
+- [ ] Load more hoạt động (nếu có) và không lỗi Console.
+- [ ] Click 1 result mở Inspector; đóng Inspector không lỗi.
+- [ ] Nút “Lưu” hoạt động đúng luồng (nếu chưa login thì mở login).
+- [ ] Nút “Ghim/Bỏ ghim” hoạt động, không lỗi Console.
+
+## B. Chống lỗi Codex hay gây ra
+- [ ] Không dùng biến/param tên `t` làm item trong render/map (vì `t()` là hàm i18n).
+- [ ] Event click được bind đúng: nút tìm kiếm thực sự chạy handler.
+- [ ] resultBox/render container tồn tại trước khi innerHTML.
