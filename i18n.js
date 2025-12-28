@@ -185,6 +185,9 @@
           },
           delta: {
             title: "Độ tương đồng màu (ΔE)",
+            method: "Phương pháp ΔE",
+            method76: "Cơ bản (ΔE76)",
+            method2000: "Chuẩn hơn (CIEDE2000)",
             low: "Rất giống",
             high: "Khác hẳn"
           },

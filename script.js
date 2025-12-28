@@ -38,12 +38,92 @@ function rgbToLab([r, g, b]) {
   return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
 }
 
+const labCache = new Map();
+
+function getLabForHex(hex) {
+  const normalized = normalizeHex(hex);
+  if (!normalized) return null;
+  const cached = labCache.get(normalized);
+  if (cached) return cached;
+  const lab = rgbToLab(hexToRgbArray(normalized));
+  labCache.set(normalized, lab);
+  return lab;
+}
+
+function ensureLab(thread) {
+  if (!thread) return null;
+  if (!Array.isArray(thread.lab) || thread.lab.length !== 3) {
+    thread.lab = getLabForHex(thread.hex);
+  }
+  return thread.lab;
+}
+
 function deltaE76(lab1, lab2) {
   return Math.sqrt(
     (lab1[0] - lab2[0]) ** 2 +
     (lab1[1] - lab2[1]) ** 2 +
     (lab1[2] - lab2[2]) ** 2
   );
+}
+
+function deltaE2000(lab1, lab2) {
+  const [L1, a1, b1] = lab1;
+  const [L2, a2, b2] = lab2;
+  const avgLp = (L1 + L2) / 2;
+  const C1 = Math.sqrt(a1 * a1 + b1 * b1);
+  const C2 = Math.sqrt(a2 * a2 + b2 * b2);
+  const avgC = (C1 + C2) / 2;
+  const avgC7 = Math.pow(avgC, 7);
+  const G = 0.5 * (1 - Math.sqrt(avgC7 / (avgC7 + Math.pow(25, 7))));
+  const a1p = (1 + G) * a1;
+  const a2p = (1 + G) * a2;
+  const C1p = Math.sqrt(a1p * a1p + b1 * b1);
+  const C2p = Math.sqrt(a2p * a2p + b2 * b2);
+  const avgCp = (C1p + C2p) / 2;
+  const h1p = Math.atan2(b1, a1p);
+  const h2p = Math.atan2(b2, a2p);
+  const h1pDeg = ((h1p * 180) / Math.PI + 360) % 360;
+  const h2pDeg = ((h2p * 180) / Math.PI + 360) % 360;
+  let deltahp = h2pDeg - h1pDeg;
+  if (C1p * C2p === 0) {
+    deltahp = 0;
+  } else if (deltahp > 180) {
+    deltahp -= 360;
+  } else if (deltahp < -180) {
+    deltahp += 360;
+  }
+  const deltaLp = L2 - L1;
+  const deltaCp = C2p - C1p;
+  const deltaHp = 2 * Math.sqrt(C1p * C2p) * Math.sin((deltahp * Math.PI) / 360);
+  const avgHp = (() => {
+    if (C1p * C2p === 0) return h1pDeg + h2pDeg;
+    const sum = h1pDeg + h2pDeg;
+    if (Math.abs(h1pDeg - h2pDeg) > 180) {
+      return sum < 360 ? (sum + 360) / 2 : (sum - 360) / 2;
+    }
+    return sum / 2;
+  })();
+  const T = 1
+    - 0.17 * Math.cos(((avgHp - 30) * Math.PI) / 180)
+    + 0.24 * Math.cos(((2 * avgHp) * Math.PI) / 180)
+    + 0.32 * Math.cos(((3 * avgHp + 6) * Math.PI) / 180)
+    - 0.20 * Math.cos(((4 * avgHp - 63) * Math.PI) / 180);
+  const deltaTheta = 30 * Math.exp(-(((avgHp - 275) / 25) ** 2));
+  const Rc = 2 * Math.sqrt(Math.pow(avgCp, 7) / (Math.pow(avgCp, 7) + Math.pow(25, 7)));
+  const Sl = 1 + (0.015 * ((avgLp - 50) ** 2)) / Math.sqrt(20 + ((avgLp - 50) ** 2));
+  const Sc = 1 + 0.045 * avgCp;
+  const Sh = 1 + 0.015 * avgCp * T;
+  const Rt = -Math.sin((2 * deltaTheta * Math.PI) / 180) * Rc;
+  return Math.sqrt(
+    (deltaLp / Sl) ** 2 +
+    (deltaCp / Sc) ** 2 +
+    (deltaHp / Sh) ** 2 +
+    Rt * (deltaCp / Sc) * (deltaHp / Sh)
+  );
+}
+
+function getDelta(lab1, lab2, method) {
+  return method === "2000" ? deltaE2000(lab1, lab2) : deltaE76(lab1, lab2);
 }
 
 function formatLab(lab) {
@@ -84,6 +164,7 @@ let isDataReady = false;
 let lastResults = null;
 let lastChosenHex = null;
 let currentDeltaThreshold = 3.0;
+let currentDeltaMethod = "76";
 let selectedItemEl = null;
 let lastFocusedItem = null;
 let currentUser = null;
@@ -92,6 +173,13 @@ let isAdminUser = false;
 let useVerifiedOnly = false;
 let verifiedThreads = [];
 let pendingSubmissions = [];
+const matchCache = new Map();
+const MATCH_CACHE_LIMIT = 60;
+const MATCH_DEBOUNCE_MS = 160;
+let matchDebounceTimer = null;
+const RESULT_PAGE_SIZE = 60;
+let resultRenderLimit = RESULT_PAGE_SIZE;
+let lastGroupedResults = null;
 
 function renderBrandFilters(brands) {
   if (!brandFilters) return;
@@ -325,7 +413,7 @@ function mergeVerifiedThreads(list) {
     if (existing) {
       const currentConf = typeof existing.confidence === "number" ? existing.confidence : 0;
       const verifiedConf = typeof v.confidence === "number" ? v.confidence : 0;
-      if (verifiedConf > currentConf) {
+        if (verifiedConf > currentConf) {
         const altEntry = existing.hex ? {
           hex: existing.hex,
           rgb: existing.rgb,
@@ -335,10 +423,10 @@ function mergeVerifiedThreads(list) {
         const mergedAlt = [];
         if (v.alternates) mergedAlt.push(...v.alternates);
         if (altEntry) mergedAlt.push(altEntry);
-        const updated = { ...existing, ...v, alternates: mergedAlt };
-        updated.lab = rgbToLab(hexToRgbArray(updated.hex));
-        map.set(key, updated);
-      } else {
+          const updated = { ...existing, ...v, alternates: mergedAlt };
+          updated.lab = getLabForHex(updated.hex);
+          map.set(key, updated);
+        } else {
         const altEntry = {
           hex: v.hex,
           rgb: v.rgb,
@@ -351,23 +439,23 @@ function mergeVerifiedThreads(list) {
         map.set(key, existing);
       }
     } else {
-      map.set(key, { ...v, lab: rgbToLab(hexToRgbArray(v.hex)) });
+      map.set(key, { ...v, lab: getLabForHex(v.hex) });
     }
   });
   threads = Array.from(map.values());
+  matchCache.clear();
   const brands = getUniqueBrands(threads);
   renderBrandFilters(brands);
   populateContributeBrands(brands);
   if (lastChosenHex) {
-    lastResults = findNearestColors(lastChosenHex, 100);
-    const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
-    showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
+    runSearch(lastChosenHex);
   }
 }
 
 const resultBox = document.getElementById("result");
 const deltaSlider = document.getElementById("deltaSlider");
 const deltaValueEls = document.querySelectorAll("#deltaValue, #deltaValueText");
+const deltaMethodSelect = document.getElementById("deltaMethod");
 const brandFilters = document.getElementById("brandFilters");
 const verifiedOnlyToggle = document.getElementById("verifiedOnlyToggle");
 const btnFindNearest = document.getElementById("btnFindNearest");
@@ -456,7 +544,7 @@ const hasToolUI = !!resultBox;
 
 
 if (hasToolUI) {
-  resultBox.innerHTML = "<p class='text-gray-500 text-center'>Đang tải, dữ liệu màu chưa sẵn sàng</p>";
+  resultBox.innerHTML = "<p class='text-gray-500 text-center'>Đang chuẩn bị dữ liệu...</p>";
 }
 
 
@@ -469,10 +557,9 @@ if (hasToolUI) {
     const normalized = normalizeAndDedupeThreads(data, {
       source: { type: "runtime_json" }
     });
-    threads = normalized.map(t => {
-      const lab = rgbToLab(hexToRgbArray(t.hex));
-      return { ...t, lab };
-    });
+    matchCache.clear();
+    labCache.clear();
+    threads = normalized.map(t => ({ ...t }));
     const brands = getUniqueBrands(threads);
     renderBrandFilters(brands);
     populateContributeBrands(brands);
@@ -496,10 +583,11 @@ function getSelectedBrands() {
   return [...document.querySelectorAll(".brand-filter:checked")].map(cb => cb.value);
 }
 
-function findNearestColors(chosenHex, limit = 100) {
+function findNearestColors(chosenHex, limit = 100, method = "76") {
   const normalized = normalizeHex(chosenHex);
   if (!normalized) return [];
-  const chosenLab = rgbToLab(hexToRgbArray(normalized));
+  const chosenLab = getLabForHex(normalized);
+  if (!chosenLab) return [];
   const brands = getSelectedBrands();
   if (!brands.length) return [];
   const requireVerified = useVerifiedOnly;
@@ -510,18 +598,73 @@ function findNearestColors(chosenHex, limit = 100) {
       const conf = typeof t.confidence === "number" ? t.confidence : 0;
       return conf >= 0.85 || t.source?.type === "CROWD_VERIFIED";
     })
-    .map(t => ({ ...t, delta: deltaE76(chosenLab, t.lab) }))
+    .map(t => {
+      const lab = ensureLab(t);
+      if (!lab) return null;
+      return { ...t, lab, delta: getDelta(chosenLab, lab, method) };
+    })
+    .filter(Boolean)
     .sort((a, b) => a.delta - b.delta)
     .slice(0, limit);
 }
 
-function groupByColorSimilarity(colors, threshold = 2.5) {
+function groupByColorSimilarity(colors, threshold = 2.5, method = "76") {
   const groups = [];
   colors.forEach(c => {
-    const g = groups.find(gr => deltaE76(c.lab, gr.leader.lab) <= threshold);
+    const g = groups.find(gr => getDelta(c.lab, gr.leader.lab, method) <= threshold);
     g ? g.items.push(c) : groups.push({ leader: c, items: [c] });
   });
   return groups;
+}
+
+function buildMatchCacheKey(hex, threshold, method) {
+  const normalized = normalizeHex(hex);
+  const brands = getSelectedBrands().slice().sort();
+  return [
+    normalized || "",
+    useVerifiedOnly ? "1" : "0",
+    method,
+    threshold.toFixed(2),
+    brands.join("|")
+  ].join("::");
+}
+
+function setMatchCache(key, value) {
+  if (matchCache.has(key)) {
+    matchCache.delete(key);
+  }
+  matchCache.set(key, value);
+  if (matchCache.size > MATCH_CACHE_LIMIT) {
+    const oldest = matchCache.keys().next().value;
+    if (oldest) matchCache.delete(oldest);
+  }
+}
+
+function runSearch(hex) {
+  const normalized = normalizeHex(hex);
+  if (!normalized) return;
+  lastChosenHex = normalized;
+  const method = currentDeltaMethod;
+  const key = buildMatchCacheKey(normalized, currentDeltaThreshold, method);
+  const cached = matchCache.get(key);
+  if (cached) {
+    lastResults = cached.base;
+    showGroupedResults(cached.grouped, normalized);
+    return;
+  }
+  const base = findNearestColors(normalized, 100, method);
+  const filtered = base.filter(t => t.delta <= currentDeltaThreshold);
+  const grouped = groupByColorSimilarity(filtered, currentDeltaThreshold, method);
+  lastResults = base;
+  setMatchCache(key, { base, grouped });
+  showGroupedResults(grouped, normalized);
+}
+
+function scheduleSearch(hex) {
+  if (matchDebounceTimer) window.clearTimeout(matchDebounceTimer);
+  matchDebounceTimer = window.setTimeout(() => {
+    runSearch(hex);
+  }, MATCH_DEBOUNCE_MS);
 }
 
 //======================= RENDERING =======================
@@ -558,14 +701,15 @@ function renderColorCard(t, chosenHex) {
   `;
 }
 
-function showGroupedResults(groups, chosenHex) {
-  currentRendered = groups.flatMap(g => g.items);
-  resultBox.innerHTML = `
-    <div class="flex items-center gap-3 mb-6">
-      <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
-      <div class="font-semibold">Màu đã chọn</div>
-    </div>
-    ${groups.map((group, i) => `
+function renderGroupedResults(groups, chosenHex, limit) {
+  const total = groups.reduce((sum, group) => sum + group.items.length, 0);
+  let remaining = limit;
+  const sections = groups.map((group, i) => {
+    if (remaining <= 0) return "";
+    const items = group.items.slice(0, remaining);
+    remaining -= items.length;
+    if (!items.length) return "";
+    return `
       <section class="mb-8">
         <h3 class="font-semibold mb-3 text-gray-700 flex items-center gap-2">
   <span>Nhóm ${i + 1}</span>
@@ -575,11 +719,39 @@ function showGroupedResults(groups, chosenHex) {
 
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          ${group.items.map(t => renderColorCard(t, chosenHex)).join("")}
+          ${items.map(t => renderColorCard(t, chosenHex)).join("")}
         </div>
       </section>
-    `).join("")}
+    `;
+  }).join("");
+  const moreButton = total > limit
+    ? `<div class="mt-6 flex justify-center">
+        <button class="tc-btn tc-chip px-4 py-2" data-action="load-more-results">Xem thêm (${total - limit})</button>
+      </div>`
+    : "";
+  resultBox.innerHTML = `
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
+      <div class="font-semibold">Màu đã chọn</div>
+    </div>
+    ${sections}
+    ${moreButton}
   `;
+}
+
+function showGroupedResults(groups, chosenHex) {
+  currentRendered = groups.flatMap(g => g.items);
+  lastGroupedResults = groups;
+  const total = currentRendered.length;
+  resultRenderLimit = Math.min(RESULT_PAGE_SIZE, total);
+  renderGroupedResults(groups, chosenHex, resultRenderLimit);
+}
+
+function loadMoreResults() {
+  if (!lastGroupedResults || !lastChosenHex) return;
+  const total = lastGroupedResults.reduce((sum, group) => sum + group.items.length, 0);
+  resultRenderLimit = Math.min(resultRenderLimit + RESULT_PAGE_SIZE, total);
+  renderGroupedResults(lastGroupedResults, lastChosenHex, resultRenderLimit);
 }
 
 //======================= INSPECTOR =======================
@@ -697,6 +869,12 @@ function handleResultClick(e) {
 }
 
 function handleResultContainerClick(e) {
+  const loadMoreBtn = e.target.closest('[data-action="load-more-results"]');
+  if (loadMoreBtn) {
+    e.preventDefault();
+    loadMoreResults();
+    return;
+  }
   const saveBtn = e.target.closest("[data-action=\"save-search\"]");
   if (saveBtn) {
     e.preventDefault();
@@ -806,7 +984,7 @@ function restoreInspectorFromUrl() {
     return;
   }
   const thread = threads.find(t => t.hex.toLowerCase() === normalized.toLowerCase());
-  const labData = thread ? thread.lab : rgbToLab(hexToRgbArray(normalized));
+  const labData = thread ? ensureLab(thread) : getLabForHex(normalized);
   openInspector({
     hex: normalized,
     brand: thread?.brand || "",
@@ -817,7 +995,7 @@ function restoreInspectorFromUrl() {
   }, null);
 }
 
-//======================= AUTH UI =======================
+//==================== AUTH GATE / AUTH STATE ====================
 const openAuth = (message) => {
   if (message) showToast(message);
   window.tcAuth?.openAuth?.();
@@ -1033,7 +1211,7 @@ async function handleOpenSaved(id) {
       };
     }).filter(Boolean);
 
-    const grouped = groupByColorSimilarity(mapped, currentDeltaThreshold);
+    const grouped = groupByColorSimilarity(mapped, currentDeltaThreshold, currentDeltaMethod);
     showGroupedResults(grouped, data.inputHex || lastChosenHex || "#000000");
     const ts = data.createdAt && typeof data.createdAt.toDate === "function" ? data.createdAt.toDate() : null;
     const stamp = ts ? ts.toLocaleString() : "";
@@ -1162,9 +1340,7 @@ if (verifiedOnlyToggle) {
   verifiedOnlyToggle.addEventListener("change", () => {
     useVerifiedOnly = verifiedOnlyToggle.checked;
     if (!lastChosenHex) return;
-    lastResults = findNearestColors(lastChosenHex, 100);
-    const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
-    showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
+    scheduleSearch(lastChosenHex);
   });
 }
 
@@ -1288,24 +1464,28 @@ if (verifyList) {
   });
 }
 
+if (deltaMethodSelect) {
+  currentDeltaMethod = deltaMethodSelect.value === "2000" ? "2000" : "76";
+  deltaMethodSelect.addEventListener("change", () => {
+    currentDeltaMethod = deltaMethodSelect.value === "2000" ? "2000" : "76";
+    matchCache.clear();
+    if (lastChosenHex) scheduleSearch(lastChosenHex);
+  });
+}
 
 btnFindNearest?.addEventListener("click", () => {
 
   if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
 
   const hex = colorPicker.value;
-  lastChosenHex = hex;
-  lastResults = findNearestColors(hex, 100);
-  const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
-  showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), hex);
+  runSearch(hex);
 });
 
 deltaSlider?.addEventListener("input", () => {
   currentDeltaThreshold = parseFloat(deltaSlider.value);
   deltaValueEls.forEach(el => el.textContent = `≈ ${currentDeltaThreshold.toFixed(1)}`);
   if (!lastResults || !lastChosenHex) return;
-  const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
-  showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), lastChosenHex);
+  scheduleSearch(lastChosenHex);
 });
 
 resultBox?.addEventListener("click", handleResultContainerClick);
@@ -1374,10 +1554,7 @@ canvas?.addEventListener("click", e => {
   const y = Math.floor((e.clientY - rect.top) * scaleY);
   const pixel = ctx.getImageData(x, y, 1, 1).data;
   const hex = `#${[pixel[0], pixel[1], pixel[2]].map(v => v.toString(16).padStart(2, "0")).join("")}`;
-  lastChosenHex = hex;
-  lastResults = findNearestColors(hex, 100);
-  const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
-  showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), hex);
+  runSearch(hex);
 });
 
 // Find by code
@@ -1389,10 +1566,7 @@ btnFindByCode?.addEventListener("click", () => {
   const found = threads.find(t => `${t.brand} ${t.code}`.toLowerCase() === query);
   if (!found) return alert("Không tìm thấy mã này");
 
-  lastChosenHex = found.hex;
-  lastResults = findNearestColors(found.hex, 100);
-  const filtered = lastResults.filter(t => t.delta <= currentDeltaThreshold);
-  showGroupedResults(groupByColorSimilarity(filtered, currentDeltaThreshold), found.hex);
+  runSearch(found.hex);
 });
 
 if (btnPickScreen) {
