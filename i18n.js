@@ -178,6 +178,69 @@
       },
       tc: {
         title: "Tra mã chỉ thêu theo màu",
+        status: {
+          loading: "Đang chuẩn bị dữ liệu...",
+          ready: "Xong. Dữ liệu đã sẵn sàng.",
+          empty: "Chưa chọn màu — hãy chọn màu trực tiếp hoặc từ ảnh.",
+          noResults: "Không tìm thấy kết quả trong ngưỡng ΔE hiện tại. Thử tăng ΔE hoặc chọn thêm hãng.",
+          error: "Lỗi tải dữ liệu. Vui lòng thử lại.",
+          retry: "Thử lại"
+        },
+        result: {
+          chosen: "Màu đã chọn",
+          group: "Nhóm {index}",
+          colors: "{count} màu",
+          save: "Lưu",
+          saved: "Đã lưu",
+          saving: "Đang lưu...",
+          noDataSave: "Không có dữ liệu để lưu.",
+          loadMore: "Xem thêm ({count})"
+        },
+        pin: {
+          pin: "Ghim",
+          unpin: "Bỏ ghim",
+          limit: "Chỉ ghim tối đa {count} kết quả.",
+          panelTitle: "So sánh đã ghim",
+          clear: "Xoá tất cả ghim",
+          remove: "Bỏ ghim",
+          copyCode: "Sao chép mã"
+        },
+        project: {
+          label: "Dự án",
+          placeholder: "Nhập tên dự án",
+          recent: "Gần đây"
+        },
+        library: {
+          title: "Thư viện của tôi",
+          loading: "Đang tải...",
+          empty: "Chưa có bản lưu",
+          open: "Mở",
+          export: "Xuất CSV",
+          exported: "Đã xuất CSV",
+          error: "Không tải được thư viện",
+          loadedFrom: "Đã tải từ Thư viện của tôi {stamp}"
+        },
+        inspector: {
+          copyAllLabel: "Tất cả"
+        },
+        toast: {
+          copied: "Đã sao chép!",
+          copiedWith: "Đã sao chép {label}."
+        },
+        action: {
+          close: "Đóng"
+        },
+        auth: {
+          needLogin: "Cần đăng nhập để tiếp tục.",
+          needLoginSave: "Cần đăng nhập để lưu.",
+          needLoginLibrary: "Cần đăng nhập để xem thư viện.",
+          needLoginOpen: "Cần đăng nhập để mở.",
+          needLoginContribute: "Cần đăng nhập để đóng góp dữ liệu.",
+          needLoginVerify: "Cần đăng nhập để xác minh."
+        },
+        verify: {
+          submitted: "Đã gửi, chờ xác minh"
+        },
         section: {
           brand: {
             title: "Chọn hãng chỉ",

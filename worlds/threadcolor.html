@@ -226,6 +226,32 @@
       border-top: 1px solid var(--stroke);
       opacity: .35;
     }
+    #pinPanel .pin-item{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 0.9rem;
+      padding: 0.6rem;
+    }
+    #pinPanel .pin-swatch{
+      width: 32px;
+      height: 32px;
+      border-radius: 0.6rem;
+      border: 1px solid var(--stroke);
+    }
+    #pinPanel .pin-actions button{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      border-radius: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 12px;
+    }
+    #pinPanel .pin-actions button:hover{ filter: brightness(1.03); }
+    #pinPanel .pin-actions button:active{ transform: translateY(1px); }
+    #pinPanel .pin-actions button:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
     /* --- Topbar UI tokens (8portal-ready) --- */
     .tc-topbar { position: sticky; top: 0; }
     .tc-topbar::after{
@@ -752,6 +778,15 @@
   </div>
 
   <div id="toastContainer" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+  <div id="pinPanel" class="fixed bottom-4 left-4 right-4 md:right-auto md:w-[360px] z-40 hidden">
+    <div class="tc-card p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-semibold" data-i18n="tc.pin.panelTitle">So sánh đã ghim</h3>
+        <button id="pinClear" class="tc-btn tc-chip px-3 py-1 text-xs" data-i18n="tc.pin.clear">Xoá tất cả ghim</button>
+      </div>
+      <div id="pinList" class="space-y-2 text-sm"></div>
+    </div>
+  </div>
 
   <div id="libraryOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
   <div id="libraryModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">

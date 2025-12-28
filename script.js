@@ -50,6 +50,11 @@ function getLabForHex(hex) {
   return lab;
 }
 
+function t(key, fallback, params) {
+  if (window.tcI18n?.t) return window.tcI18n.t(key, fallback, params);
+  return fallback || "";
+}
+
 function ensureLab(thread) {
   if (!thread) return null;
   if (!Array.isArray(thread.lab) || thread.lab.length !== 3) {
@@ -180,6 +185,13 @@ let matchDebounceTimer = null;
 const RESULT_PAGE_SIZE = 60;
 let resultRenderLimit = RESULT_PAGE_SIZE;
 let lastGroupedResults = null;
+const PIN_STORAGE_KEY = "tc_pins_v1";
+let pinnedItems = [];
+const PROJECT_STORAGE_KEY = "tc_project_current";
+const PROJECT_RECENT_KEY = "tc_projects_recent";
+let currentProject = "";
+let recentProjects = [];
+let libraryItemsCache = [];
 
 function renderBrandFilters(brands) {
   if (!brandFilters) return;
@@ -456,6 +468,9 @@ const resultBox = document.getElementById("result");
 const deltaSlider = document.getElementById("deltaSlider");
 const deltaValueEls = document.querySelectorAll("#deltaValue, #deltaValueText");
 const deltaMethodSelect = document.getElementById("deltaMethod");
+const pinPanel = document.getElementById("pinPanel");
+const pinList = document.getElementById("pinList");
+const pinClear = document.getElementById("pinClear");
 const brandFilters = document.getElementById("brandFilters");
 const verifiedOnlyToggle = document.getElementById("verifiedOnlyToggle");
 const btnFindNearest = document.getElementById("btnFindNearest");
@@ -524,6 +539,7 @@ function bindAuth() {
 const libraryOverlay = document.getElementById("libraryOverlay");
 const libraryModal = document.getElementById("libraryModal");
 const libraryClose = document.getElementById("libraryClose");
+let btnExportCsv = document.getElementById("btnExportCsv");
 const libraryList = document.getElementById("libraryList");
 const contributeOverlay = document.getElementById("contributeOverlay");
 const contributeModal = document.getElementById("contributeModal");
@@ -542,14 +558,9 @@ const verifyClose = document.getElementById("verifyClose");
 const verifyList = document.getElementById("verifyList");
 const hasToolUI = !!resultBox;
 
-
-if (hasToolUI) {
-  resultBox.innerHTML = "<p class='text-gray-500 text-center'>Đang chuẩn bị dữ liệu...</p>";
-}
-
-
-//======================= DATA LOADING =======================
-if (hasToolUI) {
+function loadThreads() {
+  if (!hasToolUI) return;
+  renderResultState("loading");
   const threadsUrl = new URL("./threads.json", import.meta.url);
   fetch(threadsUrl)
   .then(res => res.json())
@@ -569,14 +580,21 @@ if (hasToolUI) {
     });
     isDataReady = true;
 
-    resultBox.innerHTML = "Xong. Dữ liệu màu đã sẵn sàng.";
+    renderResultState("ready");
 
     restoreInspectorFromUrl();
   })
   .catch(() => {
-    resultBox.innerHTML = "<p class='text-red-600'>Lỗi tải dữ liệu</p>";
+    renderResultState("error");
   });
 }
+
+if (hasToolUI) {
+  loadThreads();
+}
+
+
+//======================= DATA LOADING =======================
 
 //======================= CORE LOGIC =======================
 function getSelectedBrands() {
@@ -654,6 +672,14 @@ function runSearch(hex) {
   }
   const base = findNearestColors(normalized, 100, method);
   const filtered = base.filter(t => t.delta <= currentDeltaThreshold);
+  if (!filtered.length) {
+    lastResults = base;
+    lastGroupedResults = null;
+    currentRendered = [];
+    resultRenderLimit = RESULT_PAGE_SIZE;
+    renderResultState("no-results");
+    return;
+  }
   const grouped = groupByColorSimilarity(filtered, currentDeltaThreshold, method);
   lastResults = base;
   setMatchCache(key, { base, grouped });
@@ -667,20 +693,178 @@ function scheduleSearch(hex) {
   }, MATCH_DEBOUNCE_MS);
 }
 
+function renderResultState(type) {
+  if (!resultBox) return;
+  if (type === "loading") {
+    resultBox.innerHTML = `<p class='text-gray-500 text-center'>${t("tc.status.loading", "Đang chuẩn bị dữ liệu...")}</p>`;
+    return;
+  }
+  if (type === "ready") {
+    const readyText = t("tc.status.ready", "Xong. Dữ liệu đã sẵn sàng.");
+    const emptyText = t("tc.status.empty", "Chưa chọn màu — hãy chọn màu trực tiếp hoặc từ ảnh.");
+    resultBox.innerHTML = `<div class='text-center space-y-1'>
+      <p class='text-gray-500'>${readyText}</p>
+      <p class='text-gray-500'>${emptyText}</p>
+    </div>`;
+    return;
+  }
+  if (type === "no-results") {
+    const noResults = t("tc.status.noResults", "Không tìm thấy kết quả trong ngưỡng ΔE hiện tại. Thử tăng ΔE hoặc chọn thêm hãng.");
+    resultBox.innerHTML = `<p class='text-gray-500 text-center'>${noResults}</p>`;
+    return;
+  }
+  if (type === "error") {
+    const errText = t("tc.status.error", "Lỗi tải dữ liệu. Vui lòng thử lại.");
+    const retryText = t("tc.status.retry", "Thử lại");
+    resultBox.innerHTML = `<div class='text-center space-y-3'>
+      <p class='text-red-600'>${errText}</p>
+      <button class="tc-btn tc-chip px-4 py-2" data-action="retry-load">${retryText}</button>
+    </div>`;
+  }
+}
+
+function loadPins() {
+  try {
+    const raw = localStorage.getItem(PIN_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    pinnedItems = Array.isArray(parsed) ? parsed.slice(0, 3) : [];
+  } catch (err) {
+    pinnedItems = [];
+  }
+  renderPinPanel();
+  syncPinButtons();
+}
+
+function savePins() {
+  try {
+    localStorage.setItem(PIN_STORAGE_KEY, JSON.stringify(pinnedItems));
+  } catch (err) {}
+}
+
+function isPinned(hex) {
+  const normalized = normalizeHex(hex);
+  return pinnedItems.some(item => item.hex === normalized);
+}
+
+function renderPinPanel() {
+  if (!pinPanel || !pinList) return;
+  if (!pinnedItems.length) {
+    pinPanel.classList.add("hidden");
+    pinList.innerHTML = "";
+    return;
+  }
+  pinPanel.classList.remove("hidden");
+  pinList.innerHTML = pinnedItems.map(item => {
+    const deltaText = typeof item.delta === "number" ? item.delta.toFixed(2) : item.delta || "";
+    return `
+      <div class="pin-item flex items-center gap-3" data-hex="${item.hex}">
+        <div class="pin-swatch" style="background:${item.hex}"></div>
+        <div class="flex-1 min-w-0">
+          <div class="font-semibold truncate">${item.brand || ""} ${item.code || ""}</div>
+          <div class="tc-muted text-xs">ΔE ${deltaText}</div>
+        </div>
+        <div class="pin-actions flex items-center gap-2">
+          <button data-action="pin-copy" data-hex="${item.hex}">${t("tc.pin.copyCode", "Sao chép mã")}</button>
+          <button data-action="pin-remove" data-hex="${item.hex}">${t("tc.pin.remove", "Bỏ ghim")}</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function addPin(item) {
+  if (pinnedItems.length >= 3) {
+    showToast(t("tc.pin.limit", "Chỉ ghim tối đa {count} kết quả.", { count: 3 }));
+    return false;
+  }
+  pinnedItems.push(item);
+  savePins();
+  renderPinPanel();
+  syncPinButtons();
+  return true;
+}
+
+function removePin(hex) {
+  const normalized = normalizeHex(hex);
+  pinnedItems = pinnedItems.filter(item => item.hex !== normalized);
+  savePins();
+  renderPinPanel();
+  syncPinButtons();
+}
+
+function updatePinButton(btn, pinned) {
+  if (!btn) return;
+  btn.dataset.pinned = pinned ? "1" : "0";
+  btn.textContent = pinned ? t("tc.pin.unpin", "Bỏ ghim") : t("tc.pin.pin", "Ghim");
+}
+
+function syncPinButtons() {
+  document.querySelectorAll('[data-action="pin-toggle"]').forEach((btn) => {
+    const hex = btn.dataset.hex;
+    updatePinButton(btn, isPinned(hex));
+  });
+}
+
+function loadProjectPrefs() {
+  try {
+    currentProject = localStorage.getItem(PROJECT_STORAGE_KEY) || "";
+  } catch (err) {
+    currentProject = "";
+  }
+  try {
+    const raw = localStorage.getItem(PROJECT_RECENT_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    recentProjects = Array.isArray(parsed) ? parsed.slice(0, 10) : [];
+  } catch (err) {
+    recentProjects = [];
+  }
+}
+
+function saveProjectPrefs(name) {
+  const trimmed = (name || "").trim();
+  currentProject = trimmed;
+  if (trimmed) {
+    recentProjects = [trimmed, ...recentProjects.filter(p => p !== trimmed)].slice(0, 10);
+  }
+  try {
+    localStorage.setItem(PROJECT_STORAGE_KEY, currentProject);
+    localStorage.setItem(PROJECT_RECENT_KEY, JSON.stringify(recentProjects));
+  } catch (err) {}
+}
+
+function bindProjectInput() {
+  const input = document.getElementById("projectInput");
+  const list = document.getElementById("projectList");
+  if (!input || !list) return;
+  input.placeholder = t("tc.project.placeholder", "Nhập tên dự án");
+  input.setAttribute("aria-label", t("tc.project.label", "Dự án"));
+  input.value = currentProject || "";
+  list.innerHTML = recentProjects.map(item => `<option value="${item}"></option>`).join("");
+  if (input.dataset.bound === "1") return;
+  input.dataset.bound = "1";
+  input.addEventListener("input", () => {
+    saveProjectPrefs(input.value);
+  });
+}
+
 //======================= RENDERING =======================
 
 
-function renderColorCard(t, chosenHex) {
-  const deltaText = typeof t.delta === "number" ? t.delta.toFixed(2) : "";
-  const labAttr = t.lab ? t.lab.join(",") : "";
+// Không dùng tên biến/param `t` cho item vì `t()` là hàm i18n.
+function renderColorCard(item, chosenHex) {
+  const deltaText = typeof item.delta === "number" ? item.delta.toFixed(2) : "";
+  const labAttr = item.lab ? item.lab.join(",") : "";
+  const pinned = isPinned(item.hex);
+  const saveLabel = t("tc.result.save", "Lưu");
+  const pinLabel = pinned ? t("tc.pin.unpin", "Bỏ ghim") : t("tc.pin.pin", "Ghim");
   return `
     <div class="result-item rounded-xl shadow-md bg-white p-3 hover:scale-[1.02] transition border border-transparent data-[selected=true]:border-indigo-400 data-[selected=true]:shadow-lg cursor-pointer"
-         data-hex="${t.hex}" data-brand="${t.brand || ""}" data-code="${t.code || ""}" data-name="${t.name || ""}" data-delta="${deltaText}" data-lab="${labAttr}">
+         data-hex="${item.hex}" data-brand="${item.brand || ""}" data-code="${item.code || ""}" data-name="${item.name || ""}" data-delta="${deltaText}" data-lab="${labAttr}">
       <div class="flex gap-3 items-center">
-        <div class="w-12 h-12 rounded-lg border" style="background:${t.hex}"></div>
+        <div class="w-12 h-12 rounded-lg border" style="background:${item.hex}"></div>
         <div class="flex-1 text-sm">
-          <div class="font-semibold">${t.brand || ""} ${t.code || ""}</div>
-          <div class="text-gray-600">${t.name || ""}</div>
+          <div class="font-semibold">${item.brand || ""} ${item.code || ""}</div>
+          <div class="text-gray-600">${item.name || ""}</div>
 
           <div class="text-xs text-gray-500">ΔE ${deltaText}</div>
 
@@ -689,12 +873,16 @@ function renderColorCard(t, chosenHex) {
       <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
         <div class="w-4 h-4 rounded border" style="background:${chosenHex}"></div>
         <span>so với</span>
-        <div class="w-4 h-4 rounded border" style="background:${t.hex}"></div>
+        <div class="w-4 h-4 rounded border" style="background:${item.hex}"></div>
       </div>
       <div class="mt-3 flex justify-end">
         <button class="btn-save px-3 py-1 text-xs rounded-lg border text-indigo-700 border-indigo-200 hover:bg-indigo-50"
-                data-action="save-search" data-save-hex="${t.hex}">
-          Lưu
+                data-action="save-search" data-save-hex="${item.hex}">
+          ${saveLabel}
+        </button>
+        <button class="btn-pin ml-2 px-3 py-1 text-xs rounded-lg border"
+                data-action="pin-toggle" data-hex="${item.hex}" data-pinned="${pinned ? "1" : "0"}">
+          ${pinLabel}
         </button>
       </div>
     </div>
@@ -703,37 +891,51 @@ function renderColorCard(t, chosenHex) {
 
 function renderGroupedResults(groups, chosenHex, limit) {
   const total = groups.reduce((sum, group) => sum + group.items.length, 0);
+  const chosenLabel = t("tc.result.chosen", "Màu đã chọn");
+  const projectLabel = t("tc.project.label", "Dự án");
+  const projectPlaceholder = t("tc.project.placeholder", "Nhập tên dự án");
+  const projectBlock = `
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <label for="projectInput" class="text-sm tc-muted">${projectLabel}</label>
+      <input id="projectInput" class="tc-field text-sm" list="projectList" data-i18n-attr="placeholder:tc.project.placeholder" placeholder="${projectPlaceholder}">
+      <datalist id="projectList"></datalist>
+    </div>
+  `;
   let remaining = limit;
   const sections = groups.map((group, i) => {
     if (remaining <= 0) return "";
     const items = group.items.slice(0, remaining);
     remaining -= items.length;
     if (!items.length) return "";
+    const groupLabel = t("tc.result.group", "Nhóm {index}", { index: i + 1 });
+    const colorsLabel = t("tc.result.colors", "{count} màu", { count: group.items.length });
     return `
       <section class="mb-8">
         <h3 class="font-semibold mb-3 text-gray-700 flex items-center gap-2">
-  <span>Nhóm ${i + 1}</span>
+  <span>${groupLabel}</span>
   <span class="inline-block w-3 h-3 rounded-sm border" style="background:${chosenHex}"></span>
-  <span>${group.items.length} màu</span>
+  <span>${colorsLabel}</span>
 </h3>
 
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          ${items.map(t => renderColorCard(t, chosenHex)).join("")}
+          ${items.map(item => renderColorCard(item, chosenHex)).join("")}
         </div>
       </section>
     `;
   }).join("");
+  const moreLabel = t("tc.result.loadMore", `Xem thêm (${total - limit})`, { count: total - limit });
   const moreButton = total > limit
     ? `<div class="mt-6 flex justify-center">
-        <button class="tc-btn tc-chip px-4 py-2" data-action="load-more-results">Xem thêm (${total - limit})</button>
+        <button class="tc-btn tc-chip px-4 py-2" data-action="load-more-results">${moreLabel}</button>
       </div>`
     : "";
   resultBox.innerHTML = `
     <div class="flex items-center gap-3 mb-6">
       <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
-      <div class="font-semibold">Màu đã chọn</div>
+      <div class="font-semibold">${chosenLabel}</div>
     </div>
+    ${projectBlock}
     ${sections}
     ${moreButton}
   `;
@@ -745,6 +947,7 @@ function showGroupedResults(groups, chosenHex) {
   const total = currentRendered.length;
   resultRenderLimit = Math.min(RESULT_PAGE_SIZE, total);
   renderGroupedResults(groups, chosenHex, resultRenderLimit);
+  bindProjectInput();
 }
 
 function loadMoreResults() {
@@ -779,6 +982,9 @@ function showToast(text) {
 
 function copyToClipboard(text, label) {
   if (!text) return;
+  const message = label
+    ? t("tc.toast.copiedWith", "Đã sao chép {label}.", { label })
+    : t("tc.toast.copied", "Đã sao chép!");
   const fallbackCopy = () => {
     const ta = document.createElement("textarea");
     ta.value = text;
@@ -787,14 +993,14 @@ function copyToClipboard(text, label) {
     document.body.appendChild(ta);
     ta.select();
 
-    try { document.execCommand("copy"); showToast(`Đã copy ${label}`); } catch (e) {}
+    try { document.execCommand("copy"); showToast(message); } catch (e) {}
 
     ta.remove();
   };
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(text).then(() => {
 
-      showToast(`Đã copy ${label}`);
+      showToast(message);
 
     }).catch(() => fallbackCopy());
   } else {
@@ -869,10 +1075,39 @@ function handleResultClick(e) {
 }
 
 function handleResultContainerClick(e) {
+  const retryBtn = e.target.closest('[data-action="retry-load"]');
+  if (retryBtn) {
+    e.preventDefault();
+    if (typeof loadThreads === "function") loadThreads();
+    return;
+  }
   const loadMoreBtn = e.target.closest('[data-action="load-more-results"]');
   if (loadMoreBtn) {
     e.preventDefault();
     loadMoreResults();
+    return;
+  }
+  const pinBtn = e.target.closest('[data-action="pin-toggle"]');
+  if (pinBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    const card = pinBtn.closest(".result-item");
+    const hex = pinBtn.dataset.hex || card?.dataset?.hex;
+    if (!hex) return;
+    if (isPinned(hex)) {
+      removePin(hex);
+      updatePinButton(pinBtn, false);
+      return;
+    }
+    const pinnedItem = {
+      hex: normalizeHex(hex),
+      brand: card?.dataset?.brand || "",
+      code: card?.dataset?.code || "",
+      delta: card?.dataset?.delta || ""
+    };
+    if (addPin(pinnedItem)) {
+      updatePinButton(pinBtn, true);
+    }
     return;
   }
   const saveBtn = e.target.closest("[data-action=\"save-search\"]");
@@ -897,7 +1132,7 @@ async function handleSaveCurrentEnhanced(saveBtn) {
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    openAuth("Cần đăng nhập để lưu.");
+    openAuth(t("tc.auth.needLoginSave", "Cần đăng nhập để lưu."));
     return;
   }
   const card = saveBtn?.closest(".result-item");
@@ -906,12 +1141,12 @@ async function handleSaveCurrentEnhanced(saveBtn) {
   const cardCode = card?.dataset?.code || "";
   const cardName = card?.dataset?.name || "";
   if (!currentRendered.length || !cardHex) {
-    showToast("Khong co du lieu de luu");
+    showToast(t("tc.result.noDataSave", "Không có dữ liệu để lưu."));
     return;
   }
   console.info("[save] card data", { hex: cardHex, brand: cardBrand, code: cardCode, name: cardName });
-  showToast("Đang lưu...");
-  const resetSaveBtn = (text = "Lưu") => {
+  showToast(t("tc.result.saving", "Đang lưu..."));
+  const resetSaveBtn = (text = t("tc.result.save", "Lưu")) => {
     if (saveBtn) {
       saveBtn.disabled = false;
       saveBtn.textContent = text;
@@ -919,11 +1154,12 @@ async function handleSaveCurrentEnhanced(saveBtn) {
   };
   if (saveBtn) {
     saveBtn.disabled = true;
-    saveBtn.textContent = "Đang lưu...";
+    saveBtn.textContent = t("tc.result.saving", "Đang lưu...");
   }
   try {
     const payload = {
       inputHex: cardHex,
+      project: currentProject || "",
       selectedBrands: getSelectedBrands(),
       deltaThreshold: currentDeltaThreshold,
       results: currentRendered.slice(0, 20).map(t => ({
@@ -937,12 +1173,12 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     const docRef = await saveSearch(api.db, user.uid, payload);
     console.info("[save] saved doc id", docRef?.id);
     if (saveBtn) {
-      saveBtn.textContent = "Đã lưu ✓";
-      setTimeout(() => resetSaveBtn("Lưu"), 1500);
+      saveBtn.textContent = t("tc.result.saved", "Đã lưu");
+      setTimeout(() => resetSaveBtn(t("tc.result.save", "Lưu")), 1500);
     }
-    showToast("Đã lưu ✓");
+    showToast(t("tc.result.saved", "Đã lưu"));
     if (libraryModal && !libraryModal.classList.contains("hidden")) {
-      await loadLibraryList();
+        await loadLibraryListV2();
     }
   } catch (err) {
     console.error("[save] failed", err);
@@ -997,7 +1233,10 @@ function restoreInspectorFromUrl() {
 
 //==================== AUTH GATE / AUTH STATE ====================
 const openAuth = (message) => {
-  if (message) showToast(message);
+  const fallback = t("tc.auth.needLogin", "Cần đăng nhập để tiếp tục.");
+  const resolved = typeof message === "string" && message.trim() ? message : fallback;
+  const cleaned = /[ÃÂÄÆáº]/.test(resolved) ? fallback : resolved;
+  showToast(cleaned);
   window.tcAuth?.openAuth?.();
 };
 
@@ -1106,6 +1345,123 @@ async function loadLibraryList() {
   }
 }
 
+function ensureLibraryControls() {
+  const header = document.querySelector("#libraryModal .border-b");
+  if (!header) return;
+  const title = header.querySelector("h3");
+  if (title) title.textContent = t("tc.library.title", "Thư viện của tôi");
+  let actions = header.querySelector("[data-library-actions]");
+  if (!actions) {
+    actions = document.createElement("div");
+    actions.className = "flex items-center gap-2";
+    actions.dataset.libraryActions = "1";
+    const closeBtn = document.getElementById("libraryClose");
+    if (closeBtn) actions.appendChild(closeBtn);
+    header.appendChild(actions);
+  }
+  if (!document.getElementById("btnExportCsv")) {
+    const exportBtn = document.createElement("button");
+    exportBtn.id = "btnExportCsv";
+    exportBtn.className = "tc-btn tc-chip px-3 py-1 text-xs";
+    actions.insertBefore(exportBtn, actions.firstChild);
+  }
+  btnExportCsv = document.getElementById("btnExportCsv");
+  if (btnExportCsv) {
+    btnExportCsv.textContent = t("tc.library.export", "Xuất CSV");
+    if (btnExportCsv.dataset.bound !== "1") {
+      btnExportCsv.dataset.bound = "1";
+      btnExportCsv.addEventListener("click", exportLibraryCsv);
+    }
+  }
+  const closeBtn = document.getElementById("libraryClose");
+  if (closeBtn) {
+    closeBtn.setAttribute("aria-label", t("tc.action.close", "Đóng"));
+  }
+}
+
+async function loadLibraryListV2() {
+  if (!libraryList) return;
+  ensureLibraryControls();
+  const api = getAuthApi();
+  if (!ensureAuthReady()) return;
+  const user = api?.auth?.currentUser || currentUser;
+  if (!user) {
+    openAuth(t("tc.auth.needLoginLibrary", "Cần đăng nhập để xem thư viện."));
+    return;
+  }
+  libraryList.innerHTML = `<div class='text-gray-500'>${t("tc.library.loading", "Đang tải...")}</div>`;
+  try {
+    const { items } = await listSavedSearches(api.db, user.uid, 50);
+    libraryItemsCache = items || [];
+    if (!items.length) {
+      libraryList.innerHTML = `<div class='text-gray-500'>${t("tc.library.empty", "Chưa có bản lưu")}</div>`;
+      return;
+    }
+    const fromItems = items.map(it => (it.project || "").trim()).filter(Boolean);
+    if (fromItems.length) {
+      recentProjects = [...new Set([...fromItems, ...recentProjects])].slice(0, 10);
+      saveProjectPrefs(currentProject);
+    }
+    libraryList.innerHTML = items.map(it => {
+      const ts = it.createdAt && typeof it.createdAt.toDate === "function" ? it.createdAt.toDate().toLocaleString() : "";
+      const projectLine = it.project ? `<div class="text-xs tc-muted">${t("tc.project.label", "Dự án")}: ${it.project}</div>` : "";
+      return `
+        <div class="border border-gray-200 rounded-lg p-3 flex items-center justify-between">
+          <div>
+            <div class="font-semibold text-gray-800">${it.inputHex || ""}</div>
+            ${projectLine}
+            <div class="text-xs text-gray-500">${ts}</div>
+          </div>
+          <button data-action="open-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border bg-white hover:bg-gray-50 text-indigo-700">${t("tc.library.open", "Mở")}</button>
+        </div>
+      `;
+    }).join("");
+  } catch (err) {
+    console.error("Tải thư viện thất bại", err);
+    const friendly = formatFirestoreError(err, t("tc.library.error", "Không tải được thư viện"));
+    libraryItemsCache = [];
+    libraryList.innerHTML = `<div class='text-red-600'>${friendly}</div>`;
+  }
+}
+
+function exportLibraryCsv() {
+  if (!libraryItemsCache.length) {
+    showToast(t("tc.library.empty", "Chưa có bản lưu"));
+    return;
+  }
+  const header = ["project", "brand", "code", "hex", "deltaE", "note", "createdAt"];
+  const rows = libraryItemsCache.map(item => {
+    const top = item.topMatch || (item.results || [])[0] || {};
+    const createdAt = item.createdAt && typeof item.createdAt.toDate === "function"
+      ? item.createdAt.toDate().toISOString()
+      : "";
+    return [
+      item.project || "",
+      top.brand || "",
+      top.code || "",
+      top.hex || "",
+      typeof top.delta === "number" ? top.delta.toFixed(2) : (top.delta || ""),
+      "",
+      createdAt
+    ];
+  });
+  const escapeCsv = (value) => {
+    const str = String(value ?? "");
+    return /[",\n]/.test(str) ? `"${str.replace(/"/g, "\"\"")}"` : str;
+  };
+  const csv = [header.join(","), ...rows.map(row => row.map(escapeCsv).join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "threadcolor-library.csv";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  showToast(t("tc.library.exported", "Đã xuất CSV"));
+}
+
 //======================= SAVE CURRENT =======================
 async function handleSaveCurrent(saveBtn) {
   const initErr = getAuthInitError();
@@ -1119,7 +1475,7 @@ async function handleSaveCurrent(saveBtn) {
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    openAuth("Cần đăng nhập để lưu.");
+    openAuth(t("tc.auth.needLoginSave", "Cần đăng nhập để lưu."));
     return;
   }
 const card = saveBtn?.closest(".result-item");
@@ -1137,6 +1493,7 @@ if (!currentRendered.length || !cardHex) {
   try {
     const payload = {
       inputHex: cardHex,
+      project: currentProject || "",
       selectedBrands: getSelectedBrands(),
       deltaThreshold: currentDeltaThreshold,
       results: currentRendered.slice(0, 20).map(t => ({
@@ -1148,7 +1505,7 @@ if (!currentRendered.length || !cardHex) {
       }))
     };
     await saveSearch(api.db, user.uid, payload);
-    showToast("Đã lưu");
+    showToast(t("tc.result.saved", "Đã lưu"));
   } catch (err) {
     console.error("Lưu thất bại", err);
     const friendly = formatFirestoreError(err, "Luu that bai");
@@ -1168,7 +1525,7 @@ async function handleOpenSaved(id) {
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    openAuth("Cần đăng nhập để mở.");
+    openAuth(t("tc.auth.needLoginOpen", "Cần đăng nhập để mở."));
     return;
   }
   try {
@@ -1215,7 +1572,10 @@ async function handleOpenSaved(id) {
     showGroupedResults(grouped, data.inputHex || lastChosenHex || "#000000");
     const ts = data.createdAt && typeof data.createdAt.toDate === "function" ? data.createdAt.toDate() : null;
     const stamp = ts ? ts.toLocaleString() : "";
-    resultBox.innerHTML = `<div class='mb-3 text-sm text-gray-600'>Đã tải từ Thư viện của tôi ${stamp ? "- " + stamp : ""}</div>` + resultBox.innerHTML;
+    const loadedFrom = t("tc.library.loadedFrom", "Đã tải từ Thư viện của tôi {stamp}", {
+      stamp: stamp ? `- ${stamp}` : ""
+    });
+    resultBox.innerHTML = `<div class='mb-3 text-sm text-gray-600'>${loadedFrom}</div>` + resultBox.innerHTML;
     if (libraryOverlay) libraryOverlay.classList.add("hidden");
     if (libraryModal) {
       libraryModal.classList.add("hidden");
@@ -1283,7 +1643,7 @@ const openLibraryModal = () => {
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    openAuth("Cần đăng nhập để xem thư viện.");
+    openAuth(t("tc.auth.needLoginLibrary", "Cần đăng nhập để xem thư viện."));
     return;
   }
   libraryOverlay?.classList.remove("hidden");
@@ -1291,7 +1651,7 @@ const openLibraryModal = () => {
     libraryModal.classList.remove("hidden");
     libraryModal.classList.add("flex");
   }
-  loadLibraryList();
+  loadLibraryListV2();
 };
 
 const handleAuthAction = (action) => {
@@ -1301,7 +1661,7 @@ const handleAuthAction = (action) => {
   }
   if (action === "contribute") {
     if (!currentUser) {
-      openAuth("Cần đăng nhập để đóng góp dữ liệu.");
+      openAuth(t("tc.auth.needLoginContribute", "Cần đăng nhập để đóng góp dữ liệu."));
       return;
     }
     if (!ensureAuthReady()) return;
@@ -1310,7 +1670,7 @@ const handleAuthAction = (action) => {
   }
   if (action === "verify") {
     if (!currentUser) {
-      openAuth("Cần đăng nhập để xác minh.");
+      openAuth(t("tc.auth.needLoginVerify", "Cần đăng nhập để xác minh."));
       return;
     }
     if (!ensureAuthReady()) return;
@@ -1334,6 +1694,10 @@ if (libraryList) {
       return;
     }
   });
+}
+if (btnExportCsv && btnExportCsv.dataset.bound !== "1") {
+  btnExportCsv.dataset.bound = "1";
+  btnExportCsv.addEventListener("click", exportLibraryCsv);
 }
 
 if (verifiedOnlyToggle) {
@@ -1361,7 +1725,7 @@ if (contributeSubmit) {
     }
     if (!ensureAuthReady()) return;
     if (!currentUser) {
-      openAuth("Cần đăng nhập để đóng góp dữ liệu.");
+      openAuth(t("tc.auth.needLoginContribute", "Cần đăng nhập để đóng góp dữ liệu."));
       return;
     }
     const brand = (contributeBrandCustom?.value || contributeBrandSelect?.value || "").trim();
@@ -1384,7 +1748,7 @@ if (contributeSubmit) {
       await submitThread(authApi.db, currentUser, { brand, code, name, hex: hex.toUpperCase() });
 
 
-      showToast("Đã gửi, chờ xác minh");
+      showToast(t("tc.verify.submitted", "Đã gửi, chờ xác minh"));
 
 
       closeContributeModal();
@@ -1410,7 +1774,7 @@ if (verifyList) {
     const action = actionBtn.dataset.action;
     const targetItem = pendingSubmissions.find(p => p.id === id);
     if (!currentUser) {
-      openAuth("Cần đăng nhập để xác minh.");
+      openAuth(t("tc.auth.needLoginVerify", "Cần đăng nhập để xác minh."));
       return;
     }
     if (!ensureAuthReady()) return;
@@ -1472,6 +1836,8 @@ if (deltaMethodSelect) {
     if (lastChosenHex) scheduleSearch(lastChosenHex);
   });
 }
+loadProjectPrefs();
+loadPins();
 
 btnFindNearest?.addEventListener("click", () => {
 
@@ -1489,6 +1855,37 @@ deltaSlider?.addEventListener("input", () => {
 });
 
 resultBox?.addEventListener("click", handleResultContainerClick);
+if (pinPanel && !pinPanel.dataset.bound) {
+  pinPanel.dataset.bound = "1";
+  pinPanel.addEventListener("click", (e) => {
+    const actionBtn = e.target.closest("[data-action]");
+    if (!actionBtn) return;
+    const action = actionBtn.dataset.action;
+    const hex = actionBtn.dataset.hex;
+    if (action === "pin-remove" && hex) {
+      removePin(hex);
+      return;
+    }
+    if (action === "pin-copy" && hex) {
+      const item = pinnedItems.find(p => p.hex === normalizeHex(hex));
+      const text = item?.code || item?.hex || "";
+      copyToClipboard(text, t("tc.pin.copyCode", "Sao chép mã"));
+      return;
+    }
+    if (action === "pin-clear") {
+      pinnedItems = [];
+      savePins();
+      renderPinPanel();
+      syncPinButtons();
+    }
+  });
+}
+pinClear?.addEventListener("click", () => {
+  pinnedItems = [];
+  savePins();
+  renderPinPanel();
+  syncPinButtons();
+});
 drawerOverlay?.addEventListener("click", closeInspector);
 drawerCloseBtn?.addEventListener("click", closeInspector);
 document.addEventListener("keydown", e => {
@@ -1520,7 +1917,7 @@ copyAllBtn?.addEventListener("click", () => {
   const lab = inspectorLab.textContent;
   const hsl = inspectorHsl.textContent;
   const block = `HEX: ${hex}\nRGB: ${rgb}\nLAB: ${lab}\nHSL: ${hsl}`;
-  copyToClipboard(block, "t?t c?");
+  copyToClipboard(block, t("tc.inspector.copyAllLabel", "Tất cả"));
 });
 
 // Canvas pick

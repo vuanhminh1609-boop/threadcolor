@@ -72,6 +72,7 @@ export async function listSavedSearches(db, uid, limitN = 50) {
     items.push({
       id: d.id,
       inputHex: data.inputHex || "",
+      project: data.project || "",
       createdAt: data.createdAt || null,
       deltaThreshold: data.deltaThreshold,
       selectedBrands: selectedBrands,
