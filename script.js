@@ -254,12 +254,12 @@ function renderVerifyList() {
               <span class="text-gray-500">by ${item.createdByName || item.createdByUid || "?"}</span>
               ${createdAt ? `<span class="text-gray-400 text-xs">${createdAt}</span>` : ""}
             </div>
-            <div class="text-xs text-gray-600">Confirm: ${summary.confirmCount} | Reject: ${summary.rejectCount}</div>
+            <div class="text-xs text-gray-600">Xác nhận: ${summary.confirmCount} | Từ chối: ${summary.rejectCount}</div>
           </div>
           <div class="flex flex-col gap-2">
-            <button data-action="vote-confirm" data-id="${item.id}" class="px-3 py-1 rounded-lg border text-emerald-700 border-emerald-200 hover:bg-emerald-50">Confirm</button>
-            <button data-action="vote-reject" data-id="${item.id}" class="px-3 py-1 rounded-lg border text-rose-700 border-rose-200 hover:bg-rose-50">Reject</button>
-            ${canApprove ? `<button data-action="approve" data-id="${item.id}" class="px-3 py-1 rounded-lg bg-amber-600 text-white hover:bg-amber-700">Approve</button>` : ""}
+            <button data-action="vote-confirm" data-id="${item.id}" class="px-3 py-1 rounded-lg border text-emerald-700 border-emerald-200 hover:bg-emerald-50">Xác nhận</button>
+            <button data-action="vote-reject" data-id="${item.id}" class="px-3 py-1 rounded-lg border text-rose-700 border-rose-200 hover:bg-rose-50">Từ chối</button>
+            ${canApprove ? `<button data-action="approve" data-id="${item.id}" class="px-3 py-1 rounded-lg bg-amber-600 text-white hover:bg-amber-700">Duyệt</button>` : ""}
           </div>
         </div>
       </div>
@@ -402,34 +402,6 @@ const btnPickScreen = document.getElementById("btnPickScreen");
 const eyedropperHint = document.getElementById("eyedropperHint");
 const eyedropperFallback = document.getElementById("eyedropperFallback");
 const fallbackColorPicker = document.getElementById("fallbackColorPicker");
-const accountBtn = document.getElementById("btnAccount");
-const accountMenuBtn = document.getElementById("accountMenuBtn");
-const accountMenu = document.getElementById("accountMenu");
-const userInfo = document.getElementById("userInfo");
-const userAvatar = document.getElementById("userAvatar");
-const userName = document.getElementById("userName");
-const btnLogout = document.getElementById("btnLogout");
-const btnLibrary = document.getElementById("btnLibrary");
-const btnContribute = document.getElementById("btnContribute");
-const btnVerify = document.getElementById("btnVerify");
-const authOverlay = document.getElementById("authOverlay");
-const authModal = document.getElementById("authModal");
-const authClose = document.getElementById("authClose");
-const tabLogin = document.getElementById("tabLogin");
-const tabRegister = document.getElementById("tabRegister");
-const loginPanel = document.getElementById("loginPanel");
-const registerPanel = document.getElementById("registerPanel");
-const loginEmail = document.getElementById("loginEmail");
-const loginPassword = document.getElementById("loginPassword");
-const registerEmail = document.getElementById("registerEmail");
-const registerPassword = document.getElementById("registerPassword");
-const registerConfirm = document.getElementById("registerConfirm");
-const btnLogin = document.getElementById("btnLogin");
-const btnRegister = document.getElementById("btnRegister");
-const btnGoogle = document.getElementById("btnGoogle");
-const btnFacebook = document.getElementById("btnFacebook");
-const btnForgot = document.getElementById("btnForgot");
-const authError = document.getElementById("authError");
 const portalCtaWrap = document.getElementById("portalCtaWrap");
 const portalCta = document.getElementById("portalCta");
 function getAuthApi() {
@@ -579,7 +551,7 @@ function renderColorCard(t, chosenHex) {
       <div class="mt-3 flex justify-end">
         <button class="btn-save px-3 py-1 text-xs rounded-lg border text-indigo-700 border-indigo-200 hover:bg-indigo-50"
                 data-action="save-search" data-save-hex="${t.hex}">
-          Save
+          Lưu
         </button>
       </div>
     </div>
@@ -681,7 +653,7 @@ function populateInspector(data) {
   inspectorCode.textContent = code || "—";
   inspectorName.textContent = name || "—";
   inspectorDelta.textContent = delta ? `ΔE ${delta}` : "—";
-  drawerTitle.textContent = "Color Inspector";
+  drawerTitle.textContent = "Bảng thông tin màu";
   drawer.dataset.hex = normalizedHex;
 }
 
@@ -741,15 +713,13 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     const msg = `${initErr?.name || "Firebase"}: ${initErr?.message || "Loi khoi tao"}`;
     console.error(initErr);
     showToast(msg);
-    showAuthError(msg);
     return false;
   }
   if (!ensureAuthReady()) return;
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    showAuthError("Login de luu");
-    accountBtn?.click();
+    openAuth("Cần đăng nhập để lưu.");
     return;
   }
   const card = saveBtn?.closest(".result-item");
@@ -762,8 +732,8 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     return;
   }
   console.info("[save] card data", { hex: cardHex, brand: cardBrand, code: cardCode, name: cardName });
-  showToast("Saving...");
-  const resetSaveBtn = (text = "Save") => {
+  showToast("Đang lưu...");
+  const resetSaveBtn = (text = "Lưu") => {
     if (saveBtn) {
       saveBtn.disabled = false;
       saveBtn.textContent = text;
@@ -771,7 +741,7 @@ async function handleSaveCurrentEnhanced(saveBtn) {
   };
   if (saveBtn) {
     saveBtn.disabled = true;
-    saveBtn.textContent = "Saving...";
+    saveBtn.textContent = "Đang lưu...";
   }
   try {
     const payload = {
@@ -789,10 +759,10 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     const docRef = await saveSearch(api.db, user.uid, payload);
     console.info("[save] saved doc id", docRef?.id);
     if (saveBtn) {
-      saveBtn.textContent = "Saved ✓";
-      setTimeout(() => resetSaveBtn("Save"), 1500);
+      saveBtn.textContent = "Đã lưu ✓";
+      setTimeout(() => resetSaveBtn("Lưu"), 1500);
     }
-    showToast("Saved ✓");
+    showToast("Đã lưu ✓");
     if (libraryModal && !libraryModal.classList.contains("hidden")) {
       await loadLibraryList();
     }
@@ -800,7 +770,7 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     console.error("[save] failed", err);
     const friendly = formatFirestoreError(err, "Luu that bai");
     showToast(friendly);
-    resetSaveBtn("Save");
+    resetSaveBtn("Lưu");
   }
 }
 
@@ -848,60 +818,15 @@ function restoreInspectorFromUrl() {
 }
 
 //======================= AUTH UI =======================
-function showAuthError(message) {
-  if (!authError) return;
-  if (!message) {
-    authError.classList.add("hidden");
-    authError.textContent = "";
-    return;
-  }
-  authError.textContent = message;
-  authError.classList.remove("hidden");
-}
-
-function setAuthTab(tab) {
-  if (!tabLogin || !tabRegister || !loginPanel || !registerPanel) return;
-  const isLogin = tab === "login";
-  loginPanel.classList.toggle("hidden", !isLogin);
-  registerPanel.classList.toggle("hidden", isLogin);
-  tabLogin.classList.toggle("bg-indigo-50", isLogin);
-  tabLogin.classList.toggle("text-indigo-700", isLogin);
-  tabRegister.classList.toggle("bg-indigo-50", !isLogin);
-  tabRegister.classList.toggle("text-indigo-700", !isLogin);
-  showAuthError("");
-}
-
-function openAuthModal(tab = "login") {
-  if (!authOverlay || !authModal) return;
-  authOverlay.classList.remove("hidden");
-  authModal.classList.remove("hidden");
-  authModal.classList.add("flex");
-  setAuthTab(tab);
-  (tab === "login" ? loginEmail : registerEmail)?.focus();
-}
-
-function closeAuthModal() {
-  if (!authOverlay || !authModal) return;
-  authOverlay.classList.add("hidden");
-  authModal.classList.add("hidden");
-  authModal.classList.remove("flex");
-  showAuthError("");
-}
+const openAuth = (message) => {
+  if (message) showToast(message);
+  window.tcAuth?.openAuth?.();
+};
 
 let lastAdminUid = null;
 let lastAdminValue = null;
 async function updateUserUI(user) {
-  currentUser = user;
-  const loggedIn = !!user;
-  if (portalCtaWrap) portalCtaWrap.classList.toggle("hidden", !loggedIn);
-  if (userInfo) userInfo.classList.toggle("hidden", !loggedIn);
-  if (btnLogout) btnLogout.classList.toggle("hidden", !loggedIn);
-  if (btnAccount) btnAccount.classList.toggle("hidden", loggedIn);
-  if (user && userName) userName.textContent = user.displayName || user.email || "User";
-  if (user && userAvatar) {
-    userAvatar.src = user.photoURL || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.displayName || user.email || "U");
-  }
-  if (user) closeAuthModal();
+  currentUser = user || null;
   if (user && authApi?.db) {
     if (hasToolUI) {
       if (lastAdminUid === user.uid && lastAdminValue === true) {
@@ -909,15 +834,12 @@ async function updateUserUI(user) {
       } else {
         await refreshAdmin(true);
       }
-      if (btnVerify) btnVerify.classList.toggle("hidden", !isAdminUser);
     }
-  } else {
-    isAdminUser = false;
-    lastAdminUid = null;
-    lastAdminValue = null;
-    if (btnVerify) btnVerify.classList.add("hidden");
-    if (accountMenu) accountMenu.classList.add("hidden");
+    return;
   }
+  isAdminUser = false;
+  lastAdminUid = null;
+  lastAdminValue = null;
 }
 
 async function refreshAdmin(force = false) {
@@ -961,12 +883,12 @@ function ensureAuthReady() {
   const initErr = getAuthInitError();
   if (initErr) {
     console.error(initErr);
-    showAuthError(`${initErr?.name || "Firebase"}: ${initErr?.message || "Lỗi khởi tạo"}`);
+    showToast(`${initErr?.name || "Firebase"}: ${initErr?.message || "Lỗi khởi tạo"}`);
     return false;
   }
   const api = getAuthApi();
   if (!api || typeof api.onAuthStateChanged !== "function") {
-    showAuthError("Firebase init error: missing firebaseConfig");
+    showToast("Firebase init error: missing firebaseConfig");
     return false;
   }
   return true;
@@ -977,8 +899,7 @@ async function loadLibraryList() {
   if (!ensureAuthReady()) return;
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-      showAuthError("Login để xem Library");
-    accountBtn?.click();
+    openAuth("Cần đăng nhập để xem thư viện.");
     return;
   }
   libraryList.innerHTML = "<div class='text-gray-500'>Đang tải...</div>";
@@ -996,12 +917,12 @@ async function loadLibraryList() {
             <div class="font-semibold text-gray-800">${it.inputHex || ""}</div>
             <div class="text-xs text-gray-500">${ts}</div>
           </div>
-          <button data-action="open-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border bg-white hover:bg-gray-50 text-indigo-700">Open</button>
+          <button data-action="open-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border bg-white hover:bg-gray-50 text-indigo-700">Mở</button>
         </div>
       `;
     }).join("");
   } catch (err) {
-    console.error("Load library failed", err);
+    console.error("Tải thư viện thất bại", err);
     const friendly = formatFirestoreError(err, "Không tải được Library");
     libraryList.innerHTML = `<div class='text-red-600'>${friendly}</div>`;
   }
@@ -1014,15 +935,13 @@ async function handleSaveCurrent(saveBtn) {
     const msg = `${initErr?.name || "Firebase"}: ${initErr?.message || "Lỗi khởi tạo"}`;
     console.error(initErr);
     showToast(msg);
-    showAuthError(msg);
     return false;
   }
   if (!ensureAuthReady()) return;
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    showAuthError("Login de luu");
-    accountBtn?.click();
+    openAuth("Cần đăng nhập để lưu.");
     return;
   }
 const card = saveBtn?.closest(".result-item");
@@ -1051,9 +970,9 @@ if (!currentRendered.length || !cardHex) {
       }))
     };
     await saveSearch(api.db, user.uid, payload);
-    showToast("Saved");
+    showToast("Đã lưu");
   } catch (err) {
-    console.error("Save failed", err);
+    console.error("Lưu thất bại", err);
     const friendly = formatFirestoreError(err, "Luu that bai");
     showToast(friendly);
   }
@@ -1071,8 +990,7 @@ async function handleOpenSaved(id) {
   const api = getAuthApi();
   const user = api?.auth?.currentUser || currentUser;
   if (!user) {
-    showAuthError("Login de mo");
-    accountBtn?.click();
+    openAuth("Cần đăng nhập để mở.");
     return;
   }
   try {
@@ -1119,14 +1037,14 @@ async function handleOpenSaved(id) {
     showGroupedResults(grouped, data.inputHex || lastChosenHex || "#000000");
     const ts = data.createdAt && typeof data.createdAt.toDate === "function" ? data.createdAt.toDate() : null;
     const stamp = ts ? ts.toLocaleString() : "";
-    resultBox.innerHTML = `<div class='mb-3 text-sm text-gray-600'>Loaded from My Library ${stamp ? "- " + stamp : ""}</div>` + resultBox.innerHTML;
+    resultBox.innerHTML = `<div class='mb-3 text-sm text-gray-600'>Đã tải từ Thư viện của tôi ${stamp ? "- " + stamp : ""}</div>` + resultBox.innerHTML;
     if (libraryOverlay) libraryOverlay.classList.add("hidden");
     if (libraryModal) {
       libraryModal.classList.add("hidden");
       libraryModal.classList.remove("flex");
     }
   }   catch (err) {
-    console.error("Open saved failed", err);
+    console.error("Mở bản lưu thất bại", err);
     const friendly = formatFirestoreError(err, "Mo ban luu that bai");
     showToast(friendly);
   }
@@ -1163,29 +1081,6 @@ function startEyeDropper() {
 window.addEventListener("firebase-auth-ready", bindAuth);
 bindAuth();
 
-if (accountBtn) {
-  accountBtn.addEventListener("click", () => openAuthModal("login"));
-}
-
-const closeAccountMenu = () => {
-  if (accountMenu) accountMenu.classList.add("hidden");
-};
-
-if (accountMenuBtn) {
-  accountMenuBtn.addEventListener("click", e => {
-    e.stopPropagation();
-    accountMenu?.classList.toggle("hidden");
-  });
-  document.addEventListener("click", () => closeAccountMenu());
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") closeAccountMenu();
-  });
-}
-
-if (authClose) authClose.addEventListener("click", closeAuthModal);
-if (authOverlay) authOverlay.addEventListener("click", closeAuthModal);
-if (tabLogin) tabLogin.addEventListener("click", () => setAuthTab("login"));
-if (tabRegister) tabRegister.addEventListener("click", () => setAuthTab("register"));
 
 if (libraryClose) libraryClose.addEventListener("click", () => {
   libraryOverlay?.classList.add("hidden");
@@ -1203,24 +1098,53 @@ if (libraryOverlay) {
       libraryModal.classList.remove("flex");
     }
   });
-}if (btnLibrary) {
-  btnLibrary.addEventListener("click", () => {
-    if (!ensureAuthReady()) return;
-    const api = getAuthApi();
-    const user = api?.auth?.currentUser || currentUser;
-    if (!user) {
-      showAuthError("Login de xem Library");
-      accountBtn?.click();
+}
+
+const openLibraryModal = () => {
+  if (!ensureAuthReady()) return;
+  const api = getAuthApi();
+  const user = api?.auth?.currentUser || currentUser;
+  if (!user) {
+    openAuth("Cần đăng nhập để xem thư viện.");
+    return;
+  }
+  libraryOverlay?.classList.remove("hidden");
+  if (libraryModal) {
+    libraryModal.classList.remove("hidden");
+    libraryModal.classList.add("flex");
+  }
+  loadLibraryList();
+};
+
+const handleAuthAction = (action) => {
+  if (action === "library") {
+    openLibraryModal();
+    return;
+  }
+  if (action === "contribute") {
+    if (!currentUser) {
+      openAuth("Cần đăng nhập để đóng góp dữ liệu.");
       return;
     }
-    libraryOverlay?.classList.remove("hidden");
-    if (libraryModal) {
-      libraryModal.classList.remove("hidden");
-      libraryModal.classList.add("flex");
+    if (!ensureAuthReady()) return;
+    openContributeModal();
+    return;
+  }
+  if (action === "verify") {
+    if (!currentUser) {
+      openAuth("Cần đăng nhập để xác minh.");
+      return;
     }
-    loadLibraryList();
-  });
-}
+    if (!ensureAuthReady()) return;
+    openVerifyModal();
+  }
+};
+
+document.addEventListener("tc-auth-action", (event) => {
+  const action = event?.detail?.action;
+  if (!action) return;
+  handleAuthAction(action);
+});
 
 
 if (libraryList) {
@@ -1244,20 +1168,6 @@ if (verifiedOnlyToggle) {
   });
 }
 
-if (btnContribute) {
-  btnContribute.addEventListener("click", () => {
-    if (!currentUser) {
-
-      showAuthError("Login để đóng góp dữ liệu");
-
-      accountBtn?.click();
-      return;
-    }
-    if (!ensureAuthReady()) return;
-    openContributeModal();
-  });
-}
-
 if (btnUseCurrentColor) {
   btnUseCurrentColor.addEventListener("click", () => {
     const hex = normalizeHex(lastChosenHex || colorPicker?.value);
@@ -1275,10 +1185,7 @@ if (contributeSubmit) {
     }
     if (!ensureAuthReady()) return;
     if (!currentUser) {
-
-      showAuthError("Login để đóng góp dữ liệu");
-
-      accountBtn?.click();
+      openAuth("Cần đăng nhập để đóng góp dữ liệu.");
       return;
     }
     const brand = (contributeBrandCustom?.value || contributeBrandSelect?.value || "").trim();
@@ -1316,19 +1223,6 @@ if (contributeClose) contributeClose.addEventListener("click", closeContributeMo
 if (contributeCancel) contributeCancel.addEventListener("click", closeContributeModal);
 if (contributeOverlay) contributeOverlay.addEventListener("click", closeContributeModal);
 
-if (btnVerify) {
-  btnVerify.addEventListener("click", () => {
-    if (!currentUser) {
-showAuthError("Login để đóng góp dữ liệu");
-
-      accountBtn?.click();
-      return;
-    }
-    if (!ensureAuthReady()) return;
-    openVerifyModal();
-  });
-}
-
 if (verifyClose) verifyClose.addEventListener("click", closeVerifyModal);
 if (verifyOverlay) verifyOverlay.addEventListener("click", closeVerifyModal);
 
@@ -1340,9 +1234,7 @@ if (verifyList) {
     const action = actionBtn.dataset.action;
     const targetItem = pendingSubmissions.find(p => p.id === id);
     if (!currentUser) {
-
-      showAuthError("Login để xác minh");
-      accountBtn?.click();
+      openAuth("Cần đăng nhập để xác minh.");
       return;
     }
     if (!ensureAuthReady()) return;
@@ -1396,95 +1288,6 @@ if (verifyList) {
   });
 }
 
-if (btnLogin) {
-  btnLogin.addEventListener("click", async () => {
-    if (!ensureAuthReady()) return;
-    const email = loginEmail?.value.trim();
-    const pass = loginPassword?.value;
-
-    if (!email || !pass) return showAuthError("Vui lòng nhập Email và mật khẩu");
-    try {
-      await authApi.signInEmail(email, pass);
-      showToast("Đăng nhập thành công");
-    } catch (err) {
-      showAuthError(err?.message || "Đăng nhập thất bại");
-
-    }
-  });
-}
-
-if (btnRegister) {
-  btnRegister.addEventListener("click", async () => {
-    if (!ensureAuthReady()) return;
-    const email = registerEmail?.value.trim();
-    const pass = registerPassword?.value;
-    const confirm = registerConfirm?.value;
-
-    if (!email || !pass || !confirm) return showAuthError("Điền đầy đủ thông tin");
-    if (pass !== confirm) return showAuthError("Mật khẩu không trùng khớp");
-    try {
-      await authApi.registerEmail(email, pass);
-      showToast("Tạo tài khoản thành công");
-    } catch (err) {
-      showAuthError(err?.message || "Tạo tài khoản thất bại");
-
-    }
-  });
-}
-
-if (btnForgot) {
-  btnForgot.addEventListener("click", async () => {
-    if (!ensureAuthReady()) return;
-    const email = loginEmail?.value.trim();
-    if (!email) return showAuthError("Nhập email để đặt lại mật khẩu");
-    try {
-      await authApi.resetPassword(email);
-
-      showToast("Đã gửi email đặt lại mật khẩu");
-    } catch (err) {
-      showAuthError(err?.message || "Không gửi được email");
-
-    }
-  });
-}
-
-if (btnGoogle) {
-  btnGoogle.addEventListener("click", async () => {
-    if (!ensureAuthReady()) return;
-    try {
-      await authApi.signInGoogle();
-
-      showToast("Đăng nhập Google thành công");
-
-    } catch (err) {
-      showAuthError(err?.message || "Google login thất bại ");
-    }
-  });
-}
-
-if (btnFacebook) {
-  btnFacebook.addEventListener("click", async () => {
-    if (!ensureAuthReady()) return;
-    try {
-      await authApi.signInFacebook();
-
-      showToast("Đăng nhập Facebook thành công");
-
-    } catch (err) {
-      showAuthError(err?.message || "Facebook login thất bại");
-    }
-  });
-}
-
-if (btnLogout) {
-  btnLogout.addEventListener("click", async () => {
-    if (!ensureAuthReady()) return;
-    await authApi.signOutUser();
-
-    showToast("Đã đăng xuất");
-
-  });
-}
 
 btnFindNearest?.addEventListener("click", () => {
 
@@ -1511,7 +1314,6 @@ drawerCloseBtn?.addEventListener("click", closeInspector);
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     if (hasToolUI) closeInspector();
-    closeAuthModal();
   }
   if (!hasToolUI) return;
   const targetTag = (e.target.tagName || "").toLowerCase();

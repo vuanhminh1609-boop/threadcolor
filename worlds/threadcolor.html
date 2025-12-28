@@ -584,22 +584,7 @@
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="circuit">Mạch điện</button>
           </div>
         </div>
-        <div class="flex items-center gap-3 min-w-[210px] justify-end">
-          <div id="userInfo" class="hidden relative text-sm">
-            <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg shadow-sm tc-chip tc-btn">
-              <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
-              <span id="userName" class="font-semibold max-w-[110px] truncate"></span>
-              <span class="opacity-70">&#9662;</span>
-            </button>
-            <div id="accountMenu" class="hidden absolute right-0 mt-3 w-44 rounded-lg shadow-lg overflow-hidden origin-top-right tc-chip">
-              <button id="btnLibrary" class="w-full text-left px-3 py-2 hover:bg-white/10">Thư viện của tôi</button>
-              <button id="btnContribute" class="w-full text-left px-3 py-2 hover:bg-white/10">Đóng góp dữ liệu</button>
-              <button id="btnVerify" class="w-full text-left px-3 py-2 hover:bg-white/10">Xác minh</button>
-              <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-white/10">Đăng xuất</button>
-            </div>
-          </div>
-          <button id="btnAccount" class="tc-btn tc-btn-primary px-4 py-2">Đăng nhập</button>
-        </div>
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="flex items-center justify-end min-w-[210px]"></div>
       </div>
     </div>
   </header>
@@ -607,20 +592,20 @@
   <main class="mx-auto max-w-4xl px-4 pt-6 pb-10">
     <div class="tc-card rounded-2xl p-6 md:p-8">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold tc-gradient-text text-center md:text-left">Tra mã chỉ thêu theo màu</h1>
+        <h1 class="text-3xl font-bold tc-gradient-text text-center md:text-left" data-i18n="tc.title">Tra mã chỉ thêu theo màu</h1>
       </div>
 
       <section class="mb-6">
-        <h3 class="text-lg font-semibold mb-2">Chọn hãng chỉ</h3>
+        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.brand.title">Chọn hãng chỉ</h3>
         <div id="brandFilters" class="flex flex-wrap gap-3"></div>
         <label class="mt-3 inline-flex items-center gap-2 text-sm tc-muted">
           <input id="verifiedOnlyToggle" type="checkbox" class="tc-check">
-          <span>Chỉ đã xác minh</span>
+          <span data-i18n="tc.section.brand.verified">Chỉ đã xác minh</span>
         </label>
       </section>
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2">
-          Độ tương đồng màu (ΔE)
+          <span data-i18n="tc.section.delta.title">Độ tương đồng màu (ΔE)</span>
           <span id="deltaValue" class="text-sm tc-muted">(ΔE 3.0)</span>
         </h3>
 
@@ -635,47 +620,45 @@
         />
         <span id="deltaValueText" class="tc-muted">ΔE 3.0</span>
         <div class="flex justify-between text-xs tc-muted mt-1">
-          <span>Rất giống</span>
-          <span>Khác hẳn</span>
+          <span data-i18n="tc.section.delta.low">Rất giống</span>
+          <span data-i18n="tc.section.delta.high">Khác hẳn</span>
         </div>
       </section>
 
       <section class="mb-6">
-        <h3 class="text-lg font-semibold mb-2">Chọn màu trực tiếp</h3>
+        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.pick.title">Chọn màu trực tiếp</h3>
         <div class="flex items-center gap-4">
           <input type="color" id="colorPicker" class="tc-color">
-          <button id="btnFindNearest" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md">
+          <button id="btnFindNearest" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.pick.nearest">
             Tìm mã chỉ gần nhất
           </button>
           <button id="btnPickScreen" class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md">
             <span>o</span>
-            <span>Chọn màu</span>
+            <span data-i18n="tc.section.pick.pick">Chọn màu</span>
           </button>
         </div>
-        <div class="mt-2 text-xs tc-muted hidden" id="eyedropperHint">Bấm vào bất kỳ đâu để chọn màu (Esc để hủy)</div>
+        <div class="mt-2 text-xs tc-muted hidden" id="eyedropperHint" data-i18n="tc.section.pick.hint">Bấm vào bất kỳ đâu để chọn màu (Esc để hủy)</div>
         <div class="mt-2 text-sm text-amber-700 hidden" id="eyedropperFallback">
-          Trình duyệt chưa hỗ trợ chọn màu toàn màn hình. Dùng input màu bên dưới.
+          <span data-i18n="tc.section.pick.fallback">Trình duyệt chưa hỗ trợ chọn màu toàn màn hình. Dùng input màu bên dưới.</span>
         </div>
         <input type="color" id="fallbackColorPicker" class="mt-2 hidden tc-field p-1 w-16 h-10">
       </section>
 
       <section class="mb-6">
-        <h3 class="text-lg font-semibold mb-2">Chọn màu từ ảnh</h3>
+        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.image.title">Chọn màu từ ảnh</h3>
         <input type="file" id="imgInput" accept="image/*" class="mb-2">
         <canvas
           id="canvas"
           class="border rounded-lg max-w-full min-h-[200px] bg-gray-100">
         </canvas>
-        <p class="text-sm tc-muted mb-1">
-          Chọn ảnh và bấm vào bất kỳ điểm nào để lấy màu
-        </p>
+        <p class="text-sm tc-muted mb-1" data-i18n="tc.section.image.helper">Chọn ảnh và bấm vào bất kỳ điểm nào để lấy màu</p>
       </section>
 
       <section class="mb-6">
-        <h3 class="text-lg font-semibold mb-2">Tra ngược theo mã chỉ</h3>
+        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.code.title">Tra ngược theo mã chỉ</h3>
         <div class="flex items-center gap-4">
-          <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="tc-field flex-1">
-          <button id="btnFindByCode" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md">
+          <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="tc-field flex-1" data-i18n-attr="placeholder:tc.section.code.placeholder">
+          <button id="btnFindByCode" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.code.action">
             Tra cứu
           </button>
         </div>
@@ -831,48 +814,6 @@
     </div>
   </div>
 
-  <div id="authOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden"></div>
-  <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-        <div class="flex gap-2">
-          <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700">Đăng nhập</button>
-          <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100">Đăng ký</button>
-        </div>
-        <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">&times;</button>
-      </div>
-      <div class="p-5 space-y-4">
-        <div id="authError" class="text-sm text-red-600 hidden"></div>
-
-        <div id="loginPanel" class="space-y-3">
-          <input id="loginEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Địa chỉ email">
-          <input id="loginPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Mật khẩu">
-          <button id="btnLogin" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Đăng nhập</button>
-          <button id="btnForgot" class="text-sm text-indigo-600 hover:underline">Quên mật khẩu?</button>
-        </div>
-
-        <div id="registerPanel" class="space-y-3 hidden">
-          <input id="registerEmail" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Địa chỉ email">
-          <input id="registerPassword" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Mật khẩu">
-          <input id="registerConfirm" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Xác nhận mật khẩu">
-          <button id="btnRegister" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Tạo tài khoản</button>
-        </div>
-
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-          <span class="h-px flex-1 bg-gray-200"></span>
-          <span>Hoặc</span>
-          <span class="h-px flex-1 bg-gray-200"></span>
-        </div>
-
-        <button id="btnGoogle" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>G</span><span>Tiếp tục với Google</span>
-        </button>
-        <button id="btnFacebook" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>f</span><span>Tiếp tục với Facebook</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <script>
     (function () {
@@ -954,6 +895,7 @@
       setMenuOpen(false);
     })();
   </script>
+  <script src="../i18n.js"></script>
   <script type="module" src="../auth.js"></script>
   <script type="module" src="../script.js"></script>
   <script>
