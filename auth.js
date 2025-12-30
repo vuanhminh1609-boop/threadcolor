@@ -331,6 +331,7 @@ function ensureAuthFallbackStyle() {
 }
 #topbarAuthSlot #accountMenu button + button{
   border-top: 1px solid var(--stroke, rgba(0,0,0,.12));
+  opacity: 1;
 }
 #topbarAuthSlot #accountMenu #btnLogout{
   color: rgba(239,68,68,.95);

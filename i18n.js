@@ -17,6 +17,12 @@
             community: "Cộng đồng",
             spaces: "Không gian"
           },
+                    portal: {
+            placeholder: "Ch?n Th? gi?i",
+            threadcolor: "Th? gi?i m?u th?u",
+            palette: "Th? gi?i d?i m?u",
+            soon: "S?p ra m?t"
+          },
           communityContribute: "Đóng góp dữ liệu",
           communityVerify: "Xác minh",
           spaceVault: "Kho chỉ",

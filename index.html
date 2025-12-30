@@ -366,6 +366,25 @@
 
 
       <div class="flex-1 flex items-center justify-center">
+        <div class="relative" id="portalSwitcher">
+          <button id="portalBtn"
+            class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
+            aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
+            Ch&#7885;n Th&#7871; gi&#7899;i
+          </button>
+          <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/palette.html" role="menuitem">Th&#7871; gi&#7899;i d&#7843;i m&#224;u</a>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-3 min-w-[210px]">
         <div class="relative" id="worldSwitcher">
           <button id="worldBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
@@ -376,7 +395,7 @@
             </span>
             <span aria-hidden="true">&#9662;</span>
           </button>
-          <div id="worldMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+          <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
@@ -385,21 +404,6 @@
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
-          </div>
-        </div>
-      </div>
-      <div class="flex items-center justify-end gap-3 min-w-[210px]">
-        <div class="relative" data-menu="community">
-          <button id="communityBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="communityMenu" data-i18n="topbar.nav.community">Cộng đồng</button>
-          <div id="communityMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="contribute" data-i18n="topbar.communityContribute" role="menuitem">Đóng góp dữ liệu</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="verify" data-i18n="topbar.communityVerify" role="menuitem">Xác minh</button>
-          </div>
-        </div>
-        <div class="relative" data-menu="spaces">
-          <button id="spacesBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="spacesMenu" data-i18n="topbar.nav.spaces">Không gian</button>
-          <div id="spacesMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadvault.html" data-i18n="topbar.spaceVault" role="menuitem">Kho chỉ</a>
           </div>
         </div>
         <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
@@ -680,6 +684,38 @@
 
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
+  <script>
+    (() => {
+      if (window.__portalSwitcherBound) return;
+      window.__portalSwitcherBound = true;
+      const portalBtn = document.getElementById("portalBtn");
+      const portalMenu = document.getElementById("portalMenu");
+      if (!portalBtn || !portalMenu) return;
+      const setOpen = (open) => {
+        portalMenu.dataset.open = open ? "1" : "0";
+        portalMenu.hidden = !open;
+        portalBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      setOpen(portalMenu.dataset.open === "1");
+      portalBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setOpen(portalMenu.dataset.open !== "1");
+      });
+      portalMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || !portalMenu.contains(item)) return;
+        setOpen(false);
+      });
+      document.addEventListener("click", (event) => {
+        if (!portalMenu.contains(event.target) && !portalBtn.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setOpen(false);
+      });
+    })();
+  </script>
   <script>
     (() => {
       const worldBtn = document.getElementById("worldBtn");
