@@ -3,7 +3,7 @@
 Thuộc hệ sinh thái 8Portals / SpaceColors.
 
 ## Bản chạy
-- GitHub Pages: TODO (cập nhật link khi đã cấu hình)
+- GitHub Pages: https://vuanhminh1609-boop.github.io/threadcolor/
 
 ## Sản phẩm làm gì
 - Tra mã chỉ theo màu từ dữ liệu nhiều hãng.

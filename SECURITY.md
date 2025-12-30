@@ -1,8 +1,8 @@
 # Bảo mật
 
 Nếu bạn phát hiện lỗ hổng bảo mật:
-- Vui lòng liên hệ riêng với chủ repo để tránh công khai sớm.
-- Kênh liên hệ: TODO (bổ sung email/đầu mối liên hệ).
+- Vui lòng dùng tính năng “Report a vulnerability” trên GitHub để gửi báo cáo riêng tư.
+- Không báo lỗ hổng nghiêm trọng qua Issues public.
 
 Phạm vi:
 - Ứng dụng web ThreadColor và các World liên quan.
