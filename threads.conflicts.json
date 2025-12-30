@@ -1,0 +1,688 @@
+[
+  {
+    "id": "gingko:Y2183",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y2183",
+        "name": "Hồng",
+        "hex": "#ffc0cb",
+        "lab": [
+          83.5848,
+          24.1497,
+          3.3154
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2183",
+        "id": "gingko:Y2183"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2183",
+        "name": "Pantone 706 U",
+        "hex": "#ffd4e6",
+        "lab": [
+          88.9509,
+          17.8672,
+          -3.1982
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2183",
+        "id": "gingko:Y2183"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y2182",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y2182",
+        "name": "Hồng lợt",
+        "hex": "#ffc6d0",
+        "lab": [
+          85.0995,
+          21.7421,
+          2.8416
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2182",
+        "id": "gingko:Y2182"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2182",
+        "name": "Pantone 1767 C",
+        "hex": "#ffbae0",
+        "lab": [
+          82.7854,
+          30.5283,
+          -9.1176
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2182",
+        "id": "gingko:Y2182"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y2180",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y2180",
+        "name": "Hồng lợt 2",
+        "hex": "#ffcfd7",
+        "lab": [
+          87.3838,
+          18.0928,
+          2.44
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2180",
+        "id": "gingko:Y2180"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2180",
+        "name": "Pantone 196 C",
+        "hex": "#ffbff5",
+        "lab": [
+          84.5425,
+          31.4252,
+          -17.7145
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2180",
+        "id": "gingko:Y2180"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y2206",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y2206",
+        "name": "Hồng đậm rực",
+        "hex": "#e90074",
+        "lab": [
+          50.1976,
+          78.9459,
+          4.0176
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2206",
+        "id": "gingko:Y2206"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2206",
+        "name": "Hồng đậm sẫm",
+        "hex": "#b5005b",
+        "lab": [
+          38.8623,
+          65.5288,
+          1.9084
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2206",
+        "id": "gingko:Y2206"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2206",
+        "name": "Pantone 226 C",
+        "hex": "#ff00ff",
+        "lab": [
+          60.3199,
+          98.2542,
+          -60.843
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2206",
+        "id": "gingko:Y2206"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y2291",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y2291",
+        "name": "Đỏ ánh hồng",
+        "hex": "#ea272f",
+        "lab": [
+          50.8607,
+          70.7698,
+          45.9669
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2291",
+        "id": "gingko:Y2291"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2291",
+        "name": "Pantone 032 C",
+        "hex": "#ff1a24",
+        "lab": [
+          54.1606,
+          78.2033,
+          56.0115
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2291",
+        "id": "gingko:Y2291"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y2192",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y2192",
+        "name": "Hồng nhạt",
+        "hex": "#ffd5ea",
+        "lab": [
+          89.2941,
+          18.0063,
+          -4.8022
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2192",
+        "id": "gingko:Y2192"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2192",
+        "name": "Pantone 692 C",
+        "hex": "#fac0e1",
+        "lab": [
+          83.6836,
+          25.8369,
+          -8.3731
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2192",
+        "id": "gingko:Y2192"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y2460",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y2460",
+        "name": "Đỏ ánh cam",
+        "hex": "#fa3333",
+        "lab": [
+          55.0008,
+          72.3838,
+          48.9968
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2460",
+        "id": "gingko:Y2460"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y2460",
+        "name": "Pantone 171 C",
+        "hex": "#ff7852",
+        "lab": [
+          65.9832,
+          48.8458,
+          44.9608
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y2460",
+        "id": "gingko:Y2460"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y3469",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y3469",
+        "name": "Xanh thiên thanh sáng",
+        "hex": "#33ccff",
+        "lab": [
+          76.7453,
+          -21.9482,
+          -35.9869
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3469",
+        "id": "gingko:Y3469"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y3469",
+        "name": "Pantone 306 C",
+        "hex": "#40ffed",
+        "lab": [
+          91.1095,
+          -49.7203,
+          -4.7574
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3469",
+        "id": "gingko:Y3469"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y3685",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y3685",
+        "name": "Xanh bích nhạt",
+        "hex": "#3445db",
+        "lab": [
+          38.0227,
+          45.1086,
+          -77.901
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3685",
+        "id": "gingko:Y3685"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y3685",
+        "name": "Pantone 2728 C",
+        "hex": "#0a4fff",
+        "lab": [
+          42.5766,
+          49.6477,
+          -90.7765
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3685",
+        "id": "gingko:Y3685"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y3686",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y3686",
+        "name": "Xanh bích sẫm",
+        "hex": "#00008b",
+        "lab": [
+          14.7572,
+          50.4293,
+          -68.6833
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3686",
+        "id": "gingko:Y3686"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y3686",
+        "name": "Pantone 662 C",
+        "hex": "#003bd1",
+        "lab": [
+          33.4171,
+          45.0893,
+          -79.785
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3686",
+        "id": "gingko:Y3686"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y3195",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y3195",
+        "name": "Xanh lawn",
+        "hex": "#42b833",
+        "lab": [
+          66.2733,
+          -57.3067,
+          54.8416
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3195",
+        "id": "gingko:Y3195"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y3195",
+        "name": "Pantone 365 U",
+        "hex": "#e0ffb5",
+        "lab": [
+          96.2878,
+          -22.2881,
+          32.1483
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3195",
+        "id": "gingko:Y3195"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y3698",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y3698",
+        "name": "Xanh bích",
+        "hex": "#2233c3",
+        "lab": [
+          30.9914,
+          46.1319,
+          -75.6077
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3698",
+        "id": "gingko:Y3698"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y3698",
+        "name": "Pantone 2736 C",
+        "hex": "#0017ff",
+        "lab": [
+          33.6322,
+          75.0826,
+          -105.6397
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3698",
+        "id": "gingko:Y3698"
+      }
+    ]
+  },
+  {
+    "id": "gingko:Y3362",
+    "records": [
+      {
+        "brand": "Gingko",
+        "code": "Y3362",
+        "name": "Pantone 647 C",
+        "hex": "#0056c4",
+        "lab": [
+          38.9693,
+          22.5906,
+          -63.1217
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3362",
+        "id": "gingko:Y3362"
+      },
+      {
+        "brand": "Gingko",
+        "code": "Y3362",
+        "name": "Xanh lam",
+        "hex": "#375e9e",
+        "lab": [
+          40.0585,
+          7.4459,
+          -38.9099
+        ],
+        "source": {
+          "type": "legacy_json",
+          "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+          "imported_at": "2025-12-18"
+        },
+        "rating": {
+          "score": null,
+          "votes": 0
+        },
+        "brandKey": "gingko",
+        "codeKey": "Y3362",
+        "id": "gingko:Y3362"
+      }
+    ]
+  }
+]

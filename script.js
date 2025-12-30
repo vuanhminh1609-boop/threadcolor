@@ -185,6 +185,10 @@ let matchDebounceTimer = null;
 const RESULT_PAGE_SIZE = 60;
 let resultRenderLimit = RESULT_PAGE_SIZE;
 let lastGroupedResults = null;
+let searchWorker = null;
+let searchWorkerReady = false;
+let searchWorkerSeq = 0;
+const searchWorkerRequests = new Map();
 const PIN_STORAGE_KEY = "tc_pins_v1";
 let pinnedItems = [];
 const PROJECT_STORAGE_KEY = "tc_project_current";
@@ -571,6 +575,7 @@ function loadThreads() {
     matchCache.clear();
     labCache.clear();
     threads = normalized.map(t => ({ ...t }));
+    initSearchWorker(threads);
     const brands = getUniqueBrands(threads);
     renderBrandFilters(brands);
     populateContributeBrands(brands);
@@ -626,6 +631,53 @@ function findNearestColors(chosenHex, limit = 100, method = "76") {
     .slice(0, limit);
 }
 
+function initSearchWorker(payloadThreads) {
+  if (searchWorkerReady || typeof Worker === "undefined") return;
+  try {
+    searchWorker = new Worker(new URL("./workers/thread_search.worker.js", import.meta.url), { type: "module" });
+  } catch (err) {
+    searchWorker = null;
+    return;
+  }
+  searchWorker.onmessage = (event) => {
+    const data = event.data || {};
+    if (data.type === "ready") {
+      searchWorkerReady = true;
+      return;
+    }
+    const entry = searchWorkerRequests.get(data.id);
+    if (!entry) return;
+    searchWorkerRequests.delete(data.id);
+    if (data.error) {
+      entry.reject(new Error(data.error));
+      return;
+    }
+    entry.resolve(data.results || []);
+  };
+  searchWorker.postMessage({ type: "init", threads: payloadThreads || [] });
+}
+
+function searchNearestAsync(chosenHex, limit, method) {
+  if (!searchWorker || !searchWorkerReady) {
+    return Promise.resolve(findNearestColors(chosenHex, limit, method));
+  }
+  const normalized = normalizeHex(chosenHex);
+  if (!normalized) return Promise.resolve([]);
+  const brands = getSelectedBrands();
+  const payload = {
+    targetHex: normalized,
+    brands,
+    verifiedOnly: useVerifiedOnly,
+    method,
+    limit
+  };
+  return new Promise((resolve, reject) => {
+    const id = ++searchWorkerSeq;
+    searchWorkerRequests.set(id, { resolve, reject });
+    searchWorker.postMessage({ type: "search", id, payload });
+  }).catch(() => findNearestColors(chosenHex, limit, method));
+}
+
 function groupByColorSimilarity(colors, threshold = 2.5, method = "76") {
   const groups = [];
   colors.forEach(c => {
@@ -658,7 +710,7 @@ function setMatchCache(key, value) {
   }
 }
 
-function runSearch(hex) {
+async function runSearch(hex) {
   const normalized = normalizeHex(hex);
   if (!normalized) return;
   lastChosenHex = normalized;
@@ -670,7 +722,8 @@ function runSearch(hex) {
     showGroupedResults(cached.grouped, normalized);
     return;
   }
-  const base = findNearestColors(normalized, 100, method);
+  renderResultState("loading");
+  const base = await searchNearestAsync(normalized, 100, method);
   const filtered = base.filter(t => t.delta <= currentDeltaThreshold);
   if (!filtered.length) {
     lastResults = base;
@@ -857,6 +910,8 @@ function renderColorCard(item, chosenHex) {
   const pinned = isPinned(item.hex);
   const saveLabel = t("tc.result.save", "Lưu");
   const pinLabel = pinned ? t("tc.pin.unpin", "Bỏ ghim") : t("tc.pin.pin", "Ghim");
+  const copyCodeLabel = t("tc.result.copyCode", "Sao chép mã");
+  const copyFullLabel = t("tc.result.copyFull", "Sao chép đầy đủ");
   return `
     <div class="result-item rounded-xl shadow-md bg-white p-3 hover:scale-[1.02] transition border border-transparent data-[selected=true]:border-indigo-400 data-[selected=true]:shadow-lg cursor-pointer"
          data-hex="${item.hex}" data-brand="${item.brand || ""}" data-code="${item.code || ""}" data-name="${item.name || ""}" data-delta="${deltaText}" data-lab="${labAttr}">
@@ -883,6 +938,14 @@ function renderColorCard(item, chosenHex) {
         <button class="btn-pin ml-2 px-3 py-1 text-xs rounded-lg border"
                 data-action="pin-toggle" data-hex="${item.hex}" data-pinned="${pinned ? "1" : "0"}">
           ${pinLabel}
+        </button>
+        <button class="btn-copy-code ml-2 px-3 py-1 text-xs rounded-lg border"
+                data-action="copy-code">
+          ${copyCodeLabel}
+        </button>
+        <button class="btn-copy-full ml-2 px-3 py-1 text-xs rounded-lg border"
+                data-action="copy-full">
+          ${copyFullLabel}
         </button>
       </div>
     </div>
@@ -1108,6 +1171,34 @@ function handleResultContainerClick(e) {
     if (addPin(pinnedItem)) {
       updatePinButton(pinBtn, true);
     }
+    return;
+  }
+  const copyCodeBtn = e.target.closest('[data-action="copy-code"]');
+  if (copyCodeBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    const card = copyCodeBtn.closest(".result-item");
+    if (!card) return;
+    const brand = (card.dataset.brand || "").trim();
+    const code = (card.dataset.code || "").trim();
+    const label = t("tc.result.copyCode", "Sao chép mã");
+    const text = [brand, code].filter(Boolean).join(" ");
+    if (text) copyToClipboard(text, label);
+    return;
+  }
+  const copyFullBtn = e.target.closest('[data-action="copy-full"]');
+  if (copyFullBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    const card = copyFullBtn.closest(".result-item");
+    if (!card) return;
+    const brand = (card.dataset.brand || "").trim();
+    const code = (card.dataset.code || "").trim();
+    const name = (card.dataset.name || "").trim();
+    const hex = (card.dataset.hex || "").trim();
+    const label = t("tc.result.copyFull", "Sao chép đầy đủ");
+    const text = [brand, code, name, hex].filter(Boolean).join(" | ");
+    if (text) copyToClipboard(text, label);
     return;
   }
   const saveBtn = e.target.closest("[data-action=\"save-search\"]");

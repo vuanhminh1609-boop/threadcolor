@@ -203,7 +203,9 @@
           saved: "Đã lưu",
           saving: "Đang lưu...",
           noDataSave: "Không có dữ liệu để lưu.",
-          loadMore: "Xem thêm ({count})"
+          loadMore: "Xem thêm ({count})",
+          copyCode: "Sao chép mã",
+          copyFull: "Sao chép đầy đủ"
         },
         pin: {
           pin: "Ghim",
@@ -242,7 +244,7 @@
         auth: {
           needLogin: "Cần đăng nhập để tiếp tục.",
           needLoginSave: "Cần đăng nhập để lưu.",
-          needLoginLibrary: "Cần đăng nhập để xem thư viện.",
+          needLoginLibrary: "Cần đăng nhập để xem Đã lưu.",
           needLoginOpen: "Cần đăng nhập để mở.",
           needLoginContribute: "Cần đăng nhập để đóng góp dữ liệu.",
           needLoginVerify: "Cần đăng nhập để xác minh."
