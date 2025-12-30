@@ -10,16 +10,22 @@
         close: "Đóng",
         or: "Hoặc"
       },
-      topbar: {
-        brand: "SpaceColors · 8Portal",
-        slogan: "Một chạm mở không gian màu vô hạn",
-        nav: {
-          portal: "Portal",
-          tools: "Công cụ",
-          community: "Cộng đồng",
-          spaces: "Không gian"
-        }
-      },
+        topbar: {
+          brand: "SpaceColors · 8Portal",
+          slogan: "Một chạm mở không gian màu vô hạn",
+          nav: {
+            community: "Cộng đồng",
+            spaces: "Không gian"
+          },
+          communityContribute: "Đóng góp dữ liệu",
+          communityVerify: "Xác minh",
+          spaceVault: "Kho chỉ",
+          spaceLibrary: "Bản lưu"
+        },
+        vault: {
+          title: "Kho chỉ",
+          desc: "Không gian này đang được hoàn thiện. Quay lại sau nhé."
+        },
       hero: {
         title: "Không gian chuẩn hóa màu của bạn",
         desc: "8 cổng tính năng dẫn bạn đến 8 Thế giới sắc màu — mỗi Thế giới là một công cụ riêng.\nThế giới màu chỉ: Chọn màu/HEX/ảnh → Mã chỉ đa hãng → Dùng ngay cho sản xuất.\nThế giới dải màu (sắp ra mắt): Tạo dải màu → Lưu bộ sưu tập → Xuất dữ liệu theo nhu cầu.\n6 Thế giới còn lại đang chuẩn bị. Khám phá cảm hứng và tạo không gian màu mang bản sắc của bạn.",
@@ -297,9 +303,10 @@
           close: "Đóng"
         },
         account: {
-          library: "Thư viện của tôi",
+          library: "Bảng điều khiển",
           contribute: "Đóng góp dữ liệu",
           verify: "Xác minh",
+          manage: "Quản lý tài khoản (sắp ra mắt)",
           logout: "Đăng xuất",
           login: "Đăng nhập"
         },

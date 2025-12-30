@@ -311,6 +311,17 @@ function ensureAuthFallbackStyle() {
   border: 1px solid var(--stroke, rgba(0,0,0,.12));
   color: var(--text, #111827);
 }
+#topbarAuthSlot #accountMenu .tc-account-header{
+  border-bottom: 1px solid var(--stroke, rgba(0,0,0,.12));
+}
+#topbarAuthSlot #accountMenu .tc-account-email{
+  color: var(--muted, rgba(17,24,39,.7));
+}
+#topbarAuthSlot #accountMenu .tc-account-actions{
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
 #topbarAuthSlot #accountMenu button{
   padding: .6rem .75rem;
   line-height: 1.1;
@@ -384,11 +395,20 @@ function ensureTopbarAuthDock() {
             <span id="userName" class="font-semibold max-w-[110px] truncate"></span>
             <span class="opacity-70">&#9662;</span>
           </button>
-          <div id="accountMenu" class="hidden absolute right-0 mt-3 w-44 rounded-lg shadow-lg overflow-hidden origin-top-right tc-chip">
-            <button id="btnLibrary" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.library">Thư viện của tôi</button>
-            <button id="btnContribute" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.contribute">Đóng góp dữ liệu</button>
-            <button id="btnVerify" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.verify">Xác minh</button>
-            <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.logout">Đăng xuất</button>
+          <div id="accountMenu" class="hidden absolute right-0 mt-3 w-64 rounded-lg shadow-lg overflow-hidden origin-top-right tc-chip">
+            <div class="tc-account-header px-3 py-3">
+              <div class="flex items-center gap-3">
+                <img class="tc-account-avatar w-10 h-10 rounded-full border border-white/30 object-cover" alt="" data-auth-avatar>
+                <div class="min-w-0">
+                  <div class="tc-account-name font-semibold truncate" data-auth-name></div>
+                  <div class="tc-account-email text-xs tc-muted truncate" data-auth-email></div>
+                </div>
+              </div>
+            </div>
+            <div class="tc-account-actions px-2 pb-2">
+              <button id="btnManageAccount" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.manage">Quản lý tài khoản</button>
+              <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.logout">Đăng xuất</button>
+            </div>
           </div>
         </div>
         <button id="btnAccount" class="tc-btn tc-btn-primary px-4 py-2" data-i18n="tc.account.login">Đăng nhập</button>
@@ -434,6 +454,12 @@ function bindTopbarAuthDelegation() {
     if (logoutBtn) {
       event.stopPropagation();
       await safeSignOut();
+      closeMenu();
+      return;
+    }
+    const manageBtn = event.target.closest("#btnManageAccount");
+    if (manageBtn) {
+      event.stopPropagation();
       closeMenu();
       return;
     }
@@ -592,6 +618,9 @@ function updateAuthUI(user) {
   const btnLogout = document.getElementById("btnLogout");
   const userAvatar = document.getElementById("userAvatar");
   const userName = document.getElementById("userName");
+  const menuAvatar = document.querySelector("#accountMenu [data-auth-avatar]");
+  const menuName = document.querySelector("#accountMenu [data-auth-name]");
+  const menuEmail = document.querySelector("#accountMenu [data-auth-email]");
   const loggedIn = !!user;
   userInfo?.classList.toggle("hidden", !loggedIn);
   btnAccount?.classList.toggle("hidden", loggedIn);
@@ -599,6 +628,19 @@ function updateAuthUI(user) {
   if (loggedIn && userName) userName.textContent = user.displayName || user.email || "User";
   if (loggedIn && userAvatar) {
     userAvatar.src = user.photoURL || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.displayName || user.email || "U");
+  }
+  if (loggedIn) {
+    const displayName = user.displayName || user.email || "User";
+    const email = user.email || "";
+    if (menuName) menuName.textContent = displayName;
+    if (menuEmail) menuEmail.textContent = email;
+    if (menuAvatar) {
+      menuAvatar.src = user.photoURL || "https://ui-avatars.com/api/?name=" + encodeURIComponent(displayName || "U");
+    }
+  } else {
+    if (menuName) menuName.textContent = "";
+    if (menuEmail) menuEmail.textContent = "";
+    if (menuAvatar) menuAvatar.removeAttribute("src");
   }
   if (loggedIn) closeAuthModal();
   emitAuthChanged(user || null);

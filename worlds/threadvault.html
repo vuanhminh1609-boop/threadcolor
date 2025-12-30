@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi" data-world="origami">
+<head>
+  <meta charset="utf-8">
+  <title>Kho chỉ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #f6f1e9;
+      --text: #201a14;
+      --muted: #6b5d4b;
+      --glass: rgba(255, 255, 255, 0.72);
+      --stroke: rgba(32, 26, 20, 0.08);
+      --a1: #c27b4b;
+      --a2: #d59e6d;
+      --a3: #8c6d54;
+    }
+    html[data-world="nebula"] {
+      --bg: #0c1123;
+      --text: #eef2ff;
+      --muted: #b6bfe3;
+      --glass: rgba(18, 26, 48, 0.72);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --a1: #6ee7ff;
+      --a2: #8b5cf6;
+      --a3: #f472b6;
+    }
+    html[data-world="ocean"] {
+      --bg: #e7f6ff;
+      --text: #0b2b3a;
+      --muted: #4b6b7b;
+      --glass: rgba(255, 255, 255, 0.7);
+      --stroke: rgba(11, 43, 58, 0.12);
+      --a1: #1fb6ff;
+      --a2: #0ea5a8;
+      --a3: #4dd4ff;
+    }
+    html[data-world="ink"] {
+      --bg: #0f1115;
+      --text: #f4f4f6;
+      --muted: #9aa0a9;
+      --glass: rgba(24, 26, 31, 0.72);
+      --stroke: rgba(255, 255, 255, 0.1);
+      --a1: #e2e8f0;
+      --a2: #94a3b8;
+      --a3: #64748b;
+    }
+    html[data-world="origami"] {
+      --bg: #f6f1e9;
+      --text: #201a14;
+      --muted: #6b5d4b;
+      --glass: rgba(255, 255, 255, 0.72);
+      --stroke: rgba(32, 26, 20, 0.08);
+      --a1: #c27b4b;
+      --a2: #d59e6d;
+      --a3: #8c6d54;
+    }
+    html[data-world="arcade"] {
+      --bg: #0b0b14;
+      --text: #fef7ff;
+      --muted: #c9b9e8;
+      --glass: rgba(20, 18, 36, 0.78);
+      --stroke: rgba(255, 255, 255, 0.14);
+      --a1: #ff3dcd;
+      --a2: #7c3aed;
+      --a3: #20e3b2;
+    }
+    html[data-world="dunes"] {
+      --bg: #f7f0e1;
+      --text: #3a2d1a;
+      --muted: #7a644a;
+      --glass: rgba(255, 255, 255, 0.7);
+      --stroke: rgba(58, 45, 26, 0.12);
+      --a1: #d39b54;
+      --a2: #e3b87b;
+      --a3: #b3743d;
+    }
+    html[data-world="chrome"] {
+      --bg: #f1f4f8;
+      --text: #1c232b;
+      --muted: #5f6b79;
+      --glass: rgba(255, 255, 255, 0.68);
+      --stroke: rgba(28, 35, 43, 0.12);
+      --a1: #3b82f6;
+      --a2: #94a3b8;
+      --a3: #0f172a;
+    }
+    html[data-world="circuit"] {
+      --bg: #0b1410;
+      --text: #e9fff3;
+      --muted: #9ec4ad;
+      --glass: rgba(12, 24, 18, 0.72);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --a1: #22c55e;
+      --a2: #16a34a;
+      --a3: #86efac;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .tc-topbar {
+      background: var(--glass);
+      border-bottom: 1px solid var(--stroke);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+    .tc-topbar::after{
+      content:"";
+      position:absolute; left:0; right:0; bottom:-1px; height:1px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      opacity: .35;
+    }
+    .tc-chip{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-btn{
+      border-radius: 0.75rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+    }
+    .tc-btn-primary{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .tc-dot{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
+      box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+    }
+    .tc-card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+    }
+    #worldMenu[data-open="0"] { display: none; }
+    #worldMenu[data-open="1"] { display: block; }
+    .tc-menu[data-open="0"] { display: none; }
+    .tc-menu[data-open="1"] { display: block; }
+    .tc-menu{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-menu-item{
+      color: var(--text);
+    }
+    .tc-menu-item:hover{ background: rgba(255,255,255,.10); }
+    .tc-menu-item:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      border-radius: 0.6rem;
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <header class="tc-topbar sticky top-0 z-30 relative">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <a href="../index.html" class="flex items-center gap-3 min-w-0">
+        <img src="../assets/spacecolors-logo-topbar.png" alt="SpaceColors" class="h-10 w-10 rounded-xl select-none" loading="eager" decoding="async">
+        <span class="min-w-0 flex flex-col justify-center leading-tight">
+          <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors · 8Portal</span>
+          <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">Một chạm mở không gian màu vô hạn</span>
+        </span>
+      </a>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="relative" id="worldSwitcher">
+          <button id="worldBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between" aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
+            <span class="flex items-center gap-2">
+              <span class="tc-dot" aria-hidden="true"></span>
+              <span id="worldLabel">Origami</span>
+            </span>
+            <span aria-hidden="true">&#9662;</span>
+          </button>
+          <div id="worldMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="relative" data-menu="community">
+          <button id="communityBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="communityMenu" data-i18n="topbar.nav.community">Cộng đồng</button>
+          <div id="communityMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm">
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="contribute" data-i18n="topbar.communityContribute" role="menuitem">Đóng góp dữ liệu</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="verify" data-i18n="topbar.communityVerify" role="menuitem">Xác minh</button>
+          </div>
+        </div>
+        <div class="relative" data-menu="spaces">
+          <button id="spacesBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="spacesMenu" data-i18n="topbar.nav.spaces">Không gian</button>
+          <div id="spacesMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm">
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadvault.html" data-i18n="topbar.spaceVault" role="menuitem">Kho chỉ</a>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="library" data-i18n="topbar.spaceLibrary" role="menuitem">Bản lưu</button>
+          </div>
+        </div>
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="flex items-center justify-end min-w-[210px]"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-4xl px-4 pt-10 pb-16">
+    <div class="tc-card rounded-2xl p-6 md:p-10">
+      <h1 class="text-3xl font-bold" data-i18n="vault.title">Kho chỉ</h1>
+      <p class="mt-3 tc-muted" data-i18n="vault.desc">Không gian này đang được hoàn thiện. Quay lại sau nhé.</p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var worlds = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
+      var labels = {
+        nebula: "Tinh vân",
+        ocean: "Đại dương",
+        ink: "Mực tàu",
+        origami: "Origami",
+        arcade: "Arcade",
+        dunes: "Đồi cát",
+        chrome: "Chrome",
+        circuit: "Mạch điện"
+      };
+      var storageKey = "tc_world";
+      var defaultWorld = "origami";
+      var worldBtn = document.getElementById("worldBtn");
+      var worldMenu = document.getElementById("worldMenu");
+      var worldLabel = document.getElementById("worldLabel");
+      var switcher = document.getElementById("worldSwitcher");
+
+      function applyWorld(next) {
+        var world = worlds.indexOf(next) !== -1 ? next : defaultWorld;
+        document.documentElement.setAttribute("data-world", world);
+        try { localStorage.setItem(storageKey, world); } catch (err) {}
+        if (worldLabel) {
+          worldLabel.textContent = labels[world] || world;
+        }
+      }
+
+      function setMenuOpen(open) {
+        if (!worldMenu) return;
+        worldMenu.dataset.open = open ? "1" : "0";
+        if (worldBtn) {
+          worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        }
+      }
+
+      if (worldBtn && worldMenu) {
+        worldBtn.addEventListener("click", function (event) {
+          event.stopPropagation();
+          setMenuOpen(worldMenu.dataset.open !== "1");
+        });
+        worldMenu.querySelectorAll("[data-world]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            applyWorld(btn.getAttribute("data-world"));
+            setMenuOpen(false);
+          });
+        });
+      }
+
+      document.addEventListener("click", function (event) {
+        if (!switcher) return;
+        if (!switcher.contains(event.target)) {
+          setMenuOpen(false);
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          setMenuOpen(false);
+        }
+      });
+
+      var initial = defaultWorld;
+      try {
+        initial = localStorage.getItem(storageKey) || defaultWorld;
+      } catch (err) {}
+      applyWorld(initial);
+      setMenuOpen(false);
+    })();
+  </script>
+  <script>
+    (() => {
+      const communityBtn = document.getElementById("communityBtn");
+      const communityMenu = document.getElementById("communityMenu");
+      const spacesBtn = document.getElementById("spacesBtn");
+      const spacesMenu = document.getElementById("spacesMenu");
+      if (!communityBtn || !communityMenu || !spacesBtn || !spacesMenu) return;
+      const menus = [
+        { btn: communityBtn, menu: communityMenu },
+        { btn: spacesBtn, menu: spacesMenu }
+      ];
+      const setMenuOpen = (btn, menu, open) => {
+        menu.dataset.open = open ? "1" : "0";
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      const closeAll = () => menus.forEach(({ btn, menu }) => setMenuOpen(btn, menu, false));
+      const goTool = (action) => {
+        const auth = window.tcAuth || null;
+        const isLoggedIn = typeof auth?.isLoggedIn === "function" ? auth.isLoggedIn() : false;
+        if (!isLoggedIn) {
+          if (typeof auth?.openAuth === "function") {
+            auth.openAuth();
+            return;
+          }
+        }
+        const target = action ? `./threadcolor.html?open=${encodeURIComponent(action)}` : "./threadcolor.html";
+        window.location.href = target;
+      };
+      communityBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const isOpen = communityMenu.dataset.open === "1";
+        closeAll();
+        setMenuOpen(communityBtn, communityMenu, !isOpen);
+      });
+      spacesBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const isOpen = spacesMenu.dataset.open === "1";
+        closeAll();
+        setMenuOpen(spacesBtn, spacesMenu, !isOpen);
+      });
+      communityMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || !communityMenu.contains(item)) return;
+        const action = item.getAttribute("data-action");
+        if (action) goTool(action);
+        closeAll();
+      });
+      spacesMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || !spacesMenu.contains(item)) return;
+        const action = item.getAttribute("data-action");
+        if (action) goTool(action);
+        closeAll();
+      });
+      document.addEventListener("click", (event) => {
+        if (menus.some(({ btn, menu }) => btn.contains(event.target) || menu.contains(event.target))) return;
+        closeAll();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeAll();
+      });
+    })();
+  </script>
+  <script src="../i18n.js"></script>
+  <script type="module" src="../auth.js"></script>
+</body>
+</html>

@@ -300,9 +300,29 @@
       border-radius: 0.6rem;
       background: rgba(255,255,255,.08);
     }
+    .tc-menu[data-open="0"] { display: none; }
+    .tc-menu[data-open="1"] { display: block; }
+    .tc-menu{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-menu-item{
+      color: var(--text);
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    .tc-menu-item:hover{ background: rgba(255,255,255,.10); }
+    .tc-menu-item:active{ transform: translateY(1px); }
+    .tc-menu-item:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      border-radius: 0.6rem;
+      background: rgba(255,255,255,.08);
+    }
     @media (prefers-reduced-motion: reduce){
       .tc-btn,
-      #worldMenu .tc-world-item{
+      #worldMenu .tc-world-item,
+      .tc-menu-item{
         transition: none;
       }
       [data-world-card="1"]{
@@ -368,7 +388,21 @@
           </div>
         </div>
       </div>
-      <div class="flex items-center justify-end min-w-[210px]">
+      <div class="flex items-center justify-end gap-3 min-w-[210px]">
+        <div class="relative" data-menu="community">
+          <button id="communityBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="communityMenu" data-i18n="topbar.nav.community">Cộng đồng</button>
+          <div id="communityMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="contribute" data-i18n="topbar.communityContribute" role="menuitem">Đóng góp dữ liệu</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="verify" data-i18n="topbar.communityVerify" role="menuitem">Xác minh</button>
+          </div>
+        </div>
+        <div class="relative" data-menu="spaces">
+          <button id="spacesBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="spacesMenu" data-i18n="topbar.nav.spaces">Không gian</button>
+          <div id="spacesMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadvault.html" data-i18n="topbar.spaceVault" role="menuitem">Kho chỉ</a>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="library" data-i18n="topbar.spaceLibrary" role="menuitem">Bản lưu</button>
+          </div>
+        </div>
         <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
       </div>
     </div>
@@ -749,6 +783,69 @@
         applyWorld(document.documentElement.dataset.world);
       }
       setMenuOpen(false);
+    })();
+  </script>
+  <script>
+    (() => {
+      const communityBtn = document.getElementById("communityBtn");
+      const communityMenu = document.getElementById("communityMenu");
+      const spacesBtn = document.getElementById("spacesBtn");
+      const spacesMenu = document.getElementById("spacesMenu");
+      if (!communityBtn || !communityMenu || !spacesBtn || !spacesMenu) return;
+      const menus = [
+        { btn: communityBtn, menu: communityMenu },
+        { btn: spacesBtn, menu: spacesMenu }
+      ];
+      const setMenuOpen = (btn, menu, open) => {
+        menu.dataset.open = open ? "1" : "0";
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      const closeAll = () => menus.forEach(({ btn, menu }) => setMenuOpen(btn, menu, false));
+      const goTool = (action) => {
+        const auth = window.tcAuth || null;
+        const isLoggedIn = typeof auth?.isLoggedIn === "function" ? auth.isLoggedIn() : false;
+        if (!isLoggedIn) {
+          if (typeof auth?.openAuth === "function") {
+            auth.openAuth();
+            return;
+          }
+        }
+        const target = action ? `./worlds/threadcolor.html?open=${encodeURIComponent(action)}` : "./worlds/threadcolor.html";
+        window.location.href = target;
+      };
+      communityBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const isOpen = communityMenu.dataset.open === "1";
+        closeAll();
+        setMenuOpen(communityBtn, communityMenu, !isOpen);
+      });
+      spacesBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const isOpen = spacesMenu.dataset.open === "1";
+        closeAll();
+        setMenuOpen(spacesBtn, spacesMenu, !isOpen);
+      });
+      communityMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || !communityMenu.contains(item)) return;
+        const action = item.getAttribute("data-action");
+        if (action) goTool(action);
+        closeAll();
+      });
+      spacesMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || !spacesMenu.contains(item)) return;
+        const action = item.getAttribute("data-action");
+        if (action) goTool(action);
+        closeAll();
+      });
+      document.addEventListener("click", (event) => {
+        if (menus.some(({ btn, menu }) => btn.contains(event.target) || menu.contains(event.target))) return;
+        closeAll();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeAll();
+      });
     })();
   </script>
   <script>

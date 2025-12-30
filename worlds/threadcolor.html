@@ -145,6 +145,33 @@
     #worldMenu[data-open="1"] {
       display: block;
     }
+    .tc-menu[data-open="0"] {
+      display: none;
+    }
+    .tc-menu[data-open="1"] {
+      display: block;
+    }
+    .tc-menu {
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-menu-item {
+      color: var(--text);
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    .tc-menu-item:hover {
+      background: rgba(255,255,255,.10);
+    }
+    .tc-menu-item:active {
+      transform: translateY(1px);
+    }
+    .tc-menu-item:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      border-radius: 0.6rem;
+      background: rgba(255,255,255,.08);
+    }
     .tc-world-item.is-active {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
       color: var(--text);
@@ -202,6 +229,17 @@
     }
     #accountMenu {
       border: 1px solid var(--stroke);
+    }
+    #accountMenu .tc-account-header {
+      border-bottom: 1px solid var(--stroke);
+    }
+    #accountMenu .tc-account-email {
+      color: var(--muted);
+    }
+    #accountMenu .tc-account-actions {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
     }
     #accountMenu button {
       color: var(--text);
@@ -580,13 +618,7 @@
       <div class="flex items-center gap-4">
         <a class="tc-brand text-lg" href="../index.html">8Portal</a>
       </div>
-      <nav class="tc-nav hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="../index.html">Portal</a>
-        <a href="#">Công cụ</a>
-        <a href="#">Cộng đồng</a>
-        <a href="#">Không gian</a>
-      </nav>
-      <div class="flex items-center gap-3">
+      <div class="flex-1 flex items-center justify-center">
         <div class="relative" id="worldSwitcher">
           <button id="worldBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
@@ -606,6 +638,22 @@
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="dunes">Đồi cát</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="chrome">Chrome</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md hover:bg-white/10" data-world="circuit">Mạch điện</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="relative" data-menu="community">
+          <button id="communityBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="communityMenu" data-i18n="topbar.nav.community">Cộng đồng</button>
+          <div id="communityMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm">
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="contribute" data-i18n="topbar.communityContribute" role="menuitem">Đóng góp dữ liệu</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="verify" data-i18n="topbar.communityVerify" role="menuitem">Xác minh</button>
+          </div>
+        </div>
+        <div class="relative" data-menu="spaces">
+          <button id="spacesBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="spacesMenu" data-i18n="topbar.nav.spaces">Không gian</button>
+          <div id="spacesMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm">
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="threadvault.html" data-i18n="topbar.spaceVault" role="menuitem">Kho chỉ</a>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-action="library" data-i18n="topbar.spaceLibrary" role="menuitem">Bản lưu</button>
           </div>
         </div>
         <div id="topbarAuthSlot" data-auth-slot="topbar" class="flex items-center justify-end min-w-[210px]"></div>
@@ -933,6 +981,47 @@
       var initial = localStorage.getItem(storageKey) || defaultWorld;
       applyWorld(initial);
       setMenuOpen(false);
+    })();
+  </script>
+  <script>
+    (() => {
+      const menus = [
+        { btn: document.getElementById("communityBtn"), menu: document.getElementById("communityMenu") },
+        { btn: document.getElementById("spacesBtn"), menu: document.getElementById("spacesMenu") }
+      ];
+      const setMenuOpen = (btn, menu, open) => {
+        if (!btn || !menu) return;
+        menu.dataset.open = open ? "1" : "0";
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      const closeAll = () => {
+        menus.forEach(({ btn, menu }) => setMenuOpen(btn, menu, false));
+      };
+      menus.forEach(({ btn, menu }) => {
+        if (!btn || !menu) return;
+        btn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const isOpen = menu.dataset.open === "1";
+          closeAll();
+          setMenuOpen(btn, menu, !isOpen);
+        });
+        menu.addEventListener("click", (event) => {
+          const item = event.target.closest(".tc-menu-item");
+          if (!item || !menu.contains(item)) return;
+          const action = item.getAttribute("data-action");
+          if (action) {
+            document.dispatchEvent(new CustomEvent("tc-auth-action", { detail: { action } }));
+          }
+          closeAll();
+        });
+      });
+      document.addEventListener("click", (event) => {
+        if (menus.some(({ btn, menu }) => btn?.contains(event.target) || menu?.contains(event.target))) return;
+        closeAll();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeAll();
+      });
     })();
   </script>
   <script src="../i18n.js"></script>

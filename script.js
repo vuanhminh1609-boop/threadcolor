@@ -1684,6 +1684,37 @@ document.addEventListener("tc-auth-action", (event) => {
   handleAuthAction(action);
 });
 
+(() => {
+  let openAction = null;
+  try {
+    openAction = new URLSearchParams(window.location.search).get("open");
+  } catch (err) {
+    openAction = null;
+  }
+  const allowed = ["library", "contribute", "verify"];
+  if (!openAction || !allowed.includes(openAction)) return;
+  const auth = window.tcAuth || null;
+  const isLoggedIn = typeof auth?.isLoggedIn === "function" ? auth.isLoggedIn() : false;
+  if (openAction === "library") {
+    handleAuthAction(openAction);
+    return;
+  }
+  if (!isLoggedIn) {
+    handleAuthAction(openAction);
+    return;
+  }
+  if (currentUser) {
+    handleAuthAction(openAction);
+    return;
+  }
+  const onAuth = (event) => {
+    if (!event?.detail?.user) return;
+    document.removeEventListener("tc-auth-changed", onAuth);
+    handleAuthAction(openAction);
+  };
+  document.addEventListener("tc-auth-changed", onAuth);
+})();
+
 
 if (libraryList) {
   libraryList.addEventListener("click", e => {
