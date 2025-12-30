@@ -27,7 +27,49 @@
           desc: "Không gian này đang được hoàn thiện. Quay lại sau nhé.",
           tabSaved: "Kết quả đã lưu",
           tabStock: "Tồn kho",
-          stockPlaceholder: "Tồn kho đang được chuẩn bị."
+          stockPlaceholder: "Tồn kho đang được chuẩn bị.",
+          stock: {
+            ctaTitle: "Đăng nhập để dùng Tồn kho",
+            ctaDesc: "Quản lý tồn kho cá nhân theo tài khoản.",
+            ctaAction: "Đăng nhập",
+            search: "Tìm theo hãng/mã/tên/hex",
+            add: "Thêm",
+            import: "Nhập CSV",
+            export: "Xuất CSV",
+            summaryItems: "Tổng mã",
+            summaryQty: "Tổng số lượng",
+            summaryLow: "Sắp hết",
+            table: {
+              swatch: "Màu",
+              brand: "Hãng",
+              code: "Mã",
+              name: "Tên",
+              qty: "SL",
+              unit: "Đơn vị",
+              location: "Vị trí",
+              updated: "Cập nhật",
+              actions: "Thao tác"
+            },
+            empty: "Chưa có dữ liệu tồn kho.",
+            modalAdd: "Thêm tồn kho",
+            modalEdit: "Sửa tồn kho",
+            modalSave: "Lưu",
+            modalCancel: "Huỷ",
+            fields: {
+              brand: "Hãng",
+              code: "Mã",
+              name: "Tên",
+              hex: "Hex",
+              qty: "Số lượng",
+              unit: "Đơn vị",
+              location: "Vị trí",
+              minQty: "Tồn tối thiểu",
+              note: "Ghi chú"
+            },
+            actionEdit: "Sửa",
+            actionDelete: "Xoá",
+            confirmDelete: "Xoá mục này?"
+          }
         },
       hero: {
         title: "Không gian chuẩn hóa màu của bạn",
