@@ -20,11 +20,14 @@
           communityContribute: "Đóng góp dữ liệu",
           communityVerify: "Xác minh",
           spaceVault: "Kho chỉ",
-          spaceLibrary: "Bản lưu"
+        spaceLibrary: "Kết quả đã lưu"
         },
         vault: {
           title: "Kho chỉ",
-          desc: "Không gian này đang được hoàn thiện. Quay lại sau nhé."
+          desc: "Không gian này đang được hoàn thiện. Quay lại sau nhé.",
+          tabSaved: "Kết quả đã lưu",
+          tabStock: "Tồn kho",
+          stockPlaceholder: "Tồn kho đang được chuẩn bị."
         },
       hero: {
         title: "Không gian chuẩn hóa màu của bạn",
@@ -217,14 +220,14 @@
           recent: "Gần đây"
         },
         library: {
-          title: "Thư viện của tôi",
+          title: "Kết quả đã lưu",
           loading: "Đang tải...",
           empty: "Chưa có bản lưu",
           open: "Mở",
           export: "Xuất CSV",
           exported: "Đã xuất CSV",
           error: "Không tải được thư viện",
-          loadedFrom: "Đã tải từ Thư viện của tôi {stamp}"
+          loadedFrom: "Đã tải từ Kết quả đã lưu {stamp}"
         },
         inspector: {
           copyAllLabel: "Tất cả"
@@ -311,7 +314,7 @@
           login: "Đăng nhập"
         },
         library: {
-          title: "Thư viện của tôi",
+          title: "Kết quả đã lưu",
           loading: "Đang tải..."
         },
         contribute: {

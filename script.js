@@ -1696,6 +1696,10 @@ document.addEventListener("tc-auth-action", (event) => {
   const auth = window.tcAuth || null;
   const isLoggedIn = typeof auth?.isLoggedIn === "function" ? auth.isLoggedIn() : false;
   if (openAction === "library") {
+    if (String(window.location.pathname || "").includes("/worlds/threadcolor.html")) {
+      window.location.href = "threadvault.html?tab=saved";
+      return;
+    }
     handleAuthAction(openAction);
     return;
   }
