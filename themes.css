@@ -1,4 +1,8 @@
 :root {
+  --z-topbar: 2000;
+  --z-topbar-menu: 4000;
+  --z-actionbar: 1500;
+  --z-actionbar-menu: 3000;
   --bg0: radial-gradient(circle at 20% 20%, rgba(96, 223, 255, 0.18), transparent 35%), radial-gradient(circle at 80% 0%, rgba(255, 140, 255, 0.2), transparent 40%), #060713;
   --panel: rgba(255, 255, 255, 0.06);
   --border: rgba(255, 255, 255, 0.12);

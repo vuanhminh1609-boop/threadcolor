@@ -176,13 +176,18 @@
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
       position: sticky;
       top: 0;
-      z-index: 30;
+      z-index: var(--z-topbar, 2000) !important;
+      overflow: visible;
     }
     .tc-topbar::after{
       content:"";
       position:absolute; left:0; right:0; bottom:-1px; height:1px;
       background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
       opacity: .35;
+    }
+    #portalMenu,
+    #worldMenu{
+      z-index: var(--z-topbar-menu, 4000) !important;
     }
     .tc-brand {
       font-weight: 700;

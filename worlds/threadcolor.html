@@ -117,6 +117,8 @@
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
       transition: box-shadow .2s ease, backdrop-filter .2s ease, background-color .2s ease;
       will-change: box-shadow, backdrop-filter;
+      z-index: var(--z-topbar, 2000) !important;
+      overflow: visible;
     }
     .tc-brand {
       font-weight: 700;
@@ -612,17 +614,22 @@
       background: rgba(255,255,255,.08);
     }
     .w1-actionbar {
-      position: relative;
+      position: sticky;
+      top: var(--tc-topbar-h, 64px);
       overflow: visible;
-      z-index: 60;
+      z-index: var(--z-actionbar, 1500) !important;
     }
     .w1-actionbar > div {
       overflow: visible;
     }
     .w1-actionbar .tc-menu {
       position: absolute;
-      z-index: 9999;
+      z-index: var(--z-actionbar-menu, 3000) !important;
       top: calc(100% + 8px);
+    }
+    #portalMenu,
+    #worldMenu {
+      z-index: var(--z-topbar-menu, 4000) !important;
     }
   </style>
 </head>
