@@ -462,6 +462,9 @@ function bindTopbarAuthDelegation() {
     if (manageBtn) {
       event.stopPropagation();
       closeMenu();
+      const returnUrl = encodeURIComponent(window.location.href);
+      const accountPath = window.location.pathname.includes("/worlds/") ? "../account.html" : "./account.html";
+      window.location.href = `${accountPath}?return=${returnUrl}`;
       return;
     }
     const menuActionBtn = event.target.closest("#btnLibrary, #btnContribute, #btnVerify");

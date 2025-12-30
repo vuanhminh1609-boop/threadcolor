@@ -178,8 +178,8 @@
         copy: "Sao chép CSS"
       },
       gallery: {
-        title: "Bộ sưu tập Thế giới",
-        desc: "8 Thế giới, 8 sắc thái cảm giác.",
+        title: "Bộ sưu tập sắc thái",
+        desc: "8 sắc thái cảm giác.",
         activate: "Kích hoạt",
         aria: {
           nebula: "Kích hoạt Thế giới: Tinh vân",
