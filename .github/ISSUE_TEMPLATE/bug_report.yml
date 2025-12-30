@@ -1,0 +1,41 @@
+name: "Báo lỗi"
+description: "Báo lỗi để đội ngũ xử lý"
+title: "[Bug] "
+labels: ["Bug", "P1-Quan trọng"]
+body:
+  - type: markdown
+    attributes:
+      value: "Vui lòng điền đầy đủ thông tin để tái hiện lỗi."
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Mô tả lỗi"
+      description: "Lỗi xảy ra như thế nào?"
+      placeholder: "VD: Khi bấm tìm mã chỉ gần nhất thì không ra kết quả."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Các bước tái hiện"
+      description: "Liệt kê từng bước"
+      placeholder: "1) ...\n2) ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Kỳ vọng"
+      placeholder: "VD: Kết quả phải hiển thị danh sách mã chỉ."
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: "Môi trường"
+      placeholder: "Chrome 123 / Windows 11"
+  - type: textarea
+    id: attachments
+    attributes:
+      label: "Ảnh/Screenshot (nếu có)"
+      placeholder: "Kéo thả ảnh hoặc dán link."

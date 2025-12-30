@@ -1,0 +1,25 @@
+name: "Đề xuất tính năng"
+description: "Đề xuất tính năng hoặc cải tiến"
+title: "[Feature] "
+labels: ["Tính năng", "P2-Nâng cấp"]
+body:
+  - type: markdown
+    attributes:
+      value: "Mô tả ngắn gọn nhu cầu và giá trị."
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Vấn đề / Nhu cầu"
+      placeholder: "VD: Cần thêm bộ lọc theo nhóm màu."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Giải pháp đề xuất"
+      placeholder: "VD: Thêm dropdown nhóm màu ở khu lọc."
+  - type: textarea
+    id: done
+    attributes:
+      label: "Tiêu chí hoàn thành"
+      placeholder: "- [ ] ...\n- [ ] ..."
