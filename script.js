@@ -63,6 +63,67 @@ function ensureLab(thread) {
   return thread.lab;
 }
 
+function normalizeBrandKey(name) {
+  return String(name || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
+}
+
+function normalizeCodeKey(code) {
+  return String(code || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, " ");
+}
+
+function isVerifiedThread(thread) {
+  const conf = typeof thread?.confidence === "number" ? thread.confidence : 0;
+  return conf >= 0.85 || thread?.source?.type === "CROWD_VERIFIED";
+}
+
+function rebuildIndexes(list = threads) {
+  const byBrand = new Map();
+  const byCode = new Map();
+  const byCanonical = new Map();
+  const brandKeyMap = new Map();
+
+  list.forEach((thread) => {
+    if (!thread) return;
+    const brandName = (thread.brand || "").trim();
+    const codeValue = (thread.code || "").trim();
+    if (!brandName || !codeValue) return;
+    const brandKey = normalizeBrandKey(brandName);
+    const codeKey = normalizeCodeKey(codeValue);
+    if (!brandKey || !codeKey) return;
+    const canonicalKey = `${brandKey}::${codeKey}`;
+
+    if (!byBrand.has(brandName)) byBrand.set(brandName, []);
+    byBrand.get(brandName).push(thread);
+
+    if (!byCode.has(codeKey)) byCode.set(codeKey, []);
+    byCode.get(codeKey).push(thread);
+
+    if (!byCanonical.has(canonicalKey)) {
+      byCanonical.set(canonicalKey, thread);
+    }
+
+    if (!brandKeyMap.has(brandKey) || brandName.length > brandKeyMap.get(brandKey).length) {
+      brandKeyMap.set(brandKey, brandName);
+    }
+  });
+
+  threadsByBrand = byBrand;
+  threadsByCode = byCode;
+  threadsByCanonicalKey = byCanonical;
+  brandKeyToName = brandKeyMap;
+  brandNamesSorted = Array.from(brandKeyMap.entries())
+    .map(([key, name]) => ({ key, name }))
+    .sort((a, b) => b.name.length - a.name.length);
+}
+
 function deltaE76(lab1, lab2) {
   return Math.sqrt(
     (lab1[0] - lab2[0]) ** 2 +
@@ -178,6 +239,11 @@ let isAdminUser = false;
 let useVerifiedOnly = false;
 let verifiedThreads = [];
 let pendingSubmissions = [];
+let threadsByBrand = new Map();
+let threadsByCode = new Map();
+let threadsByCanonicalKey = new Map();
+let brandNamesSorted = [];
+let brandKeyToName = new Map();
 const matchCache = new Map();
 const MATCH_CACHE_LIMIT = 60;
 const MATCH_DEBOUNCE_MS = 160;
@@ -460,6 +526,7 @@ function mergeVerifiedThreads(list) {
   });
   threads = Array.from(map.values());
   matchCache.clear();
+  rebuildIndexes(threads);
   const brands = getUniqueBrands(threads);
   renderBrandFilters(brands);
   populateContributeBrands(brands);
@@ -575,6 +642,7 @@ function loadThreads() {
     matchCache.clear();
     labCache.clear();
     threads = normalized.map(t => ({ ...t }));
+    rebuildIndexes(threads);
     initSearchWorker(threads);
     const brands = getUniqueBrands(threads);
     renderBrandFilters(brands);
@@ -606,6 +674,22 @@ function getSelectedBrands() {
   return [...document.querySelectorAll(".brand-filter:checked")].map(cb => cb.value);
 }
 
+function addTopK(list, item, limit) {
+  if (list.length < limit) {
+    list.push(item);
+    return;
+  }
+  let worstIndex = 0;
+  let worst = list[0].delta;
+  for (let i = 1; i < list.length; i += 1) {
+    if (list[i].delta > worst) {
+      worst = list[i].delta;
+      worstIndex = i;
+    }
+  }
+  if (item.delta < worst) list[worstIndex] = item;
+}
+
 function findNearestColors(chosenHex, limit = 100, method = "76") {
   const normalized = normalizeHex(chosenHex);
   if (!normalized) return [];
@@ -614,21 +698,88 @@ function findNearestColors(chosenHex, limit = 100, method = "76") {
   const brands = getSelectedBrands();
   if (!brands.length) return [];
   const requireVerified = useVerifiedOnly;
-  return threads
-    .filter(t => brands.includes(t.brand))
-    .filter(t => {
-      if (!requireVerified) return true;
-      const conf = typeof t.confidence === "number" ? t.confidence : 0;
-      return conf >= 0.85 || t.source?.type === "CROWD_VERIFIED";
-    })
-    .map(t => {
-      const lab = ensureLab(t);
-      if (!lab) return null;
-      return { ...t, lab, delta: getDelta(chosenLab, lab, method) };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.delta - b.delta)
-    .slice(0, limit);
+  const lists = brands.map(brand => threadsByBrand.get(brand) || []);
+  if (!lists.length) return [];
+
+  if (method === "2000") {
+    const candidateCount = Math.max(limit * 20, 200);
+    const candidates = [];
+    for (const list of lists) {
+      for (const thread of list) {
+        if (requireVerified && !isVerifiedThread(thread)) continue;
+        const lab = ensureLab(thread);
+        if (!lab) continue;
+        const deltaFast = deltaE76(chosenLab, lab);
+        addTopK(candidates, { thread, lab, delta: deltaFast }, candidateCount);
+      }
+    }
+    const results = [];
+    for (const candidate of candidates) {
+      const delta = deltaE2000(chosenLab, candidate.lab);
+      addTopK(results, { ...candidate.thread, lab: candidate.lab, delta }, limit);
+    }
+    return results.sort((a, b) => a.delta - b.delta);
+  }
+
+  const results = [];
+  for (const list of lists) {
+    for (const thread of list) {
+      if (requireVerified && !isVerifiedThread(thread)) continue;
+      const lab = ensureLab(thread);
+      if (!lab) continue;
+      const delta = deltaE76(chosenLab, lab);
+      addTopK(results, { ...thread, lab, delta }, limit);
+    }
+  }
+  return results.sort((a, b) => a.delta - b.delta);
+}
+
+function parseCodeQuery(raw) {
+  const trimmed = String(raw || "").trim();
+  if (!trimmed) return null;
+  const lower = trimmed.toLowerCase();
+
+  for (const entry of brandNamesSorted) {
+    if (!entry?.name) continue;
+    const nameLower = entry.name.toLowerCase();
+    if (lower.startsWith(nameLower + " ")) {
+      const codePart = trimmed.slice(entry.name.length).trim();
+      const codeKey = normalizeCodeKey(codePart);
+      if (codeKey) {
+        return { mode: "brand", brand: entry.name, brandKey: entry.key, codeKey };
+      }
+    }
+  }
+
+  const parts = trimmed.split(/\s+/);
+  if (parts.length >= 2) {
+    const possibleBrand = parts.slice(0, -1).join(" ");
+    const brandKey = normalizeBrandKey(possibleBrand);
+    const mappedBrand = brandKeyToName.get(brandKey);
+    const codeKey = normalizeCodeKey(parts[parts.length - 1]);
+    if (mappedBrand && codeKey) {
+      return { mode: "brand", brand: mappedBrand, brandKey, codeKey };
+    }
+  }
+
+  const codeKey = normalizeCodeKey(trimmed);
+  if (codeKey) return { mode: "code", codeKey };
+  return null;
+}
+
+function renderCodeLookupResults(codeLabel, items) {
+  if (!resultBox) return;
+  const count = items.length;
+  const title = count
+    ? t("tc.code.found", "Tìm thấy {count} kết quả cho mã {code}.", { count, code: codeLabel })
+    : t("tc.code.notFound", "Không tìm thấy kết quả cho mã {code}.", { code: codeLabel });
+  const header = `<div class="mb-4 text-sm tc-muted">${title}</div>`;
+  if (!count) {
+    resultBox.innerHTML = header;
+    return;
+  }
+  const cards = items.map(item => renderColorCard(item, item.hex)).join("");
+  resultBox.innerHTML = `${header}<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">${cards}</div>`;
 }
 
 function initSearchWorker(payloadThreads) {
@@ -2082,14 +2233,60 @@ canvas?.addEventListener("click", e => {
 
 // Find by code
 btnFindByCode?.addEventListener("click", () => {
+  if (!isDataReady) {
+    showToast(t("tc.status.loading", "Đang chuẩn bị dữ liệu..."));
+    return;
+  }
+  const rawQuery = codeInput.value.trim();
+  if (!rawQuery) {
+    showToast(t("tc.code.empty", "Vui lòng nhập mã."));
+    return;
+  }
+  const parsed = parseCodeQuery(rawQuery);
+  if (!parsed) {
+    showToast(t("tc.code.invalid", "Mã không hợp lệ."));
+    return;
+  }
 
-  if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
-  const query = codeInput.value.trim().toLowerCase();
-  if (!query) return;
-  const found = threads.find(t => `${t.brand} ${t.code}`.toLowerCase() === query);
-  if (!found) return alert("Không tìm thấy mã này");
+  const selectedBrands = getSelectedBrands();
+  const requireVerified = useVerifiedOnly;
+  let results = [];
 
-  runSearch(found.hex);
+  if (parsed.mode === "brand") {
+    if (selectedBrands.length && !selectedBrands.includes(parsed.brand)) {
+      showToast(t("tc.code.brandNotSelected", "Hãng này chưa được chọn."));
+      renderCodeLookupResults(rawQuery, []);
+      return;
+    }
+    const list = threadsByBrand.get(parsed.brand) || [];
+    results = list.filter(t => normalizeCodeKey(t.code) === parsed.codeKey)
+      .filter(t => !requireVerified || isVerifiedThread(t));
+  } else {
+    const list = threadsByCode.get(parsed.codeKey) || [];
+    results = list.filter(t => selectedBrands.includes(t.brand))
+      .filter(t => !requireVerified || isVerifiedThread(t));
+  }
+
+  if (!results.length) {
+    showToast(t("tc.code.notFoundToast", "Không tìm thấy mã này."));
+    renderCodeLookupResults(rawQuery, []);
+    return;
+  }
+  if (results.length === 1) {
+    const item = results[0];
+    openInspector({
+      hex: item.hex,
+      brand: item.brand || "",
+      code: item.code || "",
+      name: item.name || "",
+      delta: "",
+      lab: ensureLab(item)
+    }, null);
+    runSearch(item.hex);
+    return;
+  }
+  results.sort((a, b) => a.brand.localeCompare(b.brand) || String(a.code).localeCompare(String(b.code)));
+  renderCodeLookupResults(rawQuery, results);
 });
 
 if (btnPickScreen) {

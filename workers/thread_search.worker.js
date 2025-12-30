@@ -1,5 +1,37 @@
 let threads = [];
 let labCache = new Map();
+let threadsByBrand = new Map();
+
+function isVerifiedThread(thread) {
+  const conf = typeof thread?.confidence === "number" ? thread.confidence : 0;
+  return conf >= 0.85 || thread?.source?.type === "CROWD_VERIFIED";
+}
+
+function buildIndexes(list) {
+  const byBrand = new Map();
+  list.forEach((thread) => {
+    if (!thread || !thread.brand) return;
+    if (!byBrand.has(thread.brand)) byBrand.set(thread.brand, []);
+    byBrand.get(thread.brand).push(thread);
+  });
+  threadsByBrand = byBrand;
+}
+
+function addTopK(list, item, limit) {
+  if (list.length < limit) {
+    list.push(item);
+    return;
+  }
+  let worstIndex = 0;
+  let worst = list[0].delta;
+  for (let i = 1; i < list.length; i += 1) {
+    if (list[i].delta > worst) {
+      worst = list[i].delta;
+      worstIndex = i;
+    }
+  }
+  if (item.delta < worst) list[worstIndex] = item;
+}
 
 function normalizeHex(hex) {
   if (!hex || typeof hex !== "string") return null;
@@ -104,6 +136,7 @@ self.onmessage = (event) => {
   if (data.type === "init") {
     threads = Array.isArray(data.threads) ? data.threads : [];
     labCache = new Map();
+    buildIndexes(threads);
     self.postMessage({ type: "ready" });
     return;
   }
@@ -121,31 +154,61 @@ self.onmessage = (event) => {
     const requireVerified = !!payload.verifiedOnly;
     const method = payload.method === "2000" ? "2000" : "76";
     const limit = typeof payload.limit === "number" ? payload.limit : 100;
-    const results = [];
-    for (const t of threads) {
-      if (brands.length && !brands.includes(t.brand)) continue;
-      if (requireVerified) {
-        const conf = typeof t.confidence === "number" ? t.confidence : 0;
-        if (!(conf >= 0.85 || t.source?.type === "CROWD_VERIFIED")) continue;
+    const lists = brands.length ? brands.map(brand => threadsByBrand.get(brand) || []) : [threads];
+    if (method === "2000") {
+      const candidateCount = Math.max(limit * 20, 200);
+      const candidates = [];
+      for (const list of lists) {
+        for (const t of list) {
+          if (requireVerified && !isVerifiedThread(t)) continue;
+          const lab = t.lab && Array.isArray(t.lab) && t.lab.length === 3 ? t.lab : getLabForHex(t.hex);
+          if (!lab) continue;
+          const deltaFast = deltaE76(targetLab, lab);
+          addTopK(candidates, { thread: t, lab, delta: deltaFast }, candidateCount);
+        }
       }
-      const lab = t.lab && Array.isArray(t.lab) && t.lab.length === 3 ? t.lab : getLabForHex(t.hex);
-      if (!lab) continue;
-      const delta = getDelta(targetLab, lab, method);
-      results.push({
-        hex: t.hex,
-        brand: t.brand,
-        code: t.code,
-        name: t.name,
-        source: t.source,
-        confidence: t.confidence,
-        lab,
-        delta
-      });
+      const results = [];
+      for (const candidate of candidates) {
+        const delta = deltaE2000(targetLab, candidate.lab);
+        addTopK(results, {
+          hex: candidate.thread.hex,
+          brand: candidate.thread.brand,
+          code: candidate.thread.code,
+          name: candidate.thread.name,
+          source: candidate.thread.source,
+          confidence: candidate.thread.confidence,
+          lab: candidate.lab,
+          delta
+        }, limit);
+      }
+      results.sort((a, b) => a.delta - b.delta);
+      const stats = { ms: Date.now() - start, total: candidates.length };
+      self.postMessage({ id, results, stats });
+      return;
+    }
+
+    const results = [];
+    for (const list of lists) {
+      for (const t of list) {
+        if (requireVerified && !isVerifiedThread(t)) continue;
+        const lab = t.lab && Array.isArray(t.lab) && t.lab.length === 3 ? t.lab : getLabForHex(t.hex);
+        if (!lab) continue;
+        const delta = deltaE76(targetLab, lab);
+        addTopK(results, {
+          hex: t.hex,
+          brand: t.brand,
+          code: t.code,
+          name: t.name,
+          source: t.source,
+          confidence: t.confidence,
+          lab,
+          delta
+        }, limit);
+      }
     }
     results.sort((a, b) => a.delta - b.delta);
-    const trimmed = results.slice(0, limit);
     const stats = { ms: Date.now() - start, total: results.length };
-    self.postMessage({ id, results: trimmed, stats });
+    self.postMessage({ id, results, stats });
   } catch (err) {
     self.postMessage({ id, error: err?.message || "worker-search-failed" });
   }

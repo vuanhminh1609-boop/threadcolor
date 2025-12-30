@@ -4,7 +4,9 @@ const CONFIDENCE_MAP = {
   TCH: 0.9,
   OFFICIAL_CHART: 0.95,
   USER_SUBMISSION: 0.5,
-  MANUAL: 0.6
+  MANUAL: 0.6,
+  LEGACY_JSON: 0.9,
+  RUNTIME_JSON: 0.86
 };
 
 function normalizeWhitespace(value) {
