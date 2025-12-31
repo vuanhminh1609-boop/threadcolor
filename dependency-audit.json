@@ -6,29 +6,71 @@
     "worlds/threadcolor.html",
     "worlds/threadvault.html"
   ],
+  "stats": {
+    "total": 41,
+    "reachable": 15,
+    "unreachable": 26,
+    "missing": 2,
+    "suspected_runtime": 0,
+    "ignored_builtin": 7,
+    "ignored_external": 3
+  },
+  "missing": [
+    {
+      "from": "tools/validate_threads.mjs",
+      "rawRef": "../threads.cleaned.json",
+      "resolvedRef": "threads.cleaned.json",
+      "kind": "internal",
+      "note": "Không tìm thấy file"
+    },
+    {
+      "from": "tools/validate_threads.mjs",
+      "rawRef": "../threads.conflicts.json",
+      "resolvedRef": "threads.conflicts.json",
+      "kind": "internal",
+      "note": "Không tìm thấy file"
+    }
+  ],
+  "suspected_runtime": [],
   "nodes": [
     {
       "path": ".github/CODEOWNERS",
-      "refs_out": [],
-      "refs_in": []
+      "type": "",
+      "reachable": false,
+      "category": "tooling",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".yml",
+      "reachable": false,
+      "category": "tooling",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".yml",
+      "reachable": false,
+      "category": "tooling",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": ".github/pull_request_template.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "account.html",
+      "type": ".html",
+      "reachable": true,
+      "category": "runtime",
+      "refs_in": [],
       "refs_out": [
         "index.html",
         "assets/spacecolors-logo-topbar.png",
@@ -38,11 +80,20 @@
         "worlds/threadcolor.html",
         "worlds/palette.html",
         "auth.js"
-      ],
-      "refs_in": []
+      ]
     },
     {
       "path": "index.html",
+      "type": ".html",
+      "reachable": true,
+      "category": "runtime",
+      "refs_in": [
+        "account.html",
+        "index.html",
+        "worlds/palette.html",
+        "worlds/threadcolor.html",
+        "worlds/threadvault.html"
+      ],
       "refs_out": [
         "index.html",
         "assets/spacecolors-logo-topbar.png",
@@ -53,28 +104,42 @@
         "worlds/threadcolor.html",
         "i18n.js",
         "auth.js"
-      ],
-      "refs_in": [
-        "account.html",
-        "index.html",
-        "worlds/palette.html",
-        "worlds/threadcolor.html",
-        "worlds/threadvault.html"
       ]
     },
     {
       "path": "assets/spacecolors-logo-topbar.png",
-      "refs_out": [],
+      "type": ".png",
+      "reachable": true,
+      "category": "asset",
       "refs_in": [
         "account.html",
         "index.html",
         "worlds/palette.html",
         "worlds/threadcolor.html",
         "worlds/threadvault.html"
-      ]
+      ],
+      "refs_out": []
     },
     {
       "path": "worlds/threadcolor.html",
+      "type": ".html",
+      "reachable": true,
+      "category": "runtime",
+      "refs_in": [
+        "account.html",
+        "account.html",
+        "index.html",
+        "index.html",
+        "index.html",
+        "index.html",
+        "worlds/palette.html",
+        "worlds/palette.html",
+        "worlds/threadcolor.html",
+        "worlds/threadvault.html",
+        "worlds/threadvault.html",
+        "worlds/threadvault.html",
+        "worlds/threadvault.html"
+      ],
       "refs_out": [
         "index.html",
         "assets/spacecolors-logo-topbar.png",
@@ -84,25 +149,21 @@
         "i18n.js",
         "auth.js",
         "script.js"
-      ],
-      "refs_in": [
-        "account.html",
-        "account.html",
-        "index.html",
-        "index.html",
-        "index.html",
-        "index.html",
-        "worlds/palette.html",
-        "worlds/palette.html",
-        "worlds/threadcolor.html",
-        "worlds/threadvault.html",
-        "worlds/threadvault.html",
-        "worlds/threadvault.html",
-        "worlds/threadvault.html"
       ]
     },
     {
       "path": "worlds/palette.html",
+      "type": ".html",
+      "reachable": true,
+      "category": "runtime",
+      "refs_in": [
+        "account.html",
+        "account.html",
+        "index.html",
+        "worlds/palette.html",
+        "worlds/threadcolor.html",
+        "worlds/threadvault.html"
+      ],
       "refs_out": [
         "index.html",
         "assets/spacecolors-logo-topbar.png",
@@ -110,18 +171,17 @@
         "worlds/palette.html",
         "worlds/threadcolor.html",
         "auth.js"
-      ],
-      "refs_in": [
-        "account.html",
-        "account.html",
-        "index.html",
-        "worlds/palette.html",
-        "worlds/threadcolor.html",
-        "worlds/threadvault.html"
       ]
     },
     {
       "path": "worlds/threadvault.html",
+      "type": ".html",
+      "reachable": true,
+      "category": "runtime",
+      "refs_in": [
+        "account.html",
+        "worlds/threadcolor.html"
+      ],
       "refs_out": [
         "index.html",
         "assets/spacecolors-logo-topbar.png",
@@ -134,569 +194,570 @@
         "auth.js",
         "script.js",
         "stock.js"
-      ],
-      "refs_in": [
-        "account.html",
-        "worlds/threadcolor.html"
       ]
     },
     {
       "path": "auth.js",
-      "refs_out": [],
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
       "refs_in": [
         "account.html",
         "index.html",
         "worlds/palette.html",
         "worlds/threadcolor.html",
         "worlds/threadvault.html"
-      ]
+      ],
+      "refs_out": []
     },
     {
       "path": "assets/Logo SpaceColors.png",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".png",
+      "reachable": false,
+      "category": "asset",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "assets/spacecolors-mark-512.png",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".png",
+      "reachable": false,
+      "category": "asset",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "assets/spacecolors-mark-64.png",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".png",
+      "reachable": false,
+      "category": "asset",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "CONTRIBUTING.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "crowd.js",
-      "refs_out": [
-        "data_normalize.js"
-      ],
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
       "refs_in": [
         "script.js"
+      ],
+      "refs_out": [
+        "data_normalize.js"
       ]
     },
     {
       "path": "data_normalize.js",
-      "refs_out": [],
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
       "refs_in": [
         "crowd.js",
         "script.js",
         "tools/import_tch.mjs"
-      ]
+      ],
+      "refs_out": []
     },
     {
       "path": "data/raw_tch/Ackerman Isacord 30.tch",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".tch",
+      "reachable": false,
+      "category": "runtime",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "data/threads.generated.json",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".json",
+      "reachable": false,
+      "category": "data",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "dependency-audit.json",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".json",
+      "reachable": false,
+      "category": "data",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "dependency-audit.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "DOC/00_TOAN_CANH.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "DOC/01_WORKFLOW.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "DOC/02_QUAN_TRI_GITHUB.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "DOC/REPO_SNAPSHOT.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "firestore.rules",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".rules",
+      "reachable": false,
+      "category": "runtime",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "i18n.js",
-      "refs_out": [],
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
       "refs_in": [
         "index.html",
         "worlds/threadcolor.html",
         "worlds/threadvault.html"
-      ]
+      ],
+      "refs_out": []
     },
     {
       "path": "library.js",
-      "refs_out": [],
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
       "refs_in": [
         "script.js"
-      ]
+      ],
+      "refs_out": []
     },
     {
       "path": "README.md",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "script.js",
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
+      "refs_in": [
+        "worlds/threadcolor.html",
+        "worlds/threadvault.html"
+      ],
       "refs_out": [
         "library.js",
         "data_normalize.js",
         "crowd.js",
-        "workers/thread_search.worker.js"
-      ],
-      "refs_in": [
-        "worlds/threadcolor.html",
-        "worlds/threadvault.html"
+        "workers/thread_search.worker.js",
+        "threads.json",
+        "threads.json"
       ]
     },
     {
       "path": "workers/thread_search.worker.js",
-      "refs_out": [],
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
       "refs_in": [
         "script.js"
-      ]
-    },
-    {
-      "path": "SECURITY.md",
-      "refs_out": [],
-      "refs_in": []
-    },
-    {
-      "path": "stock.js",
-      "refs_out": [],
-      "refs_in": [
-        "worlds/threadvault.html"
-      ]
-    },
-    {
-      "path": "style.css",
-      "refs_out": [],
-      "refs_in": []
-    },
-    {
-      "path": "themes.css",
-      "refs_out": [],
-      "refs_in": []
+      ],
+      "refs_out": []
     },
     {
       "path": "threads.json",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".json",
+      "reachable": true,
+      "category": "data",
+      "refs_in": [
+        "script.js",
+        "script.js",
+        "tools/normalize_threads.mjs",
+        "tools/validate_threads.mjs"
+      ],
+      "refs_out": []
+    },
+    {
+      "path": "SECURITY.md",
+      "type": ".md",
+      "reachable": false,
+      "category": "doc",
+      "refs_in": [],
+      "refs_out": []
+    },
+    {
+      "path": "stock.js",
+      "type": ".js",
+      "reachable": true,
+      "category": "runtime",
+      "refs_in": [
+        "worlds/threadvault.html"
+      ],
+      "refs_out": []
+    },
+    {
+      "path": "style.css",
+      "type": ".css",
+      "reachable": false,
+      "category": "runtime",
+      "refs_in": [],
+      "refs_out": []
+    },
+    {
+      "path": "themes.css",
+      "type": ".css",
+      "reachable": false,
+      "category": "runtime",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "tools/bootstrap_admin.mjs",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".mjs",
+      "reachable": false,
+      "category": "tooling",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "tools/dependency_audit.mjs",
-      "refs_out": [],
-      "refs_in": []
+      "type": ".mjs",
+      "reachable": false,
+      "category": "tooling",
+      "refs_in": [],
+      "refs_out": []
     },
     {
       "path": "tools/import_tch.mjs",
+      "type": ".mjs",
+      "reachable": false,
+      "category": "tooling",
+      "refs_in": [],
       "refs_out": [
         "data_normalize.js"
-      ],
-      "refs_in": []
+      ]
     },
     {
       "path": "tools/normalize_threads.mjs",
+      "type": ".mjs",
+      "reachable": false,
+      "category": "tooling",
+      "refs_in": [],
       "refs_out": [
-        "tools/validate_threads.mjs"
-      ],
-      "refs_in": []
+        "tools/validate_threads.mjs",
+        "threads.json"
+      ]
     },
     {
       "path": "tools/validate_threads.mjs",
-      "refs_out": [],
+      "type": ".mjs",
+      "reachable": false,
+      "category": "tooling",
       "refs_in": [
         "tools/normalize_threads.mjs"
+      ],
+      "refs_out": [
+        "threads.json"
       ]
     }
   ],
   "edges": [
-    [
-      "account.html",
-      "index.html"
-    ],
-    [
-      "account.html",
-      "assets/spacecolors-logo-topbar.png"
-    ],
-    [
-      "account.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "account.html",
-      "worlds/palette.html"
-    ],
-    [
-      "account.html",
-      "worlds/threadvault.html"
-    ],
-    [
-      "account.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "account.html",
-      "worlds/palette.html"
-    ],
-    [
-      "account.html",
-      "auth.js"
-    ],
-    [
-      "crowd.js",
-      "data_normalize.js"
-    ],
-    [
-      "index.html",
-      "index.html"
-    ],
-    [
-      "index.html",
-      "assets/spacecolors-logo-topbar.png"
-    ],
-    [
-      "index.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "index.html",
-      "worlds/palette.html"
-    ],
-    [
-      "index.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "index.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "index.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "index.html",
-      "i18n.js"
-    ],
-    [
-      "index.html",
-      "auth.js"
-    ],
-    [
-      "script.js",
-      "library.js"
-    ],
-    [
-      "script.js",
-      "data_normalize.js"
-    ],
-    [
-      "script.js",
-      "crowd.js"
-    ],
-    [
-      "script.js",
-      "workers/thread_search.worker.js"
-    ],
-    [
-      "tools/import_tch.mjs",
-      "data_normalize.js"
-    ],
-    [
-      "tools/normalize_threads.mjs",
-      "tools/validate_threads.mjs"
-    ],
-    [
-      "worlds/palette.html",
-      "index.html"
-    ],
-    [
-      "worlds/palette.html",
-      "assets/spacecolors-logo-topbar.png"
-    ],
-    [
-      "worlds/palette.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "worlds/palette.html",
-      "worlds/palette.html"
-    ],
-    [
-      "worlds/palette.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "worlds/palette.html",
-      "auth.js"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "index.html"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "assets/spacecolors-logo-topbar.png"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "worlds/palette.html"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "i18n.js"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "auth.js"
-    ],
-    [
-      "worlds/threadcolor.html",
-      "script.js"
-    ],
-    [
-      "worlds/threadvault.html",
-      "index.html"
-    ],
-    [
-      "worlds/threadvault.html",
-      "assets/spacecolors-logo-topbar.png"
-    ],
-    [
-      "worlds/threadvault.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "worlds/threadvault.html",
-      "worlds/palette.html"
-    ],
-    [
-      "worlds/threadvault.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "worlds/threadvault.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "worlds/threadvault.html",
-      "worlds/threadcolor.html"
-    ],
-    [
-      "worlds/threadvault.html",
-      "i18n.js"
-    ],
-    [
-      "worlds/threadvault.html",
-      "auth.js"
-    ],
-    [
-      "worlds/threadvault.html",
-      "script.js"
-    ],
-    [
-      "worlds/threadvault.html",
-      "stock.js"
-    ]
-  ],
-  "missing": [
     {
-      "from": "tools/bootstrap_admin.mjs",
-      "ref": "firebase-admin/app",
-      "rawRef": "firebase-admin/app"
+      "from": "account.html",
+      "to": "index.html",
+      "kind": "internal"
     },
     {
-      "from": "tools/bootstrap_admin.mjs",
-      "ref": "firebase-admin/firestore",
-      "rawRef": "firebase-admin/firestore"
+      "from": "account.html",
+      "to": "assets/spacecolors-logo-topbar.png",
+      "kind": "internal"
     },
     {
-      "from": "tools/bootstrap_admin.mjs",
-      "ref": "fs",
-      "rawRef": "fs"
+      "from": "account.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
     },
     {
-      "from": "tools/dependency_audit.mjs",
-      "ref": "fs",
-      "rawRef": "fs"
+      "from": "account.html",
+      "to": "worlds/palette.html",
+      "kind": "internal"
     },
     {
-      "from": "tools/dependency_audit.mjs",
-      "ref": "path",
-      "rawRef": "path"
+      "from": "account.html",
+      "to": "worlds/threadvault.html",
+      "kind": "internal"
     },
     {
-      "from": "tools/dependency_audit.mjs",
-      "ref": "url",
-      "rawRef": "url"
+      "from": "account.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "account.html",
+      "to": "worlds/palette.html",
+      "kind": "internal"
+    },
+    {
+      "from": "account.html",
+      "to": "auth.js",
+      "kind": "internal"
+    },
+    {
+      "from": "crowd.js",
+      "to": "data_normalize.js",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "index.html",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "assets/spacecolors-logo-topbar.png",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "worlds/palette.html",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "i18n.js",
+      "kind": "internal"
+    },
+    {
+      "from": "index.html",
+      "to": "auth.js",
+      "kind": "internal"
+    },
+    {
+      "from": "script.js",
+      "to": "library.js",
+      "kind": "internal"
+    },
+    {
+      "from": "script.js",
+      "to": "data_normalize.js",
+      "kind": "internal"
+    },
+    {
+      "from": "script.js",
+      "to": "crowd.js",
+      "kind": "internal"
+    },
+    {
+      "from": "script.js",
+      "to": "workers/thread_search.worker.js",
+      "kind": "internal"
+    },
+    {
+      "from": "script.js",
+      "to": "threads.json",
+      "kind": "internal"
+    },
+    {
+      "from": "script.js",
+      "to": "threads.json",
+      "kind": "internal"
     },
     {
       "from": "tools/import_tch.mjs",
-      "ref": "fs/promises",
-      "rawRef": "fs/promises"
-    },
-    {
-      "from": "tools/import_tch.mjs",
-      "ref": "path",
-      "rawRef": "path"
+      "to": "data_normalize.js",
+      "kind": "internal"
     },
     {
       "from": "tools/normalize_threads.mjs",
-      "ref": "node:fs/promises",
-      "rawRef": "node:fs/promises"
+      "to": "tools/validate_threads.mjs",
+      "kind": "internal"
+    },
+    {
+      "from": "tools/normalize_threads.mjs",
+      "to": "threads.json",
+      "kind": "internal"
     },
     {
       "from": "tools/validate_threads.mjs",
-      "ref": "node:fs/promises",
-      "rawRef": "node:fs/promises"
+      "to": "threads.json",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/palette.html",
+      "to": "index.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/palette.html",
+      "to": "assets/spacecolors-logo-topbar.png",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/palette.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/palette.html",
+      "to": "worlds/palette.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/palette.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/palette.html",
+      "to": "auth.js",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "index.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "assets/spacecolors-logo-topbar.png",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "worlds/palette.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "worlds/threadvault.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "i18n.js",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "auth.js",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "to": "script.js",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "index.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "assets/spacecolors-logo-topbar.png",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "worlds/palette.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "worlds/threadcolor.html",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "i18n.js",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "auth.js",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "script.js",
+      "kind": "internal"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "to": "stock.js",
+      "kind": "internal"
     }
-  ],
-  "unreachable": [
-    ".github/CODEOWNERS",
-    ".github/ISSUE_TEMPLATE/bug_report.yml",
-    ".github/ISSUE_TEMPLATE/feature_request.yml",
-    ".github/pull_request_template.md",
-    "assets/Logo SpaceColors.png",
-    "assets/spacecolors-mark-512.png",
-    "assets/spacecolors-mark-64.png",
-    "CONTRIBUTING.md",
-    "data/raw_tch/Ackerman Isacord 30.tch",
-    "data/threads.generated.json",
-    "dependency-audit.json",
-    "dependency-audit.md",
-    "DOC/00_TOAN_CANH.md",
-    "DOC/01_WORKFLOW.md",
-    "DOC/02_QUAN_TRI_GITHUB.md",
-    "DOC/REPO_SNAPSHOT.md",
-    "firestore.rules",
-    "README.md",
-    "SECURITY.md",
-    "style.css",
-    "themes.css",
-    "threads.json",
-    "tools/bootstrap_admin.mjs",
-    "tools/dependency_audit.mjs",
-    "tools/import_tch.mjs",
-    "tools/normalize_threads.mjs",
-    "tools/validate_threads.mjs"
-  ],
-  "referenced_by": {
-    "index.html": [
-      "account.html",
-      "index.html",
-      "worlds/palette.html",
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html"
-    ],
-    "assets/spacecolors-logo-topbar.png": [
-      "account.html",
-      "index.html",
-      "worlds/palette.html",
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html"
-    ],
-    "worlds/threadcolor.html": [
-      "account.html",
-      "account.html",
-      "index.html",
-      "index.html",
-      "index.html",
-      "index.html",
-      "worlds/palette.html",
-      "worlds/palette.html",
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html",
-      "worlds/threadvault.html",
-      "worlds/threadvault.html",
-      "worlds/threadvault.html"
-    ],
-    "worlds/palette.html": [
-      "account.html",
-      "account.html",
-      "index.html",
-      "worlds/palette.html",
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html"
-    ],
-    "worlds/threadvault.html": [
-      "account.html",
-      "worlds/threadcolor.html"
-    ],
-    "auth.js": [
-      "account.html",
-      "index.html",
-      "worlds/palette.html",
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html"
-    ],
-    "data_normalize.js": [
-      "crowd.js",
-      "script.js",
-      "tools/import_tch.mjs"
-    ],
-    "i18n.js": [
-      "index.html",
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html"
-    ],
-    "library.js": [
-      "script.js"
-    ],
-    "crowd.js": [
-      "script.js"
-    ],
-    "workers/thread_search.worker.js": [
-      "script.js"
-    ],
-    "tools/validate_threads.mjs": [
-      "tools/normalize_threads.mjs"
-    ],
-    "script.js": [
-      "worlds/threadcolor.html",
-      "worlds/threadvault.html"
-    ],
-    "stock.js": [
-      "worlds/threadvault.html"
-    ]
-  },
-  "runtime_suspected": [],
-  "stats": {
-    "total": 41,
-    "reachable": 14,
-    "unreachable": 27,
-    "missing": 10
-  }
+  ]
 }
