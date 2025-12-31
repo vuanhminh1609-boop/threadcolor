@@ -36,19 +36,19 @@ function updateCockpit(score, counts, topReasons, trendRows) {
   if (sIdx === -1 || eIdx === -1 || eIdx < sIdx) return;
 
   const block = [];
-  block.push(`Điểm hiện tại: **${score}**`);
+  block.push(`\u0110i\u1ec3m hi\u1ec7n t\u1ea1i: **${score}**`);
   block.push(`- BLOCK: ${counts.block} | WARN: ${counts.warn}`);
   block.push("");
-  block.push("Top lý do:");
+  block.push("Top l\u00fd do:");
   if (!topReasons.length) {
-    block.push("- Không có.");
+    block.push("- Kh\u00f4ng c\u00f3.");
   } else {
     topReasons.slice(0, 3).forEach(r => {
       block.push(`- ${r.level}: ${r.title} (${r.count})`);
     });
   }
   block.push("");
-  block.push("| Ngày | Score | BLOCK | WARN |");
+  block.push("| Ng\u00e0y | Score | BLOCK | WARN |");
   block.push("|---|---:|---:|---:|");
   trendRows.forEach(r => {
     block.push(`| ${r.date} | ${r.score} | ${r.block} | ${r.warn} |`);
@@ -61,7 +61,7 @@ function updateCockpit(score, counts, topReasons, trendRows) {
 }
 
 if (!fs.existsSync(REPORT_JSON)) {
-  console.error("Thiếu reports/repo_health.json");
+  console.error("Thi\u1ebfu reports/repo_health.json");
   process.exit(1);
 }
 

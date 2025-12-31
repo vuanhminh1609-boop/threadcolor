@@ -1,9 +1,9 @@
 {
   "date": "2025-12-31",
-  "health_score": 35,
+  "health_score": 79,
   "counts": {
-    "block": 2,
-    "warn": 5,
+    "block": 0,
+    "warn": 7,
     "info": 3
   },
   "top_reasons": [
@@ -13,8 +13,8 @@
       "count": 4
     },
     {
-      "level": "BLOCK",
-      "title": "Thiếu tham chiếu nội bộ",
+      "level": "WARN",
+      "title": "Thiếu output tooling (được phép)",
       "count": 2
     },
     {

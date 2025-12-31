@@ -47,6 +47,7 @@ const RUNTIME_JS = [
   "library.js",
   "workers/thread_search.worker.js"
 ];
+const GENERATED_OUTPUTS = new Set(["threads.cleaned.json", "threads.conflicts.json"]);
 
 function walk(dir, relBase = "", out = []) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -147,12 +148,20 @@ function fileCategory(rel) {
   return "runtime";
 }
 
+function isRuntimeEntry(relPath) {
+  if (relPath === "index.html" || relPath === "account.html") return true;
+  if (relPath.startsWith("worlds/") && relPath.endsWith(".html")) return true;
+  if (relPath.startsWith("workers/")) return true;
+  return RUNTIME_JS.includes(relPath);
+}
+
 const files = walk(ROOT);
 const absFiles = files.map(f => path.join(ROOT, f));
 const allFiles = new Set(absFiles);
 
 const nodes = {};
 const missing = [];
+const missingWarn = [];
 const refsIn = {};
 let todoCount = 0;
 
@@ -207,12 +216,30 @@ for (const file of absFiles) {
       refsIn[resolved] = refsIn[resolved] || new Set();
       refsIn[resolved].add(file);
     } else {
-      missing.push({
-        title: "Thiếu tham chiếu nội bộ",
-        detail: `Không tìm thấy ${cleanedResolved}`,
-        from: path.relative(ROOT, file).replace(/\\/g, "/"),
-        ref: cleaned
-      });
+      const relFrom = path.relative(ROOT, file).replace(/\\/g, "/");
+      const relMissing = cleanedResolved
+        ? path.relative(ROOT, cleanedResolved).replace(/\\/g, "/")
+        : cleaned;
+      if (GENERATED_OUTPUTS.has(relMissing)) {
+        missingWarn.push({
+          title: "Thi\u1ebfu output tooling (\u0111\u01b0\u1ee3c ph\u00e9p)",
+          detail: `Ch\u01b0a c\u00f3 ${relMissing}`,
+          path: relFrom
+        });
+      } else if (isRuntimeEntry(relFrom)) {
+        missing.push({
+          title: "Thi\u1ebfu tham chi\u1ebfu n\u1ed9i b\u1ed9",
+          detail: `Kh\u00f4ng t\u00ecm th\u1ea5y ${relMissing}`,
+          from: relFrom,
+          ref: cleaned
+        });
+      } else {
+        missingWarn.push({
+          title: "Thi\u1ebfu tham chi\u1ebfu n\u1ed9i b\u1ed9 (tooling/docs)",
+          detail: `Kh\u00f4ng t\u00ecm th\u1ea5y ${relMissing}`,
+          path: relFrom
+        });
+      }
     }
   }
 }
@@ -227,7 +254,7 @@ for (const relPath of RUNTIME_JS) {
   const result = spawnSync("node", ["--check", abs], { encoding: "utf8" });
   if (result.status !== 0) {
     blockIssues.push({
-      title: "Lỗi cú pháp JavaScript",
+      title: "L\u1ed7i c\u00fa ph\u00e1p JavaScript",
       detail: result.stderr.trim() || result.stdout.trim(),
       from: relPath
     });
@@ -237,14 +264,17 @@ for (const relPath of RUNTIME_JS) {
 if (missing.length) {
   for (const item of missing) blockIssues.push(item);
 }
+if (missingWarn.length) {
+  for (const item of missingWarn) warnIssues.push(item);
+}
 
 for (const file of absFiles) {
   const rel = path.relative(ROOT, file).replace(/\\/g, "/");
   const ext = path.extname(file).toLowerCase();
   if ((ASSET_EXT.has(ext) || ext === ".css") && !(refsIn[file]?.size)) {
     warnIssues.push({
-      title: "Asset/CSS không được tham chiếu",
-      detail: "Không có refs_in",
+      title: "Asset/CSS kh\u00f4ng \u0111\u01b0\u1ee3c tham chi\u1ebfu",
+      detail: "Kh\u00f4ng c\u00f3 refs_in",
       path: rel
     });
   }
@@ -252,7 +282,7 @@ for (const file of absFiles) {
     const size = fs.statSync(file).size;
     if (size > 500 * 1024) {
       warnIssues.push({
-        title: "File lớn",
+      title: "File l\u1edbn",
         detail: `${Math.round(size / 1024)} KB`,
         path: rel
       });
@@ -265,14 +295,14 @@ for (const file of absFiles) {
 if (todoCount > 0) {
   warnIssues.push({
     title: "TODO/FIXME",
-    detail: `Tổng ${todoCount} mục`,
+    detail: `T\u1ed5ng ${todoCount} m\u1ee5c`,
     path: "-"
   });
 }
 
 infoIssues.push({
-  title: "Thống kê tổng quan",
-  detail: `Tổng file: ${absFiles.length}`
+  title: "Th\u1ed1ng k\u00ea t\u1ed5ng quan",
+  detail: `T\u1ed5ng file: ${absFiles.length}`
 });
 infoIssues.push({
   title: "Worlds",
@@ -325,8 +355,8 @@ const reportJson = {
   stats: {
     total_files: absFiles.length,
     missing_internal: missing.length,
-    unused_assets: warnIssues.filter(i => i.title === "Asset/CSS không được tham chiếu").length,
-    large_files: warnIssues.filter(i => i.title === "File lớn").length
+    unused_assets: warnIssues.filter(i => i.title === "Asset/CSS kh\u00f4ng \u0111\u01b0\u1ee3c tham chi\u1ebfu").length,
+    large_files: warnIssues.filter(i => i.title === "File l\u1edbn").length
   }
 };
 
@@ -357,17 +387,17 @@ if (!warnIssues.length) {
   });
 }
 md.push("");
-md.push("## Top 5 gợi ý tối ưu sạch & đắt");
-md.push("- Dọn asset/CSS không dùng sau 7 ngày quarantine.");
-md.push("- Giảm file lớn hoặc tách tải theo nhu cầu.");
-md.push("- Giảm TODO/FIXME trong runtime core.");
-md.push("- Giữ missing nội bộ ở mức 0.");
-md.push("- Giữ điểm sức khoẻ > 90.");
+md.push("## Top 5 g\u1ee3i \u00fd t\u1ed1i \u01b0u s\u1ea1ch & \u0111\u1eaft");
+md.push("- D\u1ecdn asset/CSS kh\u00f4ng d\u00f9ng sau 7 ng\u00e0y quarantine.");
+md.push("- Gi\u1ea3m file l\u1edbn ho\u1eb7c t\u00e1ch t\u1ea3i theo nhu c\u1ea7u.");
+md.push("- Gi\u1ea3m TODO/FIXME trong runtime core.");
+md.push("- Gi\u1eef missing n\u1ed9i b\u1ed9 \u1edf m\u1ee9c 0.");
+md.push("- Gi\u1eef \u0111i\u1ec3m s\u1ee9c kho\u1ebb > 90.");
 md.push("");
 
 fs.writeFileSync(path.join(REPORT_DIR, "repo_health.md"), md.join("\n"), "utf8");
 
 if (counts.block > 0) {
-  console.error("BLOCK: Repo Doctor phát hiện lỗi cần xử lý.");
+  console.error("BLOCK: Repo Doctor ph\u00e1t hi\u1ec7n l\u1ed7i c\u1ea7n x\u1eed l\u00fd.");
   process.exit(1);
 }

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2025-12-31T12:04:29.930Z",
-  "health_score": 35,
+  "generated_at": "2025-12-31T12:43:18.664Z",
+  "health_score": 79,
   "counts": {
-    "block": 2,
-    "warn": 5,
+    "block": 0,
+    "warn": 7,
     "info": 3
   },
   "top_reasons": [
@@ -13,8 +13,8 @@
       "count": 4
     },
     {
-      "level": "BLOCK",
-      "title": "Thiếu tham chiếu nội bộ",
+      "level": "WARN",
+      "title": "Thiếu output tooling (được phép)",
       "count": 2
     },
     {
@@ -24,21 +24,18 @@
     }
   ],
   "issues": {
-    "block": [
+    "block": [],
+    "warn": [
       {
-        "title": "Thiếu tham chiếu nội bộ",
-        "detail": "Không tìm thấy D:\\Tuan\\Working\\88Project\\ThreadColorTool\\threads.cleaned.json",
-        "from": "tools/validate_threads.mjs",
-        "ref": "../threads.cleaned.json"
+        "title": "Thiếu output tooling (được phép)",
+        "detail": "Chưa có threads.cleaned.json",
+        "path": "tools/validate_threads.mjs"
       },
       {
-        "title": "Thiếu tham chiếu nội bộ",
-        "detail": "Không tìm thấy D:\\Tuan\\Working\\88Project\\ThreadColorTool\\threads.conflicts.json",
-        "from": "tools/validate_threads.mjs",
-        "ref": "../threads.conflicts.json"
-      }
-    ],
-    "warn": [
+        "title": "Thiếu output tooling (được phép)",
+        "detail": "Chưa có threads.conflicts.json",
+        "path": "tools/validate_threads.mjs"
+      },
       {
         "title": "Asset/CSS không được tham chiếu",
         "detail": "Không có refs_in",
@@ -61,14 +58,14 @@
       },
       {
         "title": "TODO/FIXME",
-        "detail": "Tổng 19 mục",
+        "detail": "Tổng 31 mục",
         "path": "-"
       }
     ],
     "info": [
       {
         "title": "Thống kê tổng quan",
-        "detail": "Tổng file: 46"
+        "detail": "Tổng file: 50"
       },
       {
         "title": "Worlds",
@@ -81,8 +78,8 @@
     ]
   },
   "stats": {
-    "total_files": 46,
-    "missing_internal": 2,
+    "total_files": 50,
+    "missing_internal": 0,
     "unused_assets": 4,
     "large_files": 0
   }

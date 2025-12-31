@@ -1,3 +1,4 @@
 # Output do tools/validate_threads.mjs sinh ra
 threads.cleaned.json
 threads.conflicts.json
+reports/
