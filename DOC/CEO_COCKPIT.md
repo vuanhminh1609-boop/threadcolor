@@ -6,11 +6,17 @@ Tham chiếu nhanh:
 - Architecture: DOC/00_TOAN_CANH.md
 - Runtime Contract: DOC/03_RUNTIME_CONTRACT.md
 
-## ?i?u h?nh (d?nh cho Ch? t?ch & Th? k? t?ng)
-- [01_NOW ? Tu?n n?y ?ang l?m g?](01_NOW.md)
-- [DECISIONS ? S? quy?t ??nh](DECISIONS.md)
-- [RISKS ? S? r?i ro](RISKS.md)
-- [ACTIONS ? H?ng ??i h?nh ??ng](ACTIONS.md)
+## Bộ Điều hành 1-click (dành cho Chủ tịch & Thư ký tổng)
+- [04_CƠ_CẤU_VẬN_HÀNH](04_CƠ_CẤU_VẬN_HÀNH.md)
+- [05_NHỊP_ĐIỀU_HÀNH](05_NHỊP_ĐIỀU_HÀNH.md)
+- [06_TIÊU_CHUẨN_CHẤT_LƯỢNG](06_TIÊU_CHUẨN_CHẤT_LƯỢNG.md)
+
+## Vận hành hằng ngày/hằng tuần
+- [01_NOW — Tuần này đang làm gì](01_NOW.md)
+- [DECISIONS — Sổ quyết định](DECISIONS.md)
+- [RISKS — Sổ rủi ro](RISKS.md)
+- [ACTIONS — Hàng đợi hành động](ACTIONS.md)
+
 
 
 ## Sức khoẻ Repo
