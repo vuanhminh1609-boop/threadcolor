@@ -627,11 +627,52 @@
       z-index: var(--z-actionbar-menu, 3000) !important;
       top: calc(100% + 8px);
     }
-    #portalMenu,
-    #worldMenu {
-      z-index: var(--z-topbar-menu, 4000) !important;
-    }
-  </style>
+      #portalMenu,
+      #worldMenu {
+        z-index: var(--z-topbar-menu, 4000) !important;
+      }
+      @media (max-width: 520px) {
+        .tc-topbar > .max-w-6xl {
+          flex-wrap: wrap;
+          row-gap: 8px;
+          column-gap: 8px;
+        }
+        .tc-topbar > .max-w-6xl > :nth-child(1) {
+          order: 1;
+          min-width: 0;
+        }
+        .tc-topbar > .max-w-6xl > :nth-child(2) {
+          order: 3;
+          flex: 1 1 100%;
+          min-width: 0;
+        }
+        .tc-topbar > .max-w-6xl > :nth-child(3) {
+          order: 2;
+          margin-left: auto;
+        }
+        .tc-topbar #portalSwitcher,
+        .tc-topbar #portalBtn {
+          width: 100%;
+          max-width: 100%;
+        }
+        .tc-topbar [data-i18n="topbar.slogan"] {
+          display: none;
+        }
+        .tc-topbar .tc-brand {
+          max-width: 160px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        #topbarAuthSlot #userName {
+          display: none;
+        }
+        .tc-topbar a,
+        .tc-topbar button {
+          min-height: 40px;
+        }
+      }
+    </style>
 </head>
 <body class="font-sans">
   <header class="tc-topbar sticky top-0 z-30 relative">

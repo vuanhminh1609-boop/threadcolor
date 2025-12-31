@@ -178,13 +178,54 @@
       border-radius: 0.6rem;
       background: rgba(255,255,255,.08);
     }
-    #worldMenu .tc-world-item{
-      color: var(--text);
-      transition: background-color .15s ease, transform .05s ease;
-    }
-    #worldMenu .tc-world-item:hover{ background: rgba(255,255,255,.10); }
-    #worldMenu .tc-world-item:active{ transform: translateY(1px); }
-  </style>
+      #worldMenu .tc-world-item{
+        color: var(--text);
+        transition: background-color .15s ease, transform .05s ease;
+      }
+      #worldMenu .tc-world-item:hover{ background: rgba(255,255,255,.10); }
+      #worldMenu .tc-world-item:active{ transform: translateY(1px); }
+      @media (max-width: 520px) {
+        .tc-topbar > .max-w-6xl {
+          flex-wrap: wrap;
+          row-gap: 8px;
+          column-gap: 8px;
+        }
+        .tc-topbar > .max-w-6xl > :nth-child(1) {
+          order: 1;
+          min-width: 0;
+        }
+        .tc-topbar > .max-w-6xl > :nth-child(2) {
+          order: 3;
+          flex: 1 1 100%;
+          min-width: 0;
+        }
+        .tc-topbar > .max-w-6xl > :nth-child(3) {
+          order: 2;
+          margin-left: auto;
+        }
+        .tc-topbar #portalSwitcher,
+        .tc-topbar #portalBtn {
+          width: 100%;
+          max-width: 100%;
+        }
+        .tc-topbar [data-i18n="topbar.slogan"] {
+          display: none;
+        }
+        .tc-topbar .tc-brand {
+          max-width: 160px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        #topbarAuthSlot #userName {
+          display: none;
+        }
+        .tc-topbar a,
+        .tc-topbar button {
+          min-height: 40px;
+        }
+      }
+    </style>
 </head>
 <body class="font-sans">
   <header class="tc-topbar relative">
