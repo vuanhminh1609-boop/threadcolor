@@ -8,15 +8,13 @@ Tham chiếu nhanh:
 
 ## Sức khoẻ Repo
 <!-- HEALTH_START -->
-Điểm hiện tại: **79**
-- BLOCK: 0 | WARN: 7
+Điểm hiện tại: **97**
+- BLOCK: 0 | WARN: 1
 
 Top lý do:
-- WARN: Asset/CSS không được tham chiếu (4)
-- WARN: Thiếu output tooling (được phép) (2)
 - WARN: TODO/FIXME (1)
 
 | Ngày | Score | BLOCK | WARN |
 |---|---:|---:|---:|
-| 2025-12-31 | 79 | 0 | 7 |
+| 2025-12-31 | 97 | 0 | 1 |
 <!-- HEALTH_END -->

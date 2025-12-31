@@ -1,22 +1,12 @@
 {
   "date": "2025-12-31",
-  "health_score": 79,
+  "health_score": 97,
   "counts": {
     "block": 0,
-    "warn": 7,
-    "info": 3
+    "warn": 1,
+    "info": 5
   },
   "top_reasons": [
-    {
-      "level": "WARN",
-      "title": "Asset/CSS không được tham chiếu",
-      "count": 4
-    },
-    {
-      "level": "WARN",
-      "title": "Thiếu output tooling (được phép)",
-      "count": 2
-    },
     {
       "level": "WARN",
       "title": "TODO/FIXME",

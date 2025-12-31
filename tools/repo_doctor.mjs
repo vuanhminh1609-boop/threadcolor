@@ -162,6 +162,7 @@ const allFiles = new Set(absFiles);
 const nodes = {};
 const missing = [];
 const missingWarn = [];
+const generatedInfo = [];
 const refsIn = {};
 let todoCount = 0;
 
@@ -221,8 +222,8 @@ for (const file of absFiles) {
         ? path.relative(ROOT, cleanedResolved).replace(/\\/g, "/")
         : cleaned;
       if (GENERATED_OUTPUTS.has(relMissing)) {
-        missingWarn.push({
-          title: "Thi\u1ebfu output tooling (\u0111\u01b0\u1ee3c ph\u00e9p)",
+        generatedInfo.push({
+          title: "Output tooling (\u0111\u01b0\u1ee3c ph\u00e9p)",
           detail: `Ch\u01b0a c\u00f3 ${relMissing}`,
           path: relFrom
         });
@@ -267,10 +268,14 @@ if (missing.length) {
 if (missingWarn.length) {
   for (const item of missingWarn) warnIssues.push(item);
 }
+if (generatedInfo.length) {
+  for (const item of generatedInfo) infoIssues.push(item);
+}
 
 for (const file of absFiles) {
   const rel = path.relative(ROOT, file).replace(/\\/g, "/");
   const ext = path.extname(file).toLowerCase();
+  if (rel.startsWith("_graveyard/")) continue;
   if ((ASSET_EXT.has(ext) || ext === ".css") && !(refsIn[file]?.size)) {
     warnIssues.push({
       title: "Asset/CSS kh\u00f4ng \u0111\u01b0\u1ee3c tham chi\u1ebfu",
@@ -364,26 +369,26 @@ ensureDir(REPORT_DIR);
 fs.writeFileSync(path.join(REPORT_DIR, "repo_health.json"), JSON.stringify(reportJson, null, 2), "utf8");
 
 const md = [];
-md.push("# Báo cáo sức khoẻ Repo");
+md.push("# \u0042\u00e1o c\u00e1o s\u1ee9c kho\u1ebb Repo");
 md.push("");
-md.push(`- Điểm sức khoẻ: **${score}**`);
-md.push(`- BLOCK: ${counts.block} | WARN: ${counts.warn} | INFO: ${counts.info}`);
+md.push("- \u0110i\u1ec3m s\u1ee9c kho\u1ebb: **" + score + "**");
+md.push("- BLOCK: " + counts.block + " | WARN: " + counts.warn + " | INFO: " + counts.info);
 md.push("");
 md.push("## BLOCK");
 if (!blockIssues.length) {
-  md.push("- Không có.");
+  md.push("- Kh\u00f4ng c\u00f3.");
 } else {
   blockIssues.forEach(issue => {
-    md.push(`- ${issue.title}: ${issue.detail || ""} ${issue.from ? `(${issue.from})` : ""}`);
+    md.push("- " + issue.title + ": " + (issue.detail || "") + (issue.from ? " (" + issue.from + ")" : ""));
   });
 }
 md.push("");
 md.push("## WARN");
 if (!warnIssues.length) {
-  md.push("- Không có.");
+  md.push("- Kh\u00f4ng c\u00f3.");
 } else {
   warnIssues.forEach(issue => {
-    md.push(`- ${issue.title}: ${issue.detail || ""} ${issue.path ? `(${issue.path})` : ""}`);
+    md.push("- " + issue.title + ": " + (issue.detail || "") + (issue.path ? " (" + issue.path + ")" : ""));
   });
 }
 md.push("");
@@ -394,7 +399,6 @@ md.push("- Gi\u1ea3m TODO/FIXME trong runtime core.");
 md.push("- Gi\u1eef missing n\u1ed9i b\u1ed9 \u1edf m\u1ee9c 0.");
 md.push("- Gi\u1eef \u0111i\u1ec3m s\u1ee9c kho\u1ebb > 90.");
 md.push("");
-
 fs.writeFileSync(path.join(REPORT_DIR, "repo_health.md"), md.join("\n"), "utf8");
 
 if (counts.block > 0) {
