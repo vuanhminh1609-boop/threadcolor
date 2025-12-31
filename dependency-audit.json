@@ -1,0 +1,587 @@
+{
+  "entrypoints": [
+    "account.html",
+    "index.html",
+    "worlds/palette.html",
+    "worlds/threadcolor.html",
+    "worlds/threadvault.html"
+  ],
+  "nodes": [
+    {
+      "path": ".github/CODEOWNERS",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "account.html",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "assets/Logo SpaceColors.png",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "assets/spacecolors-logo-topbar.png",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "assets/spacecolors-mark-512.png",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "assets/spacecolors-mark-64.png",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "auth.js",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "crowd.js",
+      "refs_out": [
+        "data_normalize.js"
+      ],
+      "refs_in": [
+        "script.js"
+      ]
+    },
+    {
+      "path": "data_normalize.js",
+      "refs_out": [],
+      "refs_in": [
+        "crowd.js",
+        "script.js",
+        "tools/import_tch.mjs"
+      ]
+    },
+    {
+      "path": "data/raw_tch/Ackerman Isacord 30.tch",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "data/threads.generated.json",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "DOC/00_TOAN_CANH.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "DOC/01_WORKFLOW.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "DOC/02_QUAN_TRI_GITHUB.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "DOC/REPO_SNAPSHOT.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "firestore.rules",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "i18n.js",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "index.html",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "library.js",
+      "refs_out": [],
+      "refs_in": [
+        "script.js"
+      ]
+    },
+    {
+      "path": "README.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "script.js",
+      "refs_out": [
+        "library.js",
+        "data_normalize.js",
+        "crowd.js",
+        "workers/thread_search.worker.js"
+      ],
+      "refs_in": []
+    },
+    {
+      "path": "workers/thread_search.worker.js",
+      "refs_out": [],
+      "refs_in": [
+        "script.js"
+      ]
+    },
+    {
+      "path": "SECURITY.md",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "stock.js",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "style.css",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "themes.css",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "threads.json",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "tools/bootstrap_admin.mjs",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "tools/dependency_audit.mjs",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "tools/import_tch.mjs",
+      "refs_out": [
+        "data_normalize.js"
+      ],
+      "refs_in": []
+    },
+    {
+      "path": "tools/normalize_threads.mjs",
+      "refs_out": [
+        "tools/validate_threads.mjs"
+      ],
+      "refs_in": []
+    },
+    {
+      "path": "tools/validate_threads.mjs",
+      "refs_out": [],
+      "refs_in": [
+        "tools/normalize_threads.mjs"
+      ]
+    },
+    {
+      "path": "worlds/palette.html",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "worlds/threadcolor.html",
+      "refs_out": [],
+      "refs_in": []
+    },
+    {
+      "path": "worlds/threadvault.html",
+      "refs_out": [],
+      "refs_in": []
+    }
+  ],
+  "edges": [
+    [
+      "crowd.js",
+      "data_normalize.js"
+    ],
+    [
+      "script.js",
+      "library.js"
+    ],
+    [
+      "script.js",
+      "data_normalize.js"
+    ],
+    [
+      "script.js",
+      "crowd.js"
+    ],
+    [
+      "script.js",
+      "workers/thread_search.worker.js"
+    ],
+    [
+      "tools/import_tch.mjs",
+      "data_normalize.js"
+    ],
+    [
+      "tools/normalize_threads.mjs",
+      "tools/validate_threads.mjs"
+    ]
+  ],
+  "missing": [
+    {
+      "from": "account.html",
+      "ref": "script"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "img"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "a"
+    },
+    {
+      "from": "account.html",
+      "ref": "script"
+    },
+    {
+      "from": "index.html",
+      "ref": "script"
+    },
+    {
+      "from": "index.html",
+      "ref": "a"
+    },
+    {
+      "from": "index.html",
+      "ref": "img"
+    },
+    {
+      "from": "index.html",
+      "ref": "a"
+    },
+    {
+      "from": "index.html",
+      "ref": "a"
+    },
+    {
+      "from": "index.html",
+      "ref": "a"
+    },
+    {
+      "from": "index.html",
+      "ref": "a"
+    },
+    {
+      "from": "index.html",
+      "ref": "a"
+    },
+    {
+      "from": "index.html",
+      "ref": "script"
+    },
+    {
+      "from": "index.html",
+      "ref": "script"
+    },
+    {
+      "from": "tools/bootstrap_admin.mjs",
+      "ref": "firebase-admin/app"
+    },
+    {
+      "from": "tools/bootstrap_admin.mjs",
+      "ref": "firebase-admin/firestore"
+    },
+    {
+      "from": "tools/bootstrap_admin.mjs",
+      "ref": "fs"
+    },
+    {
+      "from": "tools/dependency_audit.mjs",
+      "ref": "fs"
+    },
+    {
+      "from": "tools/dependency_audit.mjs",
+      "ref": "path"
+    },
+    {
+      "from": "tools/dependency_audit.mjs",
+      "ref": "url"
+    },
+    {
+      "from": "tools/import_tch.mjs",
+      "ref": "fs/promises"
+    },
+    {
+      "from": "tools/import_tch.mjs",
+      "ref": "path"
+    },
+    {
+      "from": "tools/normalize_threads.mjs",
+      "ref": "node:fs/promises"
+    },
+    {
+      "from": "tools/validate_threads.mjs",
+      "ref": "node:fs/promises"
+    },
+    {
+      "from": "worlds/palette.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/palette.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/palette.html",
+      "ref": "img"
+    },
+    {
+      "from": "worlds/palette.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/palette.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/palette.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/palette.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "img"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadcolor.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "img"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "a"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "script"
+    },
+    {
+      "from": "worlds/threadvault.html",
+      "ref": "script"
+    }
+  ],
+  "unreachable": [
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/ISSUE_TEMPLATE/feature_request.yml",
+    ".github/pull_request_template.md",
+    "auth.js",
+    "CONTRIBUTING.md",
+    "crowd.js",
+    "data/threads.generated.json",
+    "data_normalize.js",
+    "DOC/00_TOAN_CANH.md",
+    "DOC/01_WORKFLOW.md",
+    "DOC/02_QUAN_TRI_GITHUB.md",
+    "DOC/REPO_SNAPSHOT.md",
+    "i18n.js",
+    "library.js",
+    "README.md",
+    "script.js",
+    "SECURITY.md",
+    "stock.js",
+    "style.css",
+    "themes.css",
+    "threads.json",
+    "tools/bootstrap_admin.mjs",
+    "tools/dependency_audit.mjs",
+    "tools/import_tch.mjs",
+    "tools/normalize_threads.mjs",
+    "tools/validate_threads.mjs",
+    "workers/thread_search.worker.js"
+  ],
+  "referenced_by": {
+    "data_normalize.js": [
+      "crowd.js",
+      "script.js",
+      "tools/import_tch.mjs"
+    ],
+    "library.js": [
+      "script.js"
+    ],
+    "crowd.js": [
+      "script.js"
+    ],
+    "workers/thread_search.worker.js": [
+      "script.js"
+    ],
+    "tools/validate_threads.mjs": [
+      "tools/normalize_threads.mjs"
+    ]
+  },
+  "stats": {
+    "total": 39,
+    "reachable": 5,
+    "unreachable": 27,
+    "missing": 68
+  }
+}

@@ -113,7 +113,7 @@ function deltaE2000(lab1, lab2) {
     + 0.24 * Math.cos(2 * avghp)
     + 0.32 * Math.cos(3 * avghp + Math.PI / 30)
     - 0.20 * Math.cos(4 * avghp - 7 * Math.PI / 18);
-  const deltaTheta = (30 * Math.PI / 180) * Math.exp(-(((avghp * 180 / Math.PI) - 275) / 25) ** 2);
+  const deltaTheta = (30 * Math.PI / 180) * Math.exp(-((((avghp * 180 / Math.PI) - 275) / 25) ** 2));
   const rc = 2 * Math.sqrt(Math.pow(avgCp, 7) / (Math.pow(avgCp, 7) + Math.pow(25, 7)));
   const sl = 1 + (0.015 * ((avgLp - 50) ** 2)) / Math.sqrt(20 + ((avgLp - 50) ** 2));
   const sc = 1 + 0.045 * avgCp;
