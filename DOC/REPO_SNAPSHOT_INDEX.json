@@ -1,0 +1,316 @@
+{
+  "generatedBy": "tools/repo_snapshot.mjs",
+  "root": ".",
+  "stats": {
+    "totalFiles": 57,
+    "totalDirs": 14,
+    "extCounts": {
+      ".png": 3,
+      ".css": 2,
+      "(noext)": 2,
+      ".yml": 4,
+      ".md": 19,
+      ".html": 5,
+      ".js": 8,
+      ".tch": 1,
+      ".json": 4,
+      ".rules": 1,
+      ".mjs": 8
+    }
+  },
+  "ignored": {
+    "dirs": [
+      ".git",
+      "reports"
+    ],
+    "partialDirs": [
+      "DOC/health/daily"
+    ]
+  },
+  "nodes": [
+    {
+      "path": "_graveyard",
+      "type": "dir"
+    },
+    {
+      "path": "_graveyard/assets",
+      "type": "dir"
+    },
+    {
+      "path": "_graveyard/assets/spacecolors-mark-512.png",
+      "type": "file"
+    },
+    {
+      "path": "_graveyard/assets/spacecolors-mark-64.png",
+      "type": "file"
+    },
+    {
+      "path": "_graveyard/style.css",
+      "type": "file"
+    },
+    {
+      "path": "_graveyard/themes.css",
+      "type": "file"
+    },
+    {
+      "path": ".github",
+      "type": "dir"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "type": "dir"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows",
+      "type": "dir"
+    },
+    {
+      "path": ".github/workflows/ceo-repo-health.yml",
+      "type": "file"
+    },
+    {
+      "path": ".github/workflows/repo-snapshot.yml",
+      "type": "file"
+    },
+    {
+      "path": ".gitignore",
+      "type": "file"
+    },
+    {
+      "path": "account.html",
+      "type": "file"
+    },
+    {
+      "path": "assets",
+      "type": "dir"
+    },
+    {
+      "path": "assets/spacecolors-logo-topbar.png",
+      "type": "file"
+    },
+    {
+      "path": "auth.js",
+      "type": "file"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "type": "file"
+    },
+    {
+      "path": "crowd.js",
+      "type": "file"
+    },
+    {
+      "path": "data",
+      "type": "dir"
+    },
+    {
+      "path": "data/raw_tch",
+      "type": "dir"
+    },
+    {
+      "path": "data/raw_tch/Ackerman Isacord 30.tch",
+      "type": "file"
+    },
+    {
+      "path": "data/threads.generated.json",
+      "type": "file"
+    },
+    {
+      "path": "data_normalize.js",
+      "type": "file"
+    },
+    {
+      "path": "dependency-audit.json",
+      "type": "file"
+    },
+    {
+      "path": "dependency-audit.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC",
+      "type": "dir"
+    },
+    {
+      "path": "DOC/00_TOAN_CANH.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/01_NOW.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/01_WORKFLOW.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/02_QUAN_TRI_GITHUB.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/03_RUNTIME_CONTRACT.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/04_CƠ_CẤU_VẬN_HÀNH.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/05_NHỊP_ĐIỀU_HÀNH.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/06_TIÊU_CHUẨN_CHẤT_LƯỢNG.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/ACTIONS.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/CEO_COCKPIT.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/DECISIONS.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/DOC_GLOSSARY_8PORTALS.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/health",
+      "type": "dir"
+    },
+    {
+      "path": "DOC/health/daily",
+      "type": "dir"
+    },
+    {
+      "path": "DOC/health/health-trend.json",
+      "type": "file"
+    },
+    {
+      "path": "DOC/REPO_SNAPSHOT.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/RISKS.md",
+      "type": "file"
+    },
+    {
+      "path": "firestore.rules",
+      "type": "file"
+    },
+    {
+      "path": "i18n.js",
+      "type": "file"
+    },
+    {
+      "path": "index.html",
+      "type": "file"
+    },
+    {
+      "path": "library.js",
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "type": "file"
+    },
+    {
+      "path": "script.js",
+      "type": "file"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "file"
+    },
+    {
+      "path": "stock.js",
+      "type": "file"
+    },
+    {
+      "path": "threads.json",
+      "type": "file"
+    },
+    {
+      "path": "tools",
+      "type": "dir"
+    },
+    {
+      "path": "tools/bootstrap_admin.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/dependency_audit.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/health_history.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/import_tch.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/normalize_threads.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/repo_doctor.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/repo_snapshot.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/validate_threads.mjs",
+      "type": "file"
+    },
+    {
+      "path": "workers",
+      "type": "dir"
+    },
+    {
+      "path": "workers/thread_search.worker.js",
+      "type": "file"
+    },
+    {
+      "path": "worlds",
+      "type": "dir"
+    },
+    {
+      "path": "worlds/palette.html",
+      "type": "file"
+    },
+    {
+      "path": "worlds/threadcolor.html",
+      "type": "file"
+    },
+    {
+      "path": "worlds/threadvault.html",
+      "type": "file"
+    }
+  ]
+}

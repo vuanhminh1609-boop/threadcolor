@@ -20,6 +20,10 @@ Tham chiếu nhanh:
 
 
 ## Sức khoẻ Repo
+
+## Toàn cảnh repo
+- [REPO_SNAPSHOT — Cây thư mục & thống kê](REPO_SNAPSHOT.md)
+
 <!-- HEALTH_START -->
 Điểm hiện tại: **97**
 - BLOCK: 0 | WARN: 1

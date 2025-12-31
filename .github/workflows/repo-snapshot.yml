@@ -1,0 +1,47 @@
+name: Repo Snapshot
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot_pr:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/repo_snapshot.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repo-snapshot
+          path: |
+            DOC/REPO_SNAPSHOT.md
+            DOC/REPO_SNAPSHOT_INDEX.json
+
+  snapshot_main:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/repo_snapshot.mjs
+      - run: |
+          if git diff --quiet -- DOC/REPO_SNAPSHOT.md DOC/REPO_SNAPSHOT_INDEX.json; then
+            echo "Snapshot khong doi"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add DOC/REPO_SNAPSHOT.md DOC/REPO_SNAPSHOT_INDEX.json
+          git commit -m "docs(snapshot): auto update repo snapshot [skip ci]"
+          git push
