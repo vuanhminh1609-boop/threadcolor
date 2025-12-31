@@ -1,0 +1,89 @@
+{
+  "generated_at": "2025-12-31T12:04:29.930Z",
+  "health_score": 35,
+  "counts": {
+    "block": 2,
+    "warn": 5,
+    "info": 3
+  },
+  "top_reasons": [
+    {
+      "level": "WARN",
+      "title": "Asset/CSS không được tham chiếu",
+      "count": 4
+    },
+    {
+      "level": "BLOCK",
+      "title": "Thiếu tham chiếu nội bộ",
+      "count": 2
+    },
+    {
+      "level": "WARN",
+      "title": "TODO/FIXME",
+      "count": 1
+    }
+  ],
+  "issues": {
+    "block": [
+      {
+        "title": "Thiếu tham chiếu nội bộ",
+        "detail": "Không tìm thấy D:\\Tuan\\Working\\88Project\\ThreadColorTool\\threads.cleaned.json",
+        "from": "tools/validate_threads.mjs",
+        "ref": "../threads.cleaned.json"
+      },
+      {
+        "title": "Thiếu tham chiếu nội bộ",
+        "detail": "Không tìm thấy D:\\Tuan\\Working\\88Project\\ThreadColorTool\\threads.conflicts.json",
+        "from": "tools/validate_threads.mjs",
+        "ref": "../threads.conflicts.json"
+      }
+    ],
+    "warn": [
+      {
+        "title": "Asset/CSS không được tham chiếu",
+        "detail": "Không có refs_in",
+        "path": "_graveyard/assets/spacecolors-mark-512.png"
+      },
+      {
+        "title": "Asset/CSS không được tham chiếu",
+        "detail": "Không có refs_in",
+        "path": "_graveyard/assets/spacecolors-mark-64.png"
+      },
+      {
+        "title": "Asset/CSS không được tham chiếu",
+        "detail": "Không có refs_in",
+        "path": "_graveyard/style.css"
+      },
+      {
+        "title": "Asset/CSS không được tham chiếu",
+        "detail": "Không có refs_in",
+        "path": "_graveyard/themes.css"
+      },
+      {
+        "title": "TODO/FIXME",
+        "detail": "Tổng 19 mục",
+        "path": "-"
+      }
+    ],
+    "info": [
+      {
+        "title": "Thống kê tổng quan",
+        "detail": "Tổng file: 46"
+      },
+      {
+        "title": "Worlds",
+        "detail": "3 trang"
+      },
+      {
+        "title": "Workers",
+        "detail": "1 file"
+      }
+    ]
+  },
+  "stats": {
+    "total_files": 46,
+    "missing_internal": 2,
+    "unused_assets": 4,
+    "large_files": 0
+  }
+}

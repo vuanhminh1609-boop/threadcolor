@@ -1,0 +1,26 @@
+{
+  "date": "2025-12-31",
+  "health_score": 35,
+  "counts": {
+    "block": 2,
+    "warn": 5,
+    "info": 3
+  },
+  "top_reasons": [
+    {
+      "level": "WARN",
+      "title": "Asset/CSS không được tham chiếu",
+      "count": 4
+    },
+    {
+      "level": "BLOCK",
+      "title": "Thiếu tham chiếu nội bộ",
+      "count": 2
+    },
+    {
+      "level": "WARN",
+      "title": "TODO/FIXME",
+      "count": 1
+    }
+  ]
+}
