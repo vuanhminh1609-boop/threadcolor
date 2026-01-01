@@ -33,7 +33,8 @@ const DENYLIST = new Set([
   "worlds/palette.html"
 ]);
 
-const CANDIDATE_EXT = new Set([".png", ".jpg", ".jpeg", ".svg", ".webp", ".css", ".js"]);
+const CANDIDATE_EXT = new Set([".png", ".jpg", ".jpeg", ".svg", ".webp", ".ico", ".woff", ".woff2", ".ttf"]);
+const MANUAL_EXT = new Set([".js", ".mjs", ".css", ".html", ".json"]);
 const TEXT_EXT = new Set([".html", ".js", ".mjs", ".css", ".md"]);
 
 const toPosix = (p) => p.split(path.sep).join("/");
@@ -64,6 +65,7 @@ const isCandidate = (relPath) => {
 };
 
 const isTextFile = (relPath) => TEXT_EXT.has(path.extname(relPath).toLowerCase());
+const isManualCandidate = (relPath) => MANUAL_EXT.has(path.extname(relPath).toLowerCase());
 
 const readTextFiles = (files) =>
   files
@@ -83,6 +85,7 @@ const main = () => {
   const allFiles = walk(ROOT);
   const sources = readTextFiles(allFiles);
   const candidates = [];
+  const manualCandidates = [];
 
   for (const file of allFiles.filter(isCandidate)) {
     if (isReferenced(file, sources)) continue;
@@ -92,13 +95,23 @@ const main = () => {
     });
   }
 
+  for (const file of allFiles.filter(isManualCandidate)) {
+    if (isReferenced(file, sources)) continue;
+    manualCandidates.push({
+      path: toPosix(file),
+      reason: "Ch\u1ec9 g\u1ee3i \u00fd duy\u1ec7t tay (kh\u00f4ng t\u1ef1 \u0111\u1ed9ng)"
+    });
+  }
+
   candidates.sort((a, b) => a.path.localeCompare(b.path, "vi", { sensitivity: "base" }));
+  manualCandidates.sort((a, b) => a.path.localeCompare(b.path, "vi", { sensitivity: "base" }));
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   const json = {
     generated_by: "tools/quarantine_candidates.mjs",
     total_candidates: candidates.length,
-    candidates
+    candidates,
+    manual_candidates: manualCandidates
   };
   fs.writeFileSync(JSON_PATH, JSON.stringify(json, null, 2), "utf8");
 
@@ -108,7 +121,10 @@ const main = () => {
     `T\u1ed5ng s\u1ed1 \u1ee9ng vi\u00ean: ${candidates.length}`,
     "",
     "## Danh s\u00e1ch \u1ee9ng vi\u00ean",
-    ...candidates.map((item) => `- ${item.path}`)
+    ...(candidates.length ? candidates.map((item) => `- ${item.path}`) : ["- (kh\u00f4ng c\u00f3)"]),
+    "",
+    "## C\u1ea7n duy\u1ec7t tay",
+    ...(manualCandidates.length ? manualCandidates.map((item) => `- ${item.path}`) : ["- (kh\u00f4ng c\u00f3)"])
   ];
   fs.writeFileSync(MD_PATH, mdLines.join("\n"), "utf8");
 

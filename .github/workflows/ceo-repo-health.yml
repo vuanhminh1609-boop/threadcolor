@@ -10,6 +10,10 @@ permissions:
   contents: write
   issues: write
 
+concurrency:
+  group: ops-commit
+  cancel-in-progress: false
+
 jobs:
   repo-health:
     runs-on: ubuntu-latest
@@ -41,12 +45,15 @@ jobs:
         if: github.event_name == 'schedule'
         run: |
           git status --short
-          git add DOC/health DOC/CEO_COCKPIT.md DOC/ACTIONS.md DOC/RISKS.md
+          if [ -d "DOC/health" ]; then git add DOC/health; fi
+          if [ -f "DOC/CEO_COCKPIT.md" ]; then git add DOC/CEO_COCKPIT.md; elif [ -f "CEO_COCKPIT.md" ]; then git add CEO_COCKPIT.md; fi
+          if [ -f "DOC/ACTIONS.md" ]; then git add DOC/ACTIONS.md; elif [ -f "ACTIONS.md" ]; then git add ACTIONS.md; fi
+          if [ -f "DOC/RISKS.md" ]; then git add DOC/RISKS.md; elif [ -f "RISKS.md" ]; then git add RISKS.md; fi
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git commit -m "chore(ops): daily health + actions + risks AUTO $(date -u +%F)"
+          git commit -m "chore(ops): daily health + ops docs $(date -u +%F)"
           git push

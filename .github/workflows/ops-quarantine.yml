@@ -10,6 +10,10 @@ permissions:
   pull-requests: write
   issues: write
 
+concurrency:
+  group: ops-commit
+  cancel-in-progress: false
+
 jobs:
   quarantine:
     runs-on: ubuntu-latest

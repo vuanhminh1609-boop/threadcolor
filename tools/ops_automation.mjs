@@ -69,7 +69,7 @@ const parseActions = () => {
   const lines = extractAutoLines(ACTIONS_PATH);
   const items = [];
   for (const line of lines) {
-    const match = line.match(/^\d+\.\s+\[(AUTO-\d+)\]\[(P\d)\]\s+(.+)$/);
+    const match = line.match(/^\d+\.\s+\[(AUTO-[0-9A-F]{8})\]\[(P\d)\]\s+(.+)$/);
     if (!match) continue;
     items.push({ id: match[1], level: match[2], text: match[3] });
   }
@@ -81,9 +81,10 @@ const parseActions = () => {
   });
 };
 
-const buildIssueBody = (action) => [
+const buildIssueBody = (action, key) => [
   "## AUTO Action",
   `ops_auto_id: ${action.id}`,
+  `ops_auto_key: ${key}`,
   `M\u1ee9c: ${action.level}`,
   `N\u1ed9i dung: ${action.text}`,
   "Ngu\u1ed3n: DOC/ACTIONS.md (AUTO)",
@@ -98,19 +99,33 @@ const main = async () => {
   }
 
   const existing = await request("GET", `/repos/${owner}/${repo}/issues?state=open&per_page=100`);
-  const mapById = new Map();
+  const mapByKey = new Map();
+  const legacyIssues = [];
   for (const issue of existing || []) {
     if (!issue.body) continue;
-    const match = issue.body.match(/ops_auto_id:\\s*(AUTO-\\d+)/);
-    if (match) mapById.set(match[1], issue);
+    const matchKey = issue.body.match(/ops_auto_key:\\s*(AUTO-[0-9A-F]{8})/);
+    if (matchKey) {
+      mapByKey.set(matchKey[1], issue);
+      continue;
+    }
+    const matchLegacy = issue.body.match(/ops_auto_id:\\s*(AUTO-\\d+)/);
+    if (matchLegacy) {
+      legacyIssues.push(issue);
+    }
   }
 
   let created = 0;
   for (const action of actions) {
-    const existingIssue = mapById.get(action.id);
-    const body = buildIssueBody(action);
+    const key = action.id;
+    const body = buildIssueBody(action, key);
+    const existingIssue = mapByKey.get(key);
     if (existingIssue) {
       await request("PATCH", `/repos/${owner}/${repo}/issues/${existingIssue.number}`, { body });
+      continue;
+    }
+    const legacyMatch = legacyIssues.find((issue) => issue.body && issue.body.includes(action.text));
+    if (legacyMatch) {
+      await request("PATCH", `/repos/${owner}/${repo}/issues/${legacyMatch.number}`, { body });
       continue;
     }
     if (created >= 3) break;

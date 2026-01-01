@@ -1,5 +1,6 @@
 {
   "generated_by": "tools/quarantine_candidates.mjs",
   "total_candidates": 0,
-  "candidates": []
+  "candidates": [],
+  "manual_candidates": []
 }

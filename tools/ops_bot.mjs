@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 
 const ROOT = process.cwd();
 const ACTIONS_PATH = path.join(ROOT, "DOC", "ACTIONS.md");
@@ -89,7 +90,8 @@ const buildAutoBlock = ({ score, counts, blocks, warns }) => {
   let idx = 1;
   const pushItem = (item, level, owner) => {
     const reason = item.detail || item.note || item.title || "C\u1ea7n xem chi ti\u1ebft";
-    const id = `AUTO-${String(idx).padStart(3, "0")}`;
+    const key = crypto.createHash("sha1").update(`${item.title}\n${reason}`).digest("hex").slice(0, 8).toUpperCase();
+    const id = `AUTO-${key}`;
     lines.push(`${idx}. [${id}][${level}] ${item.title} - Owner: ${owner} - ${reason}`);
     idx += 1;
   };
@@ -254,7 +256,7 @@ const main = () => {
   const changedRisks = updateAutoBlock(RISKS_PATH, risksContent, "DOC/RISKS.md");
 
   const actionLines = extractAutoLines(ACTIONS_PATH)
-    .filter((line) => /^\d+\.\s+\[AUTO-\d+\]\[P\d\]/.test(line))
+    .filter((line) => /^\d+\.\s+\[AUTO-[0-9A-F]{8}\]\[P\d\]/.test(line))
     .map((line) => line.replace(/^\d+\.\s+/, ""));
   const riskLines = extractAutoLines(RISKS_PATH)
     .filter((line) => /^\d+\.\s+\[R-/.test(line))

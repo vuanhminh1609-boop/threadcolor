@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ops-commit
+  cancel-in-progress: false
+
 jobs:
   snapshot_pr:
     if: github.event_name != 'push'
