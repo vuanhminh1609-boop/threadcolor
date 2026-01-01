@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="vi" data-world="origami">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bảng điều phối quản trị</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --z-topbar: 2000;
+      --z-topbar-menu: 4000;
+      --bg: #f6f1e9;
+      --text: #201a14;
+      --muted: #6b5d4b;
+      --glass: rgba(255, 255, 255, 0.72);
+      --stroke: rgba(32, 26, 20, 0.10);
+      --a1: #c27b4b;
+      --a2: #d59e6d;
+      --a3: #8c6d54;
+    }
+    html[data-world="nebula"]{
+      --bg:#040512;
+      --text:#eef2ff;
+      --muted:#b8c2ff;
+      --glass:rgba(12,16,34,0.72);
+      --stroke:rgba(255,255,255,0.14);
+      --a1:#6ee7ff;
+      --a2:#8b5cf6;
+      --a3:#f472b6;
+    }
+    html[data-world="ocean"]{
+      --bg:#dff6ff;
+      --text:#062a3a;
+      --muted:#3f6b7f;
+      --glass:rgba(255,255,255,0.76);
+      --stroke:rgba(6,42,58,0.12);
+      --a1:#1fb6ff;
+      --a2:#0ea5a8;
+      --a3:#4dd4ff;
+    }
+    html[data-world="ink"]{
+      --bg:#0b0d12;
+      --text:#f4f6fb;
+      --muted:#a6afbd;
+      --glass:rgba(16,18,24,0.76);
+      --stroke:rgba(255,255,255,0.12);
+      --a1:#e2e8f0;
+      --a2:#94a3b8;
+      --a3:#64748b;
+    }
+    html[data-world="origami"]{
+      --bg:#f6f1e9;
+      --text:#201a14;
+      --muted:#6b5d4b;
+      --glass:rgba(255,255,255,0.74);
+      --stroke:rgba(32,26,20,0.10);
+      --a1:#c27b4b;
+      --a2:#d59e6d;
+      --a3:#8c6d54;
+    }
+    html[data-world="arcade"]{
+      --bg:#05040f;
+      --text:#fff7ff;
+      --muted:#d8c9f6;
+      --glass:rgba(14,12,28,0.80);
+      --stroke:rgba(255,255,255,0.16);
+      --a1:#ff3dcd;
+      --a2:#7c3aed;
+      --a3:#20e3b2;
+    }
+    html[data-world="dunes"]{
+      --bg:#f7f0e1;
+      --text:#3a2d1a;
+      --muted:#7a644a;
+      --glass:rgba(255,255,255,0.74);
+      --stroke:rgba(58,45,26,0.12);
+      --a1:#d39b54;
+      --a2:#e3b87b;
+      --a3:#b3743d;
+    }
+    html[data-world="chrome"]{
+      --bg:#f1f4f8;
+      --text:#1c232b;
+      --muted:#5f6b79;
+      --glass:rgba(255,255,255,0.72);
+      --stroke:rgba(28,35,43,0.12);
+      --a1:#3b82f6;
+      --a2:#94a3b8;
+      --a3:#0f172a;
+    }
+    html[data-world="circuit"]{
+      --bg:#04110a;
+      --text:#eafff2;
+      --muted:#a6d6bb;
+      --glass:rgba(8,20,14,0.76);
+      --stroke:rgba(255,255,255,0.12);
+      --a1:#22c55e;
+      --a2:#16a34a;
+      --a3:#86efac;
+    }
+    body{
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .tc-topbar{
+      background: var(--glass);
+      border-bottom: 1px solid var(--stroke);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: var(--z-topbar);
+      overflow: visible;
+    }
+    .tc-topbar::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:-1px;
+      height:1px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      opacity: .35;
+    }
+    .tc-brand{
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-shadow: 0 1px 0 rgba(255,255,255,.15);
+      color: var(--text);
+    }
+    .tc-card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+    }
+    .tc-chip{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-btn{
+      border-radius: 0.75rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      font-weight: 650;
+      letter-spacing: -0.005em;
+      line-height: 1;
+    }
+    .tc-btn:hover{ filter: brightness(1.03); }
+    .tc-btn:active{ transform: translateY(1px); }
+    .tc-btn:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    .tc-btn-primary{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .tc-dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
+      box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+    }
+    #portalMenu[data-open="0"],
+    #worldMenu[data-open="0"]{ display: none; }
+    #portalMenu,
+    #worldMenu{ border: 1px solid var(--stroke); }
+    .tc-menu-item{
+      color: var(--text);
+      padding: 0.6rem 0.75rem;
+      border-radius: 0.6rem;
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    .tc-menu-item:hover{ background: rgba(255,255,255,.10); }
+    .tc-menu-item:active{ transform: translateY(1px); }
+    .tc-menu-item:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      background: rgba(255,255,255,.08);
+    }
+    .tc-field{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 0.9rem;
+      padding: 0.6rem 0.75rem;
+      outline: none;
+    }
+    .tc-field:focus-visible{
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    .tc-muted{ color: var(--muted); }
+    .tc-tab{
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      padding: 0.45rem 0.9rem;
+      font-size: 0.875rem;
+      background: var(--glass);
+      color: var(--text);
+    }
+    .tc-tab.is-active{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border-color: rgba(255,255,255,.18);
+    }
+    .tc-badge{
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.12);
+    }
+    @media (prefers-reduced-motion: reduce){
+      .tc-btn, .tc-menu-item{ transition: none; }
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <header class="tc-topbar relative">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <a href="./index.html" class="flex items-center gap-3 min-w-0">
+          <img
+            src="./assets/spacecolors-logo-topbar.png"
+            alt="SpaceColors"
+            class="h-10 w-10 rounded-xl select-none"
+            loading="eager"
+            decoding="async"
+          />
+          <span class="min-w-0 flex flex-col justify-center leading-tight">
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap">SpaceColors · 8Portal</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block">
+              Một chạm mở không gian màu vô hạn
+            </span>
+          </span>
+        </a>
+      </div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="relative" id="portalSwitcher">
+          <button id="portalBtn"
+            class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
+            aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
+            Chọn Thế giới
+          </button>
+          <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <a class="tc-menu-item block w-full text-left rounded-md" href="./worlds/threadcolor.html" role="menuitem">Thế giới màu thêu</a>
+            <a class="tc-menu-item block w-full text-left rounded-md" href="./worlds/palette.html" role="menuitem">Thế giới dải màu</a>
+            <button class="tc-menu-item w-full text-left rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-3 min-w-[210px]">
+        <div class="relative" id="worldSwitcher">
+          <button id="worldBtn"
+            class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
+            aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
+            <span class="flex items-center gap-2">
+              <span class="tc-dot" aria-hidden="true"></span>
+              <span id="worldLabel">Origami</span>
+            </span>
+            <span aria-hidden="true">&#9662;</span>
+          </button>
+          <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="origami" role="menuitem">Origami</button>
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="arcade" role="menuitem">Arcade</button>
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="chrome" role="menuitem">Chrome</button>
+            <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
+          </div>
+        </div>
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 pt-8 pb-12">
+    <section class="tc-card p-6 md:p-8">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-semibold">Bảng điều phối quản trị</h1>
+          <p class="tc-muted text-sm">Quản lý gói quyết định và nhật ký truy vết (chỉ admin).</p>
+        </div>
+        <button id="adminRefresh" class="tc-btn tc-chip px-3 py-2 text-sm">Làm mới</button>
+      </div>
+
+      <div id="adminMessage" class="mt-4 text-sm tc-muted hidden"></div>
+
+      <div id="adminAuthCta" class="tc-card mt-6 p-4 hidden">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div class="font-semibold">Cần quyền quản trị</div>
+            <div class="tc-muted text-sm">Đăng nhập tài khoản admin để truy cập bảng điều phối.</div>
+          </div>
+          <button id="adminLoginBtn" class="tc-btn tc-btn-primary px-4 py-2 text-sm">Đăng nhập</button>
+        </div>
+      </div>
+
+      <div id="adminPanel" class="mt-6 hidden">
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="tabPacks" class="tc-tab is-active" data-tab="packs">Gói quyết định</button>
+          <button id="tabLogs" class="tc-tab" data-tab="logs">Nhật ký truy vết</button>
+          <div class="flex-1"></div>
+          <input id="adminSearch" class="tc-field text-sm w-full sm:w-64" type="search" placeholder="Tìm theo tiêu đề, mô tả, UID..." />
+          <select id="adminStatus" class="tc-field text-sm w-full sm:w-44">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="pending">Chờ duyệt</option>
+            <option value="approved">Đã duyệt</option>
+            <option value="rejected">Từ chối</option>
+            <option value="expired">Hết hạn</option>
+          </select>
+        </div>
+
+        <div id="packsView" class="mt-6 space-y-4">
+          <div class="tc-card p-4">
+            <div class="font-semibold mb-3">Tạo gói quyết định mới</div>
+            <div class="grid gap-3 md:grid-cols-2">
+              <input id="packTitle" class="tc-field" type="text" placeholder="Tiêu đề gói quyết định" />
+              <input id="packDueAt" class="tc-field" type="date" />
+              <textarea id="packDescription" class="tc-field md:col-span-2" rows="3" placeholder="Mô tả ngắn (tuỳ chọn)"></textarea>
+            </div>
+            <div class="mt-3 flex items-center gap-2">
+              <button id="packCreate" class="tc-btn tc-btn-primary px-4 py-2 text-sm">Tạo gói</button>
+              <span class="tc-muted text-xs">Yêu cầu quyền admin và Idempotency-Key tự động.</span>
+            </div>
+          </div>
+          <div class="grid gap-3" id="decisionPackList"></div>
+        </div>
+
+        <div id="logsView" class="mt-6 hidden">
+          <div class="grid gap-3" id="auditLogList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./auth.js" type="module"></script>
+  <script>
+    (() => {
+      const portalBtn = document.getElementById("portalBtn");
+      const portalMenu = document.getElementById("portalMenu");
+      if (portalBtn && portalMenu) {
+        const setOpen = (open) => {
+          portalMenu.dataset.open = open ? "1" : "0";
+          portalMenu.hidden = !open;
+          portalBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        };
+        setOpen(portalMenu.dataset.open === "1");
+        portalBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          setOpen(portalMenu.dataset.open !== "1");
+        });
+        document.addEventListener("click", (event) => {
+          if (!portalMenu.contains(event.target) && !portalBtn.contains(event.target)) {
+            setOpen(false);
+          }
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") setOpen(false);
+        });
+      }
+    })();
+  </script>
+  <script>
+    (() => {
+      const worldBtn = document.getElementById("worldBtn");
+      const worldMenu = document.getElementById("worldMenu");
+      const switcher = document.getElementById("worldSwitcher");
+      if (!worldBtn || !worldMenu || !switcher) return;
+      const storageKey = "tc_world";
+      const worlds = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
+      const applyWorld = (key) => {
+        const current = document.documentElement.dataset.world;
+        const next = worlds.includes(key)
+          ? key
+          : (worlds.includes(current) ? current : "origami");
+        document.documentElement.setAttribute("data-world", next);
+        try {
+          localStorage.setItem(storageKey, next);
+        } catch (_err) {}
+        const label = worldMenu.querySelector(`[data-world="${next}"]`);
+        const labelText = label ? label.textContent.trim() : next;
+        const labelEl = document.getElementById("worldLabel");
+        if (labelEl && labelText) labelEl.textContent = labelText;
+      };
+      const setMenuOpen = (open) => {
+        worldMenu.dataset.open = open ? "1" : "0";
+        worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      worldBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setMenuOpen(worldMenu.dataset.open !== "1");
+      });
+      worldMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-world-item");
+        if (!item || !worldMenu.contains(item)) return;
+        event.preventDefault();
+        applyWorld(item.getAttribute("data-world"));
+        setMenuOpen(false);
+        worldBtn.focus();
+      });
+      document.addEventListener("click", (event) => {
+        if (!worldMenu.contains(event.target) && !worldBtn.contains(event.target)) {
+          setMenuOpen(false);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setMenuOpen(false);
+          worldBtn.focus();
+        }
+      });
+      let stored = null;
+      try {
+        stored = localStorage.getItem(storageKey);
+      } catch (_err) {}
+      applyWorld(stored || document.documentElement.dataset.world || "origami");
+      setMenuOpen(false);
+    })();
+  </script>
+  <script>
+    (() => {
+      const adminPanel = document.getElementById("adminPanel");
+      const adminAuthCta = document.getElementById("adminAuthCta");
+      const adminMessage = document.getElementById("adminMessage");
+      const adminLoginBtn = document.getElementById("adminLoginBtn");
+      const decisionPackList = document.getElementById("decisionPackList");
+      const auditLogList = document.getElementById("auditLogList");
+      const tabPacks = document.getElementById("tabPacks");
+      const tabLogs = document.getElementById("tabLogs");
+      const packsView = document.getElementById("packsView");
+      const logsView = document.getElementById("logsView");
+      const adminSearch = document.getElementById("adminSearch");
+      const adminStatus = document.getElementById("adminStatus");
+      const packTitle = document.getElementById("packTitle");
+      const packDescription = document.getElementById("packDescription");
+      const packDueAt = document.getElementById("packDueAt");
+      const packCreate = document.getElementById("packCreate");
+      const refreshBtn = document.getElementById("adminRefresh");
+
+      const state = {
+        packs: [],
+        logs: [],
+        tab: "packs",
+        search: "",
+        status: "all"
+      };
+
+      const setMessage = (text, isError = false) => {
+        if (!adminMessage) return;
+        adminMessage.textContent = text || "";
+        adminMessage.classList.toggle("hidden", !text);
+        adminMessage.classList.toggle("text-red-600", !!(text && isError));
+      };
+
+      const setAuthState = (isAdmin) => {
+        if (adminPanel) adminPanel.classList.toggle("hidden", !isAdmin);
+        if (adminAuthCta) adminAuthCta.classList.toggle("hidden", !!isAdmin);
+      };
+
+      const getApi = () => window.firebaseAuth || window.firebaseAuthApi || null;
+
+      const getToken = async () => {
+        const api = getApi();
+        const user = api?.auth?.currentUser || api?.user || null;
+        if (!user || typeof user.getIdToken !== "function") {
+          throw new Error("Cần đăng nhập để truy cập quản trị.");
+        }
+        return user.getIdToken();
+      };
+
+      const fetchAdmin = async (path, options = {}) => {
+        const token = await getToken();
+        const headers = new Headers(options.headers || {});
+        headers.set("Authorization", `Bearer ${token}`);
+        if (!headers.has("Content-Type") && options.body) {
+          headers.set("Content-Type", "application/json");
+        }
+        const res = await fetch(path, { ...options, headers });
+        if (res.status === 401 || res.status === 403) {
+          throw new Error("Bạn không có quyền quản trị.");
+        }
+        return res.json();
+      };
+
+      const formatStatus = (status) => {
+        switch (status) {
+          case "approved": return "Đã duyệt";
+          case "rejected": return "Từ chối";
+          case "expired": return "Hết hạn";
+          default: return "Chờ duyệt";
+        }
+      };
+
+      const renderPacks = () => {
+        if (!decisionPackList) return;
+        const search = state.search.toLowerCase();
+        const status = state.status;
+        const items = state.packs.filter((item) => {
+          const text = `${item.title || ""} ${item.description || ""}`.toLowerCase();
+          const matchText = !search || text.includes(search);
+          const matchStatus = status === "all" || item.status === status;
+          return matchText && matchStatus;
+        });
+        if (!items.length) {
+          decisionPackList.innerHTML = `<div class="tc-card p-4 tc-muted">Chưa có gói quyết định phù hợp.</div>`;
+          return;
+        }
+        decisionPackList.innerHTML = items.map((item) => {
+          const dueAt = item.dueAt ? new Date(item.dueAt).toLocaleDateString("vi-VN") : "--";
+          const canAct = item.status === "pending";
+          return `
+            <div class="tc-card p-4">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div class="font-semibold">${item.title || "Không tiêu đề"}</div>
+                  <div class="tc-muted text-sm">${item.description || "Không có mô tả."}</div>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="tc-badge">${formatStatus(item.status)}</span>
+                  <span class="tc-muted">Hạn: ${dueAt}</span>
+                </div>
+              </div>
+              <div class="mt-3 flex flex-wrap items-center gap-2">
+                ${canAct ? `<button class="tc-btn tc-btn-primary px-3 py-2 text-xs" data-action="approve" data-id="${item.id}">Duyệt</button>` : ""}
+                ${canAct ? `<button class="tc-btn tc-chip px-3 py-2 text-xs" data-action="reject" data-id="${item.id}">Từ chối</button>` : ""}
+                <button class="tc-btn tc-chip px-3 py-2 text-xs" data-action="edit" data-id="${item.id}">Cập nhật</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      };
+
+      const renderLogs = () => {
+        if (!auditLogList) return;
+        const search = state.search.toLowerCase();
+        const items = state.logs.filter((item) => {
+          const text = `${item.result || ""} ${item.path || ""} ${item.uid || ""}`.toLowerCase();
+          return !search || text.includes(search);
+        });
+        if (!items.length) {
+          auditLogList.innerHTML = `<div class="tc-card p-4 tc-muted">Chưa có nhật ký phù hợp.</div>`;
+          return;
+        }
+        auditLogList.innerHTML = items.map((item) => {
+          const when = item.ts?.toDate ? item.ts.toDate().toLocaleString("vi-VN") : "";
+          return `
+            <div class="tc-card p-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <div class="font-semibold">${item.result || "Audit log"}</div>
+                  <div class="tc-muted text-xs">${item.path || ""}</div>
+                </div>
+                <div class="tc-muted text-xs">${when || "--"}</div>
+              </div>
+              <div class="mt-2 text-xs tc-muted">UID: ${item.uid || "--"} • HTTP: ${item.status || "--"}</div>
+            </div>
+          `;
+        }).join("");
+      };
+
+      const render = () => {
+        if (packsView) packsView.classList.toggle("hidden", state.tab !== "packs");
+        if (logsView) logsView.classList.toggle("hidden", state.tab !== "logs");
+        if (tabPacks) tabPacks.classList.toggle("is-active", state.tab === "packs");
+        if (tabLogs) tabLogs.classList.toggle("is-active", state.tab === "logs");
+        if (state.tab === "packs") renderPacks();
+        if (state.tab === "logs") renderLogs();
+      };
+
+      const loadData = async () => {
+        setMessage("Đang tải dữ liệu quản trị...");
+        try {
+          const [packsRes, logsRes] = await Promise.all([
+            fetchAdmin("/admin/decision-packs?limit=50"),
+            fetchAdmin("/admin/audit-logs?limit=50")
+          ]);
+          state.packs = packsRes.items || [];
+          state.logs = logsRes.items || [];
+          setMessage("");
+          render();
+        } catch (err) {
+          setMessage(err?.message || "Không thể tải dữ liệu quản trị.", true);
+        }
+      };
+
+      const checkAdmin = async (user) => {
+        if (!user) {
+          setAuthState(false);
+          setMessage("Cần đăng nhập để xem bảng điều phối.", true);
+          return;
+        }
+        try {
+          const token = await user.getIdToken();
+          const res = await fetch("/admin/ping", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error("Bạn không có quyền quản trị.");
+          setAuthState(true);
+          await loadData();
+        } catch (err) {
+          setAuthState(false);
+          setMessage(err?.message || "Bạn không có quyền quản trị.", true);
+        }
+      };
+
+      if (tabPacks) tabPacks.addEventListener("click", () => {
+        state.tab = "packs";
+        render();
+      });
+      if (tabLogs) tabLogs.addEventListener("click", () => {
+        state.tab = "logs";
+        render();
+      });
+      if (adminSearch) adminSearch.addEventListener("input", () => {
+        state.search = adminSearch.value || "";
+        render();
+      });
+      if (adminStatus) adminStatus.addEventListener("change", () => {
+        state.status = adminStatus.value || "all";
+        render();
+      });
+      if (refreshBtn) refreshBtn.addEventListener("click", () => {
+        loadData();
+      });
+      if (packCreate) packCreate.addEventListener("click", async () => {
+        try {
+          const title = packTitle?.value?.trim();
+          if (!title) {
+            setMessage("Vui lòng nhập tiêu đề gói quyết định.", true);
+            return;
+          }
+          const payload = {
+            title,
+            description: packDescription?.value?.trim() || "",
+            dueAt: packDueAt?.value || ""
+          };
+          const idemKey = window.crypto?.randomUUID
+            ? window.crypto.randomUUID()
+            : `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+          await fetchAdmin("/admin/decision-packs", {
+            method: "POST",
+            headers: { "Idempotency-Key": idemKey },
+            body: JSON.stringify(payload)
+          });
+          if (packTitle) packTitle.value = "";
+          if (packDescription) packDescription.value = "";
+          if (packDueAt) packDueAt.value = "";
+          await loadData();
+          setMessage("Đã tạo gói quyết định mới.");
+        } catch (err) {
+          setMessage(err?.message || "Không thể tạo gói quyết định.", true);
+        }
+      });
+
+      if (decisionPackList) {
+        decisionPackList.addEventListener("click", async (event) => {
+          const actionBtn = event.target.closest("[data-action]");
+          if (!actionBtn) return;
+          const action = actionBtn.getAttribute("data-action");
+          const packId = actionBtn.getAttribute("data-id");
+          if (!packId) return;
+          if (action === "edit") {
+            setMessage("Chức năng cập nhật đang phát triển.");
+            return;
+          }
+          try {
+            await fetchAdmin(`/admin/decision-packs/${packId}`, {
+              method: "PATCH",
+              body: JSON.stringify({ status: action === "approve" ? "approved" : "rejected" })
+            });
+            await loadData();
+            setMessage(action === "approve" ? "Đã duyệt gói." : "Đã từ chối gói.");
+          } catch (err) {
+            setMessage(err?.message || "Không thể cập nhật gói.", true);
+          }
+        });
+      }
+
+      if (adminLoginBtn) {
+        adminLoginBtn.addEventListener("click", () => {
+          if (window.tcAuth?.openAuth) {
+            window.tcAuth.openAuth();
+            return;
+          }
+          const btnAccount = document.getElementById("btnAccount");
+          btnAccount?.click();
+        });
+      }
+
+      const bindAuth = () => {
+        const api = getApi();
+        if (!api?.onAuthStateChanged) return;
+        api.onAuthStateChanged((user) => {
+          checkAdmin(user);
+        });
+      };
+
+      if (window.firebaseAuth) {
+        bindAuth();
+      } else {
+        window.addEventListener("firebase-auth-ready", bindAuth, { once: true });
+      }
+    })();
+  </script>
+</body>
+</html>

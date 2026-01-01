@@ -581,6 +581,20 @@ const portalCta = document.getElementById("portalCta");
 function getAuthApi() {
   return window.firebaseAuth || null;
 }
+
+async function fetchAdminApi(path, options = {}) {
+  const api = window.firebaseAuth || window.firebaseAuthApi || null;
+  const user = api?.auth?.currentUser || api?.user || null;
+  if (!user || typeof user.getIdToken !== "function") {
+    throw new Error("Cần đăng nhập để gọi API quản trị.");
+  }
+  const token = await user.getIdToken();
+  const headers = new Headers(options.headers || {});
+  headers.set("Authorization", `Bearer ${token}`);
+  return fetch(path, { ...options, headers });
+}
+
+window.tcAdminApi = { fetch: fetchAdminApi };
 const authApi = new Proxy({}, {
   get: (_target, prop) => {
     const api = getAuthApi();

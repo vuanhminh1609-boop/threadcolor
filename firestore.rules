@@ -27,5 +27,19 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow write: if false;
     }
+
+    // Các collection nhạy cảm chỉ cho phép truy cập từ server (Admin SDK).
+    match /decisionPacks/{docId} {
+      allow read, write: if false;
+    }
+    match /adminAuditLogs/{docId} {
+      allow read, write: if false;
+    }
+    match /adminIdempotency/{docId} {
+      allow read, write: if false;
+    }
+    match /adminReports/{docId} {
+      allow read, write: if false;
+    }
   }
 }

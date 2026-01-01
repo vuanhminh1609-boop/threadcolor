@@ -421,6 +421,7 @@
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/palette.html" role="menuitem">Th&#7871; gi&#7899;i d&#7843;i m&#224;u</a>
+            <a id="portalAdminLink" class="tc-menu-item block w-full text-left px-3 py-2 rounded-md hidden" href="./admin.html" role="menuitem" aria-hidden="true">Qu&#7843;n tr&#7883;</a>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
@@ -730,6 +731,46 @@
 
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
+  <script>
+    (() => {
+      const adminLink = document.getElementById("portalAdminLink");
+      if (!adminLink) return;
+      const setVisible = (visible) => {
+        adminLink.classList.toggle("hidden", !visible);
+        adminLink.setAttribute("aria-hidden", visible ? "false" : "true");
+      };
+      const checkAdmin = async (user) => {
+        if (!user || typeof user.getIdToken !== "function") {
+          setVisible(false);
+          return;
+        }
+        try {
+          const token = await user.getIdToken();
+          const res = await fetch("/admin/ping", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setVisible(res.ok);
+        } catch (_err) {
+          setVisible(false);
+        }
+      };
+      const bind = () => {
+        const api = window.firebaseAuth || window.firebaseAuthApi || null;
+        if (!api?.onAuthStateChanged) {
+          setVisible(false);
+          return;
+        }
+        api.onAuthStateChanged((user) => {
+          checkAdmin(user);
+        });
+      };
+      if (window.firebaseAuth) {
+        bind();
+      } else {
+        window.addEventListener("firebase-auth-ready", bind, { once: true });
+      }
+    })();
+  </script>
   <script>
     (() => {
       if (window.__portalSwitcherBound) return;

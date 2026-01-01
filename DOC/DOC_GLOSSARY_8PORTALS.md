@@ -166,3 +166,12 @@
 | predeploy | predeploy | L?nh ch?y t? ??ng tr??c khi deploy (v? d? build TypeScript). |
 | emulator | emulator | M?i tr??ng gi? l?p Functions/Hosting ?? test local. |
 | Node LTS | Node LTS | Phi?n b?n Node ?n ??nh d?i h?n, khuy?n ngh? d?ng trong Functions. |
+---
+
+## 11) Thuật ngữ quản trị & xác thực bổ sung
+
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| Authorization Bearer token | Bearer token | Chuỗi token đặt trong header `Authorization: Bearer <token>` để gọi API quản trị. |
+| Admin UI | Bảng điều phối quản trị | Giao diện nội bộ cho admin xem gói quyết định và nhật ký truy vết. |
+| Audit logs | Nhật ký truy vết | Danh sách sự kiện truy cập/ghi nhận ở API admin, phục vụ kiểm tra bảo mật. |
