@@ -2,3 +2,10 @@
 threads.cleaned.json
 threads.conflicts.json
 reports/
+node_modules/
+functions/node_modules/
+functions/lib/
+.firebase/
+functions/.firebase/
+firebase-debug.log
+*.log

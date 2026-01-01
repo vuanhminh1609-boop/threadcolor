@@ -175,3 +175,14 @@
 | Authorization Bearer token | Bearer token | Chuỗi token đặt trong header `Authorization: Bearer <token>` để gọi API quản trị. |
 | Admin UI | Bảng điều phối quản trị | Giao diện nội bộ cho admin xem gói quyết định và nhật ký truy vết. |
 | Audit logs | Nhật ký truy vết | Danh sách sự kiện truy cập/ghi nhận ở API admin, phục vụ kiểm tra bảo mật. |
+---
+
+## 12) Thuật ngữ Git hygiene
+
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| .gitignore | .gitignore | Danh sách file/thư mục bị Git bỏ qua, không đưa vào commit. |
+| node_modules | node_modules | Thư mục chứa thư viện cài đặt từ npm; không commit. |
+| Tracked | Tracked | File đang được Git theo dõi (đã add). |
+| Untracked | Untracked | File chưa được Git theo dõi. |
+| Build artifact | Build artifact | Kết quả sinh ra khi build (ví dụ `functions/lib/`), không commit. |
