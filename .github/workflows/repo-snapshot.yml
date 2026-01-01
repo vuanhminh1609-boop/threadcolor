@@ -34,16 +34,16 @@ jobs:
             ...(data.ignored?.partialDirs || []).map((p) => `- ${p}/ (bo qua file con)`)
           ];
           const summary = [
-            "### Repo Snapshot",
-            `- Ref: ${process.env.GITHUB_REF || ""}`,
-            `- Tong file: ${data.stats?.totalFiles ?? 0}`,
-            `- Tong thu muc: ${data.stats?.totalDirs ?? 0}`,
+            "### Ảnh chụp kho mã (Snapshot)",
+            `- Tham chiếu: ${process.env.GITHUB_REF || ""}`,
+            `- Tổng số tệp: ${data.stats?.totalFiles ?? 0}`,
+            `- Tổng số thư mục: ${data.stats?.totalDirs ?? 0}`,
             "",
-            "Top 5 duoi file:",
+            "Top 5 đuôi tệp:",
             ext,
             "",
-            "Ignore list:",
-            ignored.length ? ignored.join("\n") : "- (khong co)",
+            "Danh sách bỏ qua:",
+            ignored.length ? ignored.join("\n") : "- (không có)",
             "",
             "Artifact: REPO_SNAPSHOT.md"
           ].join("\n");

@@ -29,6 +29,7 @@ jobs:
           path: |
             reports/*
             DOC/ACTIONS.md
+            DOC/RISKS.md
       - name: Update health history (schedule only)
         if: github.event_name == 'schedule'
         run: node tools/health_history.mjs
@@ -36,12 +37,12 @@ jobs:
         if: github.event_name == 'schedule'
         run: |
           git status --short
-          git add DOC/health DOC/CEO_COCKPIT.md DOC/ACTIONS.md
+          git add DOC/health DOC/CEO_COCKPIT.md DOC/ACTIONS.md DOC/RISKS.md
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git commit -m "chore(health): daily repo health $(date -u +%F)"
+          git commit -m "chore(ops): daily health + actions + risks AUTO $(date -u +%F)"
           git push

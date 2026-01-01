@@ -3,6 +3,7 @@ import path from "path";
 
 const ROOT = process.cwd();
 const ACTIONS_PATH = path.join(ROOT, "DOC", "ACTIONS.md");
+const RISKS_PATH = path.join(ROOT, "DOC", "RISKS.md");
 const HEALTH_PATHS = [
   "reports/repo_health.json",
   "repo_health.json",
@@ -29,19 +30,37 @@ const findHealthReport = () => {
 const ensureActionsTemplate = () => {
   if (fs.existsSync(ACTIONS_PATH)) return;
   const template = [
-    "# ACTIONS — Hàng đợi hành động",
+    "# ACTIONS - Hang doi hanh dộng",
     "",
     "<!-- AUTO_START -->",
     "<!-- AUTO_END -->",
     "",
     "## THỦ CÔNG",
     "",
-    "| ID | Việc | Mức | Owner | Hạn | Trạng thái | Ghi chú |",
+    "| ID | Viec | Muc | Owner | Han | Trang thai | Ghi chu |",
     "|---|---|---|---|---|---|---|",
     "| A-001 |  | P0/P1/P2 |  | YYYY-MM-DD | Todo/In progress/Done |  |",
     ""
   ].join("\n");
   fs.writeFileSync(ACTIONS_PATH, template, "utf8");
+};
+
+const ensureRisksTemplate = () => {
+  if (fs.existsSync(RISKS_PATH)) return;
+  const template = [
+    "# RISKS - Sổ rủi ro",
+    "",
+    "<!-- AUTO_START -->",
+    "<!-- AUTO_END -->",
+    "",
+    "## THỦ CÔNG",
+    "",
+    "| ID | Ruii ro | Xac suat (1-5) | Tac dộng (1-5) | Muc | Chu sở hữu | Ke hoach giam rui ro | Han |",
+    "|---|---|---:|---:|---|---|---|---|",
+    "| R-001 |  |  |  |  |  |  |  |",
+    ""
+  ].join("\n");
+  fs.writeFileSync(RISKS_PATH, template, "utf8");
 };
 
 const buildAutoBlock = ({ score, counts, blocks, warns }) => {
@@ -52,13 +71,13 @@ const buildAutoBlock = ({ score, counts, blocks, warns }) => {
   lines.push("");
   lines.push("Top việc cần làm (AUTO):");
   if (!blocks.length && !warns.length) {
-    lines.push("- (khong co)");
+    lines.push("- (không có)");
     return lines.join("\n");
   }
   let idx = 1;
   const pushItem = (item, level, owner) => {
-    const reason = item.detail || item.note || item.title || "Can xem chi tiet";
-    lines.push(`${idx}. [${level}] ${item.title} — Owner: ${owner} — ${reason}`);
+    const reason = item.detail || item.note || item.title || "C\u1ea7n xem chi ti\u1ebft";
+    lines.push(`${idx}. [${level}] ${item.title} - Owner: ${owner} - ${reason}`);
     idx += 1;
   };
   blocks.forEach((item) => pushItem(item, "P0", "CTO GPT"));
@@ -92,23 +111,90 @@ const buildAutoContent = (health) => {
   });
 };
 
-const updateActionsFile = (autoContent) => {
-  const content = fs.readFileSync(ACTIONS_PATH, "utf8");
+const updateAutoBlock = (filePath, autoContent, label) => {
+  const content = fs.readFileSync(filePath, "utf8");
   const start = "<!-- AUTO_START -->";
   const end = "<!-- AUTO_END -->";
   if (!content.includes(start) || !content.includes(end)) {
-    throw new Error("Thieu AUTO markers trong DOC/ACTIONS.md");
+    throw new Error(`Thieu AUTO markers trong ${label}`);
   }
   const pattern = new RegExp(`${start}[\\s\\S]*?${end}`);
   const block = `${start}\n${autoContent}\n${end}`;
   const updated = content.replace(pattern, block);
   if (updated === content) return false;
-  fs.writeFileSync(ACTIONS_PATH, updated, "utf8");
+  fs.writeFileSync(filePath, updated, "utf8");
   return true;
+};
+
+const buildRisksAuto = (health, trend) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const risks = [];
+  const addRisk = (risk) => risks.push(risk);
+
+  if ((health?.counts?.block || 0) > 0) {
+    addRisk({
+      id: "R-BLOCK",
+      level: "Cao",
+      title: "Có lỗi mức BLOCK (P0)",
+      signal: "counts.block > 0",
+      action: "Xử lý ngay tất cả mục BLOCK, không trì hoãn",
+      owner: "CTO GPT"
+    });
+  }
+
+  if (Array.isArray(trend) && trend.length >= 3) {
+    const last = trend.slice(-3);
+    const scores = last.map((d) => d.score);
+    if (scores[0] > scores[1] && scores[1] > scores[2]) {
+      addRisk({
+        id: "R-TREND-DOWN",
+        level: "Trung bình",
+        title: "Xu hướng giảm điểm sức khỏe",
+        signal: "score giam 2 ngay lien tiep",
+        action: "Rà soát WARN, khoanh vùng gốc gây giảm điểm",
+        owner: "CEO"
+      });
+    }
+    const warns = last.map((d) => d.warn);
+    if (warns[0] < warns[1] && warns[1] < warns[2]) {
+      addRisk({
+        id: "R-WARN-UP",
+        level: "Trung bình",
+        title: "Cảnh báo tăng liên tục",
+        signal: "WARN tang 3 ngay lien tiep",
+        action: "Giảm cảnh báo bằng việc xử lý bất thường trước",
+        owner: "Thu ky tong"
+      });
+    }
+  }
+
+  if (!risks.length) {
+    return [
+      `updated_at: ${today}`,
+      "Top rủi ro (AUTO):",
+      "- (không có)"
+    ].join("\n");
+  }
+
+  const levelRank = { "Cao": 1, "Trung bình": 2, "Thap": 3 };
+  risks.sort((a, b) => {
+    const rank = (levelRank[a.level] || 9) - (levelRank[b.level] || 9);
+    if (rank !== 0) return rank;
+    return a.id.localeCompare(b.id, "vi", { sensitivity: "base" });
+  });
+
+  const lines = [`updated_at: ${today}`, "Top rui ro (AUTO):"];
+  risks.forEach((risk, index) => {
+    lines.push(
+      `${index + 1}. [${risk.id}] ${risk.title} - M\u1ee9c: ${risk.level} - Tín hiệu: ${risk.signal} - Hành động: ${risk.action} - Owner: ${risk.owner}`
+    );
+  });
+  return lines.join("\n");
 };
 
 const main = () => {
   ensureActionsTemplate();
+  ensureRisksTemplate();
   const healthPath = findHealthReport();
   if (!healthPath) {
     throw new Error("Khong tim thay repo_health.json");
@@ -117,12 +203,16 @@ const main = () => {
   if (!health) {
     throw new Error("Khong doc duoc repo_health.json");
   }
-  if (fs.existsSync(TREND_PATH)) {
-    readJson(TREND_PATH);
-  }
+  const trend = fs.existsSync(TREND_PATH) ? readJson(TREND_PATH) : null;
   const autoContent = buildAutoContent(health);
-  const changed = updateActionsFile(autoContent);
-  console.log(changed ? "[ops_bot] updated" : "[ops_bot] no changes");
+  const risksContent = buildRisksAuto(health, trend);
+  const changedActions = updateAutoBlock(ACTIONS_PATH, autoContent, "DOC/ACTIONS.md");
+  const changedRisks = updateAutoBlock(RISKS_PATH, risksContent, "DOC/RISKS.md");
+  if (changedActions || changedRisks) {
+    console.log("[ops_bot] updated");
+  } else {
+    console.log("[ops_bot] no changes");
+  }
 };
 
 main();
