@@ -28,22 +28,22 @@ jobs:
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5)
             .map(([k, v]) => `- ${k}: ${v}`)
-            .join("\n") || "- (khong co)";
+            .join("\n") || "- (kh\u00f4ng c\u00f3)";
           const ignored = [
             ...(data.ignored?.dirs || []).map((p) => `- ${p}/`),
-            ...(data.ignored?.partialDirs || []).map((p) => `- ${p}/ (bo qua file con)`)
+            ...(data.ignored?.partialDirs || []).map((p) => `- ${p}/ (b\u1ecf qua file con)`)
           ];
           const summary = [
-            "### Ảnh chụp kho mã (Snapshot)",
-            `- Tham chiếu: ${process.env.GITHUB_REF || ""}`,
-            `- Tổng số tệp: ${data.stats?.totalFiles ?? 0}`,
-            `- Tổng số thư mục: ${data.stats?.totalDirs ?? 0}`,
+            "### \u1ea2nh ch\u1ee5p kho m\u00e3 (Snapshot)",
+            `- Tham chi\u1ebfu: ${process.env.GITHUB_REF || ""}`,
+            `- T\u1ed5ng s\u1ed1 t\u1ec7p: ${data.stats?.totalFiles ?? 0}`,
+            `- T\u1ed5ng s\u1ed1 th\u01b0 m\u1ee5c: ${data.stats?.totalDirs ?? 0}`,
             "",
-            "Top 5 đuôi tệp:",
+            "Top 5 \u0111u\u00f4i t\u1ec7p:",
             ext,
             "",
-            "Danh sách bỏ qua:",
-            ignored.length ? ignored.join("\n") : "- (không có)",
+            "Danh s\u00e1ch b\u1ecf qua:",
+            ignored.length ? ignored.join("\n") : "- (kh\u00f4ng c\u00f3)",
             "",
             "Artifact: REPO_SNAPSHOT.md"
           ].join("\n");
@@ -67,7 +67,7 @@ jobs:
       - run: node tools/repo_snapshot.mjs
       - run: |
           if git diff --quiet -- DOC/REPO_SNAPSHOT.md DOC/REPO_SNAPSHOT_INDEX.json; then
-            echo "Snapshot khong doi"
+            echo "Snapshot kh\u00f4ng \u0111\u1ed5i"
             exit 0
           fi
           git config user.name "github-actions[bot]"

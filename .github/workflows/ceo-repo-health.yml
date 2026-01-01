@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   repo-health:
@@ -33,6 +34,9 @@ jobs:
       - name: Update health history (schedule only)
         if: github.event_name == 'schedule'
         run: node tools/health_history.mjs
+      - name: OPS Automation (schedule only)
+        if: github.event_name == 'schedule'
+        run: node tools/ops_automation.mjs
       - name: Commit health history (schedule only)
         if: github.event_name == 'schedule'
         run: |

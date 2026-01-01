@@ -6,32 +6,31 @@ Tham chiếu nhanh:
 - Architecture: DOC/00_TOAN_CANH.md
 - Runtime Contract: DOC/03_RUNTIME_CONTRACT.md
 
-## Bộ Điều hành 1-click (dành cho Chủ tịch & Thư ký tổng)
-- [04_CƠ_CẤU_VẬN_HÀNH](04_CƠ_CẤU_VẬN_HÀNH.md)
-- [05_NHỊP_ĐIỀU_HÀNH](05_NHỊP_ĐIỀU_HÀNH.md)
-- [06_TIÊU_CHUẨN_CHẤT_LƯỢNG](06_TIÊU_CHUẨN_CHẤT_LƯỢNG.md)
-
-## Vận hành hằng ngày/hằng tuần
+## Điều hành 1-click
+- [REPO_SNAPSHOT — Cây thư mục & thống kê](REPO_SNAPSHOT.md)
+- [ACTIONS — Hàng đợi hành động](ACTIONS.md)
+- [RISKS — Sổ rủi ro](RISKS.md)
 - [01_NOW — Tuần này đang làm gì](01_NOW.md)
 - [DECISIONS — Sổ quyết định](DECISIONS.md)
-- [RISKS — Sổ rủi ro](RISKS.md)
-- [ACTIONS — Hàng đợi hành động](ACTIONS.md)
 
-
+<!-- OPS_SUMMARY_START -->
+updated_at: 2026-01-01
+Health: Score 97 | BLOCK 0 | WARN 1 | INFO 5
+Top việc (AUTO):
+- [AUTO-001][P1] TODO/FIXME - Owner: Design GPT - Tổng 31 mục
+Top rủi ro (AUTO):
+- (không có)
+<!-- OPS_SUMMARY_END -->
 
 ## Sức khoẻ Repo
 
-## Toàn cảnh repo
-- [REPO_SNAPSHOT — Cây thư mục & thống kê](REPO_SNAPSHOT.md)
-
 <!-- HEALTH_START -->
-Điểm hiện tại: **97**
-- BLOCK: 0 | WARN: 1
+Điểm hiện tại: **--**
+- BLOCK: 0 | WARN: 0
 
 Top lý do:
-- WARN: TODO/FIXME (1)
+- (chưa có)
 
 | Ngày | Score | BLOCK | WARN |
 |---|---:|---:|---:|
-| 2025-12-31 | 97 | 0 | 1 |
 <!-- HEALTH_END -->
