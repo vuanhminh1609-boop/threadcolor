@@ -19,6 +19,36 @@ jobs:
         with:
           node-version: 20
       - run: node tools/repo_snapshot.mjs
+      - name: PR snapshot summary
+        run: |
+          node - <<'NODE'
+          const fs = require("fs");
+          const data = JSON.parse(fs.readFileSync("DOC/REPO_SNAPSHOT_INDEX.json", "utf8"));
+          const ext = Object.entries(data.stats?.extCounts || {})
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([k, v]) => `- ${k}: ${v}`)
+            .join("\n") || "- (khong co)";
+          const ignored = [
+            ...(data.ignored?.dirs || []).map((p) => `- ${p}/`),
+            ...(data.ignored?.partialDirs || []).map((p) => `- ${p}/ (bo qua file con)`)
+          ];
+          const summary = [
+            "### Repo Snapshot",
+            `- Ref: ${process.env.GITHUB_REF || ""}`,
+            `- Tong file: ${data.stats?.totalFiles ?? 0}`,
+            `- Tong thu muc: ${data.stats?.totalDirs ?? 0}`,
+            "",
+            "Top 5 duoi file:",
+            ext,
+            "",
+            "Ignore list:",
+            ignored.length ? ignored.join("\n") : "- (khong co)",
+            "",
+            "Artifact: REPO_SNAPSHOT.md"
+          ].join("\n");
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + "\n");
+          NODE
       - uses: actions/upload-artifact@v4
         with:
           name: repo-snapshot
@@ -27,7 +57,7 @@ jobs:
             DOC/REPO_SNAPSHOT_INDEX.json
 
   snapshot_main:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, 'docs(snapshot):') && !contains(github.event.head_commit.message, '[skip snapshot]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
