@@ -1,0 +1,16 @@
+{
+  "date": "2026-01-01",
+  "health_score": 97,
+  "counts": {
+    "block": 0,
+    "warn": 1,
+    "info": 5
+  },
+  "top_reasons": [
+    {
+      "level": "WARN",
+      "title": "TODO/FIXME",
+      "count": 1
+    }
+  ]
+}
