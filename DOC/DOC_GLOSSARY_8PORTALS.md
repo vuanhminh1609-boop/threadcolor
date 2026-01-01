@@ -156,3 +156,13 @@
 | DecisionPack (Gói quyết định) | DecisionPack | Bản ghi gói quyết định nội bộ theo ngày. |
 | Snapshot (bản chụp) | Snapshot | Bản chụp trạng thái để đối chiếu/ra quyết định. |
 | Idempotency (chống chạy lặp) | Idempotency | Chạy lại không tạo trùng, giữ 1 ?latest?. |
+---
+
+## 10) Thu?t ng? tri?n khai Functions & Hosting
+
+| Thu?t ng? | Vi?t ho? d?ng trong repo | ??nh ngh?a ng?n |
+|---|---|---|
+| functions.source | functions.source | Khai b?o th? m?c m? Functions ?? deploy ??ng 100%. |
+| predeploy | predeploy | L?nh ch?y t? ??ng tr??c khi deploy (v? d? build TypeScript). |
+| emulator | emulator | M?i tr??ng gi? l?p Functions/Hosting ?? test local. |
+| Node LTS | Node LTS | Phi?n b?n Node ?n ??nh d?i h?n, khuy?n ngh? d?ng trong Functions. |
