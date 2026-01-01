@@ -11,6 +11,7 @@
     - spacecolors-mark-64.png
   - style.css
   - themes.css
+- .firebaserc
 - .github
   - CODEOWNERS
   - ISSUE_TEMPLATE
@@ -19,6 +20,7 @@
   - pull_request_template.md
   - workflows
     - ceo-repo-health.yml
+    - ops-quarantine.yml
     - repo-snapshot.yml
 - .gitignore
 - account.html
@@ -44,15 +46,26 @@
   - 05_NHỊP_ĐIỀU_HÀNH.md
   - 06_TIÊU_CHUẨN_CHẤT_LƯỢNG.md
   - ACTIONS.md
+  - audit
+    - quarantine-candidates.json
+    - quarantine-candidates.md
   - CEO_COCKPIT.md
   - DECISIONS.md
   - DOC_GLOSSARY_8PORTALS.md
   - health
     - daily (bo qua file con)
     - health-trend.json
+  - REPO_SNAPSHOT_INDEX.json
   - REPO_SNAPSHOT.md
   - RISKS.md
+- firebase.json
 - firestore.rules
+- functions
+  - package.json
+  - README.md
+  - src
+    - index.ts
+  - tsconfig.json
 - i18n.js
 - index.html
 - library.js
@@ -67,6 +80,10 @@
   - health_history.mjs
   - import_tch.mjs
   - normalize_threads.mjs
+  - ops_automation.mjs
+  - ops_bot.mjs
+  - quarantine_candidates.mjs
+  - quarantine_pr.mjs
   - repo_doctor.mjs
   - repo_snapshot.mjs
   - validate_threads.mjs
@@ -81,25 +98,25 @@
 ## Thong ke
 <!-- SNAPSHOT_STATS_START -->
 ```text
-Tong thu muc: 14
-Tong file: 57
+Tong thu muc: 17
+Tong file: 71
 
 Thong ke phan mo rong:
 .css: 2
 .html: 5
 .js: 8
-.json: 4
-.md: 19
-.mjs: 8
+.json: 9
+.md: 21
+.mjs: 12
 .png: 3
 .rules: 1
 .tch: 1
-.yml: 4
-(noext): 2
+.ts: 1
+.yml: 5
+(noext): 3
 
 Bo qua:
 - .git/ (bo qua toan bo)
-- reports/ (bo qua toan bo)
 - DOC/health/daily/ (bo qua file con)
 ```
 <!-- SNAPSHOT_STATS_END -->
