@@ -62,6 +62,7 @@
 - firebase.json
 - firestore.rules
 - functions
+  - package-lock.json
   - package.json
   - README.md
   - src
@@ -100,13 +101,13 @@
 <!-- SNAPSHOT_STATS_START -->
 ```text
 Tong thu muc: 17
-Tong file: 72
+Tong file: 73
 
 Thong ke phan mo rong:
 .css: 2
 .html: 6
 .js: 8
-.json: 9
+.json: 10
 .md: 21
 .mjs: 12
 .png: 3

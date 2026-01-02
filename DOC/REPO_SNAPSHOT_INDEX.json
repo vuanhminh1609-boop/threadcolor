@@ -2,7 +2,7 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 72,
+    "totalFiles": 73,
     "totalDirs": 17,
     "extCounts": {
       ".png": 3,
@@ -13,7 +13,7 @@
       ".html": 6,
       ".js": 8,
       ".tch": 1,
-      ".json": 9,
+      ".json": 10,
       ".rules": 1,
       ".ts": 1,
       ".mjs": 12
@@ -255,6 +255,10 @@
     {
       "path": "functions",
       "type": "dir"
+    },
+    {
+      "path": "functions/package-lock.json",
+      "type": "file"
     },
     {
       "path": "functions/package.json",

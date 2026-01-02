@@ -1,11 +1,11 @@
 # ACTIONS — Hàng đợi hành động
 
 <!-- AUTO_START -->
-updated_at: 2026-01-01
+updated_at: 2026-01-02
 Health: Score 97 | BLOCK 0 | WARN 1 | INFO 5
 
 Top việc cần làm (AUTO):
-1. [AUTO-D5187625][P1] TODO/FIXME - Owner: Design GPT - Tổng 31 mục
+1. [AUTO-3609D0AF][P1] TODO/FIXME - Owner: Design GPT - Tổng 27 mục
 <!-- AUTO_END -->
 
 ## THỦ CÔNG
