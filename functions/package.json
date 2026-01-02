@@ -19,7 +19,15 @@
     "@types/body-parser": "^1.19.6",
     "@types/connect": "^3.4.38",
     "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/express-serve-static-core": "^5.1.0",
+    "@types/glob": "^8.1.0",
+    "@types/http-errors": "^2.0.5",
+    "@types/ms": "^2.1.0",
     "@types/node": "^25.0.3",
+    "@types/qs": "^6.14.0",
+    "@types/range-parser": "^1.2.7",
+    "@types/serve-static": "^2.2.0",
     "typescript": "^5.3.3"
   }
 }

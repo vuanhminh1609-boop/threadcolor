@@ -308,8 +308,10 @@ const formatDateBangkok = (date: Date) => {
   return formatter.format(date);
 };
 
-export const dailyAdminReport = onSchedule("5 0 * * *", { timeZone: "Asia/Bangkok" }, async () => {
-  const todayKey = formatDateBangkok(new Date());
+export const dailyAdminReport = onSchedule(
+  { schedule: "5 0 * * *", timeZone: "Asia/Bangkok" },
+  async () => {
+    const todayKey = formatDateBangkok(new Date());
   const reportRef = db.doc(`adminReports/daily/${todayKey}`);
   const exists = await reportRef.get();
   if (exists.exists) return;

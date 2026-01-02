@@ -186,3 +186,21 @@
 | Tracked | Tracked | File đang được Git theo dõi (đã add). |
 | Untracked | Untracked | File chưa được Git theo dõi. |
 | Build artifact | Build artifact | Kết quả sinh ra khi build (ví dụ `functions/lib/`), không commit. |
+---
+
+## 13) Thuật ngữ xuất repo & chia sẻ
+
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| Git bundle | Git bundle | Gói Git có lịch sử đầy đủ, dùng để chia sẻ repo mà không cần remote. |
+| Git archive | Git archive | Gói snapshot không lịch sử (zip/tar) để chia sẻ mã nguồn hiện tại. |
+| Submodule | Submodule | Repo con gắn vào repo cha; cần tải riêng khi chia sẻ. |
+| Git LFS | Git LFS | Cơ chế lưu file lớn ngoài Git; cần pull riêng để đủ dữ liệu. |
+---
+
+## 14) Thuật ngữ PowerShell
+
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| ExecutionPolicy | ExecutionPolicy | Chính sách cho phép chạy script PowerShell trong phiên hiện tại. |
+| Scope Process | Scope Process | Phạm vi áp dụng của ExecutionPolicy chỉ trong phiên PowerShell đang chạy. |
