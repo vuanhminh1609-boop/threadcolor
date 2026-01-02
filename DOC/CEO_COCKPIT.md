@@ -14,10 +14,10 @@ Tham chiếu nhanh:
 - [DECISIONS — Sổ quyết định](DECISIONS.md)
 
 <!-- OPS_SUMMARY_START -->
-updated_at: 2026-01-01
+updated_at: 2026-01-02
 Health: Score 97 | BLOCK 0 | WARN 1 | INFO 5
 Top việc (AUTO):
-- [AUTO-D5187625][P1] TODO/FIXME - Owner: Design GPT - Tổng 31 mục
+- [AUTO-3609D0AF][P1] TODO/FIXME - Owner: Design GPT - Tổng 27 mục
 Top rủi ro (AUTO):
 - (không có)
 <!-- OPS_SUMMARY_END -->
@@ -25,14 +25,15 @@ Top rủi ro (AUTO):
 ## Sức khoẻ Repo
 
 <!-- HEALTH_START -->
-Điểm hiện tại: **--**
-- BLOCK: 0 | WARN: 0
+Điểm hiện tại: **97**
+- BLOCK: 0 | WARN: 1
 
 Top lý do:
-- (chưa có)
+- WARN: TODO/FIXME (1)
 
 | Ngày | Score | BLOCK | WARN |
 |---|---:|---:|---:|
 | 2025-12-31 | 97 | 0 | 1 |
 | 2026-01-01 | 97 | 0 | 1 |
+| 2026-01-02 | 97 | 0 | 1 |
 <!-- HEALTH_END -->
