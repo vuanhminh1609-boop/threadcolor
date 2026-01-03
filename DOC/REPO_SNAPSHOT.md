@@ -52,13 +52,17 @@
     - quarantine-candidates.md
   - CEO_COCKPIT.md
   - DECISIONS.md
+  - DEV_EMULATORS.md
   - DOC_GLOSSARY_8PORTALS.md
+  - EVENT_MAP.md
   - health
     - daily (bo qua file con)
     - health-trend.json
+  - NORTH_STAR.md
   - REPO_SNAPSHOT_INDEX.json
   - REPO_SNAPSHOT.md
   - RISKS.md
+- emulator_status.txt
 - firebase.json
 - firestore.rules
 - functions
@@ -72,6 +76,9 @@
 - index.html
 - library.js
 - README.md
+- repo_manifest.txt
+- repo_snapshot.zip
+- repo.bundle
 - script.js
 - SECURITY.md
 - stock.js
@@ -79,6 +86,8 @@
 - tools
   - bootstrap_admin.mjs
   - dependency_audit.mjs
+  - export_repo_snapshot.ps1
+  - export_repo_snapshot.sh
   - health_history.mjs
   - import_tch.mjs
   - normalize_threads.mjs
@@ -86,6 +95,7 @@
   - ops_bot.mjs
   - quarantine_candidates.mjs
   - quarantine_pr.mjs
+  - README_EXPORT_REPO.md
   - repo_doctor.mjs
   - repo_snapshot.mjs
   - validate_threads.mjs
@@ -101,20 +111,25 @@
 <!-- SNAPSHOT_STATS_START -->
 ```text
 Tong thu muc: 17
-Tong file: 73
+Tong file: 83
 
 Thong ke phan mo rong:
+.bundle: 1
 .css: 2
 .html: 6
 .js: 8
 .json: 10
-.md: 21
+.md: 25
 .mjs: 12
 .png: 3
+.ps1: 1
 .rules: 1
+.sh: 1
 .tch: 1
 .ts: 1
+.txt: 2
 .yml: 5
+.zip: 1
 (noext): 3
 
 Bo qua:
