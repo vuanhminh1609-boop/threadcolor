@@ -13,6 +13,10 @@ Tham chiếu nhanh:
 - [01_NOW — Tuần này đang làm gì](01_NOW.md)
 - [DECISIONS — Sổ quyết định](DECISIONS.md)
 
+## North Star & 3 leading
+- [NORTH_STAR — TMTC-7](NORTH_STAR.md)
+- [EVENT_MAP — Sự kiện tối thiểu](EVENT_MAP.md)
+
 <!-- OPS_SUMMARY_START -->
 updated_at: 2026-01-02
 Health: Score 97 | BLOCK 0 | WARN 1 | INFO 5

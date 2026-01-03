@@ -298,7 +298,43 @@ app.all("/admin/*", requireAdmin, async (req, res) => {
 
 export const adminApi = onRequest(app);
 
-const formatDateBangkok = (date: Date) => {
+export const telemetryIngest = onRequest({ cors: true }, async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).send("");
+  }
+  if (req.method !== "POST") {
+    return res.status(405).json({ ok: false, message: "Chỉ hỗ trợ POST." });
+  }
+
+  const body = req.body || {};
+  const counts = body.counts || {};
+  const allowed = ["search_start", "search_result", "pin", "copy", "save"];
+  const increments: Record<string, admin.firestore.FieldValue> = {};
+  allowed.forEach((key) => {
+    const value = Number(counts[key] || 0);
+    if (value > 0) increments[key] = admin.firestore.FieldValue.increment(value);
+  });
+
+  if (!Object.keys(increments).length) {
+    return res.status(200).json({ ok: true, message: "Không có dữ liệu cập nhật." });
+  }
+
+  const dateKey = formatDateBangkok(new Date());
+  const ref = db.doc(`metrics_daily/${dateKey}`);
+  await ref.set({
+    date: dateKey,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    ...increments
+  }, { merge: true });
+
+  return res.status(200).json({ ok: true });
+});
+
+function formatDateBangkok(date: Date) {
   const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Bangkok",
     year: "numeric",
@@ -306,7 +342,7 @@ const formatDateBangkok = (date: Date) => {
     day: "2-digit"
   });
   return formatter.format(date);
-};
+}
 
 export const dailyAdminReport = onSchedule(
   { schedule: "5 0 * * *", timeZone: "Asia/Bangkok" },

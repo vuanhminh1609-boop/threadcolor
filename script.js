@@ -239,6 +239,97 @@ let isAdminUser = false;
 let useVerifiedOnly = false;
 let verifiedThreads = [];
 let pendingSubmissions = [];
+
+const telemetry = (() => {
+  const endpoint = window.TC_TELEMETRY_ENDPOINT
+    || "https://us-central1-thread-colors-for-community.cloudfunctions.net/telemetryIngest";
+  const sessionKey = "tc_session_id";
+  const now = () => Date.now();
+  const getSessionId = () => {
+    try {
+      const existing = sessionStorage.getItem(sessionKey);
+      if (existing) return existing;
+      const next = (window.crypto?.randomUUID?.() || `sess-${now()}-${Math.random().toString(16).slice(2)}`);
+      sessionStorage.setItem(sessionKey, next);
+      return next;
+    } catch (_err) {
+      return `sess-${now()}-${Math.random().toString(16).slice(2)}`;
+    }
+  };
+  const sessionId = getSessionId();
+  const counts = { search_start: 0, search_result: 0, pin: 0, copy: 0, save: 0 };
+  const lastSent = { ...counts };
+  let flushTimer = null;
+  let lastFlushAt = now();
+
+  const buildDelta = () => {
+    const delta = {};
+    let has = false;
+    Object.keys(counts).forEach((key) => {
+      const diff = counts[key] - lastSent[key];
+      if (diff > 0) {
+        delta[key] = diff;
+        has = true;
+      }
+    });
+    return has ? delta : null;
+  };
+
+  const flush = (useBeacon = false) => {
+    const delta = buildDelta();
+    if (!delta) return;
+    const payload = {
+      sessionId,
+      world: document.documentElement?.dataset?.world || "origami",
+      ts: new Date().toISOString(),
+      counts: delta
+    };
+    const body = JSON.stringify(payload);
+    try {
+      if (useBeacon && navigator.sendBeacon) {
+        const blob = new Blob([body], { type: "application/json" });
+        navigator.sendBeacon(endpoint, blob);
+      } else {
+        fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body
+        }).catch(() => {});
+      }
+      Object.keys(delta).forEach((key) => {
+        lastSent[key] += delta[key];
+      });
+      lastFlushAt = now();
+    } catch (_err) {
+      // fail-safe: không làm gãy UI
+    }
+  };
+
+  const scheduleFlush = () => {
+    if (flushTimer) return;
+    flushTimer = window.setTimeout(() => {
+      flushTimer = null;
+      flush(false);
+    }, 5000);
+  };
+
+  const track = (type) => {
+    if (!counts[type]) counts[type] = 0;
+    counts[type] += 1;
+    if (now() - lastFlushAt > 15000) {
+      flush(false);
+      return;
+    }
+    scheduleFlush();
+  };
+
+  window.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flush(true);
+  });
+  window.addEventListener("beforeunload", () => flush(true));
+
+  return { track };
+})();
 let threadsByBrand = new Map();
 let threadsByCode = new Map();
 let threadsByCanonicalKey = new Map();
@@ -997,6 +1088,7 @@ function addPin(item) {
   }
   pinnedItems.push(item);
   savePins();
+  telemetry.track("pin");
   renderPinPanel();
   syncPinButtons();
   return true;
@@ -1171,6 +1263,9 @@ function renderGroupedResults(groups, chosenHex, limit) {
 
 function showGroupedResults(groups, chosenHex) {
   currentRendered = groups.flatMap(g => g.items);
+  if (currentRendered.length) {
+    telemetry.track("search_result");
+  }
   lastGroupedResults = groups;
   const total = currentRendered.length;
   resultRenderLimit = Math.min(RESULT_PAGE_SIZE, total);
@@ -1210,6 +1305,7 @@ function showToast(text) {
 
 function copyToClipboard(text, label) {
   if (!text) return;
+  telemetry.track("copy");
   const message = label
     ? t("tc.toast.copiedWith", "Đã sao chép {label}.", { label })
     : t("tc.toast.copied", "Đã sao chép!");
@@ -1428,6 +1524,7 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     };
     const docRef = await saveSearch(api.db, user.uid, payload);
     console.info("[save] saved doc id", docRef?.id);
+    telemetry.track("save");
     if (saveBtn) {
       saveBtn.textContent = t("tc.result.saved", "Đã lưu");
       setTimeout(() => resetSaveBtn(t("tc.result.save", "Lưu")), 1500);
@@ -1761,6 +1858,7 @@ if (!currentRendered.length || !cardHex) {
       }))
     };
     await saveSearch(api.db, user.uid, payload);
+    telemetry.track("save");
     showToast(t("tc.result.saved", "Đã lưu"));
   } catch (err) {
     console.error("Lưu thất bại", err);
@@ -2135,6 +2233,7 @@ btnFindNearest?.addEventListener("click", () => {
   if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
 
   const hex = colorPicker.value;
+  telemetry.track("search_start");
   runSearch(hex);
 });
 
@@ -2251,6 +2350,7 @@ btnFindByCode?.addEventListener("click", () => {
     showToast(t("tc.status.loading", "Đang chuẩn bị dữ liệu..."));
     return;
   }
+  telemetry.track("search_start");
   const rawQuery = codeInput.value.trim();
   if (!rawQuery) {
     showToast(t("tc.code.empty", "Vui lòng nhập mã."));

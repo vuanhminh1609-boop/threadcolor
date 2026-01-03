@@ -204,3 +204,27 @@
 |---|---|---|
 | ExecutionPolicy | ExecutionPolicy | Chính sách cho phép chạy script PowerShell trong phiên hiện tại. |
 | Scope Process | Scope Process | Phạm vi áp dụng của ExecutionPolicy chỉ trong phiên PowerShell đang chạy. |
+---
+
+## 15) Thuật ngữ đo lường & sự kiện
+
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| North Star Metric (NSM) | NSM | Chỉ số định hướng chính, đo hiệu quả cốt lõi của sản phẩm. |
+| Leading indicator | Chỉ số dẫn dắt | Chỉ số sớm dự báo xu hướng của NSM. |
+| TMTC-7 | TMTC-7 | Tỷ lệ Màu Thêu Chuẩn trong 7 ngày. |
+| TTGP | TTGP | Tỷ lệ Tra cứu Gần đúng thành công. |
+| TLC | TLC | Tỷ lệ Lưu vào Kho chỉ. |
+| TLK | TLK | Tỷ lệ Lựa chọn kết quả. |
+| Event map | Bản đồ sự kiện | Danh sách sự kiện tối thiểu + thuộc tính để đo lường. |
+---
+
+## 16) Thuật ngữ Emulator & triển khai
+
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| Emulator (mô phỏng dịch vụ chạy local) | Emulator | Bộ giả lập dịch vụ Firebase chạy trên máy local để test nhanh. |
+| Blaze plan (gói trả phí pay-as-you-go) | Blaze plan | Gói trả phí theo mức dùng, cần để dùng một số tính năng nâng cao. |
+| Spark plan (gói miễn phí) | Spark plan | Gói miễn phí với giới hạn tài nguyên cơ bản. |
+| Rewrite (điều hướng route trên hosting) | Rewrite | Cấu hình chuyển hướng route tĩnh sang Functions/API. |
+| Smoke test (kiểm thử nhanh tuyến chính) | Smoke test | Kiểm tra nhanh các luồng chính để phát hiện lỗi lớn. |
