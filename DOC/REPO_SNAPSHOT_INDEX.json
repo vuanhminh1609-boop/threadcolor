@@ -2,7 +2,7 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 104,
+    "totalFiles": 103,
     "totalDirs": 28,
     "extCounts": {
       ".png": 3,
@@ -18,7 +18,6 @@
       ".txt": 2,
       ".rules": 1,
       ".ts": 1,
-      ".zip": 1,
       ".bundle": 1,
       ".ps1": 1,
       ".sh": 1
@@ -447,10 +446,6 @@
     },
     {
       "path": "repo_manifest.txt",
-      "type": "file"
-    },
-    {
-      "path": "repo_snapshot.zip",
       "type": "file"
     },
     {
