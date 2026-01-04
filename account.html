@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Trung tâm t&#224;i kho&#7843;n</title>
+  <title>Trung t&#226;m t&#224;i kho&#7843;n</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root{
@@ -198,6 +198,24 @@
       background: linear-gradient(135deg, rgba(255,255,255,.24), rgba(255,255,255,.08));
       border: 1px solid var(--stroke);
     }
+    .setting-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .setting-control{
+      min-width: 180px;
+      text-align: right;
+    }
+    .setting-control input,
+    .setting-control select{
+      width: 100%;
+      text-align: left;
+    }
+    .setting-toggle{
+      min-width: 120px;
+    }
       .account-rail{
         position: sticky;
         top: 96px;
@@ -241,6 +259,28 @@
         .tc-topbar a,
         .tc-topbar button {
           min-height: 40px;
+        }
+        .account-rail{
+          position: static;
+        }
+        .account-rail .account-nav{
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          padding-bottom: 6px;
+          scroll-snap-type: x mandatory;
+        }
+        .account-rail .account-nav::-webkit-scrollbar{
+          height: 4px;
+        }
+        .account-rail .account-nav::-webkit-scrollbar-thumb{
+          background: rgba(0,0,0,.18);
+          border-radius: 999px;
+        }
+        .account-rail .account-nav-link{
+          flex: 0 0 auto;
+          white-space: nowrap;
+          scroll-snap-align: start;
         }
       }
     </style>
@@ -306,35 +346,35 @@
           <a id="returnLink" class="tc-btn tc-chip w-full justify-center text-sm font-semibold hidden" href="#">&larr; Quay l&#7841;i</a>
           <div>
             <div class="text-xs uppercase tracking-wide tc-muted">T&#224;i kho&#7843;n</div>
-            <nav class="mt-2 space-y-1">
+            <nav class="account-nav mt-2 space-y-1">
               <a class="account-nav-link" href="#section-overview">T&#7893;ng quan</a>
               <a class="account-nav-link" href="#section-profile">H&#7891; s&#417;</a>
               <a class="account-nav-link" href="#section-security">B&#7843;o m&#7853;t</a>
             </nav>
           </div>
           <div>
-            <div class="text-xs uppercase tracking-wide tc-muted">Tu&#7927; bi&#7871;n</div>
-            <nav class="mt-2 space-y-1">
-              <a class="account-nav-link" href="#section-preferences">Tu&#7927; bi&#7871;n</a>
+            <div class="text-xs uppercase tracking-wide tc-muted">T&#249;y bi&#7871;n</div>
+            <nav class="account-nav mt-2 space-y-1">
+              <a class="account-nav-link" href="#section-preferences">T&#249;y bi&#7871;n</a>
             </nav>
           </div>
           <div>
             <div class="text-xs uppercase tracking-wide tc-muted">D&#7919; li&#7879;u &amp; &#273;&#7891;ng b&#7897;</div>
-            <nav class="mt-2 space-y-1">
+            <nav class="account-nav mt-2 space-y-1">
               <a class="account-nav-link" href="#section-data">D&#7919; li&#7879;u &amp; &#273;&#7891;ng b&#7897;</a>
               <a class="account-nav-link" href="#section-privacy">Quy&#7873;n ri&#234;ng t&#432;</a>
             </nav>
           </div>
           <div>
             <div class="text-xs uppercase tracking-wide tc-muted">H&#7879; sinh th&#225;i</div>
-            <nav class="mt-2 space-y-1">
+            <nav class="account-nav mt-2 space-y-1">
               <a class="account-nav-link opacity-60 cursor-not-allowed" href="#section-plan" aria-disabled="true">G&#243;i d&#7883;ch v&#7909; (s&#7855;p ra m&#7855;t)</a>
-              <a class="account-nav-link opacity-60 cursor-not-allowed" href="#section-team" aria-disabled="true">Workspace/Team (s&#7855;p ra m&#7855;t)</a>
+              <a class="account-nav-link opacity-60 cursor-not-allowed" href="#section-team" aria-disabled="true">Kh&#244;ng gian l&#224;m vi&#7879;c / Nh&#243;m (s&#7855;p ra m&#7855;t)</a>
             </nav>
           </div>
           <div>
             <div class="text-xs uppercase tracking-wide tc-muted">H&#7895; tr&#7907;</div>
-            <nav class="mt-2 space-y-1">
+            <nav class="account-nav mt-2 space-y-1">
               <a class="account-nav-link" href="#section-support">H&#7895; tr&#7907; &amp; ph&#7843;n h&#7891;i</a>
               <a class="account-nav-link" href="#section-logout">&#272;&#259;ng xu&#7845;t</a>
             </nav>
@@ -343,6 +383,16 @@
       </aside>
 
       <section class="flex-1 space-y-6">
+        <div id="accountAuthGate" class="tc-card p-6 hidden" data-section="auth-gate">
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div class="text-xs uppercase tracking-wide tc-muted">Qu&#7843;n l&#253; t&#224;i kho&#7843;n</div>
+              <div class="text-lg font-semibold mt-2">&#272;&#259;ng nh&#7853;p &#273;&#7875; &#273;&#7891;ng b&#7897; h&#7891; s&#417;</div>
+              <div class="tc-muted text-sm mt-1">M&#7903; kh&#243;a sao l&#432;u, l&#7883;ch s&#7917; v&#224; d&#7919; li&#7879;u &#273;&#227; l&#432;u.</div>
+            </div>
+            <button id="btnAccountLogin" data-action="login" class="tc-btn tc-btn-primary px-5 py-2 text-sm font-semibold">&#272;&#259;ng nh&#7853;p</button>
+          </div>
+        </div>
         <div id="section-overview" class="tc-card p-6">
           <h2 class="text-xl font-semibold">T&#7893;ng quan</h2>
           <div class="mt-4 grid gap-4 md:grid-cols-2">
@@ -365,99 +415,192 @@
           </div>
         </div>
 
-        <div id="section-profile" class="tc-card p-6">
+        <div id="section-profile" class="tc-card p-6" data-section="profile">
           <h2 class="text-xl font-semibold">H&#7891; s&#417;</h2>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">T&#234;n hi&#7875;n th&#7883;</div>
-              <div class="text-lg font-semibold mt-2">SpaceColors Studio</div>
+          <div class="mt-2 tc-muted text-sm">C&#7853;p nh&#7853;t th&#244;ng tin hi&#7875;n th&#7883; trong h&#7879; sinh th&#225;i.</div>
+          <div class="mt-4 space-y-3">
+            <div class="tc-card p-4 setting-row" data-setting="display-name">
+              <div>
+                <div class="text-sm tc-muted">T&#234;n hi&#7875;n th&#7883;</div>
+                <div class="text-xs tc-muted">T&#234;n hi&#7875;n th&#7883; tr&#234;n menu t&#224;i kho&#7843;n.</div>
+              </div>
+              <div class="setting-control">
+                <input id="profileDisplayName" data-field="profile.displayName" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="V&#237; d&#7909;: SpaceColors Studio">
+              </div>
             </div>
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">&#272;&#417;n v&#7883; / Nh&#243;m</div>
-              <div class="text-lg font-semibold mt-2">X&#432;&#7903;ng Th&#234;u 01</div>
+            <div class="tc-card p-4 setting-row" data-setting="photo-url">
+              <div>
+                <div class="text-sm tc-muted">&#7842;nh (URL)</div>
+                <div class="text-xs tc-muted">Link &#7843;nh &#273;&#7841;i di&#7879;n c&#244;ng khai.</div>
+              </div>
+              <div class="setting-control">
+                <input id="profilePhotoUrl" data-field="profile.photoURL" type="url" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="https://">
+              </div>
             </div>
-            <div class="tc-card p-4 md:col-span-2">
-              <div class="text-sm tc-muted">M&#7909;c ti&#234;u</div>
-              <div class="text-lg font-semibold mt-2">T&#432;&#417;ng th&#237;ch m&#224;u ch&#237;nh x&#225;c, l&#432;u b&#7897; s&#432;u t&#7853;p</div>
+            <div class="tc-card p-4 setting-row" data-setting="org-unit">
+              <div>
+                <div class="text-sm tc-muted">&#272;&#417;n v&#7883; / Nh&#243;m</div>
+                <div class="text-xs tc-muted">D&#249;ng cho v&#7883; tr&#237; l&#224;m vi&#7879;c.</div>
+              </div>
+              <div class="setting-control">
+                <input id="profileOrgUnit" data-field="profile.orgUnit" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="V&#237; d&#7909;: X&#432;&#7903;ng Th&#234;u 01">
+              </div>
             </div>
+            <div class="tc-card p-4 setting-row" data-setting="goal">
+              <div>
+                <div class="text-sm tc-muted">M&#7909;c ti&#234;u</div>
+                <div class="text-xs tc-muted">Ghi ng&#7855;n g&#7885;n nhu c&#7847;u ch&#237;nh.</div>
+              </div>
+              <div class="setting-control">
+                <input id="profileGoal" data-field="profile.goal" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="V&#237; d&#7909;: T&#432;&#417;ng th&#237;ch m&#224;u ch&#237;nh x&#225;c">
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <button id="btnProfileSave" data-action="profile-save" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">L&#432;u h&#7891; s&#417;</button>
+            <div id="profileStatus" data-role="profile-status" class="text-sm tc-muted"></div>
           </div>
         </div>
 
-        <div id="section-security" class="tc-card p-6">
+        <div id="section-security" class="tc-card p-6" data-section="security">
           <h2 class="text-xl font-semibold">B&#7843;o m&#7853;t</h2>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">&#272;&#7893;i m&#7853;t kh&#7849;u</div>
-              <button class="mt-3 tc-btn tc-chip px-3 py-2 text-sm font-semibold">C&#7853;p nh&#7853;t</button>
+          <div class="mt-4 space-y-3">
+            <div class="tc-card p-4 setting-row" data-setting="password">
+              <div>
+                <div class="text-sm tc-muted">&#272;&#7893;i m&#7853;t kh&#7849;u</div>
+                <div class="text-xs tc-muted">G&#7917;i li&#234;n k&#7871;t &#273;&#7863;t l&#7841;i qua email.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnPasswordAction" data-action="password-reset" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">C&#7853;p nh&#7853;t</button>
+              </div>
             </div>
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">Phi&#234;n &#273;&#259;ng nh&#7853;p</div>
-              <button class="mt-3 tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;&#259;ng xu&#7845;t m&#7885;i thi&#7871;t b&#7883;</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="section-preferences" class="tc-card p-6">
-          <h2 class="text-xl font-semibold">Tu&#7927; bi&#7871;n</h2>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">S&#7855;c th&#225;i m&#7863;c &#273;&#7883;nh</div>
-              <div class="text-lg font-semibold mt-2">Origami</div>
-            </div>
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">Ng&#244;n ng&#7919;</div>
-              <div class="text-lg font-semibold mt-2">Ti&#7871;ng Vi&#7879;t</div>
-            </div>
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">M&#7853;t &#273;&#7897; UI</div>
-              <div class="text-lg font-semibold mt-2">Chu&#7849;n</div>
-            </div>
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">Ph&#237;m t&#7855;t</div>
-              <div class="text-lg font-semibold mt-2">&#272;ang b&#7853;t</div>
+            <div class="tc-card p-4 setting-row" data-setting="sessions">
+              <div>
+                <div class="text-sm tc-muted">Phi&#234;n &#273;&#259;ng nh&#7853;p</div>
+                <div class="text-xs tc-muted">Thu h&#7891;i t&#7845;t c&#7843; phi&#234;n &#273;&#227; m&#7903;.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnSignOutAllDevices" data-action="revoke-sessions" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;&#259;ng xu&#7845;t m&#7885;i thi&#7871;t b&#7883;</button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div id="section-data" class="tc-card p-6">
+        <div id="section-preferences" class="tc-card p-6" data-section="preferences">
+          <h2 class="text-xl font-semibold">T&#249;y bi&#7871;n</h2>
+          <div class="mt-4 space-y-3">
+            <div class="tc-card p-4 setting-row" data-setting="world">
+              <div>
+                <div class="text-sm tc-muted">S&#7855;c th&#225;i m&#7863;c &#273;&#7883;nh</div>
+                <div class="text-xs tc-muted">Ch&#7885;n th&#7871; gi&#7899;i m&#7863;c &#273;&#7883;nh.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnPrefWorld" data-action="pref-world" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Origami</button>
+              </div>
+            </div>
+            <div class="tc-card p-4 setting-row" data-setting="language">
+              <div>
+                <div class="text-sm tc-muted">Ng&#244;n ng&#7919;</div>
+                <div class="text-xs tc-muted">D&#249;ng ng&#244;n ng&#7919; &#432;a th&#237;ch.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnPrefLanguage" data-action="pref-language" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Ti&#7871;ng Vi&#7879;t</button>
+              </div>
+            </div>
+            <div class="tc-card p-4 setting-row" data-setting="density">
+              <div>
+                <div class="text-sm tc-muted">M&#7853;t &#273;&#7897; UI</div>
+                <div class="text-xs tc-muted">&#272;i&#7873;u ch&#7881;nh &#273;&#7897; tho&#225;ng giao di&#7879;n.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnPrefDensity" data-action="pref-density" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Chu&#7849;n</button>
+              </div>
+            </div>
+            <div class="tc-card p-4 setting-row" data-setting="shortcuts">
+              <div>
+                <div class="text-sm tc-muted">Ph&#237;m t&#7855;t</div>
+                <div class="text-xs tc-muted">B&#7853;t/t&#7855;t ph&#237;m t&#7855;t n&#7893;i.</div>
+              </div>
+              <div class="setting-control setting-toggle">
+                <button id="btnPrefShortcutsToggle" data-toggle="shortcuts" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang b&#7853;t</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-data" class="tc-card p-6" data-section="data">
           <h2 class="text-xl font-semibold">D&#7919; li&#7879;u &amp; &#273;&#7891;ng b&#7897;</h2>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">Xu&#7845;t d&#7919; li&#7879;u</div>
-              <div class="mt-3 flex flex-wrap gap-2">
-                <button class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xu&#7845;t JSON</button>
-                <button class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xu&#7845;t CSV</button>
+          <div class="mt-4 space-y-3">
+            <div class="tc-card p-4 setting-row" data-setting="export">
+              <div>
+                <div class="text-sm tc-muted">Xu&#7845;t d&#7919; li&#7879;u</div>
+                <div class="text-xs tc-muted">T&#7843;i v&#7873; JSON ho&#7863;c CSV.</div>
+              </div>
+              <div class="setting-control flex flex-wrap gap-2 justify-end">
+                <button id="btnExportJson" data-action="export-json" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xu&#7845;t JSON</button>
+                <button id="btnExportCsv" data-action="export-csv" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xu&#7845;t CSV</button>
               </div>
             </div>
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">Nh&#7853;p d&#7919; li&#7879;u</div>
-              <button class="mt-3 tc-btn tc-chip px-3 py-2 text-sm font-semibold">Nh&#7853;p t&#7879;p</button>
+            <div class="tc-card p-4 setting-row" data-setting="import">
+              <div>
+                <div class="text-sm tc-muted">Nh&#7853;p d&#7919; li&#7879;u</div>
+                <div class="text-xs tc-muted">Nh&#7853;p t&#7879;p t&#7915; b&#7897; s&#432;u t&#7853;p kh&#225;c.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnImportFile" data-action="import-file" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Nh&#7853;p t&#7879;p</button>
+              </div>
             </div>
-            <div class="tc-card p-4 md:col-span-2">
-              <div class="text-sm tc-muted">Sao l&#432;u / Kh&#244;i ph&#7909;c</div>
-              <div class="mt-3 flex flex-wrap gap-2">
-                <button class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">T&#7841;o sao l&#432;u</button>
-                <button class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Kh&#244;i ph&#7909;c</button>
-                <button class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">B&#7853;t &#273;&#7891;ng b&#7897;</button>
+            <div class="tc-card p-4 setting-row" data-setting="backup">
+              <div>
+                <div class="text-sm tc-muted">Sao l&#432;u / Kh&#244;i ph&#7909;c</div>
+                <div class="text-xs tc-muted">L&#432;u nhanh ho&#7863;c kh&#244;i ph&#7909;c t&#7915; b&#7843;n sao.</div>
+              </div>
+              <div class="setting-control flex flex-wrap gap-2 justify-end">
+                <button id="btnBackupCreate" data-action="backup-create" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">T&#7841;o sao l&#432;u</button>
+                <button id="btnBackupRestore" data-action="backup-restore" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Kh&#244;i ph&#7909;c</button>
+              </div>
+            </div>
+            <div class="tc-card p-4 setting-row" data-setting="sync">
+              <div>
+                <div class="text-sm tc-muted">&#272;&#7891;ng b&#7897;</div>
+                <div class="text-xs tc-muted">B&#7853;t t&#7927; l&#7879; &#273;&#7891;ng b&#7897; v&#7899;i t&#224;i kho&#7843;n.</div>
+              </div>
+              <div class="setting-control setting-toggle">
+                <button id="btnSyncToggle" data-toggle="sync" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang b&#7853;t</button>
               </div>
             </div>
           </div>
+          <input id="accountImportInput" data-role="import-input" type="file" accept=".json,.csv" class="hidden">
         </div>
-
-        <div id="section-privacy" class="tc-card p-6">
+        <div id="section-privacy" class="tc-card p-6" data-section="privacy">
           <h2 class="text-xl font-semibold">Quy&#7873;n ri&#234;ng t&#432;</h2>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">&#272;&#243;ng g&#243;p d&#7919; li&#7879;u</div>
-              <div class="text-lg font-semibold mt-2">&#272;ang b&#7853;t</div>
+          <div class="mt-4 space-y-3">
+            <div class="tc-card p-4 setting-row" data-setting="telemetry">
+              <div>
+                <div class="text-sm tc-muted">&#272;&#243;ng g&#243;p d&#7919; li&#7879;u</div>
+                <div class="text-xs tc-muted">Chia s&#7867; nh&#7865; &#273;&#7875; c&#7843;i thi&#7879;n s&#7843;n ph&#7849;m.</div>
+              </div>
+              <div class="setting-control setting-toggle">
+                <button id="btnPrivacyTelemetryToggle" data-toggle="telemetry" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang b&#7853;t</button>
+              </div>
             </div>
-            <div class="tc-card p-4">
-              <div class="text-sm tc-muted">Chia s&#7867; read-only</div>
-              <div class="text-lg font-semibold mt-2">&#272;ang t&#7855;t</div>
+            <div class="tc-card p-4 setting-row" data-setting="read-only">
+              <div>
+                <div class="text-sm tc-muted">Chia s&#7867; ch&#7871; &#273;&#7897; xem</div>
+                <div class="text-xs tc-muted">Cho ph&#233;p ng&#432;&#7901;i kh&#225;c xem m&#7909;c c&#244;ng khai.</div>
+              </div>
+              <div class="setting-control setting-toggle">
+                <button id="btnPrivacyReadonlyToggle" data-toggle="read-only" aria-pressed="false" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang t&#7855;t</button>
+              </div>
             </div>
-            <div class="tc-card p-4 md:col-span-2">
-              <div class="text-sm tc-muted">Ch&#7871; &#273;&#7897; &#7849;n danh</div>
-              <div class="text-lg font-semibold mt-2">Kh&#244;ng k&#237;ch ho&#7841;t</div>
+            <div class="tc-card p-4 setting-row" data-setting="anonymous">
+              <div>
+                <div class="text-sm tc-muted">Ch&#7871; &#273;&#7897; &#7849;n danh</div>
+                <div class="text-xs tc-muted">&#7848;n t&#234;n hi&#7875;n th&#7883; trong b&#7843;ng x&#7871;p h&#7841;ng.</div>
+              </div>
+              <div class="setting-control setting-toggle">
+                <button id="btnPrivacyAnonymousToggle" data-toggle="anonymous" aria-pressed="false" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Kh&#244;ng k&#237;ch ho&#7841;t</button>
+              </div>
             </div>
           </div>
         </div>
@@ -468,22 +611,47 @@
         </div>
 
         <div id="section-team" class="tc-card p-6">
-          <h2 class="text-xl font-semibold">Workspace/Team (s&#7855;p ra m&#7855;t)</h2>
+          <h2 class="text-xl font-semibold">Kh&#244;ng gian l&#224;m vi&#7879;c / Nh&#243;m (s&#7855;p ra m&#7855;t)</h2>
           <p class="mt-2 tc-muted">T&#7893; ch&#7913;c nh&#243;m, quy tr&#236;nh v&#224; ph&#226;n quy&#7873;n s&#7869; &#273;&#432;&#7907;c m&#7903; sau.</p>
         </div>
 
-        <div id="section-support" class="tc-card p-6">
+        <div id="section-support" class="tc-card p-6" data-section="support">
           <h2 class="text-xl font-semibold">H&#7895; tr&#7907; &amp; ph&#7843;n h&#7891;i</h2>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <button class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">G&#7917;i ph&#7843;n h&#7891;i</button>
-            <button class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Li&#234;n h&#7879; h&#7895; tr&#7907;</button>
+          <div class="mt-4 space-y-3">
+            <div class="tc-card p-4 setting-row" data-setting="feedback">
+              <div>
+                <div class="text-sm tc-muted">G&#7917;i ph&#7843;n h&#7891;i</div>
+                <div class="text-xs tc-muted">N&#243;i nhanh nhu c&#7847;u ho&#7863;c l&#7895;i g&#7863;p ph&#7843;i.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnSupportFeedback" data-action="support-feedback" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">G&#7917;i ph&#7843;n h&#7891;i</button>
+              </div>
+            </div>
+            <div class="tc-card p-4 setting-row" data-setting="contact">
+              <div>
+                <div class="text-sm tc-muted">Li&#234;n h&#7879; h&#7895; tr&#7907;</div>
+                <div class="text-xs tc-muted">&#431;u ti&#234;n nh&#432;&#771;ng v&#7845;n &#273;&#7873; kh&#7849;n c&#7845;p.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnSupportContact" data-action="support-contact" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Li&#234;n h&#7879; ngay</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div id="section-logout" class="tc-card p-6">
+        <div id="section-logout" class="tc-card p-6" data-section="logout">
           <h2 class="text-xl font-semibold">&#272;&#259;ng xu&#7845;t</h2>
-          <p class="mt-2 tc-muted">Tho&#225;t kh&#7887;i t&#7845;t c&#7843; thi&#7871;t b&#7883; ho&#7841;t &#273;&#7897; trong h&#7879; sinh th&#225;i.</p>
-          <button class="mt-4 tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Tho&#225;t t&#224;i kho&#7843;n</button>
+          <div class="mt-4 space-y-3">
+            <div class="tc-card p-4 setting-row" data-setting="logout">
+              <div>
+                <div class="text-sm tc-muted">Tho&#225;t t&#224;i kho&#7843;n</div>
+                <div class="text-xs tc-muted">K&#7871;t th&#250;c phi&#234;n hi&#7879;n t&#7841;i tr&#234;n thi&#7871;t b&#7883; n&#224;y.</div>
+              </div>
+              <div class="setting-control">
+                <button id="btnLogout" data-action="logout" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Tho&#225;t t&#224;i kho&#7843;n</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -510,7 +678,23 @@
     </div>
   </main>
 
+  <div id="toastContainer" data-role="toast-container" class="fixed bottom-6 right-6 z-[5000] flex flex-col gap-2"></div>
+
+  <div id="confirmModal" data-role="confirm-modal" class="fixed inset-0 z-[4500] hidden items-center justify-center bg-black/30 p-4">
+    <div class="tc-card w-full max-w-md p-6">
+      <div class="text-xs uppercase tracking-wide tc-muted">X&#225;c nh&#7853;n</div>
+      <div id="confirmTitle" data-role="confirm-title" class="text-lg font-semibold mt-2">X&#225;c nh&#7853;n thao t&#225;c</div>
+      <div id="confirmMessage" data-role="confirm-message" class="tc-muted text-sm mt-2">B&#7841;n c&#243; ch&#7855;c mu&#7889;n ti&#7871;p t&#7909;c?</div>
+      <div class="mt-4 flex flex-wrap justify-end gap-2">
+        <button id="btnConfirmCancel" data-action="confirm-cancel" class="tc-btn tc-chip px-4 py-2 text-sm font-semibold">Hu&#7927;</button>
+        <button id="btnConfirmOk" data-action="confirm-ok" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">X&#225;c nh&#7853;n</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
+  <script type="module" src="./account.js"></script>
   <script>
     (() => {
       const portalSwitcher = document.getElementById("portalSwitcher");
@@ -634,3 +818,10 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+
+

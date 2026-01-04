@@ -1,3 +1,13 @@
+let hasLoadedGuide = false;
+async function loadGuideOnce() {
+  if (hasLoadedGuide) return;
+  hasLoadedGuide = true;
+  try {
+    await import("./guide.js");
+  } catch (err) {
+    console.warn("Guide load failed", err);
+  }
+}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import {
   getAuth,
@@ -25,7 +35,7 @@ import {
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-// TODO: Điền cấu hình Firebase của bạn tại đây
+// TODO: ??i???n c???u h??nh Firebase c???a b???n t???i ????y
 const firebaseConfig = {
   apiKey: "AIzaSyCftjgq7XUpTCbEG9fMRI_RNlzFc7rqz7g",
   authDomain: "thread-colors-for-community.firebaseapp.com",
@@ -41,7 +51,7 @@ function validateConfig(cfg) {
   required.forEach(k => {
     const v = cfg[k];
     if (!v || String(v).includes("TODO")) {
-      throw new Error("Thiếu firebaseConfig");
+      throw new Error("Thi???u firebaseConfig");
     }
   });
 }
@@ -407,12 +417,12 @@ function ensureTopbarAuthDock() {
               </div>
             </div>
             <div class="tc-account-actions px-2 pb-2">
-              <button id="btnManageAccount" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.manage">Quản lý tài khoản</button>
-              <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.logout">Đăng xuất</button>
+              <button id="btnManageAccount" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.manage">Qu???n l?? t??i kho???n</button>
+              <button id="btnLogout" class="w-full text-left px-3 py-2 hover:bg-white/10" data-i18n="tc.account.logout">????ng xu???t</button>
             </div>
           </div>
         </div>
-        <button id="btnAccount" class="tc-btn tc-btn-primary px-4 py-2" data-i18n="tc.account.login">Đăng nhập</button>
+        <button id="btnAccount" class="tc-btn tc-btn-primary px-4 py-2" data-i18n="tc.account.login">????ng nh???p</button>
       </div>
     `;
     changed = true;
@@ -510,8 +520,8 @@ function ensureAuthModalExists() {
       <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div class="flex gap-2">
-            <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700" data-i18n="tc.auth.login">Đăng nhập</button>
-            <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100" data-i18n="tc.auth.register">Đăng ký</button>
+            <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700" data-i18n="tc.auth.login">????ng nh???p</button>
+            <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100" data-i18n="tc.auth.register">????ng k??</button>
           </div>
           <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500" data-i18n-attr="aria-label:tc.auth.close">&times;</button>
         </div>
@@ -520,25 +530,25 @@ function ensureAuthModalExists() {
           <div id="loginPanel" class="space-y-3">
           <input id="loginEmail" type="email" class="w-full border rounded-lg px-3 py-2" data-i18n-attr="placeholder:tc.auth.email">
           <input id="loginPassword" type="password" class="w-full border rounded-lg px-3 py-2" data-i18n-attr="placeholder:tc.auth.password">
-          <button id="btnLogin" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700" data-i18n="tc.auth.login">Đăng nhập</button>
-          <button id="btnForgot" class="text-sm text-indigo-600 hover:underline" data-i18n="tc.auth.forgot">Quên mật khẩu?</button>
+          <button id="btnLogin" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700" data-i18n="tc.auth.login">????ng nh???p</button>
+          <button id="btnForgot" class="text-sm text-indigo-600 hover:underline" data-i18n="tc.auth.forgot">Qu??n m???t kh???u?</button>
           </div>
           <div id="registerPanel" class="space-y-3 hidden">
           <input id="registerEmail" type="email" class="w-full border rounded-lg px-3 py-2" data-i18n-attr="placeholder:tc.auth.email">
           <input id="registerPassword" type="password" class="w-full border rounded-lg px-3 py-2" data-i18n-attr="placeholder:tc.auth.password">
           <input id="registerConfirm" type="password" class="w-full border rounded-lg px-3 py-2" data-i18n-attr="placeholder:tc.auth.confirm">
-          <button id="btnRegister" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" data-i18n="tc.auth.create">Tạo tài khoản</button>
+          <button id="btnRegister" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" data-i18n="tc.auth.create">T???o t??i kho???n</button>
           </div>
           <div class="flex items-center gap-2 text-xs text-gray-500">
             <span class="h-px flex-1 bg-gray-200"></span>
-          <span data-i18n="common.or">Hoặc</span>
+          <span data-i18n="common.or">Ho???c</span>
             <span class="h-px flex-1 bg-gray-200"></span>
           </div>
         <button id="btnGoogle" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>G</span><span data-i18n="tc.auth.google">Tiếp tục với Google</span>
+          <span>G</span><span data-i18n="tc.auth.google">Ti???p t???c v???i Google</span>
         </button>
         <button id="btnFacebook" class="w-full flex items-center justify-center gap-2 border rounded-lg py-2 hover:bg-gray-50">
-          <span>f</span><span data-i18n="tc.auth.facebook">Tiếp tục với Facebook</span>
+          <span>f</span><span data-i18n="tc.auth.facebook">Ti???p t???c v???i Facebook</span>
         </button>
         </div>
       </div>
@@ -793,3 +803,4 @@ window.addEventListener("firebase-auth-ready", () => {
   bindTopbarAuthDelegation();
   bindAuthState();
 });
+
