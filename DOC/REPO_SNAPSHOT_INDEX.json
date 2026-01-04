@@ -2,21 +2,26 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 73,
+    "totalFiles": 83,
     "totalDirs": 17,
     "extCounts": {
       ".png": 3,
       ".css": 2,
       "(noext)": 3,
       ".yml": 5,
-      ".md": 21,
+      ".md": 25,
       ".html": 6,
       ".js": 8,
       ".tch": 1,
       ".json": 10,
+      ".txt": 2,
       ".rules": 1,
       ".ts": 1,
-      ".mjs": 12
+      ".zip": 1,
+      ".bundle": 1,
+      ".mjs": 12,
+      ".ps1": 1,
+      ".sh": 1
     }
   },
   "ignored": {
@@ -217,7 +222,15 @@
       "type": "file"
     },
     {
+      "path": "DOC/DEV_EMULATORS.md",
+      "type": "file"
+    },
+    {
       "path": "DOC/DOC_GLOSSARY_8PORTALS.md",
+      "type": "file"
+    },
+    {
+      "path": "DOC/EVENT_MAP.md",
       "type": "file"
     },
     {
@@ -233,6 +246,10 @@
       "type": "file"
     },
     {
+      "path": "DOC/NORTH_STAR.md",
+      "type": "file"
+    },
+    {
       "path": "DOC/REPO_SNAPSHOT_INDEX.json",
       "type": "file"
     },
@@ -242,6 +259,10 @@
     },
     {
       "path": "DOC/RISKS.md",
+      "type": "file"
+    },
+    {
+      "path": "emulator_status.txt",
       "type": "file"
     },
     {
@@ -297,6 +318,18 @@
       "type": "file"
     },
     {
+      "path": "repo_manifest.txt",
+      "type": "file"
+    },
+    {
+      "path": "repo_snapshot.zip",
+      "type": "file"
+    },
+    {
+      "path": "repo.bundle",
+      "type": "file"
+    },
+    {
       "path": "script.js",
       "type": "file"
     },
@@ -325,6 +358,14 @@
       "type": "file"
     },
     {
+      "path": "tools/export_repo_snapshot.ps1",
+      "type": "file"
+    },
+    {
+      "path": "tools/export_repo_snapshot.sh",
+      "type": "file"
+    },
+    {
       "path": "tools/health_history.mjs",
       "type": "file"
     },
@@ -350,6 +391,10 @@
     },
     {
       "path": "tools/quarantine_pr.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/README_EXPORT_REPO.md",
       "type": "file"
     },
     {

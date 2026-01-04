@@ -1,7 +1,7 @@
 # RISKS — Sổ rủi ro
 
 <!-- AUTO_START -->
-updated_at: 2026-01-02
+updated_at: 2026-01-04
 Top rủi ro (AUTO):
 - (không có)
 <!-- AUTO_END -->
