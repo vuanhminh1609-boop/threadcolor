@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Threads dataset",
+  "type": "array",
+  "items": {
+    "anyOf": [
+      {
+        "type": "object",
+        "required": ["brand", "code", "hex"],
+        "properties": {
+          "brand": { "type": "string" },
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "hex": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "lab": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "file": { "type": "string" },
+              "imported_at": { "type": "string" },
+              "line": { "type": "integer" },
+              "provider": { "type": "string" },
+              "uid": { "type": "string" }
+            },
+            "additionalProperties": true
+          },
+          "rating": {
+            "type": "object",
+            "properties": {
+              "score": { "type": ["number", "null"] },
+              "votes": { "type": "integer" }
+            },
+            "additionalProperties": true
+          },
+          "confidence": { "type": "number" },
+          "brandKey": { "type": "string" },
+          "codeKey": { "type": "string" },
+          "id": { "type": "string" },
+          "verified": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      },
+      {
+        "type": "object",
+        "required": ["brand", "code", "hex"],
+        "properties": {
+          "brand": { "type": "string" },
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "hex": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "rgb": {
+            "type": "object",
+            "properties": {
+              "r": { "type": "integer", "minimum": 0, "maximum": 255 },
+              "g": { "type": "integer", "minimum": 0, "maximum": 255 },
+              "b": { "type": "integer", "minimum": 0, "maximum": 255 }
+            },
+            "additionalProperties": true
+          },
+          "thickness": { "type": "string" },
+          "source": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "file": { "type": "string" },
+              "line": { "type": "integer" }
+            },
+            "additionalProperties": true
+          },
+          "meta": { "type": "object", "additionalProperties": true },
+          "canonicalKey": { "type": "string" },
+          "alternates": { "type": "array", "items": { "type": "object" } }
+        },
+        "additionalProperties": true
+      }
+    ]
+  }
+}

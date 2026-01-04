@@ -9,3 +9,4 @@ functions/lib/
 functions/.firebase/
 firebase-debug.log
 *.log
+data/audit/*.jsonl

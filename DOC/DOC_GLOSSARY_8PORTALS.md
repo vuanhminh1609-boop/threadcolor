@@ -47,6 +47,15 @@
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
+| JSON Schema | JSON Schema | Chuan mo ta cau truc JSON de kiem tra hop le (chuan mo ta cau truc JSON de kiem tra hop le). |
+| SemVer | SemVer | Chuan danh phien ban MAJOR.MINOR.PATCH (chuan danh phien ban MAJOR.MINOR.PATCH). |
+| Manifest hop dong | Manifest hop dong | Tep ke khai: dataset nao dung schema nao + phien ban + checksum (tep ke khai: dataset nao dung schema nao + phien ban + checksum). |
+| JSONL | JSON Lines | Dinh dang JSON Lines: moi dong la 1 JSON, phu hop log/audit (dinh dang JSON Lines: moi dong la 1 JSON, phu hop log/audit). |
+| Checksum | Checksum | Chuoi kiem chung toan ven du lieu (chuoi kiem chung toan ven du lieu). |
+| SHA-256 | SHA-256 | Ham bam tao dau van tay noi dung (ham bam tao dau van tay noi dung). |
+| Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema (thu vien Node.js de kiem tra JSON Schema). |
+| CI gate | CI gate | Cong chan trong CI de ngan loi vao main (cong chan trong CI de ngan loi vao main). |
+| additionalProperties | additionalProperties | Tuy chon cua JSON Schema cho phep field phat sinh (tuy chon cua JSON Schema cho phep field phat sinh). |
 | Generated artifact | Tệp sinh ra | File do công cụ tạo (ví dụ: `threads.cleaned.json`) — thường không commit. |
 | Raw sources | Dữ liệu thô | Nguồn thô đầu vào (ví dụ: `.tch`) dùng để tái tạo dữ liệu. |
 | Validate | Kiểm tra hợp lệ | Kiểm tra cấu trúc/logic dữ liệu để phát hiện lỗi sớm. |
