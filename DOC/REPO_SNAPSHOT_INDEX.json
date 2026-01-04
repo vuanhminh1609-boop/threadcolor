@@ -2,7 +2,7 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 103,
+    "totalFiles": 104,
     "totalDirs": 28,
     "extCounts": {
       ".png": 3,
@@ -11,7 +11,7 @@
       ".yml": 6,
       ".md": 26,
       ".html": 6,
-      ".js": 8,
+      ".js": 9,
       ".json": 21,
       ".mjs": 19,
       ".tch": 1,
@@ -110,6 +110,10 @@
     },
     {
       "path": "account.html",
+      "type": "file"
+    },
+    {
+      "path": "account.js",
       "type": "file"
     },
     {
