@@ -22,6 +22,15 @@ const sha256File = async (filePath) => {
 
 const exists = (filePath) => fs.existsSync(filePath);
 
+const getMajor = (version) => {
+  const match = String(version || "").match(/^(\d+)\.(\d+)\.(\d+)/);
+  return match ? Number(match[1]) : null;
+};
+
+const migrationPathFor = (dataset, fromVer, toVer) => {
+  return path.resolve(rootDir, "data/migrations", dataset, `${fromVer}__to__${toVer}.mjs`);
+};
+
 const main = async () => {
   if (!exists(manifestPath)) {
     console.error(`[validate_contract] Khong tim thay manifest: ${manifestPath}`);
@@ -38,6 +47,20 @@ const main = async () => {
   for (const [key, info] of Object.entries(datasets)) {
     const dataPath = path.resolve(rootDir, info.duongDan || "");
     const schemaPath = path.resolve(rootDir, info.schema || "");
+
+    const schemaMajor = getMajor(info.phienBanSchema);
+    const dataMajor = getMajor(info.phienBanDuLieu);
+    if (schemaMajor === null || dataMajor === null) {
+      console.error(`[validate_contract] ${key}: phienBanSchema/phienBanDuLieu khong dung dinh dang SemVer`);
+      hasError = true;
+    } else if (schemaMajor > dataMajor) {
+      const migPath = migrationPathFor(key, info.phienBanDuLieu, info.phienBanSchema);
+      if (!exists(migPath)) {
+        console.error(`[validate_contract] ${key}: thieu migration MAJOR ${info.phienBanDuLieu} -> ${info.phienBanSchema}`);
+        console.error(`  can co: ${path.relative(rootDir, migPath)}`);
+        hasError = true;
+      }
+    }
 
     if (!exists(dataPath)) {
       console.warn(`[validate_contract] Bo qua ${key}: khong tim thay duong dan ${info.duongDan}`);

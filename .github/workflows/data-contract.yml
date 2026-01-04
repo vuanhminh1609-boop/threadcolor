@@ -17,6 +17,8 @@ jobs:
         with:
           node-version: 20
       - name: Install data tooling deps
-        run: npm install
+        run: npm ci
+      - name: Dry-run migrate when MAJOR bump exists
+        run: node data/scripts/migrate_contract.mjs --dry-run
       - name: Validate data contracts
         run: npm run validate:data

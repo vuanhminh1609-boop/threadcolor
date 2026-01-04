@@ -1,10 +1,10 @@
 {
     "phienBanManifest":  "1.0.0",
-    "capNhatLuc":  "2026-01-03T20:25:50.3109576Z",
+    "capNhatLuc":  "2026-01-04T07:29:12.2933158Z",
     "datasets":  {
                      "threads":  {
                                      "duongDan":  "threads.json",
-                                     "schema":  "data/schemas/threads.schema.json",
+                                     "schema":  "data/schemas/threads/0.1.0.json",
                                      "phienBanSchema":  "0.1.0",
                                      "phienBanDuLieu":  "0.1.0",
                                      "checksumSha256":  "30fc4f3c52bcba5f08d46c85304515203f051928d6f036a4156d782f3987fc71",
@@ -13,7 +13,7 @@
                                  },
                      "threads_generated":  {
                                                "duongDan":  "data/threads.generated.json",
-                                               "schema":  "data/schemas/threads.schema.json",
+                                               "schema":  "data/schemas/threads/0.1.0.json",
                                                "phienBanSchema":  "0.1.0",
                                                "phienBanDuLieu":  "0.1.0",
                                                "checksumSha256":  "8aae383d9dad03759fd9fc3086760d6d918bbaed0ee728e64385fe6c54055ec9",
@@ -22,7 +22,7 @@
                                            },
                      "palettes":  {
                                       "duongDan":  "data/palettes.json",
-                                      "schema":  "data/schemas/palettes.schema.json",
+                                      "schema":  "data/schemas/palettes/0.1.0.json",
                                       "phienBanSchema":  "0.1.0",
                                       "phienBanDuLieu":  "0.1.0",
                                       "checksumSha256":  "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
@@ -31,7 +31,7 @@
                                   },
                      "vault":  {
                                    "duongDan":  "data/vault.json",
-                                   "schema":  "data/schemas/vault.schema.json",
+                                   "schema":  "data/schemas/vault/0.1.0.json",
                                    "phienBanSchema":  "0.1.0",
                                    "phienBanDuLieu":  "0.1.0",
                                    "checksumSha256":  "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",

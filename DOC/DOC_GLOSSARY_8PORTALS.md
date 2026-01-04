@@ -56,6 +56,10 @@
 | Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema (thu vien Node.js de kiem tra JSON Schema). |
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main (cong chan trong CI de ngan loi vao main). |
 | additionalProperties | additionalProperties | Tuy chon cua JSON Schema cho phep field phat sinh (tuy chon cua JSON Schema cho phep field phat sinh). |
+| Migration | Migration | Di tru du lieu khi doi schema (di tru du lieu khi doi schema). |
+| Dry run | Dry run | Chay thu khong ghi du lieu (chay thu khong ghi du lieu). |
+| Reproducible build | Reproducible build | Build tai lap nho lockfile (build tai lap nho lockfile). |
+| Lockfile | Lockfile | Tep khoa phien ban phu thuoc, vi du package-lock.json (tep khoa phien ban phu thuoc, vi du package-lock.json). |
 | Generated artifact | Tệp sinh ra | File do công cụ tạo (ví dụ: `threads.cleaned.json`) — thường không commit. |
 | Raw sources | Dữ liệu thô | Nguồn thô đầu vào (ví dụ: `.tch`) dùng để tái tạo dữ liệu. |
 | Validate | Kiểm tra hợp lệ | Kiểm tra cấu trúc/logic dữ liệu để phát hiện lỗi sớm. |
