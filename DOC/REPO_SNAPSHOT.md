@@ -20,6 +20,7 @@
   - pull_request_template.md
   - workflows
     - ceo-repo-health.yml
+    - data-contract.yml
     - ops-quarantine.yml
     - repo-snapshot.yml
 - .gitignore
@@ -31,9 +32,21 @@
 - CONTRIBUTING.md
 - crowd.js
 - data
+  - audit
+    - .gitkeep
+  - contract.manifest.json
+  - palettes.json
   - raw_tch
     - Ackerman Isacord 30.tch
+  - schemas
+    - palettes.schema.json
+    - threads.schema.json
+    - vault.schema.json
+  - scripts
+    - audit.mjs
+    - validate_contract.mjs
   - threads.generated.json
+  - vault.json
 - data_normalize.js
 - dependency-audit.json
 - dependency-audit.md
@@ -75,6 +88,8 @@
 - i18n.js
 - index.html
 - library.js
+- package-lock.json
+- package.json
 - README.md
 - repo_manifest.txt
 - repo_snapshot.zip
@@ -110,17 +125,17 @@
 ## Thong ke
 <!-- SNAPSHOT_STATS_START -->
 ```text
-Tong thu muc: 17
-Tong file: 83
+Tong thu muc: 20
+Tong file: 95
 
 Thong ke phan mo rong:
 .bundle: 1
 .css: 2
 .html: 6
 .js: 8
-.json: 10
+.json: 18
 .md: 25
-.mjs: 12
+.mjs: 14
 .png: 3
 .ps1: 1
 .rules: 1
@@ -128,9 +143,9 @@ Thong ke phan mo rong:
 .tch: 1
 .ts: 1
 .txt: 2
-.yml: 5
+.yml: 6
 .zip: 1
-(noext): 3
+(noext): 4
 
 Bo qua:
 - .git/ (bo qua toan bo)

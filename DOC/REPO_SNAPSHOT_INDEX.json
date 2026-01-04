@@ -2,24 +2,24 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 83,
-    "totalDirs": 17,
+    "totalFiles": 95,
+    "totalDirs": 20,
     "extCounts": {
       ".png": 3,
       ".css": 2,
-      "(noext)": 3,
-      ".yml": 5,
+      "(noext)": 4,
+      ".yml": 6,
       ".md": 25,
       ".html": 6,
       ".js": 8,
+      ".json": 18,
       ".tch": 1,
-      ".json": 10,
+      ".mjs": 14,
       ".txt": 2,
       ".rules": 1,
       ".ts": 1,
       ".zip": 1,
       ".bundle": 1,
-      ".mjs": 12,
       ".ps1": 1,
       ".sh": 1
     }
@@ -94,6 +94,10 @@
       "type": "file"
     },
     {
+      "path": ".github/workflows/data-contract.yml",
+      "type": "file"
+    },
+    {
       "path": ".github/workflows/ops-quarantine.yml",
       "type": "file"
     },
@@ -138,6 +142,22 @@
       "type": "dir"
     },
     {
+      "path": "data/audit",
+      "type": "dir"
+    },
+    {
+      "path": "data/audit/.gitkeep",
+      "type": "file"
+    },
+    {
+      "path": "data/contract.manifest.json",
+      "type": "file"
+    },
+    {
+      "path": "data/palettes.json",
+      "type": "file"
+    },
+    {
       "path": "data/raw_tch",
       "type": "dir"
     },
@@ -146,7 +166,39 @@
       "type": "file"
     },
     {
+      "path": "data/schemas",
+      "type": "dir"
+    },
+    {
+      "path": "data/schemas/palettes.schema.json",
+      "type": "file"
+    },
+    {
+      "path": "data/schemas/threads.schema.json",
+      "type": "file"
+    },
+    {
+      "path": "data/schemas/vault.schema.json",
+      "type": "file"
+    },
+    {
+      "path": "data/scripts",
+      "type": "dir"
+    },
+    {
+      "path": "data/scripts/audit.mjs",
+      "type": "file"
+    },
+    {
+      "path": "data/scripts/validate_contract.mjs",
+      "type": "file"
+    },
+    {
       "path": "data/threads.generated.json",
+      "type": "file"
+    },
+    {
+      "path": "data/vault.json",
       "type": "file"
     },
     {
@@ -311,6 +363,14 @@
     },
     {
       "path": "library.js",
+      "type": "file"
+    },
+    {
+      "path": "package-lock.json",
+      "type": "file"
+    },
+    {
+      "path": "package.json",
       "type": "file"
     },
     {
