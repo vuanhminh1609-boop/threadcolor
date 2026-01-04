@@ -56,6 +56,7 @@
 | Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema (thu vien Node.js de kiem tra JSON Schema). |
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main (cong chan trong CI de ngan loi vao main). |
 | additionalProperties | additionalProperties | Tuy chon cua JSON Schema cho phep field phat sinh (tuy chon cua JSON Schema cho phep field phat sinh). |
+| authResolved | authResolved | Trang thai da xac dinh dang nhap hay chua (trang thai da xac dinh dang nhap hay chua). |
 | Migration | Migration | Di tru du lieu khi doi schema (di tru du lieu khi doi schema). |
 | Dry run | Dry run | Chay thu khong ghi du lieu (chay thu khong ghi du lieu). |
 | Reproducible build | Reproducible build | Build tai lap nho lockfile (build tai lap nho lockfile). |
@@ -159,6 +160,9 @@
 |---|---|---|
 | Cloud Functions (Hàm đám mây) | Cloud Functions | Hàm server-side chạy theo sự kiện/HTTP, xử lý logic nhạy cảm. |
 | Firebase Hosting | Firebase Hosting | Hạ tầng phục vụ web tĩnh và rewrite đến Functions. |
+| Cross-Origin-Opener-Policy (COOP) | Cross-Origin-Opener-Policy (COOP) | Chinh sach co lap cua so mo ra giua cac nguon (chinh sach co lap cua so mo ra giua cac nguon). |
+| same-origin-allow-popups | same-origin-allow-popups | Che do COOP cho phep popup van hoat dong voi cua so mo no (che do COOP cho phep popup van hoat dong voi cua so mo no). |
+| signInWithRedirect | signInWithRedirect | Dang nhap bang chuyen huong thay vi popup (dang nhap bang chuyen huong thay vi popup). |
 | Express | Express | Bộ định tuyến HTTP nhẹ để tổ chức API admin. |
 | rewrite (Ánh xạ đường dẫn) | rewrite | Chuyển hướng `/admin/**` từ Hosting sang Functions. |
 | RBAC (Phân quyền theo vai trò) | RBAC | Cơ chế phân quyền admin/không admin theo vai trò. |
