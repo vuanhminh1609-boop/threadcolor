@@ -35,15 +35,32 @@
   - audit
     - .gitkeep
   - contract.manifest.json
+  - migrations
+    - palettes
+      - 0.1.0__to__1.0.0.mjs
+    - threads
+      - 0.1.0__to__1.0.0.mjs
+    - threads_generated
+      - 0.1.0__to__1.0.0.mjs
+    - vault
+      - 0.1.0__to__1.0.0.mjs
   - palettes.json
   - raw_tch
     - Ackerman Isacord 30.tch
+  - README.md
   - schemas
+    - palettes
+      - 0.1.0.json
     - palettes.schema.json
+    - threads
+      - 0.1.0.json
     - threads.schema.json
+    - vault
+      - 0.1.0.json
     - vault.schema.json
   - scripts
     - audit.mjs
+    - migrate_contract.mjs
     - validate_contract.mjs
   - threads.generated.json
   - vault.json
@@ -125,17 +142,17 @@
 ## Thong ke
 <!-- SNAPSHOT_STATS_START -->
 ```text
-Tong thu muc: 20
-Tong file: 95
+Tong thu muc: 28
+Tong file: 104
 
 Thong ke phan mo rong:
 .bundle: 1
 .css: 2
 .html: 6
 .js: 8
-.json: 18
-.md: 25
-.mjs: 14
+.json: 21
+.md: 26
+.mjs: 19
 .png: 3
 .ps1: 1
 .rules: 1

@@ -2,19 +2,19 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 95,
-    "totalDirs": 20,
+    "totalFiles": 104,
+    "totalDirs": 28,
     "extCounts": {
       ".png": 3,
       ".css": 2,
       "(noext)": 4,
       ".yml": 6,
-      ".md": 25,
+      ".md": 26,
       ".html": 6,
       ".js": 8,
-      ".json": 18,
+      ".json": 21,
+      ".mjs": 19,
       ".tch": 1,
-      ".mjs": 14,
       ".txt": 2,
       ".rules": 1,
       ".ts": 1,
@@ -154,6 +154,42 @@
       "type": "file"
     },
     {
+      "path": "data/migrations",
+      "type": "dir"
+    },
+    {
+      "path": "data/migrations/palettes",
+      "type": "dir"
+    },
+    {
+      "path": "data/migrations/palettes/0.1.0__to__1.0.0.mjs",
+      "type": "file"
+    },
+    {
+      "path": "data/migrations/threads",
+      "type": "dir"
+    },
+    {
+      "path": "data/migrations/threads/0.1.0__to__1.0.0.mjs",
+      "type": "file"
+    },
+    {
+      "path": "data/migrations/threads_generated",
+      "type": "dir"
+    },
+    {
+      "path": "data/migrations/threads_generated/0.1.0__to__1.0.0.mjs",
+      "type": "file"
+    },
+    {
+      "path": "data/migrations/vault",
+      "type": "dir"
+    },
+    {
+      "path": "data/migrations/vault/0.1.0__to__1.0.0.mjs",
+      "type": "file"
+    },
+    {
       "path": "data/palettes.json",
       "type": "file"
     },
@@ -166,15 +202,43 @@
       "type": "file"
     },
     {
+      "path": "data/README.md",
+      "type": "file"
+    },
+    {
       "path": "data/schemas",
       "type": "dir"
+    },
+    {
+      "path": "data/schemas/palettes",
+      "type": "dir"
+    },
+    {
+      "path": "data/schemas/palettes/0.1.0.json",
+      "type": "file"
     },
     {
       "path": "data/schemas/palettes.schema.json",
       "type": "file"
     },
     {
+      "path": "data/schemas/threads",
+      "type": "dir"
+    },
+    {
+      "path": "data/schemas/threads/0.1.0.json",
+      "type": "file"
+    },
+    {
       "path": "data/schemas/threads.schema.json",
+      "type": "file"
+    },
+    {
+      "path": "data/schemas/vault",
+      "type": "dir"
+    },
+    {
+      "path": "data/schemas/vault/0.1.0.json",
       "type": "file"
     },
     {
@@ -187,6 +251,10 @@
     },
     {
       "path": "data/scripts/audit.mjs",
+      "type": "file"
+    },
+    {
+      "path": "data/scripts/migrate_contract.mjs",
       "type": "file"
     },
     {
