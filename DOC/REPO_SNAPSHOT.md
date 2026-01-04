@@ -109,7 +109,6 @@
 - package.json
 - README.md
 - repo_manifest.txt
-- repo_snapshot.zip
 - repo.bundle
 - script.js
 - SECURITY.md
@@ -143,7 +142,7 @@
 <!-- SNAPSHOT_STATS_START -->
 ```text
 Tong thu muc: 28
-Tong file: 104
+Tong file: 103
 
 Thong ke phan mo rong:
 .bundle: 1
@@ -161,7 +160,6 @@ Thong ke phan mo rong:
 .ts: 1
 .txt: 2
 .yml: 6
-.zip: 1
 (noext): 4
 
 Bo qua:
