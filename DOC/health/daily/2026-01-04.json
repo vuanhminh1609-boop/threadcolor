@@ -1,0 +1,26 @@
+{
+  "date": "2026-01-04",
+  "health_score": 91,
+  "counts": {
+    "block": 0,
+    "warn": 3,
+    "info": 5
+  },
+  "top_reasons": [
+    {
+      "level": "WARN",
+      "title": "File lớn",
+      "count": 1
+    },
+    {
+      "level": "WARN",
+      "title": "Asset/CSS không được tham chiếu",
+      "count": 1
+    },
+    {
+      "level": "WARN",
+      "title": "TODO/FIXME",
+      "count": 1
+    }
+  ]
+}

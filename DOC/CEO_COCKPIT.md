@@ -18,10 +18,12 @@ Tham chiếu nhanh:
 - [EVENT_MAP — Sự kiện tối thiểu](EVENT_MAP.md)
 
 <!-- OPS_SUMMARY_START -->
-updated_at: 2026-01-02
-Health: Score 97 | BLOCK 0 | WARN 1 | INFO 5
+updated_at: 2026-01-04
+Health: Score 91 | BLOCK 0 | WARN 3 | INFO 5
 Top việc (AUTO):
-- [AUTO-3609D0AF][P1] TODO/FIXME - Owner: Design GPT - Tổng 27 mục
+- [AUTO-649BEB65][P1] Asset/CSS không được tham chiếu - Owner: Design GPT - Không có refs_in
+- [AUTO-717CFE01][P1] File lớn - Owner: Design GPT - 2859 KB
+- [AUTO-D5187625][P1] TODO/FIXME - Owner: Design GPT - Tổng 31 mục
 Top rủi ro (AUTO):
 - (không có)
 <!-- OPS_SUMMARY_END -->
@@ -29,10 +31,12 @@ Top rủi ro (AUTO):
 ## Sức khoẻ Repo
 
 <!-- HEALTH_START -->
-Điểm hiện tại: **97**
-- BLOCK: 0 | WARN: 1
+Điểm hiện tại: **91**
+- BLOCK: 0 | WARN: 3
 
 Top lý do:
+- WARN: File lớn (1)
+- WARN: Asset/CSS không được tham chiếu (1)
 - WARN: TODO/FIXME (1)
 
 | Ngày | Score | BLOCK | WARN |
@@ -40,4 +44,5 @@ Top lý do:
 | 2025-12-31 | 97 | 0 | 1 |
 | 2026-01-01 | 97 | 0 | 1 |
 | 2026-01-02 | 97 | 0 | 1 |
+| 2026-01-04 | 91 | 0 | 3 |
 <!-- HEALTH_END -->
