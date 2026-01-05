@@ -2,7 +2,8 @@
   "name": "8portals-data-tools",
   "private": true,
   "scripts": {
-    "validate:data": "node data/scripts/validate_contract.mjs"
+    "validate:data": "node data/scripts/validate_contract.mjs",
+    "check:encoding": "node scripts/check-encoding.mjs"
   },
   "dependencies": {
     "ajv": "^8.12.0",

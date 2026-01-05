@@ -1588,7 +1588,7 @@ function restoreInspectorFromUrl() {
 const openAuth = (message) => {
   const fallback = t("tc.auth.needLogin", "Cần đăng nhập để tiếp tục.");
   const resolved = typeof message === "string" && message.trim() ? message : fallback;
-  const cleaned = /[ÃÂÄÆáº]/.test(resolved) ? fallback : resolved;
+  const cleaned = /[\u00C3\u00C2\u00C4\u00C6\u00E1\u00BA]/.test(resolved) ? fallback : resolved;
   showToast(cleaned);
   window.tcAuth?.openAuth?.();
 };

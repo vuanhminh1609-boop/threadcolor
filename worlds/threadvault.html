@@ -2,7 +2,7 @@
 <html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
-  <title>Kho chá»‰</title>
+  <title>Kho chỉ</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -306,19 +306,19 @@
       &#8592; V&#7873; Th&#7871; gi&#7899;i m&#224;u th&#234;u
     </a>
     <div class="tc-card rounded-2xl p-6 md:p-10">
-      <h1 class="text-3xl font-bold" data-i18n="vault.title">Kho chá»‰</h1>
-      <p class="mt-3 tc-muted" data-i18n="vault.desc">KhÃ´ng gian nÃ y Ä‘ang Ä‘Æ°á»£c hoÃ n thiá»‡n. Quay láº¡i sau nhÃ©.</p>
+      <h1 class="text-3xl font-bold" data-i18n="vault.title">Kho chỉ</h1>
+      <p class="mt-3 tc-muted" data-i18n="vault.desc">Không gian này đang được hoàn thiện. Quay lại sau nhé.</p>
       <div class="mt-6 flex flex-wrap gap-2" role="tablist">
-        <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" data-tab="saved" data-i18n="vault.tabSaved" aria-selected="true">Káº¿t quáº£ Ä‘Ã£ lÆ°u</button>
-        <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" data-tab="stock" data-i18n="vault.tabStock" aria-selected="false">Tá»“n kho</button>
+        <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" data-tab="saved" data-i18n="vault.tabSaved" aria-selected="true">Kết quả đã lưu</button>
+        <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" data-tab="stock" data-i18n="vault.tabStock" aria-selected="false">Tồn kho</button>
       </div>
       <div class="mt-6">
         <section id="vaultTabSaved" data-tab-panel="saved">
           <div id="libraryOverlay" class="hidden"></div>
           <div id="libraryModal" class="hidden tc-card rounded-2xl border border-black/5 overflow-hidden">
             <div class="flex items-center justify-between px-5 py-4 border-b border-black/5">
-              <h3 class="text-lg font-semibold" data-i18n="tc.library.title">Káº¿t quáº£ Ä‘Ã£ lÆ°u</h3>
-              <button id="libraryClose" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="common.close">ÄÃ³ng</button>
+              <h3 class="text-lg font-semibold" data-i18n="tc.library.title">Kết quả đã lưu</h3>
+              <button id="libraryClose" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="common.close">Đóng</button>
             </div>
             <div class="p-4">
               <div id="libraryList" class="space-y-3 text-sm"></div>
@@ -327,44 +327,44 @@
         </section>
         <section id="vaultTabStock" data-tab-panel="stock" class="hidden">
           <div id="stockCta" class="tc-card rounded-2xl p-6 hidden">
-            <h2 class="text-lg font-semibold" data-i18n="vault.stock.ctaTitle">ÄÄƒng nháº­p Ä‘á»ƒ dÃ¹ng Tá»“n kho</h2>
-            <p class="tc-muted mt-1" data-i18n="vault.stock.ctaDesc">Quáº£n lÃ½ tá»“n kho cÃ¡ nhÃ¢n theo tÃ i khoáº£n.</p>
-            <button id="stockLoginBtn" class="tc-btn tc-btn-primary px-4 py-2 mt-4" data-i18n="vault.stock.ctaAction">ÄÄƒng nháº­p</button>
+            <h2 class="text-lg font-semibold" data-i18n="vault.stock.ctaTitle">Đăng nhập để dùng Tồn kho</h2>
+            <p class="tc-muted mt-1" data-i18n="vault.stock.ctaDesc">Quản lý tồn kho cá nhân theo tài khoản.</p>
+            <button id="stockLoginBtn" class="tc-btn tc-btn-primary px-4 py-2 mt-4" data-i18n="vault.stock.ctaAction">ĐĒng nhập</button>
           </div>
           <div id="stockPanel" class="space-y-4">
             <div class="flex flex-wrap items-center gap-2">
-              <input id="stockSearch" class="tc-field text-sm flex-1 min-w-[200px]" data-i18n-attr="placeholder:vault.stock.search" placeholder="TÃ¬m theo hÃ£ng/mÃ£/tÃªn/hex">
+              <input id="stockSearch" class="tc-field text-sm flex-1 min-w-[200px]" data-i18n-attr="placeholder:vault.stock.search" placeholder="Tìm theo hãng/mã/tên/hex">
               <div class="flex flex-wrap gap-2">
-                <button id="stockAddBtn" class="tc-btn tc-btn-primary px-3 py-2 text-sm" data-i18n="vault.stock.add">ThÃªm</button>
-                <button id="stockImportBtn" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="vault.stock.import">Nháº­p CSV</button>
-                <button id="stockExportBtn" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="vault.stock.export">Xuáº¥t CSV</button>
+                <button id="stockAddBtn" class="tc-btn tc-btn-primary px-3 py-2 text-sm" data-i18n="vault.stock.add">Thêm</button>
+                <button id="stockImportBtn" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="vault.stock.import">Nhập CSV</button>
+                <button id="stockExportBtn" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="vault.stock.export">Xuất CSV</button>
               </div>
             </div>
             <div class="tc-card rounded-2xl p-4 flex flex-wrap gap-6 text-sm">
-              <div><span class="tc-muted" data-i18n="vault.stock.summaryItems">Tá»•ng mÃ£</span> <strong id="stockSummaryItems">0</strong></div>
-              <div><span class="tc-muted" data-i18n="vault.stock.summaryQty">Tá»•ng sá»‘ lÆ°á»£ng</span> <strong id="stockSummaryQty">0</strong></div>
-              <div><span class="tc-muted" data-i18n="vault.stock.summaryLow">Sáº¯p háº¿t</span> <strong id="stockSummaryLow">0</strong></div>
+              <div><span class="tc-muted" data-i18n="vault.stock.summaryItems">Tổng mã</span> <strong id="stockSummaryItems">0</strong></div>
+              <div><span class="tc-muted" data-i18n="vault.stock.summaryQty">Tổng số lượng</span> <strong id="stockSummaryQty">0</strong></div>
+              <div><span class="tc-muted" data-i18n="vault.stock.summaryLow">Sắp hết</span> <strong id="stockSummaryLow">0</strong></div>
             </div>
             <div class="tc-card rounded-2xl overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                   <thead class="text-left">
                     <tr class="border-b border-black/5">
-                      <th class="px-4 py-3" data-i18n="vault.stock.table.swatch">MÃ u</th>
-                      <th class="px-4 py-3" data-i18n="vault.stock.table.brand">HÃ£ng</th>
-                      <th class="px-4 py-3" data-i18n="vault.stock.table.code">MÃ£</th>
-                      <th class="px-4 py-3" data-i18n="vault.stock.table.name">TÃªn</th>
+                      <th class="px-4 py-3" data-i18n="vault.stock.table.swatch">Màu</th>
+                      <th class="px-4 py-3" data-i18n="vault.stock.table.brand">Hãng</th>
+                      <th class="px-4 py-3" data-i18n="vault.stock.table.code">Mã</th>
+                      <th class="px-4 py-3" data-i18n="vault.stock.table.name">Tên</th>
                       <th class="px-4 py-3" data-i18n="vault.stock.table.qty">SL</th>
-                      <th class="px-4 py-3" data-i18n="vault.stock.table.unit">ÄÆ¡n vá»‹</th>
-                      <th class="px-4 py-3" data-i18n="vault.stock.table.location">Vá»‹ trÃ­</th>
-                      <th class="px-4 py-3" data-i18n="vault.stock.table.updated">Cáº­p nháº­t</th>
-                      <th class="px-4 py-3 text-right" data-i18n="vault.stock.table.actions">Thao tÃ¡c</th>
+                      <th class="px-4 py-3" data-i18n="vault.stock.table.unit">Đơn vị</th>
+                      <th class="px-4 py-3" data-i18n="vault.stock.table.location">Vị trí</th>
+                      <th class="px-4 py-3" data-i18n="vault.stock.table.updated">Cập nhật</th>
+                      <th class="px-4 py-3 text-right" data-i18n="vault.stock.table.actions">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody id="stockBody"></tbody>
                 </table>
               </div>
-              <div id="stockEmpty" class="p-4 tc-muted hidden" data-i18n="vault.stock.empty">ChÆ°a cÃ³ dá»¯ liá»‡u tá»“n kho.</div>
+              <div id="stockEmpty" class="p-4 tc-muted hidden" data-i18n="vault.stock.empty">Chưa có dữ liệu tồn kho.</div>
             </div>
           </div>
           <input type="file" id="stockFileInput" class="hidden" accept=".csv,text/csv">
@@ -372,21 +372,21 @@
           <div id="stockModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
             <div class="tc-card w-full max-w-xl rounded-2xl shadow-2xl border border-black/5 overflow-hidden">
               <div class="flex items-center justify-between px-5 py-4 border-b border-black/5">
-                <h3 id="stockModalTitle" class="text-lg font-semibold" data-i18n="vault.stock.modalAdd">ThÃªm tá»“n kho</h3>
-                <button id="stockModalClose" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="common.close">ÄÃ³ng</button>
+                <h3 id="stockModalTitle" class="text-lg font-semibold" data-i18n="vault.stock.modalAdd">Thêm tồn kho</h3>
+                <button id="stockModalClose" class="tc-btn tc-chip px-3 py-2 text-sm" data-i18n="common.close">Đóng</button>
               </div>
               <form id="stockForm" class="p-5 space-y-4 text-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div class="space-y-1">
-                    <label class="font-medium" data-i18n="vault.stock.fields.brand">HÃ£ng</label>
+                    <label class="font-medium" data-i18n="vault.stock.fields.brand">Hãng</label>
                     <input id="stockBrand" class="tc-field w-full" required>
                   </div>
                   <div class="space-y-1">
-                    <label class="font-medium" data-i18n="vault.stock.fields.code">MÃ£</label>
+                    <label class="font-medium" data-i18n="vault.stock.fields.code">Mã</label>
                     <input id="stockCode" class="tc-field w-full" required>
                   </div>
                   <div class="space-y-1">
-                    <label class="font-medium" data-i18n="vault.stock.fields.name">TÃªn</label>
+                    <label class="font-medium" data-i18n="vault.stock.fields.name">Tên</label>
                     <input id="stockName" class="tc-field w-full">
                   </div>
                   <div class="space-y-1">
@@ -394,29 +394,29 @@
                     <input id="stockHex" class="tc-field w-full" placeholder="#RRGGBB">
                   </div>
                   <div class="space-y-1">
-                    <label class="font-medium" data-i18n="vault.stock.fields.qty">Sá»‘ lÆ°á»£ng</label>
+                    <label class="font-medium" data-i18n="vault.stock.fields.qty">Số lượng</label>
                     <input id="stockQty" type="number" class="tc-field w-full" min="0" step="1" required>
                   </div>
                   <div class="space-y-1">
-                    <label class="font-medium" data-i18n="vault.stock.fields.unit">ÄÆ¡n vá»‹</label>
+                    <label class="font-medium" data-i18n="vault.stock.fields.unit">Đơn vị</label>
                     <input id="stockUnit" class="tc-field w-full">
                   </div>
                   <div class="space-y-1">
-                    <label class="font-medium" data-i18n="vault.stock.fields.location">Vá»‹ trÃ­</label>
+                    <label class="font-medium" data-i18n="vault.stock.fields.location">Vị trí</label>
                     <input id="stockLocation" class="tc-field w-full">
                   </div>
                   <div class="space-y-1">
-                    <label class="font-medium" data-i18n="vault.stock.fields.minQty">Tá»“n tá»‘i thiá»ƒu</label>
+                    <label class="font-medium" data-i18n="vault.stock.fields.minQty">Tồn tối thiểu</label>
                     <input id="stockMinQty" type="number" class="tc-field w-full" min="0" step="1">
                   </div>
                 </div>
                 <div class="space-y-1">
-                  <label class="font-medium" data-i18n="vault.stock.fields.note">Ghi chÃº</label>
+                  <label class="font-medium" data-i18n="vault.stock.fields.note">Ghi chú</label>
                   <textarea id="stockNote" class="tc-field w-full min-h-[80px]"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                  <button type="button" id="stockCancel" class="tc-btn tc-chip px-4 py-2" data-i18n="vault.stock.modalCancel">Huá»·</button>
-                  <button type="submit" id="stockSave" class="tc-btn tc-btn-primary px-4 py-2" data-i18n="vault.stock.modalSave">LÆ°u</button>
+                  <button type="button" id="stockCancel" class="tc-btn tc-chip px-4 py-2" data-i18n="vault.stock.modalCancel">Huỷ</button>
+                  <button type="submit" id="stockSave" class="tc-btn tc-btn-primary px-4 py-2" data-i18n="vault.stock.modalSave">Lưu</button>
                 </div>
               </form>
             </div>
@@ -430,14 +430,14 @@
     (function () {
       var worlds = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
       var labels = {
-        nebula: "Tinh vÃ¢n",
-        ocean: "Äáº¡i dÆ°Æ¡ng",
-        ink: "Má»±c tÃ u",
+        nebula: "Tinh vân",
+        ocean: "Đại dương",
+        ink: "Mực tàu",
         origami: "Origami",
         arcade: "Arcade",
-        dunes: "Äá»“i cÃ¡t",
+        dunes: "Đồi cát",
         chrome: "Chrome",
-        circuit: "Máº¡ch Ä‘iá»‡n"
+        circuit: "Mạch điện"
       };
       var storageKey = "tc_world";
       var defaultWorld = "origami";
