@@ -405,6 +405,11 @@
     }, text);
   };
 
+  const normalizeText = (value) => {
+    if (typeof value !== "string") return value;
+    return value.normalize("NFC");
+  };
+
   const getLocale = (lang) => locales[lang] || locales[defaultLang];
 
   const t = (key, fallback = "", params) => {
@@ -421,7 +426,7 @@
     const dict = getLocale(state.lang);
     document.querySelectorAll("[data-i18n]").forEach((node) => {
       const value = getByPath(dict, node.getAttribute("data-i18n"));
-      if (value) node.textContent = value;
+      if (value) node.textContent = normalizeText(value);
     });
     document.querySelectorAll("[data-i18n-attr]").forEach((node) => {
       const raw = node.getAttribute("data-i18n-attr") || "";
@@ -429,29 +434,29 @@
         const [attr, key] = pair.split(":").map((item) => item.trim()).filter(Boolean);
         if (!attr || !key) return;
         const value = getByPath(dict, key);
-        if (value) node.setAttribute(attr, value);
+        if (value) node.setAttribute(attr, normalizeText(value));
       });
     });
     document.querySelectorAll("[data-world-label]").forEach((node) => {
       const key = node.getAttribute("data-world-label");
       const label = dict.worlds?.[key]?.label;
-      if (label) node.textContent = label;
+      if (label) node.textContent = normalizeText(label);
     });
     document.querySelectorAll("[data-world-desc]").forEach((node) => {
       const key = node.getAttribute("data-world-desc");
       const desc = dict.worlds?.[key]?.desc;
-      if (desc) node.textContent = desc;
+      if (desc) node.textContent = normalizeText(desc);
     });
     document.querySelectorAll("#worldMenu [data-world]").forEach((node) => {
       const key = node.getAttribute("data-world");
       const label = dict.worlds?.[key]?.label;
-      if (label) node.textContent = label;
+      if (label) node.textContent = normalizeText(label);
     });
     const currentWorld = document.documentElement?.dataset?.world;
     if (currentWorld) {
       const label = dict.worlds?.[currentWorld]?.label;
       const worldLabel = document.getElementById("worldLabel");
-      if (label && worldLabel) worldLabel.textContent = label;
+      if (label && worldLabel) worldLabel.textContent = normalizeText(label);
     }
   };
 
