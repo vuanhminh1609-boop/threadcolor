@@ -25,6 +25,7 @@
     - repo-snapshot.yml
 - .gitignore
 - account.html
+- account.js
 - admin.html
 - assets
   - spacecolors-logo-topbar.png
@@ -142,13 +143,13 @@
 <!-- SNAPSHOT_STATS_START -->
 ```text
 Tong thu muc: 28
-Tong file: 103
+Tong file: 104
 
 Thong ke phan mo rong:
 .bundle: 1
 .css: 2
 .html: 6
-.js: 8
+.js: 9
 .json: 21
 .md: 26
 .mjs: 19
