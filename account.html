@@ -294,6 +294,46 @@
       border-color: rgba(180,35,24,0.35);
       background: rgba(255,220,220,0.7);
     }
+    #section-preferences .tc-pref-row{
+      position: relative;
+      z-index: 0;
+    }
+    #section-preferences .tc-pref-row.is-open{
+      z-index: 50;
+    }
+    #section-preferences .tc-pref-menu{
+      position: absolute;
+      z-index: 60;
+    }
+    #section-preferences .setting-control .tc-btn{
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    #section-preferences .tc-pref-menu .tc-menu-item[data-selected="1"]{
+      font-weight: 600;
+    }
+    #section-preferences .tc-pref-menu .tc-menu-item[data-selected="1"]::after{
+      content: "\2713";
+      float: right;
+      color: var(--text);
+    }
+    html[data-density="gon"] .tc-account-main .p-6{ padding: 1.25rem !important; }
+    html[data-density="gon"] .tc-account-main .p-4{ padding: 0.85rem !important; }
+    html[data-density="gon"] .tc-account-main .gap-6{ gap: 1rem !important; }
+    html[data-density="gon"] .tc-account-main .gap-4{ gap: 0.75rem !important; }
+    html[data-density="gon"] .tc-account-main .px-4{ padding-left: 0.85rem !important; padding-right: 0.85rem !important; }
+    html[data-density="gon"] .tc-account-main .px-3{ padding-left: 0.6rem !important; padding-right: 0.6rem !important; }
+    html[data-density="gon"] .tc-account-main .py-3{ padding-top: 0.6rem !important; padding-bottom: 0.6rem !important; }
+    html[data-density="gon"] .tc-account-main .py-2{ padding-top: 0.45rem !important; padding-bottom: 0.45rem !important; }
+    html[data-density="thoang"] .tc-account-main .p-6{ padding: 1.85rem !important; }
+    html[data-density="thoang"] .tc-account-main .p-4{ padding: 1.2rem !important; }
+    html[data-density="thoang"] .tc-account-main .gap-6{ gap: 1.65rem !important; }
+    html[data-density="thoang"] .tc-account-main .gap-4{ gap: 1.2rem !important; }
+    html[data-density="thoang"] .tc-account-main .px-4{ padding-left: 1.2rem !important; padding-right: 1.2rem !important; }
+    html[data-density="thoang"] .tc-account-main .px-3{ padding-left: 0.9rem !important; padding-right: 0.9rem !important; }
+    html[data-density="thoang"] .tc-account-main .py-3{ padding-top: 0.95rem !important; padding-bottom: 0.95rem !important; }
+    html[data-density="thoang"] .tc-account-main .py-2{ padding-top: 0.7rem !important; padding-bottom: 0.7rem !important; }
     @media (prefers-reduced-motion: reduce){
       .overview-card{ transition: none; }
       .overview-card:hover{ transform: none; }
@@ -429,7 +469,7 @@
     </div>
   </header>
 
-  <main class="mx-auto max-w-6xl px-4 pt-8 pb-16">
+  <main class="mx-auto max-w-6xl px-4 pt-8 pb-16 tc-account-main">
     <div class="flex flex-col gap-6 lg:flex-row">
       <aside class="lg:w-60">
         <div class="tc-card p-4 space-y-4">
@@ -666,40 +706,77 @@
         <div id="section-preferences" class="tc-card p-6" data-section="preferences">
           <h2 class="text-xl font-semibold">T&#249;y bi&#7871;n</h2>
           <div class="mt-4 space-y-3">
-            <div class="tc-card p-4 setting-row" data-setting="world">
+            <div class="tc-card p-4 setting-row tc-pref-row" data-setting="world">
               <div>
                 <div class="text-sm tc-muted">S&#7855;c th&#225;i m&#7863;c &#273;&#7883;nh</div>
-                <div class="text-xs tc-muted">Ch&#7885;n th&#7871; gi&#7899;i m&#7863;c &#273;&#7883;nh.</div>
+                <div class="text-xs tc-muted">Ch&#7885;n s&#7855;c th&#225;i m&#7863;c &#273;&#7883;nh.</div>
               </div>
               <div class="setting-control">
-                <button id="btnPrefWorld" data-action="pref-world" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Origami</button>
+                <div class="relative">
+                  <button id="btnPrefWorld" data-action="pref-world" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold flex items-center gap-2" aria-expanded="false" aria-haspopup="menu" aria-controls="prefWorldMenu">
+                    <span id="prefWorldLabel">Origami</span>
+                    <span aria-hidden="true">&#9662;</span>
+                  </button>
+                  <div id="prefWorldMenu" data-open="0" role="menu" class="tc-pref-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip hidden">
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="nebula" role="menuitem">Tinh v&#226;n</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="ocean" role="menuitem">&#272;&#7841;i d&#432;&#417;ng</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="ink" role="menuitem">M&#7921;c t&#224;u</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="origami" role="menuitem">Origami</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="arcade" role="menuitem">Arcade</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="dunes" role="menuitem">&#272;&#7891;i c&#225;t</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="chrome" role="menuitem">Chrome</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="circuit" role="menuitem">M&#7841;ch &#273;i&#7879;n</button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="tc-card p-4 setting-row" data-setting="language">
+            <div class="tc-card p-4 setting-row tc-pref-row" data-setting="language">
               <div>
                 <div class="text-sm tc-muted">Ng&#244;n ng&#7919;</div>
                 <div class="text-xs tc-muted">D&#249;ng ng&#244;n ng&#7919; &#432;a th&#237;ch.</div>
               </div>
               <div class="setting-control">
-                <button id="btnPrefLanguage" data-action="pref-language" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Ti&#7871;ng Vi&#7879;t</button>
+                <div class="relative">
+                  <button id="btnPrefLanguage" data-action="pref-language" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold flex items-center gap-2" aria-expanded="false" aria-haspopup="menu" aria-controls="prefLanguageMenu">
+                    <span id="prefLanguageLabel">Ti&#7871;ng Vi&#7879;t</span>
+                    <span aria-hidden="true">&#9662;</span>
+                  </button>
+                  <div id="prefLanguageMenu" data-open="0" role="menu" class="tc-pref-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip hidden">
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="vi" role="menuitem">Ti&#7871;ng Vi&#7879;t</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" data-value="en" role="menuitem" aria-disabled="true" disabled>English (s&#7855;p ra m&#7855;t)</button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="tc-card p-4 setting-row" data-setting="density">
+            <div class="tc-card p-4 setting-row tc-pref-row" data-setting="density">
               <div>
                 <div class="text-sm tc-muted">M&#7853;t &#273;&#7897; UI</div>
                 <div class="text-xs tc-muted">&#272;i&#7873;u ch&#7881;nh &#273;&#7897; tho&#225;ng giao di&#7879;n.</div>
               </div>
               <div class="setting-control">
-                <button id="btnPrefDensity" data-action="pref-density" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Chu&#7849;n</button>
+                <div class="relative">
+                  <button id="btnPrefDensity" data-action="pref-density" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold flex items-center gap-2" aria-expanded="false" aria-haspopup="menu" aria-controls="prefDensityMenu">
+                    <span id="prefDensityLabel">Chu&#7849;n</span>
+                    <span aria-hidden="true">&#9662;</span>
+                  </button>
+                  <div id="prefDensityMenu" data-open="0" role="menu" class="tc-pref-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip hidden">
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="chuan" role="menuitem">Chu&#7849;n</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="gon" role="menuitem">G&#7885;n</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="thoang" role="menuitem">Tho&#225;ng</button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="tc-card p-4 setting-row" data-setting="shortcuts">
+            <div class="tc-card p-4 setting-row tc-pref-row" data-setting="shortcuts">
               <div>
                 <div class="text-sm tc-muted">Ph&#237;m t&#7855;t</div>
                 <div class="text-xs tc-muted">B&#7853;t/t&#7855;t ph&#237;m t&#7855;t n&#7893;i.</div>
               </div>
-              <div class="setting-control setting-toggle">
+              <div class="setting-control setting-toggle flex flex-col items-end gap-2">
                 <button id="btnPrefShortcutsToggle" data-toggle="shortcuts" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang b&#7853;t</button>
+                <div id="shortcutsListWrap" class="hidden">
+                  <button id="btnShortcutsList" data-action="shortcuts-list" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xem danh s&#225;ch ph&#237;m t&#7855;t</button>
+                </div>
               </div>
             </div>
           </div>
@@ -867,6 +944,18 @@
     </div>
   </div>
 
+  <div id="shortcutsModal" data-role="shortcuts-modal" class="fixed inset-0 z-[4600] hidden items-center justify-center bg-black/40 p-4">
+    <div class="tc-card w-full max-w-lg p-6">
+      <div class="text-xs uppercase tracking-wide tc-muted">Ph&#237;m t&#7855;t</div>
+      <div class="text-lg font-semibold mt-2">Danh s&#225;ch ph&#237;m t&#7855;t</div>
+      <div class="tc-muted text-sm mt-1">Danh s&#225;ch n&#224;y &#273;&#432;&#7907;c tr&#237;ch t&#7915; m&#227; hi&#7879;n t&#7841;i.</div>
+      <div id="shortcutsList" class="mt-4 space-y-3"></div>
+      <div class="mt-5 flex justify-end">
+        <button id="btnShortcutsClose" data-action="shortcuts-close" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">&#272;&#243;ng</button>
+      </div>
+    </div>
+  </div>
+
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
   <script type="module" src="./account.js"></script>
@@ -922,6 +1011,11 @@
       const storageKey = "tc_world";
       const defaultWorld = "origami";
       const labelEl = document.getElementById("worldLabel");
+      const prefLabelEl = document.getElementById("prefWorldLabel");
+      const setPrefWorldLabel = (key) => {
+        if (!prefLabelEl) return;
+        prefLabelEl.textContent = labels[key] || "Origami";
+      };
       const setMenuOpen = (open) => {
         worldMenu.dataset.open = open ? "1" : "0";
         worldMenu.hidden = !open;
@@ -932,7 +1026,14 @@
         document.documentElement.setAttribute("data-world", next);
         try { localStorage.setItem(storageKey, next); } catch (e) {}
         if (labelEl) labelEl.textContent = labels[next] || "Origami";
+        setPrefWorldLabel(next);
+        window.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world: next } }));
       };
+      const getWorld = () => {
+        const stored = localStorage.getItem(storageKey);
+        return worlds.includes(stored) ? stored : (document.documentElement.dataset.world || defaultWorld);
+      };
+      window.tcTheme = { applyWorld, getWorld, worlds, labels };
       try {
         const stored = localStorage.getItem(storageKey);
         applyWorld(stored || document.documentElement.dataset.world || defaultWorld);
@@ -959,6 +1060,278 @@
           setMenuOpen(false);
           worldBtn.focus();
         }
+      });
+    })();
+  </script>
+  <script>
+    (() => {
+      const prefWorldBtn = document.getElementById("btnPrefWorld");
+      const prefWorldMenu = document.getElementById("prefWorldMenu");
+      const prefWorldLabel = document.getElementById("prefWorldLabel");
+      const prefLanguageBtn = document.getElementById("btnPrefLanguage");
+      const prefLanguageMenu = document.getElementById("prefLanguageMenu");
+      const prefLanguageLabel = document.getElementById("prefLanguageLabel");
+      const prefDensityBtn = document.getElementById("btnPrefDensity");
+      const prefDensityMenu = document.getElementById("prefDensityMenu");
+      const prefDensityLabel = document.getElementById("prefDensityLabel");
+      const prefShortcutsBtn = document.getElementById("btnPrefShortcutsToggle");
+      const shortcutsListWrap = document.getElementById("shortcutsListWrap");
+      const shortcutsListBtn = document.getElementById("btnShortcutsList");
+      const shortcutsModal = document.getElementById("shortcutsModal");
+      const shortcutsList = document.getElementById("shortcutsList");
+      const shortcutsClose = document.getElementById("btnShortcutsClose");
+      const prefRows = Array.from(document.querySelectorAll("#section-preferences .tc-pref-row"));
+      const toneOptions = [
+        { key: "nebula", label: "Tinh v\u00e2n" },
+        { key: "ocean", label: "\u0110\u1ea1i d\u01b0\u01a1ng" },
+        { key: "ink", label: "M\u1ef1c t\u00e0u" },
+        { key: "origami", label: "Origami" },
+        { key: "arcade", label: "Arcade" },
+        { key: "dunes", label: "\u0110\u1ed3i c\u00e1t" },
+        { key: "chrome", label: "Chrome" },
+        { key: "circuit", label: "M\u1ea1ch \u0111i\u1ec7n" }
+      ];
+      const toneLabels = toneOptions.reduce((acc, item) => {
+        acc[item.key] = item.label;
+        return acc;
+      }, {});
+      const defaultTone = "origami";
+      const densityLabels = {
+        chuan: "Chu\u1ea9n",
+        gon: "G\u1ecdn",
+        thoang: "Tho\u00e1ng"
+      };
+      const langLabels = {
+        vi: "Ti\u1ebfng Vi\u1ec7t",
+        en: "English"
+      };
+      const shortcutItems = [
+        {
+          key: "Escape",
+          action: "\u0110\u00f3ng b\u1ea3ng ki\u1ec3m m\u00e0u (Inspector)",
+          source: "script.js#L2281"
+        },
+        {
+          key: "I",
+          action: "M\u1edf c\u00f4ng c\u1ee5 l\u1ea5y m\u00e0u (EyeDropper)",
+          source: "script.js#L2281"
+        },
+        {
+          key: "Ctrl/Cmd + Shift + P",
+          action: "M\u1edf c\u00f4ng c\u1ee5 l\u1ea5y m\u00e0u (EyeDropper)",
+          source: "script.js#L2281"
+        },
+        {
+          key: "Escape",
+          action: "\u0110\u00f3ng menu s\u1eafc th\u00e1i \u1edf Topbar",
+          source: "account.html#L1030"
+        },
+        {
+          key: "Escape",
+          action: "\u0110\u00f3ng menu portal/nh\u00f3m",
+          source: "worlds/threadcolor.html#L1062, worlds/threadvault.html#L486, worlds/palette.html#L382"
+        }
+      ];
+      const setRowOpen = (row, open) => {
+        prefRows.forEach((item) => {
+          item.classList.toggle("is-open", item === row && open);
+        });
+      };
+      const closeMenus = () => {
+        [prefWorldMenu, prefLanguageMenu, prefDensityMenu].forEach((menu) => {
+          if (!menu) return;
+          menu.dataset.open = "0";
+          menu.classList.add("hidden");
+        });
+        [prefWorldBtn, prefLanguageBtn, prefDensityBtn].forEach((btn) => {
+          if (!btn) return;
+          btn.setAttribute("aria-expanded", "false");
+        });
+        setRowOpen(null, false);
+      };
+      const toggleMenu = (btn, menu) => {
+        if (!btn || !menu) return;
+        const open = menu.dataset.open !== "1";
+        closeMenus();
+        menu.dataset.open = open ? "1" : "0";
+        menu.classList.toggle("hidden", !open);
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        setRowOpen(btn.closest(".tc-pref-row"), open);
+      };
+      const applyDensity = (value, persist = true) => {
+        const next = densityLabels[value] ? value : "chuan";
+        document.documentElement.dataset.density = next;
+        if (prefDensityLabel) prefDensityLabel.textContent = densityLabels[next];
+        if (persist) {
+          try { localStorage.setItem("tc_density", next); } catch (e) {}
+        }
+      };
+      const applyLanguage = (value, persist = true) => {
+        const next = langLabels[value] ? value : "vi";
+        if (prefLanguageLabel) prefLanguageLabel.textContent = langLabels[next];
+        if (persist) {
+          try { localStorage.setItem("tc_lang", next); } catch (e) {}
+        }
+        if (window.tcI18n?.setLang) window.tcI18n.setLang(next);
+      };
+      const applyShortcuts = (enabled, persist = true) => {
+        if (!prefShortcutsBtn) return;
+        const next = !!enabled;
+        prefShortcutsBtn.setAttribute("aria-pressed", next ? "true" : "false");
+        prefShortcutsBtn.textContent = next ? "\u0110ang b\u1eadt" : "\u0110ang t\u1eaft";
+        if (shortcutsListWrap) shortcutsListWrap.classList.toggle("hidden", !next);
+        if (persist) {
+          try { localStorage.setItem("tc_shortcuts", next ? "1" : "0"); } catch (e) {}
+        }
+      };
+      const renderShortcuts = () => {
+        if (!shortcutsList) return;
+        shortcutsList.innerHTML = "";
+        shortcutItems.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "tc-card p-4";
+          row.innerHTML = `
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <div class="text-sm font-semibold">${item.key}</div>
+                <div class="text-xs tc-muted">${item.action || "Ph\u00edm: " + item.key + " \u2014 H\u00e0nh \u0111\u1ed9ng: (ch\u01b0a m\u00f4 t\u1ea3)"}</div>
+              </div>
+              <div class="text-[11px] tc-muted">${item.source}</div>
+            </div>
+          `;
+          shortcutsList.appendChild(row);
+        });
+      };
+      const openShortcutsModal = () => {
+        if (!shortcutsModal) return;
+        renderShortcuts();
+        shortcutsModal.classList.remove("hidden");
+        shortcutsModal.classList.add("flex");
+      };
+      const closeShortcutsModal = () => {
+        if (!shortcutsModal) return;
+        shortcutsModal.classList.add("hidden");
+        shortcutsModal.classList.remove("flex");
+      };
+      const updateToneMenu = (selected) => {
+        if (!prefWorldMenu) return;
+        prefWorldMenu.querySelectorAll(".tc-menu-item").forEach((item) => {
+          const value = item.getAttribute("data-value");
+          const isSelected = value === selected;
+          item.dataset.selected = isSelected ? "1" : "0";
+          item.setAttribute("aria-checked", isSelected ? "true" : "false");
+        });
+      };
+      const applyTone = (value, persist = true, syncWorld = true) => {
+        const next = toneLabels[value] ? value : defaultTone;
+        document.documentElement.dataset.tone = next;
+        document.documentElement.dataset.world = next;
+        if (prefWorldLabel) prefWorldLabel.textContent = toneLabels[next];
+        updateToneMenu(next);
+        if (persist) {
+          try { localStorage.setItem("tc_tone", next); } catch (e) {}
+        }
+        if (syncWorld) {
+          window.tcTheme?.applyWorld?.(next);
+        } else if (window.tcTheme?.labels) {
+          const topbarLabel = document.getElementById("worldLabel");
+          if (topbarLabel) topbarLabel.textContent = window.tcTheme.labels[next] || "Origami";
+        }
+      };
+      const syncFromStorage = () => {
+        const storedTone = localStorage.getItem("tc_tone");
+        const fallbackTone = window.tcTheme?.getWorld?.() || document.documentElement.dataset.world || defaultTone;
+        applyTone(storedTone || fallbackTone, false, false);
+        const storedDensity = localStorage.getItem("tc_density");
+        applyDensity(storedDensity || "chuan", false);
+        const storedLang = localStorage.getItem("tc_lang");
+        applyLanguage(storedLang || "vi", false);
+        const storedShortcuts = localStorage.getItem("tc_shortcuts");
+        applyShortcuts(storedShortcuts !== "0", false);
+      };
+
+      prefWorldBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        toggleMenu(prefWorldBtn, prefWorldMenu);
+      }, true);
+      prefLanguageBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        toggleMenu(prefLanguageBtn, prefLanguageMenu);
+      }, true);
+      prefDensityBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        toggleMenu(prefDensityBtn, prefDensityMenu);
+      }, true);
+      prefShortcutsBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        const current = prefShortcutsBtn.getAttribute("aria-pressed") === "true";
+        applyShortcuts(!current, true);
+      }, true);
+      shortcutsListBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        openShortcutsModal();
+      });
+      shortcutsClose?.addEventListener("click", (event) => {
+        event.preventDefault();
+        closeShortcutsModal();
+      });
+      shortcutsModal?.addEventListener("click", (event) => {
+        if (event.target === shortcutsModal) closeShortcutsModal();
+      });
+
+      prefWorldMenu?.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || item.disabled) return;
+        const value = item.getAttribute("data-value");
+        applyTone(value, true, true);
+        closeMenus();
+      });
+      prefLanguageMenu?.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || item.disabled) return;
+        const value = item.getAttribute("data-value");
+        applyLanguage(value, true);
+        closeMenus();
+      });
+      prefDensityMenu?.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || item.disabled) return;
+        const value = item.getAttribute("data-value");
+        applyDensity(value, true);
+        closeMenus();
+      });
+
+      window.addEventListener("tc-world-changed", (event) => {
+        const value = event.detail?.world;
+        if (value) applyTone(value, true, false);
+      });
+
+      document.addEventListener("click", closeMenus);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeMenus();
+          closeShortcutsModal();
+        }
+      });
+
+      syncFromStorage();
+      let syncCount = 0;
+      const syncTimer = setInterval(() => {
+        syncFromStorage();
+        syncCount += 1;
+        if (syncCount > 6) clearInterval(syncTimer);
+      }, 500);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) syncFromStorage();
       });
     })();
   </script>

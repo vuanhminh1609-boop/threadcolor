@@ -2282,6 +2282,9 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     if (hasToolUI) closeInspector();
   }
+  try {
+    if (localStorage.getItem("tc_shortcuts") === "0") return;
+  } catch (err) {}
   if (!hasToolUI) return;
   const targetTag = (e.target.tagName || "").toLowerCase();
   const isTyping = targetTag === "input" || targetTag === "textarea";
