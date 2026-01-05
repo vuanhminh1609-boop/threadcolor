@@ -11,6 +11,7 @@
     - spacecolors-mark-64.png
   - style.css
   - themes.css
+- .editorconfig
 - .firebaserc
 - .github
   - CODEOWNERS
@@ -143,7 +144,7 @@
 <!-- SNAPSHOT_STATS_START -->
 ```text
 Tong thu muc: 28
-Tong file: 104
+Tong file: 105
 
 Thong ke phan mo rong:
 .bundle: 1
@@ -161,7 +162,7 @@ Thong ke phan mo rong:
 .ts: 1
 .txt: 2
 .yml: 6
-(noext): 4
+(noext): 5
 
 Bo qua:
 - .git/ (bo qua toan bo)

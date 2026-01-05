@@ -2,12 +2,12 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 104,
+    "totalFiles": 105,
     "totalDirs": 28,
     "extCounts": {
       ".png": 3,
       ".css": 2,
-      "(noext)": 4,
+      "(noext)": 5,
       ".yml": 6,
       ".md": 26,
       ".html": 6,
@@ -54,6 +54,10 @@
     },
     {
       "path": "_graveyard/themes.css",
+      "type": "file"
+    },
+    {
+      "path": ".editorconfig",
       "type": "file"
     },
     {
