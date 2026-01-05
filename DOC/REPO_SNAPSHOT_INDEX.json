@@ -2,8 +2,8 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 105,
-    "totalDirs": 28,
+    "totalFiles": 107,
+    "totalDirs": 29,
     "extCounts": {
       ".png": 3,
       ".css": 2,
@@ -13,7 +13,7 @@
       ".html": 6,
       ".js": 9,
       ".json": 21,
-      ".mjs": 19,
+      ".mjs": 21,
       ".tch": 1,
       ".txt": 2,
       ".rules": 1,
@@ -462,6 +462,18 @@
     },
     {
       "path": "script.js",
+      "type": "file"
+    },
+    {
+      "path": "scripts",
+      "type": "dir"
+    },
+    {
+      "path": "scripts/check-encoding.mjs",
+      "type": "file"
+    },
+    {
+      "path": "scripts/fix-mojibake.mjs",
       "type": "file"
     },
     {

@@ -113,6 +113,9 @@
 - repo_manifest.txt
 - repo.bundle
 - script.js
+- scripts
+  - check-encoding.mjs
+  - fix-mojibake.mjs
 - SECURITY.md
 - stock.js
 - threads.json
@@ -143,8 +146,8 @@
 ## Thong ke
 <!-- SNAPSHOT_STATS_START -->
 ```text
-Tong thu muc: 28
-Tong file: 105
+Tong thu muc: 29
+Tong file: 107
 
 Thong ke phan mo rong:
 .bundle: 1
@@ -153,7 +156,7 @@ Thong ke phan mo rong:
 .js: 9
 .json: 21
 .md: 26
-.mjs: 19
+.mjs: 21
 .png: 3
 .ps1: 1
 .rules: 1
