@@ -40,7 +40,10 @@ const TEXT = {
   confirmAccept: "X\u00e1c nh\u1eadn",
   confirmCancel: "Hu\u1ef7",
   confirmRevoke: "Thu h\u1ed3i phi\u00ean tr\u00ean thi\u1ebft b\u1ecb kh\u00e1c?",
-  confirmRevokeDetail: "Thi\u1ebft b\u1ecb kh\u00e1c s\u1ebd b\u1ecb y\u00eau c\u1ea7u \u0111\u0103ng nh\u1eadp l\u1ea1i."
+  confirmRevokeDetail: "Thi\u1ebft b\u1ecb kh\u00e1c s\u1ebd b\u1ecb y\u00eau c\u1ea7u \u0111\u0103ng nh\u1eadp l\u1ea1i.",
+  syncNowOk: "\u0110\u00e3 \u0111\u1ed3ng b\u1ed9.",
+  syncNowFail: "\u0110\u1ed3ng b\u1ed9 kh\u00f4ng th\u00e0nh c\u00f4ng.",
+  syncDisabled: "\u0110ang t\u1eaft \u0111\u1ed3ng b\u1ed9."
 };
 
 const PREF_WORLD = [
@@ -78,6 +81,11 @@ const state = {
 };
 
 const el = (id) => document.getElementById(id);
+
+const OVERVIEW_CACHE_KEY = "tc_account_overview_cache";
+const OVERVIEW_CACHE_TTL = 60000;
+const OVERVIEW_LOADING_MIN = 300;
+const OVERVIEW_LOADING_MAX = 600;
 
 function setProfileStatus(message, isError = false) {
   const status = el("profileStatus");
@@ -224,6 +232,283 @@ function setToggle(button, value, labels) {
   button.textContent = next ? labels.on : labels.off;
 }
 
+function setButtonDisabled(button, disabled) {
+  if (!button) return;
+  button.disabled = !!disabled;
+  button.classList.toggle("opacity-60", !!disabled);
+  button.classList.toggle("cursor-not-allowed", !!disabled);
+}
+
+function setQuickSyncToggle(enabled) {
+  const btn = el("btnQuickSyncToggle");
+  if (!btn) return;
+  btn.textContent = enabled ? "T\u1eaft \u0111\u1ed3ng b\u1ed9" : "B\u1eadt \u0111\u1ed3ng b\u1ed9";
+}
+
+function updateSyncControls(enabled, persist = false) {
+  setToggle(el("btnSyncToggle"), enabled, { on: "\u0110ang b\u1eadt", off: "\u0110ang t\u1eaft" });
+  setQuickSyncToggle(enabled);
+  if (persist) {
+    setLocalValue("data.sync", enabled);
+    scheduleSave("data.sync", enabled);
+  }
+}
+
+function setOverviewState(card, config) {
+  if (!card) return;
+  const pill = card.querySelector("[data-role=\"pill\"]");
+  const value = card.querySelector("[data-role=\"value\"]");
+  const sub = card.querySelector("[data-role=\"sub\"]");
+  const state = config.state || "ok";
+  card.classList.remove("is-loading");
+  if (pill) {
+    pill.textContent = config.pill || "";
+    pill.classList.toggle("is-warning", state === "warning");
+    pill.classList.toggle("is-error", state === "error");
+  }
+  if (value && config.value) value.textContent = config.value;
+  if (sub && config.sub) sub.textContent = config.sub;
+}
+
+function setOverviewLoading(loading) {
+  const cards = Array.from(document.querySelectorAll("[data-overview-card=\"1\"]"));
+  cards.forEach((card) => card.classList.toggle("is-loading", !!loading));
+}
+
+function parseTimestamp(value) {
+  if (!value) return null;
+  if (value instanceof Date) return value;
+  if (typeof value === "string" || typeof value === "number") {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  if (typeof value.toDate === "function") return value.toDate();
+  if (typeof value.seconds === "number") return new Date(value.seconds * 1000);
+  return null;
+}
+
+function formatDateTime(value) {
+  const date = parseTimestamp(value);
+  if (!date) return "";
+  return date.toLocaleString("vi-VN");
+}
+
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate();
+}
+
+function getOverviewCache() {
+  try {
+    const raw = sessionStorage.getItem(OVERVIEW_CACHE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (err) {
+    return null;
+  }
+}
+
+function setOverviewCache(payload) {
+  try {
+    sessionStorage.setItem(OVERVIEW_CACHE_KEY, JSON.stringify({
+      ts: Date.now(),
+      payload
+    }));
+  } catch (err) {}
+}
+
+async function getAccountOverview(options = {}) {
+  const force = options.force === true;
+  if (!state.currentUser) {
+    return {
+      state: "warning",
+      syncEnabled: false,
+      cards: [
+        {
+          state: "warning",
+          pill: "Ch\u01b0a \u0111\u0103ng nh\u1eadp",
+          value: "C\u1ea7n \u0111\u0103ng nh\u1eadp",
+          sub: "\u0110\u0103ng nh\u1eadp \u0111\u1ec3 \u0111\u1ed3ng b\u1ed9 h\u1ed3 s\u01a1"
+        },
+        {
+          state: "warning",
+          pill: "Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u",
+          value: "0 b\u1ea3n l\u01b0u",
+          sub: "Ch\u01b0a c\u00f3 d\u1ef1 \u00e1n theo d\u00f5i"
+        },
+        {
+          state: "warning",
+          pill: "\u0110ang t\u1eaft",
+          value: "\u0110ang t\u1eaft",
+          sub: "\u0110\u0103ng nh\u1eadp \u0111\u1ec3 b\u1eadt \u0111\u1ed3ng b\u1ed9"
+        },
+        {
+          state: "warning",
+          pill: "Ch\u01b0a c\u00f3",
+          value: "0 ho\u1ea1t \u0111\u1ed9ng",
+          sub: "Ch\u01b0a c\u00f3 ho\u1ea1t \u0111\u1ed9ng h\u00f4m nay"
+        }
+      ]
+    };
+  }
+
+  const cached = getOverviewCache();
+  if (!force && cached && typeof cached.ts === "number" && cached.payload) {
+    if (Date.now() - cached.ts < OVERVIEW_CACHE_TTL) {
+      return cached.payload;
+    }
+  }
+
+  if (!state.db) {
+    return {
+      state: "warning",
+      syncEnabled: false,
+      cards: [
+        {
+          state: "warning",
+          pill: "Gi\u1edbi h\u1ea1n",
+          value: "Ch\u01b0a s\u1eb5n s\u00e0ng",
+          sub: "Ch\u01b0a k\u1ebft n\u1ed1i \u0111\u1ebfn d\u1eef li\u1ec7u"
+        },
+        {
+          state: "warning",
+          pill: "Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u",
+          value: "0 b\u1ea3n l\u01b0u",
+          sub: "Ch\u01b0a c\u00f3 d\u1ef1 \u00e1n theo d\u00f5i"
+        },
+        {
+          state: "warning",
+          pill: "\u0110ang t\u1eaft",
+          value: "\u0110ang t\u1eaft",
+          sub: "K\u00edch ho\u1ea1t k\u1ebft n\u1ed1i \u0111\u1ec3 \u0111\u1ed3ng b\u1ed9"
+        },
+        {
+          state: "warning",
+          pill: "Ch\u01b0a c\u00f3",
+          value: "0 ho\u1ea1t \u0111\u1ed9ng",
+          sub: "Ch\u01b0a c\u00f3 ho\u1ea1t \u0111\u1ed9ng h\u00f4m nay"
+        }
+      ]
+    };
+  }
+
+  let savedSearches = [];
+  try {
+    const searchesCol = collection(state.db, "users", state.currentUser.uid, "savedSearches");
+    const searchSnap = await getDocs(searchesCol);
+    savedSearches = searchSnap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+  } catch (err) {
+    console.error("overview savedSearches", err);
+    return {
+      state: "error",
+      syncEnabled: false,
+      cards: [
+        {
+          state: "error",
+          pill: "M\u1ea5t k\u1ebft n\u1ed1i",
+          value: "Kh\u00f4ng t\u1ea3i \u0111\u01b0\u1ee3c",
+          sub: "Ki\u1ec3m tra l\u1ea1i k\u1ebft n\u1ed1i"
+        },
+        {
+          state: "error",
+          pill: "L\u1ed7i d\u1eef li\u1ec7u",
+          value: "Kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c",
+          sub: "Th\u1eed l\u1ea1i sau"
+        },
+        {
+          state: "warning",
+          pill: "\u0110ang t\u1eaft",
+          value: "\u0110ang t\u1eaft",
+          sub: "Ch\u01b0a k\u1ebft n\u1ed1i \u0111\u1ed3ng b\u1ed9"
+        },
+        {
+          state: "warning",
+          pill: "Ch\u01b0a c\u00f3",
+          value: "0 ho\u1ea1t \u0111\u1ed9ng",
+          sub: "Ch\u01b0a c\u00f3 ho\u1ea1t \u0111\u1ed9ng h\u00f4m nay"
+        }
+      ]
+    };
+  }
+
+  const profile = state.userData.profile || {};
+  const dataConfig = state.userData.data || {};
+  const projects = Array.isArray(state.userData.projects)
+    ? state.userData.projects
+    : Array.isArray(dataConfig.projects)
+      ? dataConfig.projects
+      : [];
+  const syncEnabled = dataConfig.sync !== false;
+  const lastSyncAt = dataConfig.lastSyncAt || state.userData.capNhatLuc || null;
+  const today = new Date();
+  const activityToday = savedSearches.reduce((total, item) => {
+    const when = parseTimestamp(item.updatedAt || item.updated_at || item.createdAt || item.created_at);
+    return when && isSameDay(when, today) ? total + 1 : total;
+  }, 0);
+  const savedSearchCount = savedSearches.length;
+  const projectCount = projects.length;
+  const displayName = profile.displayName || state.currentUser.displayName || "B\u1ea1n";
+  const lastSyncLabel = formatDateTime(lastSyncAt);
+  const lastSyncSub = lastSyncLabel ? `L\u1ea7n g\u1ea7n nh\u1ea5t: ${lastSyncLabel}` : "Ch\u01b0a c\u00f3 l\u1ea7n \u0111\u1ed3ng b\u1ed9";
+
+  const overview = {
+    state: "ok",
+    syncEnabled,
+    cards: [
+      {
+        state: "ok",
+        pill: "\u0110ang k\u1ebft n\u1ed1i",
+        value: `Ch\u00e0o ${displayName}`,
+        sub: "Phi\u00ean \u0111ang ho\u1ea1t \u0111\u1ed9ng"
+      },
+      {
+        state: savedSearchCount ? "ok" : "warning",
+        pill: savedSearchCount ? "\u0110\u1ee7 d\u1eef li\u1ec7u" : "Ch\u01b0a c\u00f3",
+        value: `${savedSearchCount} b\u1ea3n l\u01b0u`,
+        sub: projectCount ? `${projectCount} d\u1ef1 \u00e1n \u0111ang theo d\u00f5i` : "Ch\u01b0a c\u00f3 d\u1ef1 \u00e1n theo d\u00f5i"
+      },
+      {
+        state: syncEnabled ? "ok" : "warning",
+        pill: syncEnabled ? "\u0110ang b\u1eadt" : "\u0110ang t\u1eaft",
+        value: syncEnabled ? "\u0110ang b\u1eadt" : "\u0110ang t\u1eaft",
+        sub: lastSyncSub
+      },
+      {
+        state: activityToday ? "ok" : "warning",
+        pill: activityToday ? "M\u1edbi" : "Y\u00ean \u1eafng",
+        value: `${activityToday} ho\u1ea1t \u0111\u1ed9ng`,
+        sub: activityToday ? "C\u1eadp nh\u1eadt h\u00f4m nay" : "Ch\u01b0a c\u00f3 ho\u1ea1t \u0111\u1ed9ng h\u00f4m nay"
+      }
+    ]
+  };
+  setOverviewCache(overview);
+  return overview;
+}
+
+function renderOverview(payload) {
+  const cards = Array.from(document.querySelectorAll("[data-overview-card=\"1\"]"));
+  cards.forEach((card, idx) => setOverviewState(card, payload.cards[idx] || payload.cards[0]));
+  const syncEnabled = payload.syncEnabled;
+  setQuickSyncToggle(syncEnabled);
+  setButtonDisabled(el("btnQuickSyncNow"), !state.currentUser || !syncEnabled);
+  setButtonDisabled(el("btnQuickSyncToggle"), !state.currentUser);
+  setButtonDisabled(el("btnQuickRetry"), !state.currentUser);
+}
+
+async function refreshOverview(options = {}) {
+  const delay = OVERVIEW_LOADING_MIN + Math.floor(Math.random() * (OVERVIEW_LOADING_MAX - OVERVIEW_LOADING_MIN + 1));
+  setOverviewLoading(true);
+  const start = Date.now();
+  const payload = await getAccountOverview(options);
+  const elapsed = Date.now() - start;
+  const wait = Math.max(0, delay - elapsed);
+  setTimeout(() => {
+    setOverviewLoading(false);
+    renderOverview(payload);
+  }, wait);
+}
+
 function bindInputs() {
   const inputMap = [
     { id: "profileDisplayName", path: "profile.displayName" },
@@ -342,6 +627,7 @@ async function loadUserData() {
   const snapshot = await getDoc(state.userDoc);
   state.userData = snapshot.exists() ? (snapshot.data() || {}) : {};
   hydrateForm();
+  refreshOverview({ force: true });
   setupSessionWatch();
 }
 
@@ -363,7 +649,7 @@ function hydrateForm() {
   setButtonValue(el("btnPrefLanguage"), prefs.language || "vi", PREF_LANGUAGE);
   setButtonValue(el("btnPrefDensity"), prefs.density || "standard", PREF_DENSITY);
   setToggle(el("btnPrefShortcutsToggle"), prefs.shortcuts !== false, { on: "\u0110ang b\u1eadt", off: "\u0110ang t\u1eaft" });
-  setToggle(el("btnSyncToggle"), data.sync !== false, { on: "\u0110ang b\u1eadt", off: "\u0110ang t\u1eaft" });
+  updateSyncControls(data.sync !== false, false);
 
   setToggle(el("btnPrivacyTelemetryToggle"), privacy.telemetry !== false, { on: "\u0110ang b\u1eadt", off: "\u0110ang t\u1eaft" });
   setToggle(el("btnPrivacyReadonlyToggle"), !!privacy.readOnly, { on: "\u0110ang b\u1eadt", off: "\u0110ang t\u1eaft" });
@@ -422,9 +708,8 @@ function bindButtons() {
   el("btnSyncToggle")?.addEventListener("click", () => {
     const current = el("btnSyncToggle")?.getAttribute("aria-pressed") === "true";
     const next = !current;
-    setToggle(el("btnSyncToggle"), next, { on: "\u0110ang b\u1eadt", off: "\u0110ang t\u1eaft" });
-    setLocalValue("data.sync", next);
-    scheduleSave("data.sync", next);
+    updateSyncControls(next, true);
+    refreshOverview({ force: true });
   });
   el("btnPrivacyTelemetryToggle")?.addEventListener("click", () => {
     const current = el("btnPrivacyTelemetryToggle")?.getAttribute("aria-pressed") === "true";
@@ -457,6 +742,14 @@ function bindButtons() {
   el("btnBackupRestore")?.addEventListener("click", () => showToast(TEXT.comingSoon));
   el("btnSupportFeedback")?.addEventListener("click", () => showToast(TEXT.comingSoon));
   el("btnSupportContact")?.addEventListener("click", () => showToast(TEXT.comingSoon));
+
+  el("btnQuickSyncNow")?.addEventListener("click", handleSyncNow);
+  el("btnQuickSyncToggle")?.addEventListener("click", () => {
+    const current = el("btnSyncToggle")?.getAttribute("aria-pressed") === "true";
+    updateSyncControls(!current, true);
+    refreshOverview({ force: true });
+  });
+  el("btnQuickRetry")?.addEventListener("click", () => refreshOverview({ force: true }));
 }
 
 function setupSessionWatch() {
@@ -633,6 +926,33 @@ async function applyImport(mode) {
   }
 }
 
+async function handleSyncNow() {
+  if (!state.currentUser || !state.userDoc) {
+    showToast(TEXT.requireLogin, "error");
+    return;
+  }
+  const syncEnabled = getLocalValue("data.sync", true) !== false;
+  if (!syncEnabled) {
+    showToast(TEXT.syncDisabled, "error");
+    return;
+  }
+  try {
+    await setDoc(state.userDoc, {
+      data: {
+        lastSyncAt: serverTimestamp(),
+        sync: true
+      },
+      capNhatLuc: serverTimestamp()
+    }, { merge: true });
+    setLocalValue("data.lastSyncAt", new Date().toISOString());
+    showToast(TEXT.syncNowOk, "success");
+    refreshOverview({ force: true });
+  } catch (err) {
+    console.error(err);
+    showToast(TEXT.syncNowFail, "error");
+  }
+}
+
 async function init() {
   setProfileStatus(TEXT.authChecking);
   disableSave(true);
@@ -645,17 +965,23 @@ async function init() {
   state.db = state.api.db || state.api.firestore || null;
   bindInputs();
   bindButtons();
-  state.api.onAuthStateChanged((user) => {
+  refreshOverview({ force: true });
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refreshOverview();
+  });
+  state.api.onAuthStateChanged(async (user) => {
     state.currentUser = user || null;
     state.authResolved = true;
     renderAuthState();
     if (user) {
-      loadUserData();
+      await loadUserData();
     } else {
       state.userData = {};
       if (state.unsubSession) state.unsubSession();
+      refreshOverview({ force: true });
     }
   });
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
