@@ -2,10 +2,10 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 111,
+    "totalFiles": 110,
     "totalDirs": 29,
     "extCounts": {
-      ".png": 6,
+      ".png": 5,
       ".css": 2,
       "(noext)": 5,
       ".yml": 6,
@@ -128,10 +128,6 @@
     {
       "path": "assets",
       "type": "dir"
-    },
-    {
-      "path": "assets/spacecolors-logo-topbar.png",
-      "type": "file"
     },
     {
       "path": "assets/spacecolors-mark-128.png",

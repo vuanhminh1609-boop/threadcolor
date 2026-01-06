@@ -29,7 +29,6 @@
 - account.js
 - admin.html
 - assets
-  - spacecolors-logo-topbar.png
   - spacecolors-mark-128.png
   - spacecolors-mark-256.png
   - spacecolors-mark-512.png
@@ -151,7 +150,7 @@
 <!-- SNAPSHOT_STATS_START -->
 ```text
 Tong thu muc: 29
-Tong file: 111
+Tong file: 110
 
 Thong ke phan mo rong:
 .bundle: 1
@@ -161,7 +160,7 @@ Thong ke phan mo rong:
 .json: 21
 .md: 26
 .mjs: 21
-.png: 6
+.png: 5
 .ps1: 1
 .rules: 1
 .sh: 1
