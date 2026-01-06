@@ -2,16 +2,17 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 107,
+    "totalFiles": 111,
     "totalDirs": 29,
     "extCounts": {
-      ".png": 3,
+      ".png": 6,
       ".css": 2,
       "(noext)": 5,
       ".yml": 6,
       ".md": 26,
       ".html": 6,
       ".js": 9,
+      ".svg": 1,
       ".json": 21,
       ".mjs": 21,
       ".tch": 1,
@@ -130,6 +131,22 @@
     },
     {
       "path": "assets/spacecolors-logo-topbar.png",
+      "type": "file"
+    },
+    {
+      "path": "assets/spacecolors-mark-128.png",
+      "type": "file"
+    },
+    {
+      "path": "assets/spacecolors-mark-256.png",
+      "type": "file"
+    },
+    {
+      "path": "assets/spacecolors-mark-512.png",
+      "type": "file"
+    },
+    {
+      "path": "assets/spacecolors-mark.svg",
       "type": "file"
     },
     {
