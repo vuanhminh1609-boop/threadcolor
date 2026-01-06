@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <!-- Soft shadow / glow -->
+    <filter id="ds" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feColorMatrix in="b" type="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 0.55 0" result="g"/>
+      <feMerge>
+        <feMergeNode in="g"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Gradients -->
+    <radialGradient id="gPlanet" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(110 98) rotate(25) scale(132)">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="0.18" stop-color="#C9B2FF"/>
+      <stop offset="0.48" stop-color="#FFB25E"/>
+      <stop offset="0.74" stop-color="#63D9FF"/>
+      <stop offset="1" stop-color="#2A2E8F"/>
+    </radialGradient>
+
+    <linearGradient id="gRing" x1="40" y1="120" x2="216" y2="168" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF5C3A"/>
+      <stop offset="0.22" stop-color="#FFB35A"/>
+      <stop offset="0.52" stop-color="#59D7FF"/>
+      <stop offset="0.78" stop-color="#A28CFF"/>
+      <stop offset="1" stop-color="#FF4BA8"/>
+    </linearGradient>
+
+    <linearGradient id="gHighlight" x1="92" y1="64" x2="150" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Clip top/bottom for ring layering -->
+    <clipPath id="clipTop">
+      <rect x="0" y="0" width="256" height="132" />
+    </clipPath>
+    <clipPath id="clipBottom">
+      <rect x="0" y="132" width="256" height="124" />
+    </clipPath>
+  </defs>
+
+  <!-- Sparkles (subtle, clean) -->
+  <g opacity="0.9">
+    <circle cx="52" cy="88" r="2" fill="#A28CFF"/>
+    <circle cx="66" cy="64" r="1.6" fill="#59D7FF"/>
+    <circle cx="198" cy="74" r="1.8" fill="#FFB35A"/>
+    <circle cx="212" cy="102" r="1.4" fill="#FF4BA8"/>
+    <circle cx="184" cy="44" r="1.2" fill="#FFFFFF" opacity="0.8"/>
+  </g>
+
+  <!-- Back ring (behind planet) -->
+  <g clip-path="url(#clipTop)" opacity="0.72" filter="url(#glow)">
+    <ellipse cx="128" cy="140" rx="112" ry="50" transform="rotate(-18 128 140)"
+      stroke="url(#gRing)" stroke-width="18" stroke-linecap="round"/>
+  </g>
+
+  <!-- Planet -->
+  <g filter="url(#ds)">
+    <circle cx="128" cy="114" r="62" fill="url(#gPlanet)"/>
+    <!-- subtle rim -->
+    <circle cx="128" cy="114" r="62" fill="none" stroke="#FFFFFF" stroke-opacity="0.22" stroke-width="2"/>
+    <!-- highlight -->
+    <path d="M88 104C93 74 117 56 146 58C160 59 172 66 180 76C165 71 150 74 136 84C117 97 104 116 98 132C92 125 86 116 88 104Z"
+      fill="url(#gHighlight)" opacity="0.9"/>
+    <!-- inner gloss -->
+    <ellipse cx="112" cy="96" rx="22" ry="14" transform="rotate(-22 112 96)" fill="#FFFFFF" opacity="0.18"/>
+  </g>
+
+  <!-- Front ring (in front of planet) -->
+  <g clip-path="url(#clipBottom)" filter="url(#glow)">
+    <ellipse cx="128" cy="140" rx="112" ry="50" transform="rotate(-18 128 140)"
+      stroke="url(#gRing)" stroke-width="18" stroke-linecap="round"/>
+    <!-- ring shine -->
+    <ellipse cx="128" cy="140" rx="112" ry="50" transform="rotate(-18 128 140)"
+      stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Micro particles (very subtle) -->
+  <g opacity="0.35">
+    <circle cx="66" cy="118" r="1.2" fill="#59D7FF"/>
+    <circle cx="76" cy="142" r="1.1" fill="#FFB35A"/>
+    <circle cx="196" cy="132" r="1.2" fill="#A28CFF"/>
+    <circle cx="208" cy="156" r="1.1" fill="#FF4BA8"/>
+  </g>
+</svg>
