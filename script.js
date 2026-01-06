@@ -2420,7 +2420,7 @@ if (fallbackColorPicker) {
     copyToClipboard(hex, hex);
   });
 }
-
+  
 
 
 

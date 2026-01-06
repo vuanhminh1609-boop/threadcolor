@@ -82,6 +82,10 @@
 | N&#226;ng l&#7899;p theo tr&#7841;ng th&#225;i (is-open z-index) | N&#226;ng l&#7899;p theo tr&#7841;ng th&#225;i (is-open z-index) | K&#7929; thu&#7853;t t&#259;ng z-index cho row &#273;ang m&#7903; menu. |
 | M&#7853;t &#273;&#7897; UI | M&#7853;t &#273;&#7897; UI | &#272;&#7897; tho&#225;ng giao di&#7879;n (&#273;i&#7873;u ch&#7881;nh kho&#7843;ng c&#225;ch/padding/gap). |
 | Menu th&#7843; xu&#7889;ng | Menu th&#7843; xu&#7889;ng | B&#7843;ng ch&#7885;n m&#7903; ra khi b&#7845;m n&#250;t (dropdown menu). |
+| Logo mark (bi&#7875;u t&#432;&#7907;ng logo) | Logo mark (bi&#7875;u t&#432;&#7907;ng logo) | Bi&#7875;u t&#432;&#7907;ng r&#250;t g&#7885;n c&#7911;a logo, d&#249;ng &#273;&#7891;ng h&#224;nh v&#7899;i t&#234;n th&#432;&#417;ng hi&#7879;u. |
+| H&#236;nh vector (SVG) | H&#236;nh vector (SVG) | &#7842;nh d&#7841;ng vector, ph&#243;ng to kh&#244;ng v&#7905; v&#224; nh&#7865; cho UI. |
+| &#7842;nh &#273;a &#273;&#7897; ph&#226;n gi&#7843;i (srcset) | &#7842;nh &#273;a &#273;&#7897; ph&#226;n gi&#7843;i (srcset) | Khai b&#225;o nhi&#7873;u m&#7913;c &#273;&#7897; ph&#226;n gi&#7843;i &#273;&#7875; tr&#236;nh duy&#7879;t t&#7921; ch&#7885;n. |
+| Fallback (ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng) | Fallback (ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng) | Ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng khi t&#224;i nguy&#234;n ch&#237;nh kh&#244;ng d&#249;ng &#273;&#432;&#7907;c. |
 | L&#432;u c&#7909;c b&#7897; | L&#432;u c&#7909;c b&#7897; | L&#432;u l&#7921;a ch&#7885;n tr&#234;n tr&#236;nh duy&#7879;t b&#7857;ng localStorage. |
 | S&#7921; ki&#7879;n tu&#7923; bi&#7871;n | S&#7921; ki&#7879;n tu&#7923; bi&#7871;n | CustomEvent &#273;&#7875; &#273;&#7891;ng b&#7897; tr&#7841;ng th&#225;i gi&#7919;a c&#225;c kh&#7889;i UI. |
 | Worker | TiÃ¡ÂºÂ¿n trÃƒÂ¬nh phÃ¡Â»Â¥ | ChÃ¡ÂºÂ¡y tÃƒÂ¡c vÃ¡Â»Â¥ nÃ¡ÂºÂ·ng (tÃƒÂ¬m kiÃ¡ÂºÂ¿m, lÃ¡ÂºÂ­p chÃ¡Â»â€° mÃ¡Â»Â¥c) ngoÃƒÂ i luÃ¡Â»â€œng chÃƒÂ­nh Ã„â€˜Ã¡Â»Æ’ UI mÃ†Â°Ã¡Â»Â£t. |

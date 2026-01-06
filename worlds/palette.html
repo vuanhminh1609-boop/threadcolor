@@ -239,7 +239,19 @@
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
       <div class="flex items-center gap-3 min-w-0">
         <a href="../index.html" class="flex items-center gap-3 min-w-0">
-          <img src="../assets/spacecolors-logo-topbar.png" alt="SpaceColors" class="h-10 w-10 rounded-xl select-none" loading="eager" decoding="async">
+          <span class="h-11 w-11 md:h-12 md:w-12 rounded-xl shrink-0 flex items-center justify-center bg-white/5 ring-1 ring-white/10">
+            <picture>
+              <source srcset="../assets/spacecolors-mark.svg" type="image/svg+xml">
+              <img
+                src="../assets/spacecolors-mark-128.png"
+                srcset="../assets/spacecolors-mark-128.png 1x, ../assets/spacecolors-mark-256.png 2x"
+                class="h-full w-full object-contain select-none"
+                alt="SpaceColors"
+                decoding="async"
+                loading="eager"
+              />
+            </picture>
+          </span>
           <span class="min-w-0 flex flex-col justify-center leading-tight">
             <span class="tc-brand text-base md:text-lg whitespace-nowrap">SpaceColors &#183; 8Portal</span>
             <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px]">M&#7897;t ch&#7841;m m&#7903; kh&#244;ng gian m&#224;u v&#244; h&#7841;n</span>
