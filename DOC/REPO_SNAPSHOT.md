@@ -114,6 +114,7 @@
 - package.json
 - README.md
 - repo_manifest.txt
+- repo_snapshot.zip
 - repo.bundle
 - script.js
 - scripts
@@ -137,6 +138,7 @@
   - README_EXPORT_REPO.md
   - repo_doctor.mjs
   - repo_snapshot.mjs
+  - tmp_utf8_test.txt
   - validate_threads.mjs
 - workers
   - thread_search.worker.js
@@ -150,7 +152,7 @@
 <!-- SNAPSHOT_STATS_START -->
 ```text
 Tong thu muc: 29
-Tong file: 110
+Tong file: 112
 
 Thong ke phan mo rong:
 .bundle: 1
@@ -167,8 +169,9 @@ Thong ke phan mo rong:
 .svg: 1
 .tch: 1
 .ts: 1
-.txt: 2
+.txt: 3
 .yml: 6
+.zip: 1
 (noext): 5
 
 Bo qua:
