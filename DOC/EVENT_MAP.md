@@ -54,3 +54,4 @@
 - `sessionId` (string)
 
 > Ghi chú: danh sách sự kiện là tối thiểu, có thể mở rộng theo nhu cầu.
+PR mồi để kích hoạt status checks.
