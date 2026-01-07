@@ -1,57 +1,58 @@
-﻿# TÃ¡Â»Â« Ã„â€˜iÃ¡Â»Æ’n thuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ 8Portals (ViÃ¡Â»â€¡t hoÃƒÂ¡ 100%)
+# Tá»« Ä‘iá»ƒn thuáº­t ngá»¯ 8Portals (Viá»‡t hoÃ¡ 100%)
 
-> MÃ¡Â»Â¥c tiÃƒÂªu: thÃ¡Â»â€˜ng nhÃ¡ÂºÂ¥t ngÃƒÂ´n ngÃ¡Â»Â¯ chung trong repo 8Portals Ã„â€˜Ã¡Â»Æ’ trao Ã„â€˜Ã¡Â»â€¢i nhanh Ã¢â‚¬â€œ rÃƒÂµ Ã¢â‚¬â€œ Ã¢â‚¬Å“sang & sÃ¡ÂºÂ¡chÃ¢â‚¬Â.
+> Má»¥c tiÃªu: thá»‘ng nháº¥t ngÃ´n ngá»¯ chung trong repo 8Portals Ä‘á»ƒ trao Ä‘á»•i nhanh â€“ rÃµ â€“ â€œsang & sáº¡châ€.
 >
-> **Quy Ã†Â°Ã¡Â»â€ºc bÃ¡ÂºÂ¥t biÃ¡ÂºÂ¿n (khÃƒÂ´ng Ã„â€˜Ã¡Â»â€¢i tÃƒÂªn):**
-> 1) **DSG- DigitalSpaceGroup** Ã¢â‚¬â€ *TÃ¡ÂºÂ­p Ã„â€˜oÃƒÂ n phÃƒÂ¡t triÃ¡Â»Æ’n kÃ¡Â»Â¹ thuÃ¡ÂºÂ­t cÃƒÂ´ng nghÃ¡Â»â€¡ vÃƒÂ  khÃƒÂ´ng gian sÃ¡Â»â€˜ (CÃƒÂ´ng ty mÃ¡ÂºÂ¹)*  
-> 2) **SpaceColors - 8Portals** Ã¢â‚¬â€ *CÃƒÂ´ng ty con*
+> **Quy Æ°á»›c báº¥t biáº¿n (khÃ´ng Ä‘á»•i tÃªn):**
+> 1) **DSG- DigitalSpaceGroup** â€” *Táº­p Ä‘oÃ n phÃ¡t triá»ƒn ká»¹ thuáº­t cÃ´ng nghá»‡ vÃ  khÃ´ng gian sá»‘ (CÃ´ng ty máº¹)*  
+> 2) **SpaceColors - 8Portals** â€” *CÃ´ng ty con*
 
 ---
 
-## 1) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ tÃ¡Â»â€¢ chÃ¡Â»Â©c & vÃ¡ÂºÂ­n hÃƒÂ nh
+## 1) Thuáº­t ngá»¯ tá»• chá»©c & váº­n hÃ nh
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| CEO | TÃ¡Â»â€¢ng giÃƒÂ¡m Ã„â€˜Ã¡Â»â€˜c Ã„â€˜iÃ¡Â»Âu hÃƒÂ nh | NgÃ†Â°Ã¡Â»Âi chÃ¡Â»â€˜t phÃ†Â°Ã†Â¡ng ÃƒÂ¡n tÃ¡Â»â€˜i Ã†Â°u, ra quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh Ã†Â°u tiÃƒÂªn, chÃ¡Â»â€¹u trÃƒÂ¡ch nhiÃ¡Â»â€¡m kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£. |
-| ThÃ†Â° kÃƒÂ½ tÃ¡Â»â€¢ng | ChÃƒÂ¡nh vÃ„Æ’n phÃƒÂ²ng Ã„â€˜iÃ¡Â»Âu hÃƒÂ nh | NgÃ†Â°Ã¡Â»Âi tÃ¡Â»â€¢ng hÃ¡Â»Â£p Ã¢â‚¬â€œ phÃƒÂ¢n loÃ¡ÂºÂ¡i Ã¢â‚¬â€œ nhÃ¡ÂºÂ¯c nhÃ¡Â»â€¹p, tÃ¡ÂºÂ¡o Ã¢â‚¬Å“brief 1 trangÃ¢â‚¬Â + lÃ¡Â»â€¡nh Ã„â€˜Ã¡Â»Â xuÃ¡ÂºÂ¥t cho ChÃ¡Â»Â§ tÃ¡Â»â€¹ch. |
-| ThiÃ¡ÂºÂ¿t lÃ¡ÂºÂ­p CÃ†Â¡ cÃ¡ÂºÂ¥u VÃ¡ÂºÂ­n hÃƒÂ nh | ThiÃ¡ÂºÂ¿t lÃ¡ÂºÂ­p CÃ†Â¡ cÃ¡ÂºÂ¥u VÃ¡ÂºÂ­n hÃƒÂ nh | XÃƒÂ¡c Ã„â€˜Ã¡Â»â€¹nh vai trÃƒÂ²Ã¢â‚¬â€œtrÃƒÂ¡ch nhiÃ¡Â»â€¡mÃ¢â‚¬â€œquyÃ¡Â»Ân hÃ¡ÂºÂ¡nÃ¢â‚¬â€œÃ„â€˜Ã¡ÂºÂ§u raÃ¢â‚¬â€œnhÃ¡Â»â€¹p Ã„â€˜iÃ¡Â»Âu hÃƒÂ nh Ã„â€˜Ã¡Â»Æ’ tÃ¡Â»â€¢ chÃ¡Â»Â©c chÃ¡ÂºÂ¡y nhanh vÃƒÂ  khÃƒÂ´ng loÃ¡ÂºÂ¡n. |
-| NhÃ¡Â»â€¹p Ã„â€˜iÃ¡Â»Âu hÃƒÂ nh | NhÃ¡Â»â€¹p Ã„â€˜iÃ¡Â»Âu hÃƒÂ nh | LÃ¡Â»â€¹ch lÃ¡ÂºÂ·p: hÃ¡ÂºÂ±ng ngÃƒÂ y/tuÃ¡ÂºÂ§n/thÃƒÂ¡ng (brief, cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t Ã†Â°u tiÃƒÂªn, review rÃ¡Â»Â§i ro). |
-| SÃ¡Â»â€¢ quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh | NhÃ¡ÂºÂ­t kÃƒÂ½ quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh | BÃ¡ÂºÂ£ng ghi: ngÃƒÂ y, quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh, lÃƒÂ½ do, rÃ¡Â»Â§i ro, tiÃƒÂªu chÃƒÂ­ quay Ã„â€˜Ã¡ÂºÂ§u. |
-| SÃ¡Â»â€¢ rÃ¡Â»Â§i ro | Danh mÃ¡Â»Â¥c rÃ¡Â»Â§i ro | BÃ¡ÂºÂ£ng rÃ¡Â»Â§i ro: xÃƒÂ¡c suÃ¡ÂºÂ¥t/tÃƒÂ¡c Ã„â€˜Ã¡Â»â„¢ng, chÃ¡Â»Â§ sÃ¡Â»Å¸ hÃ¡Â»Â¯u, kÃ¡ÂºÂ¿ hoÃ¡ÂºÂ¡ch giÃ¡ÂºÂ£m rÃ¡Â»Â§i ro. |
-| HÃƒÂ ng Ã„â€˜Ã¡Â»Â£i hÃƒÂ nh Ã„â€˜Ã¡Â»â„¢ng | Danh sÃƒÂ¡ch hÃƒÂ nh Ã„â€˜Ã¡Â»â„¢ng | BÃ¡ÂºÂ£ng viÃ¡Â»â€¡c cÃ¡ÂºÂ§n lÃƒÂ m: mÃ¡Â»Â©c Ã„â€˜Ã¡Â»â„¢, owner, hÃ¡ÂºÂ¡n, trÃ¡ÂºÂ¡ng thÃƒÂ¡i. |
-| ChÃ¡Â»â€° sÃ¡Â»â€˜ bÃ¡ÂºÂ¯c cÃ¡ÂºÂ§u | ChÃ¡Â»â€° sÃ¡Â»â€˜ dÃ¡ÂºÂ«n dÃ¡ÂºÂ¯t | ChÃ¡Â»â€° sÃ¡Â»â€˜ bÃƒÂ¡o trÃ†Â°Ã¡Â»â€ºc thÃƒÂ nh cÃƒÂ´ng (vÃƒÂ­ dÃ¡Â»Â¥: tÃ¡Â»â€° lÃ¡Â»â€¡ tÃƒÂ¬m thÃ¡ÂºÂ¥y Ã„â€˜ÃƒÂºng mÃƒÂ u, thÃ¡Â»Âi gian tÃƒÂ¬m kiÃ¡ÂºÂ¿m). |
-| ChÃ¡Â»â€° sÃ¡Â»â€˜ kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ | ChÃ¡Â»â€° sÃ¡Â»â€˜ kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ | ChÃ¡Â»â€° sÃ¡Â»â€˜ Ã¢â‚¬Å“Ã„â€˜ÃƒÂ­chÃ¢â‚¬Â (vÃƒÂ­ dÃ¡Â»Â¥: sÃ¡Â»â€˜ ngÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng hoÃ¡ÂºÂ¡t Ã„â€˜Ã¡Â»â„¢ng, sÃ¡Â»â€˜ bÃ¡Â»â„¢ dÃ¡Â»Â¯ liÃ¡Â»â€¡u Ã„â€˜Ã†Â°Ã¡Â»Â£c dÃƒÂ¹ng). |
+| CEO | Tá»•ng giÃ¡m Ä‘á»‘c Ä‘iá»u hÃ nh | NgÆ°á»i chá»‘t phÆ°Æ¡ng Ã¡n tá»‘i Æ°u, ra quyáº¿t Ä‘á»‹nh Æ°u tiÃªn, chá»‹u trÃ¡ch nhiá»‡m káº¿t quáº£. |
+| ThÆ° kÃ½ tá»•ng | ChÃ¡nh vÄƒn phÃ²ng Ä‘iá»u hÃ nh | NgÆ°á»i tá»•ng há»£p â€“ phÃ¢n loáº¡i â€“ nháº¯c nhá»‹p, táº¡o â€œbrief 1 trangâ€ + lá»‡nh Ä‘á» xuáº¥t cho Chá»§ tá»‹ch. |
+| Thiáº¿t láº­p CÆ¡ cáº¥u Váº­n hÃ nh | Thiáº¿t láº­p CÆ¡ cáº¥u Váº­n hÃ nh | XÃ¡c Ä‘á»‹nh vai trÃ²â€“trÃ¡ch nhiá»‡mâ€“quyá»n háº¡nâ€“Ä‘áº§u raâ€“nhá»‹p Ä‘iá»u hÃ nh Ä‘á»ƒ tá»• chá»©c cháº¡y nhanh vÃ  khÃ´ng loáº¡n. |
+| Nhá»‹p Ä‘iá»u hÃ nh | Nhá»‹p Ä‘iá»u hÃ nh | Lá»‹ch láº·p: háº±ng ngÃ y/tuáº§n/thÃ¡ng (brief, cáº­p nháº­t Æ°u tiÃªn, review rá»§i ro). |
+| Sá»• quyáº¿t Ä‘á»‹nh | Nháº­t kÃ½ quyáº¿t Ä‘á»‹nh | Báº£ng ghi: ngÃ y, quyáº¿t Ä‘á»‹nh, lÃ½ do, rá»§i ro, tiÃªu chÃ­ quay Ä‘áº§u. |
+| Sá»• rá»§i ro | Danh má»¥c rá»§i ro | Báº£ng rá»§i ro: xÃ¡c suáº¥t/tÃ¡c Ä‘á»™ng, chá»§ sá»Ÿ há»¯u, káº¿ hoáº¡ch giáº£m rá»§i ro. |
+| HÃ ng Ä‘á»£i hÃ nh Ä‘á»™ng | Danh sÃ¡ch hÃ nh Ä‘á»™ng | Báº£ng viá»‡c cáº§n lÃ m: má»©c Ä‘á»™, owner, háº¡n, tráº¡ng thÃ¡i. |
+| Chá»‰ sá»‘ báº¯c cáº§u | Chá»‰ sá»‘ dáº«n dáº¯t | Chá»‰ sá»‘ bÃ¡o trÆ°á»›c thÃ nh cÃ´ng (vÃ­ dá»¥: tá»‰ lá»‡ tÃ¬m tháº¥y Ä‘Ãºng mÃ u, thá»i gian tÃ¬m kiáº¿m). |
+| Chá»‰ sá»‘ káº¿t quáº£ | Chá»‰ sá»‘ káº¿t quáº£ | Chá»‰ sá»‘ â€œÄ‘Ã­châ€ (vÃ­ dá»¥: sá»‘ ngÆ°á»i dÃ¹ng hoáº¡t Ä‘á»™ng, sá»‘ bá»™ dá»¯ liá»‡u Ä‘Æ°á»£c dÃ¹ng). |
 
 ---
 
-## 2) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m (Portal/World)
+## 2) Thuáº­t ngá»¯ sáº£n pháº©m (Portal/World)
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Portal | CÃ¡Â»â€¢ng | Ã„ÂiÃ¡Â»Æ’m vÃƒÂ o/Ã„â€˜iÃ¡Â»Âu hÃ†Â°Ã¡Â»â€ºng Ã„â€˜Ã¡ÂºÂ¿n cÃƒÂ¡c Ã¢â‚¬Å“ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºiÃ¢â‚¬Â. |
-| World | ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi | MÃ¡Â»â„¢t khÃƒÂ´ng gian chÃ¡Â»Â©c nÃ„Æ’ng Ã„â€˜Ã¡Â»â„¢c lÃ¡ÂºÂ­p trong 8Portals (vÃƒÂ­ dÃ¡Â»Â¥: MÃƒÂ u thÃƒÂªu, Kho chÃ¡Â»â€°). |
-| ThreadColor | ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi MÃƒÂ u thÃƒÂªu (ThreadColor) | ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi tra cÃ¡Â»Â©u/gÃ¡Â»Â£i ÃƒÂ½ mÃƒÂ u chÃ¡Â»â€°. |
-| ThreadVault | ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi Kho chÃ¡Â»â€° (ThreadVault) | ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi quÃ¡ÂºÂ£n lÃƒÂ½/bÃ¡Â»â„¢ sÃ†Â°u tÃ¡ÂºÂ­p chÃ¡Â»â€° vÃƒÂ  dÃ¡Â»Â¯ liÃ¡Â»â€¡u liÃƒÂªn quan. |
-| Palette | ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi DÃ¡ÂºÂ£i mÃƒÂ u (Palette) | ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi tÃ¡ÂºÂ¡o/ghÃƒÂ©p/dÃƒÂ¹ng dÃ¡ÂºÂ£i mÃƒÂ u; cÃƒÂ³ thÃ¡Â»Æ’ lÃƒÂ  Ã¢â‚¬Å“SÃ¡ÂºÂ¯p ra mÃ¡ÂºÂ¯tÃ¢â‚¬Â. |
-| Topbar | Thanh trÃƒÂªn | Thanh Ã„â€˜iÃ¡Â»Âu hÃ†Â°Ã¡Â»â€ºng trÃƒÂªn cÃƒÂ¹ng; phÃ¡ÂºÂ£i giÃ¡Â»Â¯ **Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p** Ã¡Â»Å¸ gÃƒÂ³c phÃ¡ÂºÂ£i. |
-| Slot Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p | VÃ¡Â»â€¹ trÃƒÂ­ Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p | Khu vÃ¡Â»Â±c Ã¢â‚¬Å“neoÃ¢â‚¬Â hiÃ¡Â»Æ’n thÃ¡Â»â€¹ Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p/Ã„â€˜Ã„Æ’ng xuÃ¡ÂºÂ¥t Ã¡Â»Å¸ top-right (khÃƒÂ´ng Ã„â€˜Ã†Â°Ã¡Â»Â£c Ã„â€˜Ã¡Â»â€¢i tuÃ¡Â»Â³ tiÃ¡Â»â€¡n). |
-| Microcopy | Vi mÃƒÂ´ ngÃƒÂ´n tÃ¡Â»Â« | CÃƒÂ¢u chÃ¡Â»Â¯ ngÃ¡ÂºÂ¯n trong UI (nhÃƒÂ£n nÃƒÂºt, mÃƒÂ´ tÃ¡ÂºÂ£) Ã¢â‚¬â€ phÃ¡ÂºÂ£i Ã¢â‚¬Å“Ã„â€˜Ã¡ÂºÂ¯t vÃƒÂ  sÃ¡ÂºÂ¡chÃ¢â‚¬Â. |
-| TrÃ¡ÂºÂ¡ng thÃƒÂ¡i rÃ¡Â»â€”ng | MÃƒÂ n hÃƒÂ¬nh rÃ¡Â»â€”ng | UI khi chÃ†Â°a cÃƒÂ³ dÃ¡Â»Â¯ liÃ¡Â»â€¡u (phÃ¡ÂºÂ£i sang, khÃƒÂ´ng xin lÃ¡Â»â€”i). |
-| TrÃ¡ÂºÂ¡ng thÃƒÂ¡i lÃ¡Â»â€”i | MÃƒÂ n hÃƒÂ¬nh lÃ¡Â»â€”i | UI khi cÃƒÂ³ lÃ¡Â»â€”i (gÃ¡Â»Ân, rÃƒÂµ, khÃƒÂ´ng hoÃ¡ÂºÂ£ng). |
+| Portal | Cá»•ng | Äiá»ƒm vÃ o/Ä‘iá»u hÆ°á»›ng Ä‘áº¿n cÃ¡c â€œTháº¿ giá»›iâ€. |
+| World | Tháº¿ giá»›i | Má»™t khÃ´ng gian chá»©c nÄƒng Ä‘á»™c láº­p trong 8Portals (vÃ­ dá»¥: MÃ u thÃªu, Kho chá»‰). |
+| ThreadColor | Tháº¿ giá»›i MÃ u thÃªu (ThreadColor) | Tháº¿ giá»›i tra cá»©u/gá»£i Ã½ mÃ u chá»‰. |
+| ThreadVault | Tháº¿ giá»›i Kho chá»‰ (ThreadVault) | Tháº¿ giá»›i quáº£n lÃ½/bá»™ sÆ°u táº­p chá»‰ vÃ  dá»¯ liá»‡u liÃªn quan. |
+| Palette | Tháº¿ giá»›i Dáº£i mÃ u (Palette) | Tháº¿ giá»›i táº¡o/ghÃ©p/dÃ¹ng dáº£i mÃ u; cÃ³ thá»ƒ lÃ  â€œSáº¯p ra máº¯tâ€. |
+| Topbar | Thanh trÃªn | Thanh Ä‘iá»u hÆ°á»›ng trÃªn cÃ¹ng; pháº£i giá»¯ **ÄÄƒng nháº­p** á»Ÿ gÃ³c pháº£i. |
+| Slot Ä‘Äƒng nháº­p | Vá»‹ trÃ­ ÄÄƒng nháº­p | Khu vá»±c â€œneoâ€ hiá»ƒn thá»‹ Ä‘Äƒng nháº­p/Ä‘Äƒng xuáº¥t á»Ÿ top-right (khÃ´ng Ä‘Æ°á»£c Ä‘á»•i tuá»³ tiá»‡n). |
+| Microcopy | Vi mÃ´ ngÃ´n tá»« | CÃ¢u chá»¯ ngáº¯n trong UI (nhÃ£n nÃºt, mÃ´ táº£) â€” pháº£i â€œÄ‘áº¯t vÃ  sáº¡châ€. |
+| Tráº¡ng thÃ¡i rá»—ng | MÃ n hÃ¬nh rá»—ng | UI khi chÆ°a cÃ³ dá»¯ liá»‡u (pháº£i sang, khÃ´ng xin lá»—i). |
+| Tráº¡ng thÃ¡i lá»—i | MÃ n hÃ¬nh lá»—i | UI khi cÃ³ lá»—i (gá»n, rÃµ, khÃ´ng hoáº£ng). |
 
 ---
 
-## 3) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ dÃ¡Â»Â¯ liÃ¡Â»â€¡u & chÃ¡ÂºÂ¥t lÃ†Â°Ã¡Â»Â£ng dÃ¡Â»Â¯ liÃ¡Â»â€¡u
+## 3) Thuáº­t ngá»¯ dá»¯ liá»‡u & cháº¥t lÆ°á»£ng dá»¯ liá»‡u
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Source of truth | NguÃ¡Â»â€œn dÃ¡Â»Â¯ liÃ¡Â»â€¡u gÃ¡Â»â€˜c | NguÃ¡Â»â€œn chÃƒÂ­nh thÃ¡Â»Â©c, mÃ¡Â»Âi thÃ¡Â»Â© khÃƒÂ¡c sinh ra tÃ¡Â»Â« Ã„â€˜ÃƒÂ¢y (vÃƒÂ­ dÃ¡Â»Â¥: `threads.json`). |
+| Source of truth | Nguá»“n dá»¯ liá»‡u gá»‘c | Nguá»“n chÃ­nh thá»©c, má»i thá»© khÃ¡c sinh ra tá»« Ä‘Ã¢y (vÃ­ dá»¥: `threads.json`). |
 | Ngu&#7891;n s&#7921; th&#7853;t (single source of truth) | Ngu&#7891;n s&#7921; th&#7853;t (single source of truth) | Ngu&#7891;n d&#7919; li&#7879;u th&#7889;ng nh&#7845;t &#273;&#7875; tr&#225;nh l&#7879;ch s&#7889; (ngu&#7891;n d&#7919; li&#7879;u th&#7889;ng nh&#7845;t &#273;&#7875; tr&#225;nh l&#7879;ch s&#7889;). |
 | M&#225;y tr&#7841;ng th&#225;i (state machine) | M&#225;y tr&#7841;ng th&#225;i (state machine) | Quy t&#7855;c chuy&#7875;n &#273;&#7893;i tr&#7841;ng th&#225;i loading/ok/warning/error (quy t&#7855;c chuy&#7875;n &#273;&#7893;i tr&#7841;ng th&#225;i loading/ok/warning/error). |
-| Data contract | HÃ¡Â»Â£p Ã„â€˜Ã¡Â»â€œng dÃ¡Â»Â¯ liÃ¡Â»â€¡u | Quy Ã†Â°Ã¡Â»â€ºc: file nÃƒÂ o lÃƒÂ  gÃ¡Â»â€˜c, file nÃƒÂ o lÃƒÂ  sinh ra, schema, phiÃƒÂªn bÃ¡ÂºÂ£n, cÃƒÂ¡ch cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t. |
+| Data contract | Há»£p Ä‘á»“ng dá»¯ liá»‡u | Quy Æ°á»›c: file nÃ o lÃ  gá»‘c, file nÃ o lÃ  sinh ra, schema, phiÃªn báº£n, cÃ¡ch cáº­p nháº­t. |
 | JSON Schema | JSON Schema | Chuan mo ta cau truc JSON de kiem tra hop le (chuan mo ta cau truc JSON de kiem tra hop le). |
 | SemVer | SemVer | Chuan danh phien ban MAJOR.MINOR.PATCH (chuan danh phien ban MAJOR.MINOR.PATCH). |
 | Manifest hop dong | Manifest hop dong | Tep ke khai: dataset nao dung schema nao + phien ban + checksum (tep ke khai: dataset nao dung schema nao + phien ban + checksum). |
+| Danh m&#7909;c t&#7879;p (manifest) | Danh m&#7909;c t&#7879;p (manifest) | Danh s&#225;ch li&#7879;t k&#234; t&#7879;p trong repo/snapshot &#273;&#7875; ki&#7875;m tra v&#224; &#273;&#7889;i chi&#7871;u. |
 | JSONL | JSON Lines | Dinh dang JSON Lines: moi dong la 1 JSON, phu hop log/audit (dinh dang JSON Lines: moi dong la 1 JSON, phu hop log/audit). |
 | Checksum | Checksum | Chuoi kiem chung toan ven du lieu (chuoi kiem chung toan ven du lieu). |
 | SHA-256 | SHA-256 | Ham bam tao dau van tay noi dung (ham bam tao dau van tay noi dung). |
@@ -63,18 +64,18 @@
 | Dry run | Dry run | Chay thu khong ghi du lieu (chay thu khong ghi du lieu). |
 | Reproducible build | Reproducible build | Build tai lap nho lockfile (build tai lap nho lockfile). |
 | Lockfile | Lockfile | Tep khoa phien ban phu thuoc, vi du package-lock.json (tep khoa phien ban phu thuoc, vi du package-lock.json). |
-| Generated artifact | TÃ¡Â»â€¡p sinh ra | File do cÃƒÂ´ng cÃ¡Â»Â¥ tÃ¡ÂºÂ¡o (vÃƒÂ­ dÃ¡Â»Â¥: `threads.cleaned.json`) Ã¢â‚¬â€ thÃ†Â°Ã¡Â»Âng khÃƒÂ´ng commit. |
-| Raw sources | DÃ¡Â»Â¯ liÃ¡Â»â€¡u thÃƒÂ´ | NguÃ¡Â»â€œn thÃƒÂ´ Ã„â€˜Ã¡ÂºÂ§u vÃƒÂ o (vÃƒÂ­ dÃ¡Â»Â¥: `.tch`) dÃƒÂ¹ng Ã„â€˜Ã¡Â»Æ’ tÃƒÂ¡i tÃ¡ÂºÂ¡o dÃ¡Â»Â¯ liÃ¡Â»â€¡u. |
-| Validate | KiÃ¡Â»Æ’m tra hÃ¡Â»Â£p lÃ¡Â»â€¡ | KiÃ¡Â»Æ’m tra cÃ¡ÂºÂ¥u trÃƒÂºc/logic dÃ¡Â»Â¯ liÃ¡Â»â€¡u Ã„â€˜Ã¡Â»Æ’ phÃƒÂ¡t hiÃ¡Â»â€¡n lÃ¡Â»â€”i sÃ¡Â»â€ºm. |
-| Normalize | ChuÃ¡ÂºÂ©n hoÃƒÂ¡ | BiÃ¡ÂºÂ¿n dÃ¡Â»Â¯ liÃ¡Â»â€¡u vÃ¡Â»Â dÃ¡ÂºÂ¡ng thÃ¡Â»â€˜ng nhÃ¡ÂºÂ¥t (tÃƒÂªn, mÃƒÂ£, format). |
-| Conflicts | MÃƒÂ¢u thuÃ¡ÂºÂ«n dÃ¡Â»Â¯ liÃ¡Â»â€¡u | CÃƒÂ¡c Ã„â€˜iÃ¡Â»Æ’m dÃ¡Â»Â¯ liÃ¡Â»â€¡u xung Ã„â€˜Ã¡Â»â„¢t cÃ¡ÂºÂ§n xÃ¡Â»Â­ lÃƒÂ½. |
-| Versioning | Ã„ÂÃƒÂ¡nh phiÃƒÂªn bÃ¡ÂºÂ£n | GÃ¡ÂºÂ¯n phiÃƒÂªn bÃ¡ÂºÂ£n dÃ¡Â»Â¯ liÃ¡Â»â€¡u Ã„â€˜Ã¡Â»Æ’ cache vÃƒÂ  truy vÃ¡ÂºÂ¿t thay Ã„â€˜Ã¡Â»â€¢i. |
+| Generated artifact | Tá»‡p sinh ra | File do cÃ´ng cá»¥ táº¡o (vÃ­ dá»¥: `threads.cleaned.json`) â€” thÆ°á»ng khÃ´ng commit. |
+| Raw sources | Dá»¯ liá»‡u thÃ´ | Nguá»“n thÃ´ Ä‘áº§u vÃ o (vÃ­ dá»¥: `.tch`) dÃ¹ng Ä‘á»ƒ tÃ¡i táº¡o dá»¯ liá»‡u. |
+| Validate | Kiá»ƒm tra há»£p lá»‡ | Kiá»ƒm tra cáº¥u trÃºc/logic dá»¯ liá»‡u Ä‘á»ƒ phÃ¡t hiá»‡n lá»—i sá»›m. |
+| Normalize | Chuáº©n hoÃ¡ | Biáº¿n dá»¯ liá»‡u vá» dáº¡ng thá»‘ng nháº¥t (tÃªn, mÃ£, format). |
+| Conflicts | MÃ¢u thuáº«n dá»¯ liá»‡u | CÃ¡c Ä‘iá»ƒm dá»¯ liá»‡u xung Ä‘á»™t cáº§n xá»­ lÃ½. |
+| Versioning | ÄÃ¡nh phiÃªn báº£n | Gáº¯n phiÃªn báº£n dá»¯ liá»‡u Ä‘á»ƒ cache vÃ  truy váº¿t thay Ä‘á»•i. |
 
 ---
 
-## 4) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ hiÃ¡Â»â€¡u nÃ„Æ’ng & trÃ¡ÂºÂ£i nghiÃ¡Â»â€¡m
+## 4) Thuáº­t ngá»¯ hiá»‡u nÄƒng & tráº£i nghiá»‡m
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
 | Modal (h&#7897;p tho&#7841;i ph&#7911;) | Modal (h&#7897;p tho&#7841;i ph&#7911;) | H&#7897;p n&#7893;i ch&#7863;n n&#7873;n &#273;&#7875; hi&#7875;n th&#7883; th&#244;ng tin/t&#225;c v&#7909;. |
 | Ng&#7919; c&#7843;nh ch&#7891;ng l&#7899;p (stacking context) | Ng&#7919; c&#7843;nh ch&#7891;ng l&#7899;p (stacking context) | C&#417; ch&#7871; quy&#7871;t &#273;&#7883;nh l&#7899;p tr&#234;n/d&#432;&#7899;i khi c&#243; blur/transform. |
@@ -88,105 +89,105 @@
 | Fallback (ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng) | Fallback (ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng) | Ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng khi t&#224;i nguy&#234;n ch&#237;nh kh&#244;ng d&#249;ng &#273;&#432;&#7907;c. |
 | L&#432;u c&#7909;c b&#7897; | L&#432;u c&#7909;c b&#7897; | L&#432;u l&#7921;a ch&#7885;n tr&#234;n tr&#236;nh duy&#7879;t b&#7857;ng localStorage. |
 | S&#7921; ki&#7879;n tu&#7923; bi&#7871;n | S&#7921; ki&#7879;n tu&#7923; bi&#7871;n | CustomEvent &#273;&#7875; &#273;&#7891;ng b&#7897; tr&#7841;ng th&#225;i gi&#7919;a c&#225;c kh&#7889;i UI. |
-| Worker | TiÃ¡ÂºÂ¿n trÃƒÂ¬nh phÃ¡Â»Â¥ | ChÃ¡ÂºÂ¡y tÃƒÂ¡c vÃ¡Â»Â¥ nÃ¡ÂºÂ·ng (tÃƒÂ¬m kiÃ¡ÂºÂ¿m, lÃ¡ÂºÂ­p chÃ¡Â»â€° mÃ¡Â»Â¥c) ngoÃƒÂ i luÃ¡Â»â€œng chÃƒÂ­nh Ã„â€˜Ã¡Â»Æ’ UI mÃ†Â°Ã¡Â»Â£t. |
-| Main thread | LuÃ¡Â»â€œng chÃƒÂ­nh | LuÃ¡Â»â€œng chÃ¡ÂºÂ¡y UI; cÃƒÂ ng ÃƒÂ­t viÃ¡Â»â€¡c cÃƒÂ ng mÃ†Â°Ã¡Â»Â£t. |
-| Index | LÃ¡ÂºÂ­p chÃ¡Â»â€° mÃ¡Â»Â¥c | ChuÃ¡ÂºÂ©n bÃ¡Â»â€¹ cÃ¡ÂºÂ¥u trÃƒÂºc tra cÃ¡Â»Â©u nhanh (theo mÃƒÂ£, hÃƒÂ£ng, mÃƒÂ u). |
-| Cache | BÃ¡Â»â„¢ nhÃ¡Â»â€º Ã„â€˜Ã¡Â»â€¡m | LÃ†Â°u tÃ¡ÂºÂ¡m kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ Ã„â€˜Ã¡Â»Æ’ tÃ¡ÂºÂ£i nhanh hÃ†Â¡n. |
-| Debounce | TrÃ¡Â»â€¦ cÃƒÂ³ chÃ¡Â»Â§ Ã„â€˜ÃƒÂ­ch | ChÃ¡Â»Â ngÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng dÃ¡Â»Â«ng gÃƒÂµ rÃ¡Â»â€œi mÃ¡Â»â€ºi tÃƒÂ¬m, trÃƒÂ¡nh giÃ¡ÂºÂ­t. |
-| Virtual list | Danh sÃƒÂ¡ch Ã¡ÂºÂ£o | ChÃ¡Â»â€° render phÃ¡ÂºÂ§n Ã„â€˜ang nhÃƒÂ¬n thÃ¡ÂºÂ¥y Ã„â€˜Ã¡Â»Æ’ khÃ¡Â»Âi lag. |
-| Latency | Ã„ÂÃ¡Â»â„¢ trÃ¡Â»â€¦ | ThÃ¡Â»Âi gian chÃ¡Â»Â phÃ¡ÂºÂ£n hÃ¡Â»â€œi. |
+| Worker | Tiáº¿n trÃ¬nh phá»¥ | Cháº¡y tÃ¡c vá»¥ náº·ng (tÃ¬m kiáº¿m, láº­p chá»‰ má»¥c) ngoÃ i luá»“ng chÃ­nh Ä‘á»ƒ UI mÆ°á»£t. |
+| Main thread | Luá»“ng chÃ­nh | Luá»“ng cháº¡y UI; cÃ ng Ã­t viá»‡c cÃ ng mÆ°á»£t. |
+| Index | Láº­p chá»‰ má»¥c | Chuáº©n bá»‹ cáº¥u trÃºc tra cá»©u nhanh (theo mÃ£, hÃ£ng, mÃ u). |
+| Cache | Bá»™ nhá»› Ä‘á»‡m | LÆ°u táº¡m káº¿t quáº£ Ä‘á»ƒ táº£i nhanh hÆ¡n. |
+| Debounce | Trá»… cÃ³ chá»§ Ä‘Ã­ch | Chá» ngÆ°á»i dÃ¹ng dá»«ng gÃµ rá»“i má»›i tÃ¬m, trÃ¡nh giáº­t. |
+| Virtual list | Danh sÃ¡ch áº£o | Chá»‰ render pháº§n Ä‘ang nhÃ¬n tháº¥y Ä‘á»ƒ khá»i lag. |
+| Latency | Äá»™ trá»… | Thá»i gian chá» pháº£n há»“i. |
 
 ---
 
-## 5) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ kiÃ¡Â»Æ’m thÃ¡Â»Â­ & Ã¢â‚¬Å“gÃƒÂ¡c cÃ¡Â»â€¢ng chÃ¡ÂºÂ¥t lÃ†Â°Ã¡Â»Â£ngÃ¢â‚¬Â
+## 5) Thuáº­t ngá»¯ kiá»ƒm thá»­ & â€œgÃ¡c cá»•ng cháº¥t lÆ°á»£ngâ€
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Smoke test | KiÃ¡Â»Æ’m tra khÃƒÂ³i | KiÃ¡Â»Æ’m tra nhanh: trang cÃƒÂ³ mÃ¡Â»Å¸ Ã„â€˜Ã†Â°Ã¡Â»Â£c, file cÃƒÂ³ tÃ¡ÂºÂ£i Ã„â€˜Ã†Â°Ã¡Â»Â£c, khÃƒÂ´ng 404. |
-| Checklist PASS/FAIL | Danh sÃƒÂ¡ch Ã„â€˜Ã¡ÂºÂ¡t/khÃƒÂ´ng Ã„â€˜Ã¡ÂºÂ¡t | Danh sÃƒÂ¡ch test ngÃ¡ÂºÂ¯n gÃ¡Â»Ân Ã„â€˜Ã¡Â»Æ’ xÃƒÂ¡c nhÃ¡ÂºÂ­n thay Ã„â€˜Ã¡Â»â€¢i an toÃƒÂ n. |
-| Gate | CÃ¡Â»â€¢ng chÃ¡ÂºÂ·n | Quy tÃ¡ÂºÂ¯c bÃ¡ÂºÂ¯t buÃ¡Â»â„¢c phÃ¡ÂºÂ£i qua trÃ†Â°Ã¡Â»â€ºc khi merge (vÃƒÂ­ dÃ¡Â»Â¥: khÃƒÂ´ng cÃƒÂ³ BLOCK). |
-| Repo Doctor | BÃƒÂ¡c sÃ„Â© kho mÃƒÂ£ | CÃƒÂ´ng cÃ¡Â»Â¥ quÃƒÂ©t repo: lÃ¡Â»â€”i gÃƒÂ£y (BLOCK), cÃ¡ÂºÂ£nh bÃƒÂ¡o (WARN), thÃƒÂ´ng tin (INFO). |
-| Health Score | Ã„ÂiÃ¡Â»Æ’m sÃ¡Â»Â©c khoÃ¡ÂºÂ» | Ã„ÂiÃ¡Â»Æ’m 0Ã¢â‚¬â€œ100 phÃ¡ÂºÂ£n ÃƒÂ¡nh tÃƒÂ¬nh trÃ¡ÂºÂ¡ng repo theo quy tÃ¡ÂºÂ¯c Ã„â€˜ÃƒÂ£ thÃ¡Â»â€˜ng nhÃ¡ÂºÂ¥t. |
-| Trend 7 ngÃƒÂ y | Xu hÃ†Â°Ã¡Â»â€ºng 7 ngÃƒÂ y | ChuÃ¡Â»â€”i Ã„â€˜iÃ¡Â»Æ’m/Ã„â€˜Ã¡ÂºÂ¿m trong 7 ngÃƒÂ y gÃ¡ÂºÂ§n nhÃ¡ÂºÂ¥t Ã„â€˜Ã¡Â»Æ’ xem tiÃ¡ÂºÂ¿n hay lÃƒÂ¹i. |
-| BLOCK | ChÃ¡ÂºÂ·n khÃ¡ÂºÂ©n cÃ¡ÂºÂ¥p | LÃ¡Â»â€”i mÃ¡Â»Â©c P0: lÃƒÂ m gÃƒÂ£y chÃ¡ÂºÂ¡y/thiÃ¡ÂºÂ¿u file runtime/syntaxÃ¢â‚¬Â¦ => khÃƒÂ´ng merge. |
-| WARN | CÃ¡ÂºÂ£nh bÃƒÂ¡o | VÃ¡ÂºÂ¥n Ã„â€˜Ã¡Â»Â cÃ¡ÂºÂ§n dÃ¡Â»Ân/tÃ¡Â»â€˜i Ã†Â°u nhÃ†Â°ng chÃ†Â°a lÃƒÂ m gÃƒÂ£y hÃ¡Â»â€¡. |
-| INFO | Ghi nhÃ¡ÂºÂ­n | ThÃƒÂ´ng tin thÃ¡Â»â€˜ng kÃƒÂª, khÃƒÂ´ng phÃ¡ÂºÂ£i lÃ¡Â»â€”i. |
-| Quarantine | CÃƒÂ¡ch ly 7 ngÃƒÂ y | ChuyÃ¡Â»Æ’n file Ã¢â‚¬Å“nghi thÃ¡Â»Â«aÃ¢â‚¬Â vÃƒÂ o `_graveyard/` trÃ†Â°Ã¡Â»â€ºc khi xoÃƒÂ¡ hÃ¡ÂºÂ³n. |
-| Graveyard | NghÃ„Â©a Ã„â€˜Ã¡Â»â€¹a tÃ¡ÂºÂ¡m | ThÃ†Â° mÃ¡Â»Â¥c `_graveyard/` chÃ¡Â»Â©a file cÃƒÂ¡ch ly. |
+| Smoke test | Kiá»ƒm tra khÃ³i | Kiá»ƒm tra nhanh: trang cÃ³ má»Ÿ Ä‘Æ°á»£c, file cÃ³ táº£i Ä‘Æ°á»£c, khÃ´ng 404. |
+| Checklist PASS/FAIL | Danh sÃ¡ch Ä‘áº¡t/khÃ´ng Ä‘áº¡t | Danh sÃ¡ch test ngáº¯n gá»n Ä‘á»ƒ xÃ¡c nháº­n thay Ä‘á»•i an toÃ n. |
+| Gate | Cá»•ng cháº·n | Quy táº¯c báº¯t buá»™c pháº£i qua trÆ°á»›c khi merge (vÃ­ dá»¥: khÃ´ng cÃ³ BLOCK). |
+| Repo Doctor | BÃ¡c sÄ© kho mÃ£ | CÃ´ng cá»¥ quÃ©t repo: lá»—i gÃ£y (BLOCK), cáº£nh bÃ¡o (WARN), thÃ´ng tin (INFO). |
+| Health Score | Äiá»ƒm sá»©c khoáº» | Äiá»ƒm 0â€“100 pháº£n Ã¡nh tÃ¬nh tráº¡ng repo theo quy táº¯c Ä‘Ã£ thá»‘ng nháº¥t. |
+| Trend 7 ngÃ y | Xu hÆ°á»›ng 7 ngÃ y | Chuá»—i Ä‘iá»ƒm/Ä‘áº¿m trong 7 ngÃ y gáº§n nháº¥t Ä‘á»ƒ xem tiáº¿n hay lÃ¹i. |
+| BLOCK | Cháº·n kháº©n cáº¥p | Lá»—i má»©c P0: lÃ m gÃ£y cháº¡y/thiáº¿u file runtime/syntaxâ€¦ => khÃ´ng merge. |
+| WARN | Cáº£nh bÃ¡o | Váº¥n Ä‘á» cáº§n dá»n/tá»‘i Æ°u nhÆ°ng chÆ°a lÃ m gÃ£y há»‡. |
+| INFO | Ghi nháº­n | ThÃ´ng tin thá»‘ng kÃª, khÃ´ng pháº£i lá»—i. |
+| Quarantine | CÃ¡ch ly 7 ngÃ y | Chuyá»ƒn file â€œnghi thá»«aâ€ vÃ o `_graveyard/` trÆ°á»›c khi xoÃ¡ háº³n. |
+| Graveyard | NghÄ©a Ä‘á»‹a táº¡m | ThÆ° má»¥c `_graveyard/` chá»©a file cÃ¡ch ly. |
 
 ---
 
-## 6) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ Git & quy trÃƒÂ¬nh lÃƒÂ m viÃ¡Â»â€¡c
+## 6) Thuáº­t ngá»¯ Git & quy trÃ¬nh lÃ m viá»‡c
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Repo | Kho mÃƒÂ£ | NÃ†Â¡i chÃ¡Â»Â©a toÃƒÂ n bÃ¡Â»â„¢ mÃƒÂ£ nguÃ¡Â»â€œn, dÃ¡Â»Â¯ liÃ¡Â»â€¡u, tÃƒÂ i liÃ¡Â»â€¡u. |
-| Commit | BÃ¡ÂºÂ£n ghi thay Ã„â€˜Ã¡Â»â€¢i | MÃ¡Â»â€˜c thay Ã„â€˜Ã¡Â»â€¢i cÃƒÂ³ mÃƒÂ´ tÃ¡ÂºÂ£ rÃƒÂµ rÃƒÂ ng. |
-| Branch | NhÃƒÂ¡nh | NhÃƒÂ¡nh lÃƒÂ m viÃ¡Â»â€¡c tÃƒÂ¡ch khÃ¡Â»Âi chÃƒÂ­nh. |
-| Pull request (PR) | YÃƒÂªu cÃ¡ÂºÂ§u hÃ¡Â»Â£p nhÃ¡ÂºÂ¥t | GÃ¡Â»Â­i thay Ã„â€˜Ã¡Â»â€¢i Ã„â€˜Ã¡Â»Æ’ review vÃƒÂ  hÃ¡Â»Â£p nhÃ¡ÂºÂ¥t vÃƒÂ o nhÃƒÂ¡nh chÃƒÂ­nh. |
-| Merge | HÃ¡Â»Â£p nhÃ¡ÂºÂ¥t | GÃ¡Â»â„¢p thay Ã„â€˜Ã¡Â»â€¢i vÃƒÂ o nhÃƒÂ¡nh chÃƒÂ­nh. |
-| CI | TÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng kiÃ¡Â»Æ’m tra | HÃ¡Â»â€¡ thÃ¡Â»â€˜ng chÃ¡ÂºÂ¡y kiÃ¡Â»Æ’m tra khi PR/push/schedule. |
-| Workflow | Quy trÃƒÂ¬nh tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng | TÃ¡ÂºÂ­p lÃ¡Â»â€¡nh CI (vÃƒÂ­ dÃ¡Â»Â¥: GitHub Actions). |
-| workflow_dispatch | KÃƒÂ­ch hoÃ¡ÂºÂ¡t thÃ¡Â»Â§ cÃƒÂ´ng | ChÃ¡ÂºÂ¡y workflow bÃ¡ÂºÂ±ng tay tÃ¡Â»Â« giao diÃ¡Â»â€¡n. |
-| schedule | LÃ¡Â»â€¹ch chÃ¡ÂºÂ¡y | Workflow chÃ¡ÂºÂ¡y theo cron (hÃ¡ÂºÂ±ng ngÃƒÂ y). |
-| Artifact | GÃƒÂ³i Ã„â€˜ÃƒÂ­nh kÃƒÂ¨m CI | File bÃƒÂ¡o cÃƒÂ¡o lÃ†Â°u trong CI Ã„â€˜Ã¡Â»Æ’ tÃ¡ÂºÂ£i vÃ¡Â»Â (khÃƒÂ´ng nhÃ¡ÂºÂ¥t thiÃ¡ÂºÂ¿t commit). |
+| Repo | Kho mÃ£ | NÆ¡i chá»©a toÃ n bá»™ mÃ£ nguá»“n, dá»¯ liá»‡u, tÃ i liá»‡u. |
+| Commit | Báº£n ghi thay Ä‘á»•i | Má»‘c thay Ä‘á»•i cÃ³ mÃ´ táº£ rÃµ rÃ ng. |
+| Branch | NhÃ¡nh | NhÃ¡nh lÃ m viá»‡c tÃ¡ch khá»i chÃ­nh. |
+| Pull request (PR) | YÃªu cáº§u há»£p nháº¥t | Gá»­i thay Ä‘á»•i Ä‘á»ƒ review vÃ  há»£p nháº¥t vÃ o nhÃ¡nh chÃ­nh. |
+| Merge | Há»£p nháº¥t | Gá»™p thay Ä‘á»•i vÃ o nhÃ¡nh chÃ­nh. |
+| CI | Tá»± Ä‘á»™ng kiá»ƒm tra | Há»‡ thá»‘ng cháº¡y kiá»ƒm tra khi PR/push/schedule. |
+| Workflow | Quy trÃ¬nh tá»± Ä‘á»™ng | Táº­p lá»‡nh CI (vÃ­ dá»¥: GitHub Actions). |
+| workflow_dispatch | KÃ­ch hoáº¡t thá»§ cÃ´ng | Cháº¡y workflow báº±ng tay tá»« giao diá»‡n. |
+| schedule | Lá»‹ch cháº¡y | Workflow cháº¡y theo cron (háº±ng ngÃ y). |
+| Artifact | GÃ³i Ä‘Ã­nh kÃ¨m CI | File bÃ¡o cÃ¡o lÆ°u trong CI Ä‘á»ƒ táº£i vá» (khÃ´ng nháº¥t thiáº¿t commit). |
 
 ---
 
-## 7) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ hÃ¡ÂºÂ¡ tÃ¡ÂºÂ§ng & bÃ¡ÂºÂ£o mÃ¡ÂºÂ­t
+## 7) Thuáº­t ngá»¯ háº¡ táº§ng & báº£o máº­t
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Firestore rules | Quy tÃ¡ÂºÂ¯c Firestore | Quy tÃ¡ÂºÂ¯c truy cÃ¡ÂºÂ­p dÃ¡Â»Â¯ liÃ¡Â»â€¡u: ai Ã„â€˜Ã†Â°Ã¡Â»Â£c Ã„â€˜Ã¡Â»Âc/ghi gÃƒÂ¬. |
-| Least privilege | TÃ¡Â»â€˜i thiÃ¡Â»Æ’u quyÃ¡Â»Ân | MÃ¡Â»â€”i ngÃ†Â°Ã¡Â»Âi chÃ¡Â»â€° cÃƒÂ³ Ã„â€˜ÃƒÂºng quyÃ¡Â»Ân cÃ¡ÂºÂ§n thiÃ¡ÂºÂ¿t. |
-| Auth | XÃƒÂ¡c thÃ¡Â»Â±c | Ã„ÂÃ¡Â»â€¹nh danh ngÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng (Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p/Ã„â€˜Ã„Æ’ng xuÃ¡ÂºÂ¥t). |
-| Custom claims | QuyÃ¡Â»Ân Ã„â€˜Ã¡ÂºÂ·c biÃ¡Â»â€¡t | Ã¢â‚¬Å“CÃ¡Â»ÂÃ¢â‚¬Â phÃƒÂ¢n quyÃ¡Â»Ân nÃƒÂ¢ng cao (admin/mod). |
+| Firestore rules | Quy táº¯c Firestore | Quy táº¯c truy cáº­p dá»¯ liá»‡u: ai Ä‘Æ°á»£c Ä‘á»c/ghi gÃ¬. |
+| Least privilege | Tá»‘i thiá»ƒu quyá»n | Má»—i ngÆ°á»i chá»‰ cÃ³ Ä‘Ãºng quyá»n cáº§n thiáº¿t. |
+| Auth | XÃ¡c thá»±c | Äá»‹nh danh ngÆ°á»i dÃ¹ng (Ä‘Äƒng nháº­p/Ä‘Äƒng xuáº¥t). |
+| Custom claims | Quyá»n Ä‘áº·c biá»‡t | â€œCá»â€ phÃ¢n quyá»n nÃ¢ng cao (admin/mod). |
 
 ---
 
-## 8) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ ra quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh kiÃ¡Â»Æ’u Ã¢â‚¬Å“ÃƒÂ´ng lÃ¡Â»â€ºnÃ¢â‚¬Â
+## 8) Thuáº­t ngá»¯ ra quyáº¿t Ä‘á»‹nh kiá»ƒu â€œÃ´ng lá»›nâ€
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡Â»â€¡t hoÃƒÂ¡ dÃƒÂ¹ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| One-way door | CÃ¡Â»Â­a mÃ¡Â»â„¢t chiÃ¡Â»Âu | QuyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh khÃƒÂ³ quay Ã„â€˜Ã¡ÂºÂ§u (phÃ¡ÂºÂ£i cÃƒÂ¢n nhÃ¡ÂºÂ¯c kÃ¡Â»Â¹). |
-| Two-way door | CÃ¡Â»Â­a hai chiÃ¡Â»Âu | QuyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh cÃƒÂ³ thÃ¡Â»Æ’ thÃ¡Â»Â­ nhanh vÃƒÂ  quay lÃ¡ÂºÂ¡i. |
-| Trade-off | Ã„ÂÃƒÂ¡nh Ã„â€˜Ã¡Â»â€¢i | ChÃ¡Â»Ân A thÃƒÂ¬ mÃ¡ÂºÂ¥t B; phÃ¡ÂºÂ£i ghi rÃƒÂµ. |
-| North Star Metric | ChÃ¡Â»â€° sÃ¡Â»â€˜ BÃ¡ÂºÂ¯c cÃ¡Â»Â±c | ChÃ¡Â»â€° sÃ¡Â»â€˜ cÃ¡Â»â€˜t lÃƒÂµi dÃ¡ÂºÂ«n toÃƒÂ n bÃ¡Â»â„¢ Ã„â€˜Ã¡Â»â„¢i. |
-| KPI | ChÃ¡Â»â€° sÃ¡Â»â€˜ hiÃ¡Â»â€¡u suÃ¡ÂºÂ¥t | ChÃ¡Â»â€° sÃ¡Â»â€˜ Ã„â€˜o tiÃ¡ÂºÂ¿n Ã„â€˜Ã¡Â»â„¢/kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£. |
-| OKR | MÃ¡Â»Â¥c tiÃƒÂªu & kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ then chÃ¡Â»â€˜t | HÃ¡Â»â€¡ mÃ¡Â»Â¥c tiÃƒÂªu theo quÃƒÂ½/thÃƒÂ¡ng. |
+| One-way door | Cá»­a má»™t chiá»u | Quyáº¿t Ä‘á»‹nh khÃ³ quay Ä‘áº§u (pháº£i cÃ¢n nháº¯c ká»¹). |
+| Two-way door | Cá»­a hai chiá»u | Quyáº¿t Ä‘á»‹nh cÃ³ thá»ƒ thá»­ nhanh vÃ  quay láº¡i. |
+| Trade-off | ÄÃ¡nh Ä‘á»•i | Chá»n A thÃ¬ máº¥t B; pháº£i ghi rÃµ. |
+| North Star Metric | Chá»‰ sá»‘ Báº¯c cá»±c | Chá»‰ sá»‘ cá»‘t lÃµi dáº«n toÃ n bá»™ Ä‘á»™i. |
+| KPI | Chá»‰ sá»‘ hiá»‡u suáº¥t | Chá»‰ sá»‘ Ä‘o tiáº¿n Ä‘á»™/káº¿t quáº£. |
+| OKR | Má»¥c tiÃªu & káº¿t quáº£ then chá»‘t | Há»‡ má»¥c tiÃªu theo quÃ½/thÃ¡ng. |
 
 ---
 
-## 9) Quy tÃ¡ÂºÂ¯c Ã„â€˜Ã¡ÂºÂ·t thuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ mÃ¡Â»â€ºi (Ã„â€˜Ã¡Â»Æ’ ViÃ¡Â»â€¡t hoÃƒÂ¡ 100%)
-1) Ã†Â¯u tiÃƒÂªn tÃ¡Â»Â« **ngÃ¡ÂºÂ¯n Ã¢â‚¬â€œ dÃ¡Â»â€¦ hiÃ¡Â»Æ’u Ã¢â‚¬â€œ sang** (vÃƒÂ­ dÃ¡Â»Â¥: Ã¢â‚¬Å“CÃ¡Â»â€¢ngÃ¢â‚¬Â, Ã¢â‚¬Å“ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºiÃ¢â‚¬Â, Ã¢â‚¬Å“CÃƒÂ¡ch ly 7 ngÃƒÂ yÃ¢â‚¬Â).  
-2) NÃ¡ÂºÂ¿u bÃ¡ÂºÂ¯t buÃ¡Â»â„¢c giÃ¡Â»Â¯ tÃƒÂªn riÃƒÂªng (vÃƒÂ­ dÃ¡Â»Â¥: ThreadColor) Ã¢â€ â€™ luÃƒÂ´n kÃƒÂ¨m **bÃƒÂ­ danh tiÃ¡ÂºÂ¿ng ViÃ¡Â»â€¡t**: Ã¢â‚¬Å“ThÃ¡ÂºÂ¿ giÃ¡Â»â€ºi MÃƒÂ u thÃƒÂªu (ThreadColor)Ã¢â‚¬Â.  
-3) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ kÃ¡Â»Â¹ thuÃ¡ÂºÂ­t vÃ¡ÂºÂ«n ViÃ¡Â»â€¡t hoÃƒÂ¡, nhÃ†Â°ng cÃƒÂ³ thÃ¡Â»Æ’ giÃ¡Â»Â¯ trong ngoÃ¡ÂºÂ·c nÃ¡ÂºÂ¿u cÃ¡ÂºÂ§n Ã„â€˜Ã¡Â»â€˜i chiÃ¡ÂºÂ¿u: Ã¢â‚¬Å“BÃ¡Â»â„¢ nhÃ¡Â»â€º Ã„â€˜Ã¡Â»â€¡m (cache)Ã¢â‚¬Â.  
-4) Hai tÃƒÂªn **khÃƒÂ´ng Ã„â€˜Ã¡Â»â€¢i**: **DSG- DigitalSpaceGroup**, **SpaceColors - 8Portals**.
+## 9) Quy táº¯c Ä‘áº·t thuáº­t ngá»¯ má»›i (Ä‘á»ƒ Viá»‡t hoÃ¡ 100%)
+1) Æ¯u tiÃªn tá»« **ngáº¯n â€“ dá»… hiá»ƒu â€“ sang** (vÃ­ dá»¥: â€œCá»•ngâ€, â€œTháº¿ giá»›iâ€, â€œCÃ¡ch ly 7 ngÃ yâ€).  
+2) Náº¿u báº¯t buá»™c giá»¯ tÃªn riÃªng (vÃ­ dá»¥: ThreadColor) â†’ luÃ´n kÃ¨m **bÃ­ danh tiáº¿ng Viá»‡t**: â€œTháº¿ giá»›i MÃ u thÃªu (ThreadColor)â€.  
+3) Thuáº­t ngá»¯ ká»¹ thuáº­t váº«n Viá»‡t hoÃ¡, nhÆ°ng cÃ³ thá»ƒ giá»¯ trong ngoáº·c náº¿u cáº§n Ä‘á»‘i chiáº¿u: â€œBá»™ nhá»› Ä‘á»‡m (cache)â€.  
+4) Hai tÃªn **khÃ´ng Ä‘á»•i**: **DSG- DigitalSpaceGroup**, **SpaceColors - 8Portals**.
 
 ---
 
-*File nÃƒÂ y lÃƒÂ  Ã¢â‚¬Å“nguÃ¡Â»â€œn ngÃƒÂ´n ngÃ¡Â»Â¯ gÃ¡Â»â€˜cÃ¢â‚¬Â. MÃ¡Â»Âi tÃƒÂ i liÃ¡Â»â€¡u/brief nÃƒÂªn bÃƒÂ¡m theo Ã„â€˜Ã¡Â»Æ’ thÃ¡Â»â€˜ng nhÃ¡ÂºÂ¥t giÃ¡Â»Âng Ã„â€˜iÃ¡Â»â€¡u.*
+*File nÃ y lÃ  â€œnguá»“n ngÃ´n ngá»¯ gá»‘câ€. Má»i tÃ i liá»‡u/brief nÃªn bÃ¡m theo Ä‘á»ƒ thá»‘ng nháº¥t giá»ng Ä‘iá»‡u.*
 ---
 
-## 9) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ Backend & GÃƒÂ³i quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh (BÃ¡ÂºÂ£o mÃ¡ÂºÂ­t)
+## 9) Thuáº­t ngá»¯ Backend & GÃ³i quyáº¿t Ä‘á»‹nh (Báº£o máº­t)
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡ÂºÂ¿t hoÃƒÂ¡ dÃ¡ÂºÂ¡ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Cloud Functions (HÃƒÂ m Ã„â€˜ÃƒÂ¡m mÃƒÂ¢y) | Cloud Functions | HÃƒÂ m server-side chÃ¡ÂºÂ¡y theo sÃ¡Â»Â± kiÃ¡Â»â€¡n/HTTP, xÃ¡Â»Â­ lÃƒÂ½ logic nhÃ¡ÂºÂ¡y cÃ¡ÂºÂ£m. |
-| Firebase Hosting | Firebase Hosting | HÃ¡ÂºÂ¡ tÃ¡ÂºÂ§ng phÃ¡Â»Â¥c vÃ¡Â»Â¥ web tÃ„Â©nh vÃƒÂ  rewrite Ã„â€˜Ã¡ÂºÂ¿n Functions. |
+| Cloud Functions (HÃ m Ä‘Ã¡m mÃ¢y) | Cloud Functions | HÃ m server-side cháº¡y theo sá»± kiá»‡n/HTTP, xá»­ lÃ½ logic nháº¡y cáº£m. |
+| Firebase Hosting | Firebase Hosting | Háº¡ táº§ng phá»¥c vá»¥ web tÄ©nh vÃ  rewrite Ä‘áº¿n Functions. |
 | Cross-Origin-Opener-Policy (COOP) | Cross-Origin-Opener-Policy (COOP) | Chinh sach co lap cua so mo ra giua cac nguon (chinh sach co lap cua so mo ra giua cac nguon). |
 | same-origin-allow-popups | same-origin-allow-popups | Che do COOP cho phep popup van hoat dong voi cua so mo no (che do COOP cho phep popup van hoat dong voi cua so mo no). |
 | signInWithRedirect | signInWithRedirect | Dang nhap bang chuyen huong thay vi popup (dang nhap bang chuyen huong thay vi popup). |
-| Express | Express | BÃ¡Â»â„¢ Ã„â€˜Ã¡Â»â€¹nh tuyÃ¡ÂºÂ¿n HTTP nhÃ¡ÂºÂ¹ Ã„â€˜Ã¡Â»Æ’ tÃ¡Â»â€¢ chÃ¡Â»Â©c API admin. |
-| rewrite (ÃƒÂnh xÃ¡ÂºÂ¡ Ã„â€˜Ã†Â°Ã¡Â»Âng dÃ¡ÂºÂ«n) | rewrite | ChuyÃ¡Â»Æ’n hÃ†Â°Ã¡Â»â€ºng `/admin/**` tÃ¡Â»Â« Hosting sang Functions. |
-| RBAC (PhÃƒÂ¢n quyÃ¡Â»Ân theo vai trÃƒÂ²) | RBAC | CÃ†Â¡ chÃ¡ÂºÂ¿ phÃƒÂ¢n quyÃ¡Â»Ân admin/khÃƒÂ´ng admin theo vai trÃƒÂ². |
-| ID token (mÃƒÂ£ chÃ¡Â»Â©ng thÃ¡Â»Â±c) | ID token | Token xÃƒÂ¡c thÃ¡Â»Â±c ngÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng do Firebase Auth cÃ¡ÂºÂ¥p. |
-| no-store (cÃ¡ÂºÂ¥m cache) | no-store | Header chÃ¡Â»â€˜ng lÃ†Â°u Ã„â€˜Ã¡Â»â€¡m cho response nhÃ¡ÂºÂ¡y cÃ¡ÂºÂ£m. |
-| Audit log (nhÃ¡ÂºÂ­t kÃƒÂ½ truy vÃ¡ÂºÂ¿t) | Audit log | Ghi lÃ¡ÂºÂ¡i GENERATE/VIEW, ai lÃƒÂ m, lÃƒÂºc nÃƒÂ o. |
-| Redaction (che dÃ¡Â»Â¯ liÃ¡Â»â€¡u nhÃ¡ÂºÂ¡y cÃ¡ÂºÂ£m) | Redaction | Che thÃƒÂ´ng tin nhÃ¡ÂºÂ¡y cÃ¡ÂºÂ£m trÃ†Â°Ã¡Â»â€ºc khi lÃ†Â°u/hiÃ¡Â»Æ’n thÃ¡Â»â€¹. |
-| DecisionPack (GÃƒÂ³i quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh) | DecisionPack | BÃ¡ÂºÂ£n ghi gÃƒÂ³i quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh nÃ¡Â»â„¢i bÃ¡Â»â„¢ theo ngÃƒÂ y. |
-| Snapshot (bÃ¡ÂºÂ£n chÃ¡Â»Â¥p) | Snapshot | BÃ¡ÂºÂ£n chÃ¡Â»Â¥p trÃ¡ÂºÂ¡ng thÃƒÂ¡i Ã„â€˜Ã¡Â»Æ’ Ã„â€˜Ã¡Â»â€˜i chiÃ¡ÂºÂ¿u/ra quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh. |
-| Idempotency (chÃ¡Â»â€˜ng chÃ¡ÂºÂ¡y lÃ¡ÂºÂ·p) | Idempotency | ChÃ¡ÂºÂ¡y lÃ¡ÂºÂ¡i khÃƒÂ´ng tÃ¡ÂºÂ¡o trÃƒÂ¹ng, giÃ¡Â»Â¯ 1 ?latest?. |
+| Express | Express | Bá»™ Ä‘á»‹nh tuyáº¿n HTTP nháº¹ Ä‘á»ƒ tá»• chá»©c API admin. |
+| rewrite (Ãnh xáº¡ Ä‘Æ°á»ng dáº«n) | rewrite | Chuyá»ƒn hÆ°á»›ng `/admin/**` tá»« Hosting sang Functions. |
+| RBAC (PhÃ¢n quyá»n theo vai trÃ²) | RBAC | CÆ¡ cháº¿ phÃ¢n quyá»n admin/khÃ´ng admin theo vai trÃ². |
+| ID token (mÃ£ chá»©ng thá»±c) | ID token | Token xÃ¡c thá»±c ngÆ°á»i dÃ¹ng do Firebase Auth cáº¥p. |
+| no-store (cáº¥m cache) | no-store | Header chá»‘ng lÆ°u Ä‘á»‡m cho response nháº¡y cáº£m. |
+| Audit log (nháº­t kÃ½ truy váº¿t) | Audit log | Ghi láº¡i GENERATE/VIEW, ai lÃ m, lÃºc nÃ o. |
+| Redaction (che dá»¯ liá»‡u nháº¡y cáº£m) | Redaction | Che thÃ´ng tin nháº¡y cáº£m trÆ°á»›c khi lÆ°u/hiá»ƒn thá»‹. |
+| DecisionPack (GÃ³i quyáº¿t Ä‘á»‹nh) | DecisionPack | Báº£n ghi gÃ³i quyáº¿t Ä‘á»‹nh ná»™i bá»™ theo ngÃ y. |
+| Snapshot (báº£n chá»¥p) | Snapshot | Báº£n chá»¥p tráº¡ng thÃ¡i Ä‘á»ƒ Ä‘á»‘i chiáº¿u/ra quyáº¿t Ä‘á»‹nh. |
+| Idempotency (chá»‘ng cháº¡y láº·p) | Idempotency | Cháº¡y láº¡i khÃ´ng táº¡o trÃ¹ng, giá»¯ 1 ?latest?. |
 ---
 
 ## 10) Thu?t ng? tri?n khai Functions & Hosting
@@ -199,65 +200,66 @@
 | Node LTS | Node LTS | Phi?n b?n Node ?n ??nh d?i h?n, khuy?n ngh? d?ng trong Functions. |
 ---
 
-## 11) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ quÃ¡ÂºÂ£n trÃ¡Â»â€¹ & xÃƒÂ¡c thÃ¡Â»Â±c bÃ¡Â»â€¢ sung
+## 11) Thuáº­t ngá»¯ quáº£n trá»‹ & xÃ¡c thá»±c bá»• sung
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡ÂºÂ¿t hoÃƒÂ¡ dÃ¡ÂºÂ¡ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Authorization Bearer token | Bearer token | ChuÃ¡Â»â€”i token Ã„â€˜Ã¡ÂºÂ·t trong header `Authorization: Bearer <token>` Ã„â€˜Ã¡Â»Æ’ gÃ¡Â»Âi API quÃ¡ÂºÂ£n trÃ¡Â»â€¹. |
-| Admin UI | BÃ¡ÂºÂ£ng Ã„â€˜iÃ¡Â»Âu phÃ¡Â»â€˜i quÃ¡ÂºÂ£n trÃ¡Â»â€¹ | Giao diÃ¡Â»â€¡n nÃ¡Â»â„¢i bÃ¡Â»â„¢ cho admin xem gÃƒÂ³i quyÃ¡ÂºÂ¿t Ã„â€˜Ã¡Â»â€¹nh vÃƒÂ  nhÃ¡ÂºÂ­t kÃƒÂ½ truy vÃ¡ÂºÂ¿t. |
-| Audit logs | NhÃ¡ÂºÂ­t kÃƒÂ½ truy vÃ¡ÂºÂ¿t | Danh sÃƒÂ¡ch sÃ¡Â»Â± kiÃ¡Â»â€¡n truy cÃ¡ÂºÂ­p/ghi nhÃ¡ÂºÂ­n Ã¡Â»Å¸ API admin, phÃ¡Â»Â¥c vÃ¡Â»Â¥ kiÃ¡Â»Æ’m tra bÃ¡ÂºÂ£o mÃ¡ÂºÂ­t. |
+| Authorization Bearer token | Bearer token | Chuá»—i token Ä‘áº·t trong header `Authorization: Bearer <token>` Ä‘á»ƒ gá»i API quáº£n trá»‹. |
+| Admin UI | Báº£ng Ä‘iá»u phá»‘i quáº£n trá»‹ | Giao diá»‡n ná»™i bá»™ cho admin xem gÃ³i quyáº¿t Ä‘á»‹nh vÃ  nháº­t kÃ½ truy váº¿t. |
+| Audit logs | Nháº­t kÃ½ truy váº¿t | Danh sÃ¡ch sá»± kiá»‡n truy cáº­p/ghi nháº­n á»Ÿ API admin, phá»¥c vá»¥ kiá»ƒm tra báº£o máº­t. |
 ---
 
-## 12) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ Git hygiene
+## 12) Thuáº­t ngá»¯ Git hygiene
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡ÂºÂ¿t hoÃƒÂ¡ dÃ¡ÂºÂ¡ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| .gitignore | .gitignore | Danh sÃƒÂ¡ch file/thÃ†Â° mÃ¡Â»Â¥c bÃ¡Â»â€¹ Git bÃ¡Â»Â qua, khÃƒÂ´ng Ã„â€˜Ã†Â°a vÃƒÂ o commit. |
-| node_modules | node_modules | ThÃ†Â° mÃ¡Â»Â¥c chÃ¡Â»Â©a thÃ†Â° viÃ¡Â»â€¡n cÃƒÂ i Ã„â€˜Ã¡ÂºÂ·t tÃ¡Â»Â« npm; khÃƒÂ´ng commit. |
-| Tracked | Tracked | File Ã„â€˜ang Ã„â€˜Ã†Â°Ã¡Â»Â£c Git theo dÃƒÂµi (Ã„â€˜ÃƒÂ£ add). |
-| Untracked | Untracked | File chÃ†Â°a Ã„â€˜Ã†Â°Ã¡Â»Â£c Git theo dÃƒÂµi. |
-| Build artifact | Build artifact | KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ sinh ra khi build (vÃƒÂ­ dÃ¡Â»Â¥ `functions/lib/`), khÃƒÂ´ng commit. |
+| K&#7927; lu&#7853;t s&#7841;ch kho m&#227; (repo hygiene) | K&#7927; lu&#7853;t s&#7841;ch kho m&#227; (repo hygiene) | Th&#243;i quen gi&#7919; repo g&#7885;n, kh&#244;ng r&#242; r&#7881; file nh&#7841;y c&#7843;m, tu&#226;n th&#7911; quy &#432;&#7899;c. |
+| .gitignore | .gitignore | Danh sÃ¡ch file/thÆ° má»¥c bá»‹ Git bá» qua, khÃ´ng Ä‘Æ°a vÃ o commit. |
+| node_modules | node_modules | ThÆ° má»¥c chá»©a thÆ° viá»‡n cÃ i Ä‘áº·t tá»« npm; khÃ´ng commit. |
+| Tracked | Tracked | File Ä‘ang Ä‘Æ°á»£c Git theo dÃµi (Ä‘Ã£ add). |
+| Untracked | Untracked | File chÆ°a Ä‘Æ°á»£c Git theo dÃµi. |
+| Build artifact | Build artifact | Káº¿t quáº£ sinh ra khi build (vÃ­ dá»¥ `functions/lib/`), khÃ´ng commit. |
 ---
 
-## 13) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ xuÃ¡ÂºÂ¥t repo & chia sÃ¡ÂºÂ»
+## 13) Thuáº­t ngá»¯ xuáº¥t repo & chia sáº»
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡ÂºÂ¿t hoÃƒÂ¡ dÃ¡ÂºÂ¡ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Git bundle | Git bundle | GÃƒÂ³i Git cÃƒÂ³ lÃ¡Â»â€¹ch sÃ¡Â»Â­ Ã„â€˜Ã¡ÂºÂ§y Ã„â€˜Ã¡Â»Â§, dÃƒÂ¹ng Ã„â€˜Ã¡Â»Æ’ chia sÃ¡ÂºÂ» repo mÃƒÂ  khÃƒÂ´ng cÃ¡ÂºÂ§n remote. |
-| Git archive | Git archive | GÃƒÂ³i snapshot khÃƒÂ´ng lÃ¡Â»â€¹ch sÃ¡Â»Â­ (zip/tar) Ã„â€˜Ã¡Â»Æ’ chia sÃ¡ÂºÂ» mÃƒÂ£ nguÃ¡Â»â€œn hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i. |
-| Submodule | Submodule | Repo con gÃ¡ÂºÂ¯n vÃƒÂ o repo cha; cÃ¡ÂºÂ§n tÃ¡ÂºÂ£i riÃƒÂªng khi chia sÃ¡ÂºÂ». |
-| Git LFS | Git LFS | CÃ†Â¡ chÃ¡ÂºÂ¿ lÃ†Â°u file lÃ¡Â»â€ºn ngoÃƒÂ i Git; cÃ¡ÂºÂ§n pull riÃƒÂªng Ã„â€˜Ã¡Â»Æ’ Ã„â€˜Ã¡Â»Â§ dÃ¡Â»Â¯ liÃ¡Â»â€¡u. |
+| Git bundle | Git bundle | GÃ³i Git cÃ³ lá»‹ch sá»­ Ä‘áº§y Ä‘á»§, dÃ¹ng Ä‘á»ƒ chia sáº» repo mÃ  khÃ´ng cáº§n remote. |
+| Git archive | Git archive | GÃ³i snapshot khÃ´ng lá»‹ch sá»­ (zip/tar) Ä‘á»ƒ chia sáº» mÃ£ nguá»“n hiá»‡n táº¡i. |
+| Submodule | Submodule | Repo con gáº¯n vÃ o repo cha; cáº§n táº£i riÃªng khi chia sáº». |
+| Git LFS | Git LFS | CÆ¡ cháº¿ lÆ°u file lá»›n ngoÃ i Git; cáº§n pull riÃªng Ä‘á»ƒ Ä‘á»§ dá»¯ liá»‡u. |
 ---
 
-## 14) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ PowerShell
+## 14) Thuáº­t ngá»¯ PowerShell
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡ÂºÂ¿t hoÃƒÂ¡ dÃ¡ÂºÂ¡ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| ExecutionPolicy | ExecutionPolicy | ChÃƒÂ­nh sÃƒÂ¡ch cho phÃƒÂ©p chÃ¡ÂºÂ¡y script PowerShell trong phiÃƒÂªn hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i. |
-| Scope Process | Scope Process | PhÃ¡ÂºÂ¡m vi ÃƒÂ¡p dÃ¡Â»Â¥ng cÃ¡Â»Â§a ExecutionPolicy chÃ¡Â»â€° trong phiÃƒÂªn PowerShell Ã„â€˜ang chÃ¡ÂºÂ¡y. |
+| ExecutionPolicy | ExecutionPolicy | ChÃ­nh sÃ¡ch cho phÃ©p cháº¡y script PowerShell trong phiÃªn hiá»‡n táº¡i. |
+| Scope Process | Scope Process | Pháº¡m vi Ã¡p dá»¥ng cá»§a ExecutionPolicy chá»‰ trong phiÃªn PowerShell Ä‘ang cháº¡y. |
 ---
 
-## 15) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ Ã„â€˜o lÃ†Â°Ã¡Â»Âng & sÃ¡Â»Â± kiÃ¡Â»â€¡n
+## 15) Thuáº­t ngá»¯ Ä‘o lÆ°á»ng & sá»± kiá»‡n
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡ÂºÂ¿t hoÃƒÂ¡ dÃ¡ÂºÂ¡ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| North Star Metric (NSM) | NSM | ChÃ¡Â»â€° sÃ¡Â»â€˜ Ã„â€˜Ã¡Â»â€¹nh hÃ†Â°Ã¡Â»â€ºng chÃƒÂ­nh, Ã„â€˜o hiÃ¡Â»â€¡u quÃ¡ÂºÂ£ cÃ¡Â»â€˜t lÃƒÂµi cÃ¡Â»Â§a sÃ¡ÂºÂ£n phÃ¡ÂºÂ©m. |
-| Leading indicator | ChÃ¡Â»â€° sÃ¡Â»â€˜ dÃ¡ÂºÂ«n dÃ¡ÂºÂ¯t | ChÃ¡Â»â€° sÃ¡Â»â€˜ sÃ¡Â»â€ºm dÃ¡Â»Â± bÃƒÂ¡o xu hÃ†Â°Ã¡Â»â€ºng cÃ¡Â»Â§a NSM. |
-| TMTC-7 | TMTC-7 | TÃ¡Â»Â· lÃ¡Â»â€¡ MÃƒÂ u ThÃƒÂªu ChuÃ¡ÂºÂ©n trong 7 ngÃƒÂ y. |
-| TTGP | TTGP | TÃ¡Â»Â· lÃ¡Â»â€¡ Tra cÃ¡Â»Â©u GÃ¡ÂºÂ§n Ã„â€˜ÃƒÂºng thÃƒÂ nh cÃƒÂ´ng. |
-| TLC | TLC | TÃ¡Â»Â· lÃ¡Â»â€¡ LÃ†Â°u vÃƒÂ o Kho chÃ¡Â»â€°. |
-| TLK | TLK | TÃ¡Â»Â· lÃ¡Â»â€¡ LÃ¡Â»Â±a chÃ¡Â»Ân kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£. |
-| Event map | BÃ¡ÂºÂ£n Ã„â€˜Ã¡Â»â€œ sÃ¡Â»Â± kiÃ¡Â»â€¡n | Danh sÃƒÂ¡ch sÃ¡Â»Â± kiÃ¡Â»â€¡n tÃ¡Â»â€˜i thiÃ¡Â»Æ’u + thuÃ¡Â»â„¢c tÃƒÂ­nh Ã„â€˜Ã¡Â»Æ’ Ã„â€˜o lÃ†Â°Ã¡Â»Âng. |
+| North Star Metric (NSM) | NSM | Chá»‰ sá»‘ Ä‘á»‹nh hÆ°á»›ng chÃ­nh, Ä‘o hiá»‡u quáº£ cá»‘t lÃµi cá»§a sáº£n pháº©m. |
+| Leading indicator | Chá»‰ sá»‘ dáº«n dáº¯t | Chá»‰ sá»‘ sá»›m dá»± bÃ¡o xu hÆ°á»›ng cá»§a NSM. |
+| TMTC-7 | TMTC-7 | Tá»· lá»‡ MÃ u ThÃªu Chuáº©n trong 7 ngÃ y. |
+| TTGP | TTGP | Tá»· lá»‡ Tra cá»©u Gáº§n Ä‘Ãºng thÃ nh cÃ´ng. |
+| TLC | TLC | Tá»· lá»‡ LÆ°u vÃ o Kho chá»‰. |
+| TLK | TLK | Tá»· lá»‡ Lá»±a chá»n káº¿t quáº£. |
+| Event map | Báº£n Ä‘á»“ sá»± kiá»‡n | Danh sÃ¡ch sá»± kiá»‡n tá»‘i thiá»ƒu + thuá»™c tÃ­nh Ä‘á»ƒ Ä‘o lÆ°á»ng. |
 ---
 
-## 16) ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ Emulator & triÃ¡Â»Æ’n khai
+## 16) Thuáº­t ngá»¯ Emulator & triá»ƒn khai
 
-| ThuÃ¡ÂºÂ­t ngÃ¡Â»Â¯ | ViÃ¡ÂºÂ¿t hoÃƒÂ¡ dÃ¡ÂºÂ¡ng trong repo | Ã„ÂÃ¡Â»â€¹nh nghÃ„Â©a ngÃ¡ÂºÂ¯n |
+| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
 |---|---|---|
-| Emulator (mÃƒÂ´ phÃ¡Â»Âng dÃ¡Â»â€¹ch vÃ¡Â»Â¥ chÃ¡ÂºÂ¡y local) | Emulator | BÃ¡Â»â„¢ giÃ¡ÂºÂ£ lÃ¡ÂºÂ­p dÃ¡Â»â€¹ch vÃ¡Â»Â¥ Firebase chÃ¡ÂºÂ¡y trÃƒÂªn mÃƒÂ¡y local Ã„â€˜Ã¡Â»Æ’ test nhanh. |
-| Blaze plan (gÃƒÂ³i trÃ¡ÂºÂ£ phÃƒÂ­ pay-as-you-go) | Blaze plan | GÃƒÂ³i trÃ¡ÂºÂ£ phÃƒÂ­ theo mÃ¡Â»Â©c dÃƒÂ¹ng, cÃ¡ÂºÂ§n Ã„â€˜Ã¡Â»Æ’ dÃƒÂ¹ng mÃ¡Â»â„¢t sÃ¡Â»â€˜ tÃƒÂ­nh nÃ„Æ’ng nÃƒÂ¢ng cao. |
-| Spark plan (gÃƒÂ³i miÃ¡Â»â€¦n phÃƒÂ­) | Spark plan | GÃƒÂ³i miÃ¡Â»â€¦n phÃƒÂ­ vÃ¡Â»â€ºi giÃ¡Â»â€ºi hÃ¡ÂºÂ¡n tÃƒÂ i nguyÃƒÂªn cÃ†Â¡ bÃ¡ÂºÂ£n. |
-| Rewrite (Ã„â€˜iÃ¡Â»Âu hÃ†Â°Ã¡Â»â€ºng route trÃƒÂªn hosting) | Rewrite | CÃ¡ÂºÂ¥u hÃƒÂ¬nh chuyÃ¡Â»Æ’n hÃ†Â°Ã¡Â»â€ºng route tÃ„Â©nh sang Functions/API. |
-| Smoke test (kiÃ¡Â»Æ’m thÃ¡Â»Â­ nhanh tuyÃ¡ÂºÂ¿n chÃƒÂ­nh) | Smoke test | KiÃ¡Â»Æ’m tra nhanh cÃƒÂ¡c luÃ¡Â»â€œng chÃƒÂ­nh Ã„â€˜Ã¡Â»Æ’ phÃƒÂ¡t hiÃ¡Â»â€¡n lÃ¡Â»â€”i lÃ¡Â»â€ºn. |
+| Emulator (mÃ´ phá»ng dá»‹ch vá»¥ cháº¡y local) | Emulator | Bá»™ giáº£ láº­p dá»‹ch vá»¥ Firebase cháº¡y trÃªn mÃ¡y local Ä‘á»ƒ test nhanh. |
+| Blaze plan (gÃ³i tráº£ phÃ­ pay-as-you-go) | Blaze plan | GÃ³i tráº£ phÃ­ theo má»©c dÃ¹ng, cáº§n Ä‘á»ƒ dÃ¹ng má»™t sá»‘ tÃ­nh nÄƒng nÃ¢ng cao. |
+| Spark plan (gÃ³i miá»…n phÃ­) | Spark plan | GÃ³i miá»…n phÃ­ vá»›i giá»›i háº¡n tÃ i nguyÃªn cÆ¡ báº£n. |
+| Rewrite (Ä‘iá»u hÆ°á»›ng route trÃªn hosting) | Rewrite | Cáº¥u hÃ¬nh chuyá»ƒn hÆ°á»›ng route tÄ©nh sang Functions/API. |
+| Smoke test (kiá»ƒm thá»­ nhanh tuyáº¿n chÃ­nh) | Smoke test | Kiá»ƒm tra nhanh cÃ¡c luá»“ng chÃ­nh Ä‘á»ƒ phÃ¡t hiá»‡n lá»—i lá»›n. |
 
 

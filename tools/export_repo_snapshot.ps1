@@ -1,9 +1,12 @@
-param(
+﻿param(
   [ValidateSet("snapshot", "bundle", "both")]
   [string]$Mode = "both"
 )
 
 $ErrorActionPreference = "Stop"
+$OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+try { chcp 65001 | Out-Null } catch {}
 
 function Get-RepoRoot {
   try {
@@ -147,6 +150,8 @@ if ($Mode -eq "bundle" -or $Mode -eq "both") {
 }
 
 Write-Host "Hoàn tất:"
-Write-Host " - repo_snapshot.zip"
-Write-Host " - repo.bundle"
-Write-Host " - repo_manifest.txt"
+$completed = @()
+if ($Mode -eq "snapshot" -or $Mode -eq "both") { $completed += "repo_snapshot.zip" }
+if ($Mode -eq "bundle" -or $Mode -eq "both") { $completed += "repo.bundle" }
+$completed += "repo_manifest.txt"
+$completed | ForEach-Object { Write-Host (" - {0}" -f $_) }
