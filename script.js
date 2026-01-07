@@ -2410,7 +2410,7 @@ if (btnPickScreen) {
   btnPickScreen.addEventListener("click", () => {
     startEyeDropper();
   });
-}
+} 
 
 if (fallbackColorPicker) {
   fallbackColorPicker.addEventListener("input", () => {

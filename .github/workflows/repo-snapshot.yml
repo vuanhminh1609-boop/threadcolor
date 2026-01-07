@@ -24,6 +24,16 @@ jobs:
           node-version: 20
       - run: node tools/repo_snapshot.mjs
       - run: node tools/repo_textdump.mjs
+      - name: Tạo snapshot zip + manifest
+        run: |
+          bash tools/export_repo_snapshot.sh --mode snapshot
+          mkdir -p artifacts
+          mv repo_snapshot.zip repo_manifest.txt artifacts/
+      - name: Kiểm tra artifacts
+        run: |
+          ls -la artifacts
+          test -f artifacts/repo_snapshot.zip
+          test -f artifacts/repo_manifest.txt
       - name: PR snapshot summary
         run: |
           node - <<'NODE'
@@ -56,14 +66,20 @@ jobs:
           NODE
       - uses: actions/upload-artifact@v4
         with:
-          name: repo-snapshot
+          name: repo-snapshot-index
           if-no-files-found: warn
           path: |
             DOC/REPO_SNAPSHOT.md
             DOC/REPO_SNAPSHOT_INDEX.json
             DOC/REPO_SNAPSHOT_FULL.md
             DOC/REPO_SNAPSHOT_FULL_INDEX.json
-            repo_manifest.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repo-snapshot-source
+          if-no-files-found: error
+          path: |
+            artifacts/repo_snapshot.zip
+            artifacts/repo_manifest.txt
 
   snapshot_main:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, 'docs(snapshot):') && !contains(github.event.head_commit.message, '[skip snapshot]')
@@ -75,14 +91,31 @@ jobs:
           node-version: 20
       - run: node tools/repo_snapshot.mjs
       - run: node tools/repo_textdump.mjs
+      - name: Tạo snapshot zip + manifest
+        run: |
+          bash tools/export_repo_snapshot.sh --mode snapshot
+          mkdir -p artifacts
+          mv repo_snapshot.zip repo_manifest.txt artifacts/
+      - name: Kiểm tra artifacts
+        run: |
+          ls -la artifacts
+          test -f artifacts/repo_snapshot.zip
+          test -f artifacts/repo_manifest.txt
       - name: Tải artifact snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: repo-snapshot
+          name: repo-snapshot-index
           if-no-files-found: warn
           path: |
             DOC/REPO_SNAPSHOT.md
             DOC/REPO_SNAPSHOT_INDEX.json
             DOC/REPO_SNAPSHOT_FULL.md
             DOC/REPO_SNAPSHOT_FULL_INDEX.json
-            repo_manifest.txt
+      - name: Tải artifact source
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-snapshot-source
+          if-no-files-found: error
+          path: |
+            artifacts/repo_snapshot.zip
+            artifacts/repo_manifest.txt
