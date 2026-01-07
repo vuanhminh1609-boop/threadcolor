@@ -2,7 +2,7 @@
   "generatedBy": "tools/repo_snapshot.mjs",
   "root": ".",
   "stats": {
-    "totalFiles": 110,
+    "totalFiles": 112,
     "totalDirs": 29,
     "extCounts": {
       ".png": 5,
@@ -16,9 +16,10 @@
       ".json": 21,
       ".mjs": 21,
       ".tch": 1,
-      ".txt": 2,
+      ".txt": 3,
       ".rules": 1,
       ".ts": 1,
+      ".zip": 1,
       ".bundle": 1,
       ".ps1": 1,
       ".sh": 1
@@ -470,6 +471,10 @@
       "type": "file"
     },
     {
+      "path": "repo_snapshot.zip",
+      "type": "file"
+    },
+    {
       "path": "repo.bundle",
       "type": "file"
     },
@@ -559,6 +564,10 @@
     },
     {
       "path": "tools/repo_snapshot.mjs",
+      "type": "file"
+    },
+    {
+      "path": "tools/tmp_utf8_test.txt",
       "type": "file"
     },
     {
