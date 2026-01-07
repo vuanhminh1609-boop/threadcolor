@@ -14,3 +14,9 @@ repo_snapshot.zip
 repo_manifest.txt
 repo.bundle
 artifacts/
+.env*
+serviceAccount*.json
+*.pem
+*.p12
+*.pfx
+*.key

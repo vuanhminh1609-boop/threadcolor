@@ -1,0 +1,6 @@
+﻿# Khai báo GitHub user/team phù hợp của repo.
+
+.github/workflows/** @vuanhminh1609-boop
+firestore.rules @vuanhminh1609-boop
+storage.rules @vuanhminh1609-boop
+tools/** @vuanhminh1609-boop

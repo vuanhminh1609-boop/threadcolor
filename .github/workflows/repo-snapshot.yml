@@ -24,6 +24,8 @@ jobs:
           node-version: 20
       - run: node tools/repo_snapshot.mjs
       - run: node tools/repo_textdump.mjs
+      - name: Quét bí mật trước khi xuất snapshot
+        uses: gitleaks/gitleaks-action@v2
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot
@@ -91,6 +93,8 @@ jobs:
           node-version: 20
       - run: node tools/repo_snapshot.mjs
       - run: node tools/repo_textdump.mjs
+      - name: Quét bí mật trước khi xuất snapshot
+        uses: gitleaks/gitleaks-action@v2
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot
