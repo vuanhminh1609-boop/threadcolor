@@ -4,23 +4,45 @@ Mục tiêu: tạo gói repo phục vụ phân tích mà **không lộ bí mật
 - Snapshot zip (không lịch sử Git): `repo_snapshot.zip`
 - Git bundle (có lịch sử): `repo.bundle`
 
+Snapshot ưu tiên đóng gói theo danh sách file tracked (`git ls-files`). Tùy chọn `IncludeDirty` cho phép kèm patch diff khi repo đang có thay đổi.
+
 ## Cách chạy
 
+### macOS / Linux (Bash)
+
 ```bash
-bash tools/export_repo_snapshot.sh
+bash tools/export_repo_snapshot.sh --mode both
 ```
 
-### PowerShell (Windows)
+Kèm patch diff nếu repo có thay đổi:
+
+```bash
+bash tools/export_repo_snapshot.sh --mode both --include-dirty
+```
+
+### Windows (PowerShell)
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 .\tools\export_repo_snapshot.ps1 -Mode both
 ```
 
+Kèm patch diff nếu repo có thay đổi:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\tools\export_repo_snapshot.ps1 -Mode both -IncludeDirty
+```
+
+## Kết quả sinh ra
+
 Sau khi chạy, thư mục root sẽ có:
 - `repo_snapshot.zip`
 - `repo.bundle`
 - `repo_manifest.txt`
+
+Nếu bật `IncludeDirty` và repo có thay đổi, sẽ có thêm:
+- `repo_dirty.patch`
 
 ## Lưu ý bảo mật (rất quan trọng)
 
@@ -46,13 +68,13 @@ Nếu repo dùng LFS:
 
 ## Rủi ro & cách xử lý
 
-- Nặng: vô tình đóng gói secret → **bắt buộc kiểm tra cảnh báo** trước khi gửi.
-- Vừa: thiếu file do submodule/LFS → kiểm tra và bổ sung hướng dẫn.
-- Nhẹ: thiếu dotfiles → zip mặc định đã bao gồm file ẩn, nhưng nên xác nhận bằng `repo_manifest.txt`.
+- Nặng: vô tình đóng gói secret -> **bắt buộc kiểm tra cảnh báo** trước khi gửi.
+- Vừa: thiếu file do submodule/LFS -> kiểm tra và bổ sung hướng dẫn.
+- Nhẹ: thiếu dotfiles -> snapshot chỉ gồm file tracked, nên kiểm tra bằng `repo_manifest.txt`.
 
 ## Checklist tự test (PASS/FAIL)
 
 - [ ] Tạo zip/bundle thành công
 - [ ] `repo_manifest.txt` được sinh ra
-- [ ] Không đóng gói `node_modules`
+- [ ] Snapshot chỉ gồm file tracked theo `git ls-files`
 - [ ] Cảnh báo secret hoạt động nếu có file nhạy cảm

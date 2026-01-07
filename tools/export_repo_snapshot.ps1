@@ -1,6 +1,7 @@
 ﻿param(
   [ValidateSet("snapshot", "bundle", "both")]
-  [string]$Mode = "both"
+  [string]$Mode = "both",
+  [switch]$IncludeDirty
 )
 
 $ErrorActionPreference = "Stop"
@@ -66,6 +67,14 @@ function Find-SensitiveFiles([string]$root) {
   return ($results | Sort-Object -Unique)
 }
 
+function Get-DirtyPatchContent {
+  try {
+    return (git diff HEAD)
+  } catch {
+    return ""
+  }
+}
+
 function Write-Manifest([string]$root) {
   $manifest = Join-Path $root "repo_manifest.txt"
   $lines = New-Object System.Collections.Generic.List[string]
@@ -94,9 +103,10 @@ function Write-Manifest([string]$root) {
     }
   }
   Set-Content -Path $manifest -Value $lines -Encoding UTF8
+  return $manifest
 }
 
-function New-SnapshotZip([string]$root) {
+function New-SnapshotZip([string]$root, [string[]]$extraFiles) {
   $zipPath = Join-Path $root "repo_snapshot.zip"
   if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 
@@ -104,11 +114,33 @@ function New-SnapshotZip([string]$root) {
   Add-Type -AssemblyName System.IO.Compression.FileSystem
   $zip = [System.IO.Compression.ZipFile]::Open($zipPath, [System.IO.Compression.ZipArchiveMode]::Create)
   try {
-    Get-ChildItem -Force -Recurse -File -Path $root | ForEach-Object {
-      $rel = Get-RelativePath $root $_.FullName
-      if (Test-ExcludedPath $rel) { return }
-      if ($rel -eq "repo_snapshot.zip" -or $rel -eq "repo.bundle") { return }
-      [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, $rel) | Out-Null
+    $added = New-Object "System.Collections.Generic.HashSet[string]"
+    $trackedFiles = git ls-files
+    foreach ($file in $trackedFiles) {
+      if ([string]::IsNullOrWhiteSpace($file)) { continue }
+      if ($file -eq "repo_snapshot.zip" -or $file -eq "repo.bundle" -or $file -eq "repo_manifest.txt" -or $file -eq "repo_dirty.patch") { continue }
+      try {
+        $fullPath = Join-Path $root $file
+      } catch {
+        continue
+      }
+      try {
+        if (-not (Test-Path $fullPath)) { continue }
+      } catch {
+        continue
+      }
+      $rel = Get-RelativePath $root $fullPath
+      if ($added.Contains($rel)) { continue }
+      [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $fullPath, $rel) | Out-Null
+      $added.Add($rel) | Out-Null
+    }
+    foreach ($extra in $extraFiles) {
+      if (-not $extra) { continue }
+      if (-not (Test-Path $extra)) { continue }
+      $rel = Get-RelativePath $root $extra
+      if ($added.Contains($rel)) { continue }
+      [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $extra, $rel) | Out-Null
+      $added.Add($rel) | Out-Null
     }
   } finally {
     $zip.Dispose()
@@ -137,11 +169,22 @@ if ($sensitive.Count -gt 0) {
   exit 2
 }
 
-Write-Manifest $root
+$manifestPath = Write-Manifest $root
+$dirtyPatchPath = Join-Path $root "repo_dirty.patch"
+$dirtyPatchCreated = $false
+if ($IncludeDirty) {
+  $dirtyPatch = Get-DirtyPatchContent
+  if (-not [string]::IsNullOrWhiteSpace($dirtyPatch)) {
+    Set-Content -Path $dirtyPatchPath -Value $dirtyPatch -Encoding UTF8
+    $dirtyPatchCreated = $true
+  }
+}
 
 if ($Mode -eq "snapshot" -or $Mode -eq "both") {
   Write-Host "Tạo snapshot zip..."
-  New-SnapshotZip $root
+  $extraFiles = @($manifestPath)
+  if ($dirtyPatchCreated) { $extraFiles += $dirtyPatchPath }
+  New-SnapshotZip $root $extraFiles
 }
 
 if ($Mode -eq "bundle" -or $Mode -eq "both") {
@@ -154,4 +197,5 @@ $completed = @()
 if ($Mode -eq "snapshot" -or $Mode -eq "both") { $completed += "repo_snapshot.zip" }
 if ($Mode -eq "bundle" -or $Mode -eq "both") { $completed += "repo.bundle" }
 $completed += "repo_manifest.txt"
+if ($dirtyPatchCreated) { $completed += "repo_dirty.patch" }
 $completed | ForEach-Object { Write-Host (" - {0}" -f $_) }

@@ -1,0 +1,538 @@
+{
+  "generatedBy": "tools/repo_textdump.mjs",
+  "root": ".",
+  "generatedAt": "2026-01-07T09:38:28.984Z",
+  "rules": {
+    "maxBytes": 307200,
+    "ignoredDirs": [
+      ".git",
+      "node_modules",
+      "functions/node_modules",
+      "functions/lib",
+      ".firebase",
+      "reports",
+      "artifacts"
+    ],
+    "skippedReasons": {
+      "file_output": "Bo qua file output cua dump",
+      "vuot_300kb": "Vuot 300KB",
+      "nhi_phan": "File nhi phan",
+      "read_error": "Loi doc file"
+    }
+  },
+  "stats": {
+    "scannedFiles": 121,
+    "includedFiles": 112,
+    "skippedFiles": 9,
+    "skippedReasons": {
+      "nhi_phan": 5,
+      "vuot_300kb": 4
+    }
+  },
+  "ignored": {
+    "dirs": [
+      ".firebase",
+      ".git",
+      "functions/node_modules",
+      "node_modules",
+      "reports"
+    ]
+  },
+  "included": [
+    {
+      "path": "_graveyard/style.css",
+      "sizeBytes": 1677
+    },
+    {
+      "path": "_graveyard/themes.css",
+      "sizeBytes": 6301
+    },
+    {
+      "path": ".editorconfig",
+      "sizeBytes": 78
+    },
+    {
+      "path": ".firebaserc",
+      "sizeBytes": 74
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "sizeBytes": 61
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "sizeBytes": 1197
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "sizeBytes": 740
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "sizeBytes": 326
+    },
+    {
+      "path": ".github/workflows/ceo-repo-health.yml",
+      "sizeBytes": 1958
+    },
+    {
+      "path": ".github/workflows/data-contract.yml",
+      "sizeBytes": 522
+    },
+    {
+      "path": ".github/workflows/ops-quarantine.yml",
+      "sizeBytes": 599
+    },
+    {
+      "path": ".github/workflows/repo-snapshot.yml",
+      "sizeBytes": 3085
+    },
+    {
+      "path": ".gitignore",
+      "sizeBytes": 229
+    },
+    {
+      "path": "account.html",
+      "sizeBytes": 67975
+    },
+    {
+      "path": "account.js",
+      "sizeBytes": 34628
+    },
+    {
+      "path": "admin.html",
+      "sizeBytes": 30576
+    },
+    {
+      "path": "assets/spacecolors-mark.svg",
+      "sizeBytes": 4077
+    },
+    {
+      "path": "auth.js",
+      "sizeBytes": 29321
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sizeBytes": 565
+    },
+    {
+      "path": "crowd.js",
+      "sizeBytes": 5028
+    },
+    {
+      "path": "data/audit/.gitkeep",
+      "sizeBytes": 0
+    },
+    {
+      "path": "data/contract.manifest.json",
+      "sizeBytes": 2774
+    },
+    {
+      "path": "data/migrations/palettes/0.1.0__to__1.0.0.mjs",
+      "sizeBytes": 128
+    },
+    {
+      "path": "data/migrations/threads/0.1.0__to__1.0.0.mjs",
+      "sizeBytes": 128
+    },
+    {
+      "path": "data/migrations/threads_generated/0.1.0__to__1.0.0.mjs",
+      "sizeBytes": 128
+    },
+    {
+      "path": "data/migrations/vault/0.1.0__to__1.0.0.mjs",
+      "sizeBytes": 128
+    },
+    {
+      "path": "data/palettes.json",
+      "sizeBytes": 4
+    },
+    {
+      "path": "data/raw_tch/Ackerman Isacord 30.tch",
+      "sizeBytes": 1106
+    },
+    {
+      "path": "data/README.md",
+      "sizeBytes": 1613
+    },
+    {
+      "path": "data/schemas/palettes/0.1.0.json",
+      "sizeBytes": 188
+    },
+    {
+      "path": "data/schemas/palettes.schema.json",
+      "sizeBytes": 188
+    },
+    {
+      "path": "data/schemas/threads/0.1.0.json",
+      "sizeBytes": 2782
+    },
+    {
+      "path": "data/schemas/threads.schema.json",
+      "sizeBytes": 2782
+    },
+    {
+      "path": "data/schemas/vault/0.1.0.json",
+      "sizeBytes": 185
+    },
+    {
+      "path": "data/schemas/vault.schema.json",
+      "sizeBytes": 185
+    },
+    {
+      "path": "data/scripts/audit.mjs",
+      "sizeBytes": 679
+    },
+    {
+      "path": "data/scripts/migrate_contract.mjs",
+      "sizeBytes": 5734
+    },
+    {
+      "path": "data/scripts/validate_contract.mjs",
+      "sizeBytes": 4186
+    },
+    {
+      "path": "data/threads.generated.json",
+      "sizeBytes": 8155
+    },
+    {
+      "path": "data/vault.json",
+      "sizeBytes": 4
+    },
+    {
+      "path": "data_normalize.js",
+      "sizeBytes": 5378
+    },
+    {
+      "path": "dependency-audit.json",
+      "sizeBytes": 16637
+    },
+    {
+      "path": "dependency-audit.md",
+      "sizeBytes": 1162
+    },
+    {
+      "path": "DOC/00_TOAN_CANH.md",
+      "sizeBytes": 2074
+    },
+    {
+      "path": "DOC/01_NOW.md",
+      "sizeBytes": 293
+    },
+    {
+      "path": "DOC/01_WORKFLOW.md",
+      "sizeBytes": 1038
+    },
+    {
+      "path": "DOC/02_QUAN_TRI_GITHUB.md",
+      "sizeBytes": 566
+    },
+    {
+      "path": "DOC/03_RUNTIME_CONTRACT.md",
+      "sizeBytes": 679
+    },
+    {
+      "path": "DOC/04_CƠ_CẤU_VẬN_HÀNH.md",
+      "sizeBytes": 4275
+    },
+    {
+      "path": "DOC/05_NHỊP_ĐIỀU_HÀNH.md",
+      "sizeBytes": 1535
+    },
+    {
+      "path": "DOC/06_TIÊU_CHUẨN_CHẤT_LƯỢNG.md",
+      "sizeBytes": 1704
+    },
+    {
+      "path": "DOC/ACTIONS.md",
+      "sizeBytes": 614
+    },
+    {
+      "path": "DOC/audit/quarantine-candidates.json",
+      "sizeBytes": 127
+    },
+    {
+      "path": "DOC/audit/quarantine-candidates.md",
+      "sizeBytes": 142
+    },
+    {
+      "path": "DOC/CEO_COCKPIT.md",
+      "sizeBytes": 1439
+    },
+    {
+      "path": "DOC/DECISIONS.md",
+      "sizeBytes": 184
+    },
+    {
+      "path": "DOC/DEV_EMULATORS.md",
+      "sizeBytes": 1337
+    },
+    {
+      "path": "DOC/DOC_GLOSSARY_8PORTALS.md",
+      "sizeBytes": 26827
+    },
+    {
+      "path": "DOC/EVENT_MAP.md",
+      "sizeBytes": 1282
+    },
+    {
+      "path": "DOC/health/daily/2025-12-31.json",
+      "sizeBytes": 217
+    },
+    {
+      "path": "DOC/health/daily/2026-01-01.json",
+      "sizeBytes": 232
+    },
+    {
+      "path": "DOC/health/daily/2026-01-02.json",
+      "sizeBytes": 232
+    },
+    {
+      "path": "DOC/health/daily/2026-01-04.json",
+      "sizeBytes": 434
+    },
+    {
+      "path": "DOC/health/health-trend.json",
+      "sizeBytes": 355
+    },
+    {
+      "path": "DOC/NORTH_STAR.md",
+      "sizeBytes": 1886
+    },
+    {
+      "path": "DOC/REPO_SNAPSHOT_INDEX.json",
+      "sizeBytes": 11334
+    },
+    {
+      "path": "DOC/REPO_SNAPSHOT.md",
+      "sizeBytes": 3464
+    },
+    {
+      "path": "DOC/RISKS.md",
+      "sizeBytes": 344
+    },
+    {
+      "path": "emulator_status.txt",
+      "sizeBytes": 8
+    },
+    {
+      "path": "emulator.err.log",
+      "sizeBytes": 0
+    },
+    {
+      "path": "emulator.out.log",
+      "sizeBytes": 181
+    },
+    {
+      "path": "firebase.json",
+      "sizeBytes": 1694
+    },
+    {
+      "path": "firestore-debug.log",
+      "sizeBytes": 632
+    },
+    {
+      "path": "firestore.rules",
+      "sizeBytes": 1971
+    },
+    {
+      "path": "functions/lib/index.js",
+      "sizeBytes": 16027
+    },
+    {
+      "path": "functions/package-lock.json",
+      "sizeBytes": 169316
+    },
+    {
+      "path": "functions/package.json",
+      "sizeBytes": 886
+    },
+    {
+      "path": "functions/README.md",
+      "sizeBytes": 548
+    },
+    {
+      "path": "functions/src/index.ts",
+      "sizeBytes": 13083
+    },
+    {
+      "path": "functions/tsconfig.json",
+      "sizeBytes": 266
+    },
+    {
+      "path": "i18n.js",
+      "sizeBytes": 17838
+    },
+    {
+      "path": "index.html",
+      "sizeBytes": 56293
+    },
+    {
+      "path": "library.js",
+      "sizeBytes": 3612
+    },
+    {
+      "path": "package-lock.json",
+      "sizeBytes": 2687
+    },
+    {
+      "path": "package.json",
+      "sizeBytes": 271
+    },
+    {
+      "path": "README.md",
+      "sizeBytes": 931
+    },
+    {
+      "path": "script.js",
+      "sizeBytes": 85332
+    },
+    {
+      "path": "scripts/check-encoding.mjs",
+      "sizeBytes": 2031
+    },
+    {
+      "path": "scripts/fix-mojibake.mjs",
+      "sizeBytes": 3178
+    },
+    {
+      "path": "SECURITY.md",
+      "sizeBytes": 398
+    },
+    {
+      "path": "stock.js",
+      "sizeBytes": 12546
+    },
+    {
+      "path": "tools/bootstrap_admin.mjs",
+      "sizeBytes": 1090
+    },
+    {
+      "path": "tools/dependency_audit.mjs",
+      "sizeBytes": 13532
+    },
+    {
+      "path": "tools/export_repo_snapshot.ps1",
+      "sizeBytes": 5221
+    },
+    {
+      "path": "tools/export_repo_snapshot.sh",
+      "sizeBytes": 2647
+    },
+    {
+      "path": "tools/health_history.mjs",
+      "sizeBytes": 3112
+    },
+    {
+      "path": "tools/import_tch.mjs",
+      "sizeBytes": 3423
+    },
+    {
+      "path": "tools/normalize_threads.mjs",
+      "sizeBytes": 711
+    },
+    {
+      "path": "tools/ops_automation.mjs",
+      "sizeBytes": 4648
+    },
+    {
+      "path": "tools/ops_bot.mjs",
+      "sizeBytes": 10060
+    },
+    {
+      "path": "tools/quarantine_candidates.mjs",
+      "sizeBytes": 4068
+    },
+    {
+      "path": "tools/quarantine_pr.mjs",
+      "sizeBytes": 4810
+    },
+    {
+      "path": "tools/README_EXPORT_REPO.md",
+      "sizeBytes": 2231
+    },
+    {
+      "path": "tools/repo_doctor.mjs",
+      "sizeBytes": 13353
+    },
+    {
+      "path": "tools/repo_snapshot.mjs",
+      "sizeBytes": 4416
+    },
+    {
+      "path": "tools/repo_textdump.mjs",
+      "sizeBytes": 4285
+    },
+    {
+      "path": "tools/tmp_utf8_test.txt",
+      "sizeBytes": 14
+    },
+    {
+      "path": "tools/validate_threads.mjs",
+      "sizeBytes": 4948
+    },
+    {
+      "path": "workers/thread_search.worker.js",
+      "sizeBytes": 7323
+    },
+    {
+      "path": "worlds/palette.html",
+      "sizeBytes": 16586
+    },
+    {
+      "path": "worlds/threadcolor.html",
+      "sizeBytes": 48817
+    },
+    {
+      "path": "worlds/threadvault.html",
+      "sizeBytes": 29862
+    }
+  ],
+  "skipped": [
+    {
+      "path": "_graveyard/assets/spacecolors-mark-512.png",
+      "sizeBytes": 178218,
+      "reason": "nhi_phan"
+    },
+    {
+      "path": "_graveyard/assets/spacecolors-mark-64.png",
+      "sizeBytes": 4487,
+      "reason": "nhi_phan"
+    },
+    {
+      "path": "assets/spacecolors-mark-128.png",
+      "sizeBytes": 9493,
+      "reason": "nhi_phan"
+    },
+    {
+      "path": "assets/spacecolors-mark-256.png",
+      "sizeBytes": 23702,
+      "reason": "nhi_phan"
+    },
+    {
+      "path": "assets/spacecolors-mark-512.png",
+      "sizeBytes": 59844,
+      "reason": "nhi_phan"
+    },
+    {
+      "path": "repo_manifest.txt",
+      "sizeBytes": 347319,
+      "reason": "vuot_300kb"
+    },
+    {
+      "path": "repo_snapshot.zip",
+      "sizeBytes": 573903,
+      "reason": "vuot_300kb"
+    },
+    {
+      "path": "repo.bundle",
+      "sizeBytes": 2927851,
+      "reason": "vuot_300kb"
+    },
+    {
+      "path": "threads.json",
+      "sizeBytes": 486593,
+      "reason": "vuot_300kb"
+    }
+  ]
+}

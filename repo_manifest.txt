@@ -1,6 +1,6 @@
 ﻿==== REPO MANIFEST ====
-Thời điểm: 2026-01-07T07:37:09Z
-Commit: 74a822e6c9992f1e9630da08b4ae335160941cfe
+Thời điểm: 2026-01-07T11:12:01Z
+Commit: c0662aa43d10a0b25b4e48f9630cdd8aaf3d8fce
 
 === Branches ===
 * main
@@ -12,8 +12,17 @@ Commit: 74a822e6c9992f1e9630da08b4ae335160941cfe
 origin	https://github.com/vuanhminh1609-boop/threadcolor.git (fetch) origin	https://github.com/vuanhminh1609-boop/threadcolor.git (push)
 
 === Status ===
+ M .github/workflows/repo-snapshot.yml
+ M .gitignore
  M DOC/DOC_GLOSSARY_8PORTALS.md
+ M repo_manifest.txt
+ M repo_snapshot.zip
+ M tools/README_EXPORT_REPO.md
  M tools/export_repo_snapshot.ps1
+ M tools/export_repo_snapshot.sh
+?? DOC/REPO_SNAPSHOT_FULL.md
+?? DOC/REPO_SNAPSHOT_FULL_INDEX.json
+?? tools/repo_textdump.mjs
 
 === Tracked files ===
 .editorconfig
@@ -254,6 +263,8 @@ D:.
 |   |   EVENT_MAP.md
 |   |   NORTH_STAR.md
 |   |   REPO_SNAPSHOT.md
+|   |   REPO_SNAPSHOT_FULL.md
+|   |   REPO_SNAPSHOT_FULL_INDEX.json
 |   |   REPO_SNAPSHOT_INDEX.json
 |   |   RISKS.md
 |   |   
@@ -8915,6 +8926,7 @@ D:.
 |       README_EXPORT_REPO.md
 |       repo_doctor.mjs
 |       repo_snapshot.mjs
+|       repo_textdump.mjs
 |       tmp_utf8_test.txt
 |       validate_threads.mjs
 |       

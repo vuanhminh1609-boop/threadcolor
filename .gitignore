@@ -10,3 +10,7 @@ functions/.firebase/
 firebase-debug.log
 *.log
 data/audit/*.jsonl
+repo_snapshot.zip
+repo_manifest.txt
+repo.bundle
+artifacts/

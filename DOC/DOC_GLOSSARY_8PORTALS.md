@@ -124,13 +124,14 @@
 | Repo | Kho mÃ£ | NÆ¡i chá»©a toÃ n bá»™ mÃ£ nguá»“n, dá»¯ liá»‡u, tÃ i liá»‡u. |
 | Commit | Báº£n ghi thay Ä‘á»•i | Má»‘c thay Ä‘á»•i cÃ³ mÃ´ táº£ rÃµ rÃ ng. |
 | Branch | NhÃ¡nh | NhÃ¡nh lÃ m viá»‡c tÃ¡ch khá»i chÃ­nh. |
+| Nh&#225;nh snapshot (snapshot branch) | Nh&#225;nh snapshot (snapshot branch) | Nh&#225;nh chuy&#234;n d&#249;ng cho m&#7909;c &#273;&#237;ch t&#7841;o/gi&#7919; b&#7843;n ch&#7909;p kho m&#227;, kh&#244;ng l&#224;m &#7843;nh h&#432;&#7903;ng nh&#225;nh ch&#237;nh. |
 | Pull request (PR) | YÃªu cáº§u há»£p nháº¥t | Gá»­i thay Ä‘á»•i Ä‘á»ƒ review vÃ  há»£p nháº¥t vÃ o nhÃ¡nh chÃ­nh. |
 | Merge | Há»£p nháº¥t | Gá»™p thay Ä‘á»•i vÃ o nhÃ¡nh chÃ­nh. |
 | CI | Tá»± Ä‘á»™ng kiá»ƒm tra | Há»‡ thá»‘ng cháº¡y kiá»ƒm tra khi PR/push/schedule. |
 | Workflow | Quy trÃ¬nh tá»± Ä‘á»™ng | Táº­p lá»‡nh CI (vÃ­ dá»¥: GitHub Actions). |
 | workflow_dispatch | KÃ­ch hoáº¡t thá»§ cÃ´ng | Cháº¡y workflow báº±ng tay tá»« giao diá»‡n. |
 | schedule | Lá»‹ch cháº¡y | Workflow cháº¡y theo cron (háº±ng ngÃ y). |
-| Artifact | GÃ³i Ä‘Ã­nh kÃ¨m CI | File bÃ¡o cÃ¡o lÆ°u trong CI Ä‘á»ƒ táº£i vá» (khÃ´ng nháº¥t thiáº¿t commit). |
+| Artifact | G&#243;i &#273;&#237;nh k&#232;m CI | File b&#225;o c&#225;o l&#432;u trong CI &#273;&#7875; t&#7843;i v&#7873; (kh&#244;ng nh&#7845;t thi&#7871;t commit). |
 
 ---
 
@@ -229,6 +230,9 @@
 | Git archive | Git archive | GÃ³i snapshot khÃ´ng lá»‹ch sá»­ (zip/tar) Ä‘á»ƒ chia sáº» mÃ£ nguá»“n hiá»‡n táº¡i. |
 | Submodule | Submodule | Repo con gáº¯n vÃ o repo cha; cáº§n táº£i riÃªng khi chia sáº». |
 | Git LFS | Git LFS | CÆ¡ cháº¿ lÆ°u file lá»›n ngoÃ i Git; cáº§n pull riÃªng Ä‘á»ƒ Ä‘á»§ dá»¯ liá»‡u. |
+| Include dirty | K&#232;m thay &#273;&#7893;i ch&#432;a commit (include dirty) | T&#249;y ch&#7885;n k&#232;m patch diff c&#7911;a c&#225;c thay &#273;&#7893;i ch&#432;a commit &#273;&#7875; chia s&#7867; nhanh tr&#7841;ng th&#225;i hi&#7879;n t&#7841;i. |
+| Full dump | B&#7843;n &#273;&#7893; &#273;&#7847;y &#273;&#7911; (full dump) | B&#7843;n ghi to&#224;n b&#7897; n&#7897;i dung text c&#7911;a repo &#273;&#7875; tra c&#7913;u/&#273;&#7889;i chi&#7871;u. |
+| Index dump | B&#7843;n &#273;&#7893; ch&#7881; m&#7909;c (index dump) | B&#7843;n t&#243;m t&#7855;t li&#7879;t k&#234; file &#273;&#227; dump/&#273;&#227; b&#7887; qua k&#232;m l&#253; do v&#224; th&#7889;ng k&#234;. |
 ---
 
 ## 14) Thuáº­t ngá»¯ PowerShell
