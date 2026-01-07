@@ -1,6 +1,6 @@
 ﻿==== REPO MANIFEST ====
-Thời điểm: 2026-01-07T07:15:11Z
-Commit: 861fe2fab73491499fabb4aef26b5052130e717a
+Thời điểm: 2026-01-07T07:37:09Z
+Commit: 74a822e6c9992f1e9630da08b4ae335160941cfe
 
 === Branches ===
 * main
@@ -13,10 +13,7 @@ origin	https://github.com/vuanhminh1609-boop/threadcolor.git (fetch) origin	http
 
 === Status ===
  M DOC/DOC_GLOSSARY_8PORTALS.md
- M repo_manifest.txt
  M tools/export_repo_snapshot.ps1
-?? repo_snapshot.zip
-?? tools/tmp_utf8_test.txt
 
 === Tracked files ===
 .editorconfig
@@ -109,6 +106,7 @@ package-lock.json
 package.json
 repo.bundle
 repo_manifest.txt
+repo_snapshot.zip
 script.js
 scripts/check-encoding.mjs
 scripts/fix-mojibake.mjs
@@ -128,6 +126,7 @@ tools/quarantine_candidates.mjs
 tools/quarantine_pr.mjs
 tools/repo_doctor.mjs
 tools/repo_snapshot.mjs
+tools/tmp_utf8_test.txt
 tools/validate_threads.mjs
 workers/thread_search.worker.js
 worlds/palette.html

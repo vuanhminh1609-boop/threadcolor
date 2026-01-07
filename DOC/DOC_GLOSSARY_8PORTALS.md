@@ -237,6 +237,7 @@
 |---|---|---|
 | ExecutionPolicy | ExecutionPolicy | ChÃ­nh sÃ¡ch cho phÃ©p cháº¡y script PowerShell trong phiÃªn hiá»‡n táº¡i. |
 | Scope Process | Scope Process | Pháº¡m vi Ã¡p dá»¥ng cá»§a ExecutionPolicy chá»‰ trong phiÃªn PowerShell Ä‘ang cháº¡y. |
+| &#272;&#7897;ng t&#7915; &#273;&#432;&#7907;c ph&#234; duy&#7879;t (approved verbs) | &#272;&#7897;ng t&#7915; &#273;&#432;&#7907;c ph&#234; duy&#7879;t (approved verbs) | Danh s&#225;ch &#273;&#7897;ng t&#7915; PowerShell chu&#7849;n d&#249;ng &#273;&#7875; &#273;&#7863;t t&#234;n cmdlet/function, gi&#250;p nh&#7845;t qu&#225;n v&#224; qua PSScriptAnalyzer. |
 ---
 
 ## 15) Thuáº­t ngá»¯ Ä‘o lÆ°á»ng & sá»± kiá»‡n

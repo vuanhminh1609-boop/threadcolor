@@ -16,7 +16,7 @@ function Get-RepoRoot {
   }
 }
 
-function Redact-Remote([string]$text) {
+function ConvertTo-RedactedText([string]$text) {
   if (-not $text) { return $text }
   return ($text -replace '(https?://)[^/@]+@', '$1***@')
 }
@@ -77,7 +77,7 @@ function Write-Manifest([string]$root) {
   try { $lines.AddRange((git branch -a) -split "`n") } catch { $lines.Add("Không lấy được branch.") }
   $lines.Add("")
   $lines.Add("=== Remotes ===")
-  try { $lines.AddRange((Redact-Remote (git remote -v)) -split "`n") } catch { $lines.Add("Không lấy được remote.") }
+  try { $lines.AddRange((ConvertTo-RedactedText (git remote -v)) -split "`n") } catch { $lines.Add("Không lấy được remote.") }
   $lines.Add("")
   $lines.Add("=== Status ===")
   try { $lines.AddRange((git status --porcelain) -split "`n") } catch { $lines.Add("Không lấy được status.") }
