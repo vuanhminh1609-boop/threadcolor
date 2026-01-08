@@ -75,7 +75,8 @@ function classifySpecifier(ref) {
   if (!ref) return "unknown";
   if (ref.startsWith("node:")) return "builtin";
   if (BUILTIN_MODULES.has(ref)) return "builtin";
-  if (ref.startsWith("/admin/") || ref.startsWith("/api/")) return "external";
+  if (ref.startsWith("/admin") || ref.startsWith("/api")) return "external";
+  if (ref.startsWith("/") && !path.extname(ref)) return "external";
   if (ref.startsWith("./") || ref.startsWith("../") || ref.startsWith("/")) return "internal";
   return "external";
 }
@@ -403,6 +404,13 @@ md.push("");
 fs.writeFileSync(path.join(REPORT_DIR, "repo_health.md"), md.join("\n"), "utf8");
 
 if (counts.block > 0) {
+  console.error("Top 10 l\u1ed7i BLOCK:");
+  blockIssues.slice(0, 10).forEach((issue, index) => {
+    const location = issue.from || issue.path || "-";
+    const ref = issue.ref ? ` | ref=${issue.ref}` : "";
+    const detail = issue.detail ? ` | ${issue.detail}` : "";
+    console.error(`${index + 1}. ${issue.title} (${location}${ref}${detail})`);
+  });
   console.error("BLOCK: Repo Doctor ph\u00e1t hi\u1ec7n l\u1ed7i c\u1ea7n x\u1eed l\u00fd.");
   process.exit(1);
 }

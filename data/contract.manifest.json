@@ -1,13 +1,13 @@
 {
   "phienBanManifest": "1.0.0",
-  "capNhatLuc": "2026-01-08T04:20:14.742Z",
+  "capNhatLuc": "2026-01-08T12:47:13.0784850Z",
   "datasets": {
     "threads": {
       "duongDan": "threads.json",
       "schema": "data/schemas/threads/0.1.0.json",
       "phienBanSchema": "0.1.0",
       "phienBanDuLieu": "0.1.0",
-      "checksumSha256": "30fc4f3c52bcba5f08d46c85304515203f051928d6f036a4156d782f3987fc71",
+      "checksumSha256": "91bc02e8a5a7f66d9ce2bfb1b9529f89bd9e7a4f005abb0ddf0a24f383ec0a84",
       "tinhTrang": "dang-dung",
       "ghiChu": "Du lieu chi may dang su dung cho tra cuu."
     },
@@ -25,7 +25,7 @@
       "schema": "data/schemas/palettes/0.1.0.json",
       "phienBanSchema": "0.1.0",
       "phienBanDuLieu": "0.1.0",
-      "checksumSha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "checksumSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
       "tinhTrang": "khoi-tao",
       "ghiChu": "Khoi tao rong cho hop dong palettes."
     },
@@ -34,7 +34,7 @@
       "schema": "data/schemas/vault/0.1.0.json",
       "phienBanSchema": "0.1.0",
       "phienBanDuLieu": "0.1.0",
-      "checksumSha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "checksumSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
       "tinhTrang": "khoi-tao",
       "ghiChu": "Khoi tao rong cho hop dong vault."
     }
