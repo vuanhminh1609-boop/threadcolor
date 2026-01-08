@@ -37,6 +37,7 @@ import {
 
 // TODO: Điền cấu hình Firebase của bạn tại đây
 const firebaseConfig = {
+  // gitleaks:allow (Khoá client; đã giới hạn Websites + API restrictions)
   apiKey: "AIzaSyCftjgq7XUpTCbEG9fMRI_RNlzFc7rqz7g",
   authDomain: "thread-colors-for-community.firebaseapp.com",
   projectId: "thread-colors-for-community",
