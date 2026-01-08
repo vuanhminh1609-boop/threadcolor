@@ -59,6 +59,7 @@
 | Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema (thu vien Node.js de kiem tra JSON Schema). |
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main (cong chan trong CI de ngan loi vao main). |
 | Qu&#233;t b&#237; m&#7853;t (secret scan) | Qu&#233;t b&#237; m&#7853;t (secret scan) | Qu&#233;t t&#236;m kho&#225;/b&#237; m&#7853;t trong code v&#224; l&#7883;ch s&#7917; &#273;&#7875; ng&#259;n r&#242; r&#7881;. |
+| gitleaks:allow (ch&#250; th&#237;ch &#273;&#7875; Gitleaks b&#7887; qua m&#7897;t ph&#225;t hi&#7879;n c&#7909; th&#7875; &#7903; &#273;&#250;ng d&#242;ng code) | gitleaks:allow | Comment g&#7855;n &#7903; &#273;&#250;ng d&#242;ng nh&#7857;m b&#7887; qua m&#7897;t ph&#225;t hi&#7879;n c&#7909; th&#7875;, kh&#244;ng &#7843;nh h&#432;&#7903;ng ph&#7841;m vi kh&#225;c. |
 | Si&#7871;t CI (harden CI) | Si&#7871;t CI (harden CI) | Si&#7871;t quy tr&#236;nh CI/CD &#273;&#7875; gi&#7843;m r&#7911;i ro (th&#234;m ki&#7875;m tra, ch&#7881;nh ph&#226;n quy&#7873;n). |
 | additionalProperties | additionalProperties | Tuy chon cua JSON Schema cho phep field phat sinh (tuy chon cua JSON Schema cho phep field phat sinh). |
 | authResolved | authResolved | Trang thai da xac dinh dang nhap hay chua (trang thai da xac dinh dang nhap hay chua). |
