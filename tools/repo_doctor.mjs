@@ -1,7 +1,8 @@
-import fs from "fs";
+﻿import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { spawnSync } from "child_process";
+import os from "os";
 
 const __filename = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(__filename), "..");
@@ -254,10 +255,38 @@ const infoIssues = [];
 for (const relPath of RUNTIME_JS) {
   const abs = path.join(ROOT, relPath);
   if (!fs.existsSync(abs)) continue;
-  const result = spawnSync("node", ["--check", abs], { encoding: "utf8" });
+  let result;
+  let tmpFile = null;
+  let tmpDir = null;
+  try {
+    const content = fs.readFileSync(abs, "utf8");
+    const isEsm = /^\s*import\s|^\s*export\s/m.test(content);
+    if (path.extname(abs) === ".js" && isEsm) {
+      tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "repo-doctor-"));
+      tmpFile = path.join(tmpDir, `${path.basename(abs, ".js")}.mjs`);
+      fs.writeFileSync(tmpFile, content, "utf8");
+      result = spawnSync("node", ["--check", tmpFile], { encoding: "utf8" });
+    } else {
+      result = spawnSync("node", ["--check", abs], { encoding: "utf8" });
+    }
+  } catch (err) {
+    blockIssues.push({
+      title: "Lỗi cú pháp JavaScript",
+      detail: err?.message || String(err),
+      from: relPath
+    });
+    continue;
+  } finally {
+    if (tmpFile && fs.existsSync(tmpFile)) {
+      try { fs.unlinkSync(tmpFile); } catch {}
+    }
+    if (tmpDir && fs.existsSync(tmpDir)) {
+      try { fs.rmdirSync(tmpDir); } catch {}
+    }
+  }
   if (result.status !== 0) {
     blockIssues.push({
-      title: "L\u1ed7i c\u00fa ph\u00e1p JavaScript",
+      title: "Lỗi cú pháp JavaScript",
       detail: result.stderr.trim() || result.stdout.trim(),
       from: relPath
     });
@@ -414,3 +443,8 @@ if (counts.block > 0) {
   console.error("BLOCK: Repo Doctor ph\u00e1t hi\u1ec7n l\u1ed7i c\u1ea7n x\u1eed l\u00fd.");
   process.exit(1);
 }
+
+
+
+
+

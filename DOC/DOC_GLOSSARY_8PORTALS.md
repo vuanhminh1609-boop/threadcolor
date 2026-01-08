@@ -147,6 +147,8 @@
 | Auth | XÃ¡c thá»±c | Äá»‹nh danh ngÆ°á»i dÃ¹ng (Ä‘Äƒng nháº­p/Ä‘Äƒng xuáº¥t). |
 | Custom claims | Quyá»n Ä‘áº·c biá»‡t | â€œCá»â€ phÃ¢n quyá»n nÃ¢ng cao (admin/mod). |
 | Qu&#233;t kh&#244;ng d&#249;ng l&#7883;ch s&#7917; Git (no-git scan) | Qu&#233;t kh&#244;ng d&#249;ng l&#7883;ch s&#7917; Git (no-git scan) | Qu&#233;t theo tree hi&#7879;n t&#7841;i, kh&#244;ng duy&#7879;t l&#7883;ch s&#7917; commit &#273;&#7875; tr&#225;nh k&#7871;t qu&#7843; t&#7915; patch c&#361;. |
+| ESM (ECMAScript Module: chu&#7849;n module d&#249;ng import/export) | ESM | Chu&#7849;n module hi&#7879;n &#273;&#7841;i d&#249;ng `import`/`export` theo ES. |
+| CJS (CommonJS: chu&#7849;n module m&#7863;c &#273;&#7883;nh c&#7911;a Node v&#7899;i require/module.exports) | CJS | Chu&#7849;n module truy&#7873;n th&#7889;ng c&#7911;a Node d&#249;ng `require`/`module.exports`. |
 | Gi&#7899;i h&#7841;n theo ngu&#7891;n truy c&#7853;p (HTTP referrer restriction) | Gi&#7899;i h&#7841;n theo ngu&#7891;n truy c&#7853;p (HTTP referrer restriction) | Ch&#7881; cho ph&#233;p kho&#225; ho&#7841;t &#273;&#7897;ng t&#7915; c&#225;c domain &#273;&#432;&#7907;c ph&#233;p. |
 | Gi&#7899;i h&#7841;n theo d&#7883;ch v&#7909; (API restriction) | Gi&#7899;i h&#7841;n theo d&#7883;ch v&#7909; (API restriction) | Ch&#7881; cho ph&#233;p kho&#225; d&#249;ng cho m&#7897;t s&#7889; API &#273;&#432;&#7907;c ch&#7881; &#273;&#7883;nh. |
 | Lu&#226;n phi&#234;n kho&#225; (rotate keys) | Lu&#226;n phi&#234;n kho&#225; (rotate keys) | Thu h&#7891;i/&#273;&#7893;i kho&#225; c&#361; sang kho&#225; m&#7899;i, c&#7853;p nh&#7853;t to&#224;n b&#7897; h&#7879; th&#7889;ng d&#249;ng kho&#225;. |
@@ -225,6 +227,7 @@
 | K&#7927; lu&#7853;t s&#7841;ch kho m&#227; (repo hygiene) | K&#7927; lu&#7853;t s&#7841;ch kho m&#227; (repo hygiene) | Th&#243;i quen gi&#7919; repo g&#7885;n, kh&#244;ng r&#242; r&#7881; file nh&#7841;y c&#7843;m, tu&#226;n th&#7911; quy &#432;&#7899;c. |
 | .gitignore | .gitignore | Danh sÃ¡ch file/thÆ° má»¥c bá»‹ Git bá» qua, khÃ´ng Ä‘Æ°a vÃ o commit. |
 | T&#7879;p CODEOWNERS | T&#7879;p CODEOWNERS | T&#7879;p quy &#273;&#7883;nh ng&#432;&#7901;i ch&#7883;u tr&#225;ch nhi&#7879;m review cho c&#225;c &#273;&#432;&#7901;ng d&#7851;n quan tr&#7885;ng. |
+| T&#7879;p &#273;&#7879;m (stub file) | T&#7879;p &#273;&#7879;m (stub file) | T&#7879;p t&#7841;m th&#7901;i d&#249;ng &#273;&#7875; th&#7887;a tham chi&#7871;u n&#7897;i b&#7897; khi ch&#432;a c&#243; n&#7897;i dung th&#7853;t. |
 | node_modules | node_modules | ThÆ° má»¥c chá»©a thÆ° viá»‡n cÃ i Ä‘áº·t tá»« npm; khÃ´ng commit. |
 | Tracked | Tracked | File Ä‘ang Ä‘Æ°á»£c Git theo dÃµi (Ä‘Ã£ add). |
 | Untracked | Untracked | File chÆ°a Ä‘Æ°á»£c Git theo dÃµi. |
