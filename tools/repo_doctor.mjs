@@ -75,6 +75,7 @@ function classifySpecifier(ref) {
   if (!ref) return "unknown";
   if (ref.startsWith("node:")) return "builtin";
   if (BUILTIN_MODULES.has(ref)) return "builtin";
+  if (ref.startsWith("/admin/") || ref.startsWith("/api/")) return "external";
   if (ref.startsWith("./") || ref.startsWith("../") || ref.startsWith("/")) return "internal";
   return "external";
 }
