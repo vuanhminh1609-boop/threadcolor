@@ -21,6 +21,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -28,6 +30,8 @@ jobs:
       - run: node tools/repo_textdump.mjs
       - name: Quét bí mật trước khi xuất snapshot
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Tạo snapshot zip + manifest
@@ -40,6 +44,12 @@ jobs:
           ls -la artifacts
           test -f artifacts/repo_snapshot.zip
           test -f artifacts/repo_manifest.txt
+      - name: Debug thư mục trước khi upload
+        run: |
+          pwd
+          ls -la
+          ls -la artifacts || true
+          find artifacts -maxdepth 2 -type f -print || true
       - name: PR snapshot summary
         run: |
           node - <<'NODE'
@@ -73,7 +83,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: repo-snapshot-index
-          if-no-files-found: warn
+          if-no-files-found: error
           path: |
             DOC/REPO_SNAPSHOT.md
             DOC/REPO_SNAPSHOT_INDEX.json
@@ -92,6 +102,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -109,11 +121,17 @@ jobs:
           ls -la artifacts
           test -f artifacts/repo_snapshot.zip
           test -f artifacts/repo_manifest.txt
+      - name: Debug thư mục trước khi upload
+        run: |
+          pwd
+          ls -la
+          ls -la artifacts || true
+          find artifacts -maxdepth 2 -type f -print || true
       - name: Tải artifact snapshot
         uses: actions/upload-artifact@v4
         with:
           name: repo-snapshot-index
-          if-no-files-found: warn
+          if-no-files-found: error
           path: |
             DOC/REPO_SNAPSHOT.md
             DOC/REPO_SNAPSHOT_INDEX.json
