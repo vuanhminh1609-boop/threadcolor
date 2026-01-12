@@ -26,10 +26,36 @@ jobs:
           node-version: 20
       - run: node tools/repo_snapshot.mjs
       - run: node tools/repo_textdump.mjs
+      - name: Chuẩn bị log-opts cho gitleaks (tự chữa)
+        id: gitleaks_prep
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse --is-shallow-repository
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+          if [ -z "${BEFORE}" ] || [ "${BEFORE}" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE=""
+          fi
+          if [ -n "${BEFORE}" ]; then
+            git fetch --no-tags --prune origin "${BEFORE}" --depth=50 || true
+            if ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+              BEFORE=""
+            fi
+          fi
+          if [ -z "${BEFORE}" ]; then
+            echo "log_opts=--no-merges --first-parent" >> "$GITHUB_OUTPUT"
+          else
+            echo "log_opts=--no-merges --first-parent ${BEFORE}..${AFTER}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Debug gitleaks log-opts
+        run: echo "Gitleaks log-opts: ${{ steps.gitleaks_prep.outputs.log_opts }}"
       - name: Quét bí mật trước khi xuất snapshot
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          log-opts: ${{ steps.gitleaks_prep.outputs.log_opts }}
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot
@@ -40,6 +66,12 @@ jobs:
           ls -la artifacts
           test -f artifacts/repo_snapshot.zip
           test -f artifacts/repo_manifest.txt
+      - name: Debug thư mục trước khi upload
+        run: |
+          pwd
+          ls -la
+          ls -la artifacts || true
+          find artifacts -maxdepth 2 -type f -print || true
       - name: PR snapshot summary
         run: |
           node - <<'NODE'
@@ -73,7 +105,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: repo-snapshot-index
-          if-no-files-found: warn
+          if-no-files-found: error
           path: |
             DOC/REPO_SNAPSHOT.md
             DOC/REPO_SNAPSHOT_INDEX.json
@@ -92,13 +124,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: node tools/repo_snapshot.mjs
       - run: node tools/repo_textdump.mjs
+      - name: Chuẩn bị log-opts cho gitleaks (tự chữa)
+        id: gitleaks_prep
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse --is-shallow-repository
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+          if [ -z "${BEFORE}" ] || [ "${BEFORE}" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE=""
+          fi
+          if [ -n "${BEFORE}" ]; then
+            git fetch --no-tags --prune origin "${BEFORE}" --depth=50 || true
+            if ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+              BEFORE=""
+            fi
+          fi
+          if [ -z "${BEFORE}" ]; then
+            echo "log_opts=--no-merges --first-parent" >> "$GITHUB_OUTPUT"
+          else
+            echo "log_opts=--no-merges --first-parent ${BEFORE}..${AFTER}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Debug gitleaks log-opts
+        run: echo "Gitleaks log-opts: ${{ steps.gitleaks_prep.outputs.log_opts }}"
       - name: Quét bí mật trước khi xuất snapshot
         uses: gitleaks/gitleaks-action@v2
+        with:
+          log-opts: ${{ steps.gitleaks_prep.outputs.log_opts }}
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot
@@ -109,11 +169,17 @@ jobs:
           ls -la artifacts
           test -f artifacts/repo_snapshot.zip
           test -f artifacts/repo_manifest.txt
+      - name: Debug thư mục trước khi upload
+        run: |
+          pwd
+          ls -la
+          ls -la artifacts || true
+          find artifacts -maxdepth 2 -type f -print || true
       - name: Tải artifact snapshot
         uses: actions/upload-artifact@v4
         with:
           name: repo-snapshot-index
-          if-no-files-found: warn
+          if-no-files-found: error
           path: |
             DOC/REPO_SNAPSHOT.md
             DOC/REPO_SNAPSHOT_INDEX.json
