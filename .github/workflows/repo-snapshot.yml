@@ -64,7 +64,9 @@ jobs:
             echo "range=${RANGE}" >> "$GITHUB_OUTPUT"
           fi
       - name: Debug gitleaks range
-        run: echo "Gitleaks commit range: ${{ steps.gitleaks_range.outputs.range }}"
+        shell: bash
+        run: |
+          echo "Gitleaks commit range: '${{ steps.gitleaks_range.outputs.range }}'"
       - name: Quét bí mật trước khi xuất snapshot
         id: gitleaks_scan
         shell: bash
@@ -210,7 +212,9 @@ jobs:
             echo "range=${RANGE}" >> "$GITHUB_OUTPUT"
           fi
       - name: Debug gitleaks range
-        run: echo "Gitleaks commit range: ${{ steps.gitleaks_range.outputs.range }}"
+        shell: bash
+        run: |
+          echo "Gitleaks commit range: '${{ steps.gitleaks_range.outputs.range }}'"
       - name: Quét bí mật trước khi xuất snapshot
         id: gitleaks_scan
         shell: bash

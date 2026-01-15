@@ -134,7 +134,8 @@
 | Workflow | Quy trÃ¬nh tá»± Ä‘á»™ng | Táº­p lá»‡nh CI (vÃ­ dá»¥: GitHub Actions). |
 | workflow_dispatch | KÃ­ch hoáº¡t thá»§ cÃ´ng | Cháº¡y workflow báº±ng tay tá»« giao diá»‡n. |
 | Clone nông (shallow clone) | Clone nông (shallow clone) | Ch&#7881; l&#7845;y m&#7897;t ph&#7847;n l&#7883;ch s&#7917; commit &#273;&#7875; t&#259;ng t&#7889;c checkout. |
-| fetch-depth (độ sâu lịch sử Git tải về) | fetch-depth | Tham số checkout quy định số lượng commit được tải về trong CI. |
+| Fetch depth (Độ sâu lấy lịch sử git khi checkout trong CI) | fetch-depth | Tham số checkout quy định số lượng commit được tải về trong CI, ảnh hưởng khả năng truy vết commit. |
+| Commit range | Commit range | Khoảng commit (base..head) dùng để quét theo phạm vi thay đổi. |
 | commit base/before (commit nền trước khi push) | commit base/before | Commit nền của ref trước khi push, dùng để tính phạm vi thay đổi. |
 | commit trước (before commit) | commit trước (before commit) | Commit đứng trước trong lần push, thường dùng làm mốc so sánh thay đổi. |
 | T&#7843;i b&#249; commit theo SHA (fetch by SHA) | T&#7843;i b&#249; commit theo SHA (fetch by SHA) | T&#7843;i th&#234;m m&#7897;t commit c&#7909; th&#7875; theo SHA khi b&#7883; thi&#7871;u trong shallow clone. |
