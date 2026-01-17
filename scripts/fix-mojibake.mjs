@@ -1,8 +1,8 @@
-import { readFile, writeFile } from "node:fs/promises";
+﻿import { readFile, writeFile } from "node:fs/promises";
 import { extname } from "node:path";
 
-const TARGET_EXTS = new Set([".html", ".js", ".css", ".json"]);
-const SUSPECT_PATTERN = /[ÃÂÄÅÆ]|á»|áº|\uFFFD/;
+const TARGET_EXTS = new Set([".html", ".js", ".css", ".json", ".md", ".yml", ".yaml"]);
+const SUSPECT_PATTERN = /(?:Ã|Ä|á»|áº|â€”|â€¢|â†’|â€|\uFFFD)/;
 const REPLACEMENT_CHAR = /\uFFFD/;
 
 const files = process.argv.slice(2);
