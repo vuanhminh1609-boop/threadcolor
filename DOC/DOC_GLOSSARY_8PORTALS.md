@@ -1,60 +1,61 @@
-# Tá»« Ä‘iá»ƒn thuáº­t ngá»¯ 8Portals (Viá»‡t hoÃ¡ 100%)
+# Từ điển thuật ngữ 8Portals (Việt hoá 100%)
 
-> Má»¥c tiÃªu: thá»‘ng nháº¥t ngÃ´n ngá»¯ chung trong repo 8Portals Ä‘á»ƒ trao Ä‘á»•i nhanh â€“ rÃµ â€“ â€œsang & sáº¡châ€.
+> Mục tiêu: thống nhất ngôn ngữ chung trong repo 8Portals để trao đổi nhanh – rõ – “sang & sạch”.
 >
-> **Quy Æ°á»›c báº¥t biáº¿n (khÃ´ng Ä‘á»•i tÃªn):**
-> 1) **DSG- DigitalSpaceGroup** â€” *Táº­p Ä‘oÃ n phÃ¡t triá»ƒn ká»¹ thuáº­t cÃ´ng nghá»‡ vÃ  khÃ´ng gian sá»‘ (CÃ´ng ty máº¹)*  
-> 2) **SpaceColors - 8Portals** â€” *CÃ´ng ty con*
+> **Quy ước bất biến (không đổi tên):**
+> 1) **DSG- DigitalSpaceGroup** — *Tập đoàn phát triển kỹ thuật công nghệ và không gian số (Công ty mẹ)*  
+> 2) **SpaceColors - 8Portals** — *Công ty con*
 
 ---
 
-## 1) Thuáº­t ngá»¯ tá»• chá»©c & váº­n hÃ nh
+## 1) Thuật ngữ tổ chức & vận hành
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| CEO | Tá»•ng giÃ¡m Ä‘á»‘c Ä‘iá»u hÃ nh | NgÆ°á»i chá»‘t phÆ°Æ¡ng Ã¡n tá»‘i Æ°u, ra quyáº¿t Ä‘á»‹nh Æ°u tiÃªn, chá»‹u trÃ¡ch nhiá»‡m káº¿t quáº£. |
-| ThÆ° kÃ½ tá»•ng | ChÃ¡nh vÄƒn phÃ²ng Ä‘iá»u hÃ nh | NgÆ°á»i tá»•ng há»£p â€“ phÃ¢n loáº¡i â€“ nháº¯c nhá»‹p, táº¡o â€œbrief 1 trangâ€ + lá»‡nh Ä‘á» xuáº¥t cho Chá»§ tá»‹ch. |
-| Thiáº¿t láº­p CÆ¡ cáº¥u Váº­n hÃ nh | Thiáº¿t láº­p CÆ¡ cáº¥u Váº­n hÃ nh | XÃ¡c Ä‘á»‹nh vai trÃ²â€“trÃ¡ch nhiá»‡mâ€“quyá»n háº¡nâ€“Ä‘áº§u raâ€“nhá»‹p Ä‘iá»u hÃ nh Ä‘á»ƒ tá»• chá»©c cháº¡y nhanh vÃ  khÃ´ng loáº¡n. |
-| Nhá»‹p Ä‘iá»u hÃ nh | Nhá»‹p Ä‘iá»u hÃ nh | Lá»‹ch láº·p: háº±ng ngÃ y/tuáº§n/thÃ¡ng (brief, cáº­p nháº­t Æ°u tiÃªn, review rá»§i ro). |
-| Sá»• quyáº¿t Ä‘á»‹nh | Nháº­t kÃ½ quyáº¿t Ä‘á»‹nh | Báº£ng ghi: ngÃ y, quyáº¿t Ä‘á»‹nh, lÃ½ do, rá»§i ro, tiÃªu chÃ­ quay Ä‘áº§u. |
-| Sá»• rá»§i ro | Danh má»¥c rá»§i ro | Báº£ng rá»§i ro: xÃ¡c suáº¥t/tÃ¡c Ä‘á»™ng, chá»§ sá»Ÿ há»¯u, káº¿ hoáº¡ch giáº£m rá»§i ro. |
-| HÃ ng Ä‘á»£i hÃ nh Ä‘á»™ng | Danh sÃ¡ch hÃ nh Ä‘á»™ng | Báº£ng viá»‡c cáº§n lÃ m: má»©c Ä‘á»™, owner, háº¡n, tráº¡ng thÃ¡i. |
-| Chá»‰ sá»‘ báº¯c cáº§u | Chá»‰ sá»‘ dáº«n dáº¯t | Chá»‰ sá»‘ bÃ¡o trÆ°á»›c thÃ nh cÃ´ng (vÃ­ dá»¥: tá»‰ lá»‡ tÃ¬m tháº¥y Ä‘Ãºng mÃ u, thá»i gian tÃ¬m kiáº¿m). |
-| Chá»‰ sá»‘ káº¿t quáº£ | Chá»‰ sá»‘ káº¿t quáº£ | Chá»‰ sá»‘ â€œÄ‘Ã­châ€ (vÃ­ dá»¥: sá»‘ ngÆ°á»i dÃ¹ng hoáº¡t Ä‘á»™ng, sá»‘ bá»™ dá»¯ liá»‡u Ä‘Æ°á»£c dÃ¹ng). |
+| CEO | Tổng giám đốc điều hành | Người chốt phương án tối ưu, ra quyết định ưu tiên, chịu trách nhiệm kết quả. |
+| Thư ký tổng | Chánh văn phòng điều hành | Người tổng hợp – phân loại – nhắc nhịp, tạo “brief 1 trang” + lệnh đề xuất cho Chủ tịch. |
+| Thiết lập Cơ cấu Vận hành | Thiết lập Cơ cấu Vận hành | Xác định vai trò–trách nhiệm–quyền hạn–đầu ra–nhịp điều hành để tổ chức chạy nhanh và không loạn. |
+| Nhịp điều hành | Nhịp điều hành | Lịch lặp: hằng ngày/tuần/tháng (brief, cập nhật ưu tiên, review rủi ro). |
+| Sổ quyết định | Nhật ký quyết định | Bảng ghi: ngày, quyết định, lý do, rủi ro, tiêu chí quay đầu. |
+| Sổ rủi ro | Danh mục rủi ro | Bảng rủi ro: xác suất/tác động, chủ sở hữu, kế hoạch giảm rủi ro. |
+| Hàng đợi hành động | Danh sách hành động | Bảng việc cần làm: mức độ, owner, hạn, trạng thái. |
+| Chỉ số bắc cầu | Chỉ số dẫn dắt | Chỉ số báo trước thành công (ví dụ: tỉ lệ tìm thấy đúng màu, thời gian tìm kiếm). |
+| Chỉ số kết quả | Chỉ số kết quả | Chỉ số “đích” (ví dụ: số người dùng hoạt động, số bộ dữ liệu được dùng). |
 
 ---
 
-## 2) Thuáº­t ngá»¯ sáº£n pháº©m (Portal/World)
+## 2) Thuật ngữ sản phẩm (Portal/World)
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Portal | Cá»•ng | Äiá»ƒm vÃ o/Ä‘iá»u hÆ°á»›ng Ä‘áº¿n cÃ¡c â€œTháº¿ giá»›iâ€. |
-| World | Tháº¿ giá»›i | Má»™t khÃ´ng gian chá»©c nÄƒng Ä‘á»™c láº­p trong 8Portals (vÃ­ dá»¥: MÃ u thÃªu, Kho chá»‰). |
-| ThreadColor | Tháº¿ giá»›i MÃ u thÃªu (ThreadColor) | Tháº¿ giá»›i tra cá»©u/gá»£i Ã½ mÃ u chá»‰. |
-| ThreadVault | Tháº¿ giá»›i Kho chá»‰ (ThreadVault) | Tháº¿ giá»›i quáº£n lÃ½/bá»™ sÆ°u táº­p chá»‰ vÃ  dá»¯ liá»‡u liÃªn quan. |
-| Palette | Tháº¿ giá»›i Dáº£i mÃ u (Palette) | Tháº¿ giá»›i táº¡o/ghÃ©p/dÃ¹ng dáº£i mÃ u; cÃ³ thá»ƒ lÃ  â€œSáº¯p ra máº¯tâ€. |
-| Topbar | Thanh trÃªn | Thanh Ä‘iá»u hÆ°á»›ng trÃªn cÃ¹ng; pháº£i giá»¯ **ÄÄƒng nháº­p** á»Ÿ gÃ³c pháº£i. |
-| Slot Ä‘Äƒng nháº­p | Vá»‹ trÃ­ ÄÄƒng nháº­p | Khu vá»±c â€œneoâ€ hiá»ƒn thá»‹ Ä‘Äƒng nháº­p/Ä‘Äƒng xuáº¥t á»Ÿ top-right (khÃ´ng Ä‘Æ°á»£c Ä‘á»•i tuá»³ tiá»‡n). |
-| Microcopy | Vi mÃ´ ngÃ´n tá»« | CÃ¢u chá»¯ ngáº¯n trong UI (nhÃ£n nÃºt, mÃ´ táº£) â€” pháº£i â€œÄ‘áº¯t vÃ  sáº¡châ€. |
-| Tráº¡ng thÃ¡i rá»—ng | MÃ n hÃ¬nh rá»—ng | UI khi chÆ°a cÃ³ dá»¯ liá»‡u (pháº£i sang, khÃ´ng xin lá»—i). |
-| Tráº¡ng thÃ¡i lá»—i | MÃ n hÃ¬nh lá»—i | UI khi cÃ³ lá»—i (gá»n, rÃµ, khÃ´ng hoáº£ng). |
+| Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
+| World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
+| ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
+| ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
+| Palette | Thế giới Dải màu (Palette) | Thế giới tạo/ghép/dùng dải màu; có thể là “Sắp ra mắt”. |
+| Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
+| Slot đăng nhập | Vị trí Đăng nhập | Khu vực “neo” hiển thị đăng nhập/đăng xuất ở top-right (không được đổi tuỳ tiện). |
+| Microcopy | Vi mô ngôn từ | Câu chữ ngắn trong UI (nhãn nút, mô tả) — phải “đắt và sạch”. |
+| Trạng thái rỗng | Màn hình rỗng | UI khi chưa có dữ liệu (phải sang, không xin lỗi). |
+| Trạng thái lỗi | Màn hình lỗi | UI khi có lỗi (gọn, rõ, không hoảng). |
 
 ---
 
-## 3) Thuáº­t ngá»¯ dá»¯ liá»‡u & cháº¥t lÆ°á»£ng dá»¯ liá»‡u
+## 3) Thuật ngữ dữ liệu & chất lượng dữ liệu
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Source of truth | Nguá»“n dá»¯ liá»‡u gá»‘c | Nguá»“n chÃ­nh thá»©c, má»i thá»© khÃ¡c sinh ra tá»« Ä‘Ã¢y (vÃ­ dá»¥: `threads.json`). |
+| Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
 | Ngu&#7891;n s&#7921; th&#7853;t (single source of truth) | Ngu&#7891;n s&#7921; th&#7853;t (single source of truth) | Ngu&#7891;n d&#7919; li&#7879;u th&#7889;ng nh&#7845;t &#273;&#7875; tr&#225;nh l&#7879;ch s&#7889; (ngu&#7891;n d&#7919; li&#7879;u th&#7889;ng nh&#7845;t &#273;&#7875; tr&#225;nh l&#7879;ch s&#7889;). |
 | M&#225;y tr&#7841;ng th&#225;i (state machine) | M&#225;y tr&#7841;ng th&#225;i (state machine) | Quy t&#7855;c chuy&#7875;n &#273;&#7893;i tr&#7841;ng th&#225;i loading/ok/warning/error (quy t&#7855;c chuy&#7875;n &#273;&#7893;i tr&#7841;ng th&#225;i loading/ok/warning/error). |
-| Data contract | Há»£p Ä‘á»“ng dá»¯ liá»‡u | Quy Æ°á»›c: file nÃ o lÃ  gá»‘c, file nÃ o lÃ  sinh ra, schema, phiÃªn báº£n, cÃ¡ch cáº­p nháº­t. |
+| Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
 | JSON Schema | JSON Schema | Chuan mo ta cau truc JSON de kiem tra hop le (chuan mo ta cau truc JSON de kiem tra hop le). |
 | SemVer | SemVer | Chuan danh phien ban MAJOR.MINOR.PATCH (chuan danh phien ban MAJOR.MINOR.PATCH). |
 | Manifest hop dong | Manifest hop dong | Tep ke khai: dataset nao dung schema nao + phien ban + checksum (tep ke khai: dataset nao dung schema nao + phien ban + checksum). |
 | Danh m&#7909;c t&#7879;p (manifest) | Danh m&#7909;c t&#7879;p (manifest) | Danh s&#225;ch li&#7879;t k&#234; t&#7879;p trong repo/snapshot &#273;&#7875; ki&#7875;m tra v&#224; &#273;&#7889;i chi&#7871;u. |
 | JSONL | JSON Lines | Dinh dang JSON Lines: moi dong la 1 JSON, phu hop log/audit (dinh dang JSON Lines: moi dong la 1 JSON, phu hop log/audit). |
 | Checksum | Checksum | Chuoi kiem chung toan ven du lieu (chuoi kiem chung toan ven du lieu). |
+| Báo cáo chênh lệch dữ liệu (Data diff report) | Báo cáo chênh lệch dữ liệu (Data diff report) | Báo cáo so sánh dữ liệu giữa hai phiên bản để thấy phần thay đổi tăng/giảm/khác biệt. |
 | SHA-256 | SHA-256 | Ham bam tao dau van tay noi dung (ham bam tao dau van tay noi dung). |
 | Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema (thu vien Node.js de kiem tra JSON Schema). |
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main (cong chan trong CI de ngan loi vao main). |
@@ -67,18 +68,18 @@
 | Dry run | Dry run | Chay thu khong ghi du lieu (chay thu khong ghi du lieu). |
 | Reproducible build | Reproducible build | Build tai lap nho lockfile (build tai lap nho lockfile). |
 | Lockfile | Lockfile | Tep khoa phien ban phu thuoc, vi du package-lock.json (tep khoa phien ban phu thuoc, vi du package-lock.json). |
-| Generated artifact | Tá»‡p sinh ra | File do cÃ´ng cá»¥ táº¡o (vÃ­ dá»¥: `threads.cleaned.json`) â€” thÆ°á»ng khÃ´ng commit. |
-| Raw sources | Dá»¯ liá»‡u thÃ´ | Nguá»“n thÃ´ Ä‘áº§u vÃ o (vÃ­ dá»¥: `.tch`) dÃ¹ng Ä‘á»ƒ tÃ¡i táº¡o dá»¯ liá»‡u. |
-| Validate | Kiá»ƒm tra há»£p lá»‡ | Kiá»ƒm tra cáº¥u trÃºc/logic dá»¯ liá»‡u Ä‘á»ƒ phÃ¡t hiá»‡n lá»—i sá»›m. |
-| Normalize | Chuáº©n hoÃ¡ | Biáº¿n dá»¯ liá»‡u vá» dáº¡ng thá»‘ng nháº¥t (tÃªn, mÃ£, format). |
-| Conflicts | MÃ¢u thuáº«n dá»¯ liá»‡u | CÃ¡c Ä‘iá»ƒm dá»¯ liá»‡u xung Ä‘á»™t cáº§n xá»­ lÃ½. |
-| Versioning | ÄÃ¡nh phiÃªn báº£n | Gáº¯n phiÃªn báº£n dá»¯ liá»‡u Ä‘á»ƒ cache vÃ  truy váº¿t thay Ä‘á»•i. |
+| Generated artifact | Tệp sinh ra | File do công cụ tạo (ví dụ: `threads.cleaned.json`) — thường không commit. |
+| Raw sources | Dữ liệu thô | Nguồn thô đầu vào (ví dụ: `.tch`) dùng để tái tạo dữ liệu. |
+| Validate | Kiểm tra hợp lệ | Kiểm tra cấu trúc/logic dữ liệu để phát hiện lỗi sớm. |
+| Normalize | Chuẩn hoá | Biến dữ liệu về dạng thống nhất (tên, mã, format). |
+| Conflicts | Mâu thuẫn dữ liệu | Các điểm dữ liệu xung đột cần xử lý. |
+| Versioning | Đánh phiên bản | Gắn phiên bản dữ liệu để cache và truy vết thay đổi. |
 
 ---
 
-## 4) Thuáº­t ngá»¯ hiá»‡u nÄƒng & tráº£i nghiá»‡m
+## 4) Thuật ngữ hiệu năng & trải nghiệm
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | Modal (h&#7897;p tho&#7841;i ph&#7911;) | Modal (h&#7897;p tho&#7841;i ph&#7911;) | H&#7897;p n&#7893;i ch&#7863;n n&#7873;n &#273;&#7875; hi&#7875;n th&#7883; th&#244;ng tin/t&#225;c v&#7909;. |
 | Ng&#7919; c&#7843;nh ch&#7891;ng l&#7899;p (stacking context) | Ng&#7919; c&#7843;nh ch&#7891;ng l&#7899;p (stacking context) | C&#417; ch&#7871; quy&#7871;t &#273;&#7883;nh l&#7899;p tr&#234;n/d&#432;&#7899;i khi c&#243; blur/transform. |
@@ -92,47 +93,56 @@
 | Fallback (ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng) | Fallback (ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng) | Ph&#432;&#417;ng &#225;n d&#7921; ph&#242;ng khi t&#224;i nguy&#234;n ch&#237;nh kh&#244;ng d&#249;ng &#273;&#432;&#7907;c. |
 | L&#432;u c&#7909;c b&#7897; | L&#432;u c&#7909;c b&#7897; | L&#432;u l&#7921;a ch&#7885;n tr&#234;n tr&#236;nh duy&#7879;t b&#7857;ng localStorage. |
 | S&#7921; ki&#7879;n tu&#7923; bi&#7871;n | S&#7921; ki&#7879;n tu&#7923; bi&#7871;n | CustomEvent &#273;&#7875; &#273;&#7891;ng b&#7897; tr&#7841;ng th&#225;i gi&#7919;a c&#225;c kh&#7889;i UI. |
-| Worker | Tiáº¿n trÃ¬nh phá»¥ | Cháº¡y tÃ¡c vá»¥ náº·ng (tÃ¬m kiáº¿m, láº­p chá»‰ má»¥c) ngoÃ i luá»“ng chÃ­nh Ä‘á»ƒ UI mÆ°á»£t. |
-| Main thread | Luá»“ng chÃ­nh | Luá»“ng cháº¡y UI; cÃ ng Ã­t viá»‡c cÃ ng mÆ°á»£t. |
-| Index | Láº­p chá»‰ má»¥c | Chuáº©n bá»‹ cáº¥u trÃºc tra cá»©u nhanh (theo mÃ£, hÃ£ng, mÃ u). |
-| Cache | Bá»™ nhá»› Ä‘á»‡m | LÆ°u táº¡m káº¿t quáº£ Ä‘á»ƒ táº£i nhanh hÆ¡n. |
-| Debounce | Trá»… cÃ³ chá»§ Ä‘Ã­ch | Chá» ngÆ°á»i dÃ¹ng dá»«ng gÃµ rá»“i má»›i tÃ¬m, trÃ¡nh giáº­t. |
-| Virtual list | Danh sÃ¡ch áº£o | Chá»‰ render pháº§n Ä‘ang nhÃ¬n tháº¥y Ä‘á»ƒ khá»i lag. |
-| Latency | Äá»™ trá»… | Thá»i gian chá» pháº£n há»“i. |
+| Worker | Tiến trình phụ | Chạy tác vụ nặng (tìm kiếm, lập chỉ mục) ngoài luồng chính để UI mượt. |
+| Main thread | Luồng chính | Luồng chạy UI; càng ít việc càng mượt. |
+| Index | Lập chỉ mục | Chuẩn bị cấu trúc tra cứu nhanh (theo mã, hãng, màu). |
+| Cache | Bộ nhớ đệm | Lưu tạm kết quả để tải nhanh hơn. |
+| Debounce | Trễ có chủ đích | Chờ người dùng dừng gõ rồi mới tìm, tránh giật. |
+| Virtual list | Danh sách ảo | Chỉ render phần đang nhìn thấy để khỏi lag. |
+| Latency | Độ trễ | Thời gian chờ phản hồi. |
 
 ---
 
-## 5) Thuáº­t ngá»¯ kiá»ƒm thá»­ & â€œgÃ¡c cá»•ng cháº¥t lÆ°á»£ngâ€
+## 5) Thuật ngữ kiểm thử & “gác cổng chất lượng”
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Smoke test | Kiá»ƒm tra khÃ³i | Kiá»ƒm tra nhanh: trang cÃ³ má»Ÿ Ä‘Æ°á»£c, file cÃ³ táº£i Ä‘Æ°á»£c, khÃ´ng 404. |
-| Checklist PASS/FAIL | Danh sÃ¡ch Ä‘áº¡t/khÃ´ng Ä‘áº¡t | Danh sÃ¡ch test ngáº¯n gá»n Ä‘á»ƒ xÃ¡c nháº­n thay Ä‘á»•i an toÃ n. |
-| Gate | Cá»•ng cháº·n | Quy táº¯c báº¯t buá»™c pháº£i qua trÆ°á»›c khi merge (vÃ­ dá»¥: khÃ´ng cÃ³ BLOCK). |
-| Repo Doctor | BÃ¡c sÄ© kho mÃ£ | CÃ´ng cá»¥ quÃ©t repo: lá»—i gÃ£y (BLOCK), cáº£nh bÃ¡o (WARN), thÃ´ng tin (INFO). |
-| Health Score | Äiá»ƒm sá»©c khoáº» | Äiá»ƒm 0â€“100 pháº£n Ã¡nh tÃ¬nh tráº¡ng repo theo quy táº¯c Ä‘Ã£ thá»‘ng nháº¥t. |
-| Trend 7 ngÃ y | Xu hÆ°á»›ng 7 ngÃ y | Chuá»—i Ä‘iá»ƒm/Ä‘áº¿m trong 7 ngÃ y gáº§n nháº¥t Ä‘á»ƒ xem tiáº¿n hay lÃ¹i. |
-| BLOCK | Cháº·n kháº©n cáº¥p | Lá»—i má»©c P0: lÃ m gÃ£y cháº¡y/thiáº¿u file runtime/syntaxâ€¦ => khÃ´ng merge. |
-| WARN | Cáº£nh bÃ¡o | Váº¥n Ä‘á» cáº§n dá»n/tá»‘i Æ°u nhÆ°ng chÆ°a lÃ m gÃ£y há»‡. |
-| INFO | Ghi nháº­n | ThÃ´ng tin thá»‘ng kÃª, khÃ´ng pháº£i lá»—i. |
-| Quarantine | CÃ¡ch ly 7 ngÃ y | Chuyá»ƒn file â€œnghi thá»«aâ€ vÃ o `_graveyard/` trÆ°á»›c khi xoÃ¡ háº³n. |
-| Graveyard | NghÄ©a Ä‘á»‹a táº¡m | ThÆ° má»¥c `_graveyard/` chá»©a file cÃ¡ch ly. |
+| Smoke test | Kiểm tra khói | Kiểm tra nhanh: trang có mở được, file có tải được, không 404. |
+| Checklist PASS/FAIL | Danh sách đạt/không đạt | Danh sách test ngắn gọn để xác nhận thay đổi an toàn. |
+| Gate | Cổng chặn | Quy tắc bắt buộc phải qua trước khi merge (ví dụ: không có BLOCK). |
+| Cổng kiểm tra mã hoá (Encoding gate) | Cổng kiểm tra mã hoá (Encoding gate) | Cổng CI chặn merge khi phát hiện chuỗi vỡ dấu hoặc mã hoá sai trong tài liệu. |
+| Mojibake (lỗi vỡ dấu do sai mã hoá) | Mojibake | Hiện tượng chữ bị vỡ dấu do đọc sai mã hoá. Ví dụ ở khối code bên dưới. |
+| Repo Doctor | Bác sĩ kho mã | Công cụ quét repo: lỗi gãy (BLOCK), cảnh báo (WARN), thông tin (INFO). |
+| Health Score | Điểm sức khoẻ | Điểm 0–100 phản ánh tình trạng repo theo quy tắc đã thống nhất. |
+| Trend 7 ngày | Xu hướng 7 ngày | Chuỗi điểm/đếm trong 7 ngày gần nhất để xem tiến hay lùi. |
+| BLOCK | Chặn khẩn cấp | Lỗi mức P0: làm gãy chạy/thiếu file runtime/syntax… => không merge. |
+| WARN | Cảnh báo | Vấn đề cần dọn/tối ưu nhưng chưa làm gãy hệ. |
+| INFO | Ghi nhận | Thông tin thống kê, không phải lỗi. |
+| Quarantine | Cách ly 7 ngày | Chuyển file “nghi thừa” vào `_graveyard/` trước khi xoá hẳn. |
+| Graveyard | Nghĩa địa tạm | Thư mục `_graveyard/` chứa file cách ly. |
+
+Ví dụ mojibake (minh hoạ lỗi mã hoá, chỉ nằm trong code block):
+
+```text
+8Portal v4 â€” Khung A1â†’A3
+Chuỗi lỗi: Ã¢â‚¬â€, Ã
+```
 
 ---
 
-## 6) Thuáº­t ngá»¯ Git & quy trÃ¬nh lÃ m viá»‡c
+## 6) Thuật ngữ Git & quy trình làm việc
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Repo | Kho mÃ£ | NÆ¡i chá»©a toÃ n bá»™ mÃ£ nguá»“n, dá»¯ liá»‡u, tÃ i liá»‡u. |
-| Commit | Báº£n ghi thay Ä‘á»•i | Má»‘c thay Ä‘á»•i cÃ³ mÃ´ táº£ rÃµ rÃ ng. |
-| Branch | NhÃ¡nh | NhÃ¡nh lÃ m viá»‡c tÃ¡ch khá»i chÃ­nh. |
+| Repo | Kho mã | Nơi chứa toàn bộ mã nguồn, dữ liệu, tài liệu. |
+| Commit | Bản ghi thay đổi | Mốc thay đổi có mô tả rõ ràng. |
+| Branch | Nhánh | Nhánh làm việc tách khỏi chính. |
 | Nh&#225;nh snapshot (snapshot branch) | Nh&#225;nh snapshot (snapshot branch) | Nh&#225;nh chuy&#234;n d&#249;ng cho m&#7909;c &#273;&#237;ch t&#7841;o/gi&#7919; b&#7843;n ch&#7909;p kho m&#227;, kh&#244;ng l&#224;m &#7843;nh h&#432;&#7903;ng nh&#225;nh ch&#237;nh. |
-| Pull request (PR) | YÃªu cáº§u há»£p nháº¥t | Gá»­i thay Ä‘á»•i Ä‘á»ƒ review vÃ  há»£p nháº¥t vÃ o nhÃ¡nh chÃ­nh. |
-| Merge | Há»£p nháº¥t | Gá»™p thay Ä‘á»•i vÃ o nhÃ¡nh chÃ­nh. |
-| CI | Tá»± Ä‘á»™ng kiá»ƒm tra | Há»‡ thá»‘ng cháº¡y kiá»ƒm tra khi PR/push/schedule. |
-| Workflow | Quy trÃ¬nh tá»± Ä‘á»™ng | Táº­p lá»‡nh CI (vÃ­ dá»¥: GitHub Actions). |
-| workflow_dispatch | KÃ­ch hoáº¡t thá»§ cÃ´ng | Cháº¡y workflow báº±ng tay tá»« giao diá»‡n. |
+| Pull request (PR) | Yêu cầu hợp nhất | Gửi thay đổi để review và hợp nhất vào nhánh chính. |
+| Merge | Hợp nhất | Gộp thay đổi vào nhánh chính. |
+| CI | Tự động kiểm tra | Hệ thống chạy kiểm tra khi PR/push/schedule. |
+| Workflow | Quy trình tự động | Tập lệnh CI (ví dụ: GitHub Actions). |
+| workflow_dispatch | Kích hoạt thủ công | Chạy workflow bằng tay từ giao diện. |
 | Clone nông (shallow clone) | Clone nông (shallow clone) | Ch&#7881; l&#7845;y m&#7897;t ph&#7847;n l&#7883;ch s&#7917; commit &#273;&#7875; t&#259;ng t&#7889;c checkout. |
 | Fetch depth (Độ sâu lấy lịch sử git khi checkout trong CI) | fetch-depth | Tham số checkout quy định số lượng commit được tải về trong CI, ảnh hưởng khả năng truy vết commit. |
 | Commit range | Commit range | Khoảng commit (base..head) dùng để quét theo phạm vi thay đổi. |
@@ -140,19 +150,19 @@
 | commit trước (before commit) | commit trước (before commit) | Commit đứng trước trong lần push, thường dùng làm mốc so sánh thay đổi. |
 | T&#7843;i b&#249; commit theo SHA (fetch by SHA) | T&#7843;i b&#249; commit theo SHA (fetch by SHA) | T&#7843;i th&#234;m m&#7897;t commit c&#7909; th&#7875; theo SHA khi b&#7883; thi&#7871;u trong shallow clone. |
 | Ch&#7871; &#273;&#7897; d&#7921; ph&#242;ng (fallback) | Ch&#7871; &#273;&#7897; d&#7921; ph&#242;ng (fallback) | Ph&#432;&#417;ng &#225;n thay th&#7871; khi logic ch&#237;nh kh&#244;ng &#225;p d&#7909;ng &#273;&#432;&#7907;c. |
-| schedule | Lá»‹ch cháº¡y | Workflow cháº¡y theo cron (háº±ng ngÃ y). |
+| schedule | Lịch chạy | Workflow chạy theo cron (hằng ngày). |
 | Artifact | G&#243;i &#273;&#237;nh k&#232;m CI | File b&#225;o c&#225;o l&#432;u trong CI &#273;&#7875; t&#7843;i v&#7873; (kh&#244;ng nh&#7845;t thi&#7871;t commit). |
 
 ---
 
-## 7) Thuáº­t ngá»¯ háº¡ táº§ng & báº£o máº­t
+## 7) Thuật ngữ hạ tầng & bảo mật
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Firestore rules | Quy táº¯c Firestore | Quy táº¯c truy cáº­p dá»¯ liá»‡u: ai Ä‘Æ°á»£c Ä‘á»c/ghi gÃ¬. |
-| Least privilege | Tá»‘i thiá»ƒu quyá»n | Má»—i ngÆ°á»i chá»‰ cÃ³ Ä‘Ãºng quyá»n cáº§n thiáº¿t. |
-| Auth | XÃ¡c thá»±c | Äá»‹nh danh ngÆ°á»i dÃ¹ng (Ä‘Äƒng nháº­p/Ä‘Äƒng xuáº¥t). |
-| Custom claims | Quyá»n Ä‘áº·c biá»‡t | â€œCá»â€ phÃ¢n quyá»n nÃ¢ng cao (admin/mod). |
+| Firestore rules | Quy tắc Firestore | Quy tắc truy cập dữ liệu: ai được đọc/ghi gì. |
+| Least privilege | Tối thiểu quyền | Mỗi người chỉ có đúng quyền cần thiết. |
+| Auth | Xác thực | Định danh người dùng (đăng nhập/đăng xuất). |
+| Custom claims | Quyền đặc biệt | “Cờ” phân quyền nâng cao (admin/mod). |
 | Qu&#233;t kh&#244;ng d&#249;ng l&#7883;ch s&#7917; Git (no-git scan) | Qu&#233;t kh&#244;ng d&#249;ng l&#7883;ch s&#7917; Git (no-git scan) | Qu&#233;t theo tree hi&#7879;n t&#7841;i, kh&#244;ng duy&#7879;t l&#7883;ch s&#7917; commit &#273;&#7875; tr&#225;nh k&#7871;t qu&#7843; t&#7915; patch c&#361;. |
 | ESM (ECMAScript Module: chu&#7849;n module d&#249;ng import/export) | ESM | Chu&#7849;n module hi&#7879;n &#273;&#7841;i d&#249;ng `import`/`export` theo ES. |
 | CJS (CommonJS: chu&#7849;n module m&#7863;c &#273;&#7883;nh c&#7911;a Node v&#7899;i require/module.exports) | CJS | Chu&#7849;n module truy&#7873;n th&#7889;ng c&#7911;a Node d&#249;ng `require`/`module.exports`. |
@@ -163,49 +173,49 @@
 
 ---
 
-## 8) Thuáº­t ngá»¯ ra quyáº¿t Ä‘á»‹nh kiá»ƒu â€œÃ´ng lá»›nâ€
+## 8) Thuật ngữ ra quyết định kiểu “ông lớn”
 
-| Thuáº­t ngá»¯ | Viá»‡t hoÃ¡ dÃ¹ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| One-way door | Cá»­a má»™t chiá»u | Quyáº¿t Ä‘á»‹nh khÃ³ quay Ä‘áº§u (pháº£i cÃ¢n nháº¯c ká»¹). |
-| Two-way door | Cá»­a hai chiá»u | Quyáº¿t Ä‘á»‹nh cÃ³ thá»ƒ thá»­ nhanh vÃ  quay láº¡i. |
-| Trade-off | ÄÃ¡nh Ä‘á»•i | Chá»n A thÃ¬ máº¥t B; pháº£i ghi rÃµ. |
-| North Star Metric | Chá»‰ sá»‘ Báº¯c cá»±c | Chá»‰ sá»‘ cá»‘t lÃµi dáº«n toÃ n bá»™ Ä‘á»™i. |
-| KPI | Chá»‰ sá»‘ hiá»‡u suáº¥t | Chá»‰ sá»‘ Ä‘o tiáº¿n Ä‘á»™/káº¿t quáº£. |
-| OKR | Má»¥c tiÃªu & káº¿t quáº£ then chá»‘t | Há»‡ má»¥c tiÃªu theo quÃ½/thÃ¡ng. |
+| One-way door | Cửa một chiều | Quyết định khó quay đầu (phải cân nhắc kỹ). |
+| Two-way door | Cửa hai chiều | Quyết định có thể thử nhanh và quay lại. |
+| Trade-off | Đánh đổi | Chọn A thì mất B; phải ghi rõ. |
+| North Star Metric | Chỉ số Bắc cực | Chỉ số cốt lõi dẫn toàn bộ đội. |
+| KPI | Chỉ số hiệu suất | Chỉ số đo tiến độ/kết quả. |
+| OKR | Mục tiêu & kết quả then chốt | Hệ mục tiêu theo quý/tháng. |
 
 ---
 
-## 9) Quy táº¯c Ä‘áº·t thuáº­t ngá»¯ má»›i (Ä‘á»ƒ Viá»‡t hoÃ¡ 100%)
-1) Æ¯u tiÃªn tá»« **ngáº¯n â€“ dá»… hiá»ƒu â€“ sang** (vÃ­ dá»¥: â€œCá»•ngâ€, â€œTháº¿ giá»›iâ€, â€œCÃ¡ch ly 7 ngÃ yâ€).  
-2) Náº¿u báº¯t buá»™c giá»¯ tÃªn riÃªng (vÃ­ dá»¥: ThreadColor) â†’ luÃ´n kÃ¨m **bÃ­ danh tiáº¿ng Viá»‡t**: â€œTháº¿ giá»›i MÃ u thÃªu (ThreadColor)â€.  
-3) Thuáº­t ngá»¯ ká»¹ thuáº­t váº«n Viá»‡t hoÃ¡, nhÆ°ng cÃ³ thá»ƒ giá»¯ trong ngoáº·c náº¿u cáº§n Ä‘á»‘i chiáº¿u: â€œBá»™ nhá»› Ä‘á»‡m (cache)â€.  
-4) Hai tÃªn **khÃ´ng Ä‘á»•i**: **DSG- DigitalSpaceGroup**, **SpaceColors - 8Portals**.
+## 9) Quy tắc đặt thuật ngữ mới (để Việt hoá 100%)
+1) Ưu tiên từ **ngắn – dễ hiểu – sang** (ví dụ: “Cổng”, “Thế giới”, “Cách ly 7 ngày”).  
+2) Nếu bắt buộc giữ tên riêng (ví dụ: ThreadColor) → luôn kèm **bí danh tiếng Việt**: “Thế giới Màu thêu (ThreadColor)”.  
+3) Thuật ngữ kỹ thuật vẫn Việt hoá, nhưng có thể giữ trong ngoặc nếu cần đối chiếu: “Bộ nhớ đệm (cache)”.  
+4) Hai tên **không đổi**: **DSG- DigitalSpaceGroup**, **SpaceColors - 8Portals**.
 
 ---
 
-*File nÃ y lÃ  â€œnguá»“n ngÃ´n ngá»¯ gá»‘câ€. Má»i tÃ i liá»‡u/brief nÃªn bÃ¡m theo Ä‘á»ƒ thá»‘ng nháº¥t giá»ng Ä‘iá»‡u.*
+*File này là “nguồn ngôn ngữ gốc”. Mọi tài liệu/brief nên bám theo để thống nhất giọng điệu.*
 ---
 
-## 9) Thuáº­t ngá»¯ Backend & GÃ³i quyáº¿t Ä‘á»‹nh (Báº£o máº­t)
+## 9) Thuật ngữ Backend & Gói quyết định (Bảo mật)
 
-| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Cloud Functions (HÃ m Ä‘Ã¡m mÃ¢y) | Cloud Functions | HÃ m server-side cháº¡y theo sá»± kiá»‡n/HTTP, xá»­ lÃ½ logic nháº¡y cáº£m. |
-| Firebase Hosting | Firebase Hosting | Háº¡ táº§ng phá»¥c vá»¥ web tÄ©nh vÃ  rewrite Ä‘áº¿n Functions. |
+| Cloud Functions (Hàm đám mây) | Cloud Functions | Hàm server-side chạy theo sự kiện/HTTP, xử lý logic nhạy cảm. |
+| Firebase Hosting | Firebase Hosting | Hạ tầng phục vụ web tĩnh và rewrite đến Functions. |
 | Cross-Origin-Opener-Policy (COOP) | Cross-Origin-Opener-Policy (COOP) | Chinh sach co lap cua so mo ra giua cac nguon (chinh sach co lap cua so mo ra giua cac nguon). |
 | same-origin-allow-popups | same-origin-allow-popups | Che do COOP cho phep popup van hoat dong voi cua so mo no (che do COOP cho phep popup van hoat dong voi cua so mo no). |
 | signInWithRedirect | signInWithRedirect | Dang nhap bang chuyen huong thay vi popup (dang nhap bang chuyen huong thay vi popup). |
-| Express | Express | Bá»™ Ä‘á»‹nh tuyáº¿n HTTP nháº¹ Ä‘á»ƒ tá»• chá»©c API admin. |
-| rewrite (Ãnh xáº¡ Ä‘Æ°á»ng dáº«n) | rewrite | Chuyá»ƒn hÆ°á»›ng `/admin/**` tá»« Hosting sang Functions. |
-| RBAC (PhÃ¢n quyá»n theo vai trÃ²) | RBAC | CÆ¡ cháº¿ phÃ¢n quyá»n admin/khÃ´ng admin theo vai trÃ². |
-| ID token (mÃ£ chá»©ng thá»±c) | ID token | Token xÃ¡c thá»±c ngÆ°á»i dÃ¹ng do Firebase Auth cáº¥p. |
-| no-store (cáº¥m cache) | no-store | Header chá»‘ng lÆ°u Ä‘á»‡m cho response nháº¡y cáº£m. |
-| Audit log (nháº­t kÃ½ truy váº¿t) | Audit log | Ghi láº¡i GENERATE/VIEW, ai lÃ m, lÃºc nÃ o. |
-| Redaction (che dá»¯ liá»‡u nháº¡y cáº£m) | Redaction | Che thÃ´ng tin nháº¡y cáº£m trÆ°á»›c khi lÆ°u/hiá»ƒn thá»‹. |
-| DecisionPack (GÃ³i quyáº¿t Ä‘á»‹nh) | DecisionPack | Báº£n ghi gÃ³i quyáº¿t Ä‘á»‹nh ná»™i bá»™ theo ngÃ y. |
-| Snapshot (báº£n chá»¥p) | Snapshot | Báº£n chá»¥p tráº¡ng thÃ¡i Ä‘á»ƒ Ä‘á»‘i chiáº¿u/ra quyáº¿t Ä‘á»‹nh. |
-| Idempotency (chá»‘ng cháº¡y láº·p) | Idempotency | Cháº¡y láº¡i khÃ´ng táº¡o trÃ¹ng, giá»¯ 1 ?latest?. |
+| Express | Express | Bộ định tuyến HTTP nhẹ để tổ chức API admin. |
+| rewrite (Ánh xạ đường dẫn) | rewrite | Chuyển hướng `/admin/**` từ Hosting sang Functions. |
+| RBAC (Phân quyền theo vai trò) | RBAC | Cơ chế phân quyền admin/không admin theo vai trò. |
+| ID token (mã chứng thực) | ID token | Token xác thực người dùng do Firebase Auth cấp. |
+| no-store (cấm cache) | no-store | Header chống lưu đệm cho response nhạy cảm. |
+| Audit log (nhật ký truy vết) | Audit log | Ghi lại GENERATE/VIEW, ai làm, lúc nào. |
+| Redaction (che dữ liệu nhạy cảm) | Redaction | Che thông tin nhạy cảm trước khi lưu/hiển thị. |
+| DecisionPack (Gói quyết định) | DecisionPack | Bản ghi gói quyết định nội bộ theo ngày. |
+| Snapshot (bản chụp) | Snapshot | Bản chụp trạng thái để đối chiếu/ra quyết định. |
+| Idempotency (chống chạy lặp) | Idempotency | Chạy lại không tạo trùng, giữ 1 ?latest?. |
 ---
 
 ## 10) Thu?t ng? tri?n khai Functions & Hosting
@@ -218,72 +228,71 @@
 | Node LTS | Node LTS | Phi?n b?n Node ?n ??nh d?i h?n, khuy?n ngh? d?ng trong Functions. |
 ---
 
-## 11) Thuáº­t ngá»¯ quáº£n trá»‹ & xÃ¡c thá»±c bá»• sung
+## 11) Thuật ngữ quản trị & xác thực bổ sung
 
-| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Authorization Bearer token | Bearer token | Chuá»—i token Ä‘áº·t trong header `Authorization: Bearer <token>` Ä‘á»ƒ gá»i API quáº£n trá»‹. |
-| Admin UI | Báº£ng Ä‘iá»u phá»‘i quáº£n trá»‹ | Giao diá»‡n ná»™i bá»™ cho admin xem gÃ³i quyáº¿t Ä‘á»‹nh vÃ  nháº­t kÃ½ truy váº¿t. |
-| Audit logs | Nháº­t kÃ½ truy váº¿t | Danh sÃ¡ch sá»± kiá»‡n truy cáº­p/ghi nháº­n á»Ÿ API admin, phá»¥c vá»¥ kiá»ƒm tra báº£o máº­t. |
+| Authorization Bearer token | Bearer token | Chuỗi token đặt trong header `Authorization: Bearer <token>` để gọi API quản trị. |
+| Admin UI | Bảng điều phối quản trị | Giao diện nội bộ cho admin xem gói quyết định và nhật ký truy vết. |
+| Audit logs | Nhật ký truy vết | Danh sách sự kiện truy cập/ghi nhận ở API admin, phục vụ kiểm tra bảo mật. |
 ---
 
-## 12) Thuáº­t ngá»¯ Git hygiene
+## 12) Thuật ngữ Git hygiene
 
-| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | K&#7927; lu&#7853;t s&#7841;ch kho m&#227; (repo hygiene) | K&#7927; lu&#7853;t s&#7841;ch kho m&#227; (repo hygiene) | Th&#243;i quen gi&#7919; repo g&#7885;n, kh&#244;ng r&#242; r&#7881; file nh&#7841;y c&#7843;m, tu&#226;n th&#7911; quy &#432;&#7899;c. |
-| .gitignore | .gitignore | Danh sÃ¡ch file/thÆ° má»¥c bá»‹ Git bá» qua, khÃ´ng Ä‘Æ°a vÃ o commit. |
+| .gitignore | .gitignore | Danh sách file/thư mục bị Git bỏ qua, không đưa vào commit. |
 | T&#7879;p CODEOWNERS | T&#7879;p CODEOWNERS | T&#7879;p quy &#273;&#7883;nh ng&#432;&#7901;i ch&#7883;u tr&#225;ch nhi&#7879;m review cho c&#225;c &#273;&#432;&#7901;ng d&#7851;n quan tr&#7885;ng. |
 | T&#7879;p &#273;&#7879;m (stub file) | T&#7879;p &#273;&#7879;m (stub file) | T&#7879;p t&#7841;m th&#7901;i d&#249;ng &#273;&#7875; th&#7887;a tham chi&#7871;u n&#7897;i b&#7897; khi ch&#432;a c&#243; n&#7897;i dung th&#7853;t. |
-| node_modules | node_modules | ThÆ° má»¥c chá»©a thÆ° viá»‡n cÃ i Ä‘áº·t tá»« npm; khÃ´ng commit. |
-| Tracked | Tracked | File Ä‘ang Ä‘Æ°á»£c Git theo dÃµi (Ä‘Ã£ add). |
-| Untracked | Untracked | File chÆ°a Ä‘Æ°á»£c Git theo dÃµi. |
-| Build artifact | Build artifact | Káº¿t quáº£ sinh ra khi build (vÃ­ dá»¥ `functions/lib/`), khÃ´ng commit. |
+| node_modules | node_modules | Thư mục chứa thư viện cài đặt từ npm; không commit. |
+| Tracked | Tracked | File đang được Git theo dõi (đã add). |
+| Untracked | Untracked | File chưa được Git theo dõi. |
+| Build artifact | Build artifact | Kết quả sinh ra khi build (ví dụ `functions/lib/`), không commit. |
 ---
 
-## 13) Thuáº­t ngá»¯ xuáº¥t repo & chia sáº»
+## 13) Thuật ngữ xuất repo & chia sẻ
 
-| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Git bundle | Git bundle | GÃ³i Git cÃ³ lá»‹ch sá»­ Ä‘áº§y Ä‘á»§, dÃ¹ng Ä‘á»ƒ chia sáº» repo mÃ  khÃ´ng cáº§n remote. |
-| Git archive | Git archive | GÃ³i snapshot khÃ´ng lá»‹ch sá»­ (zip/tar) Ä‘á»ƒ chia sáº» mÃ£ nguá»“n hiá»‡n táº¡i. |
-| Submodule | Submodule | Repo con gáº¯n vÃ o repo cha; cáº§n táº£i riÃªng khi chia sáº». |
-| Git LFS | Git LFS | CÆ¡ cháº¿ lÆ°u file lá»›n ngoÃ i Git; cáº§n pull riÃªng Ä‘á»ƒ Ä‘á»§ dá»¯ liá»‡u. |
+| Git bundle | Git bundle | Gói Git có lịch sử đầy đủ, dùng để chia sẻ repo mà không cần remote. |
+| Git archive | Git archive | Gói snapshot không lịch sử (zip/tar) để chia sẻ mã nguồn hiện tại. |
+| Submodule | Submodule | Repo con gắn vào repo cha; cần tải riêng khi chia sẻ. |
+| Git LFS | Git LFS | Cơ chế lưu file lớn ngoài Git; cần pull riêng để đủ dữ liệu. |
 | Include dirty | K&#232;m thay &#273;&#7893;i ch&#432;a commit (include dirty) | T&#249;y ch&#7885;n k&#232;m patch diff c&#7911;a c&#225;c thay &#273;&#7893;i ch&#432;a commit &#273;&#7875; chia s&#7867; nhanh tr&#7841;ng th&#225;i hi&#7879;n t&#7841;i. |
 | Full dump | B&#7843;n &#273;&#7893; &#273;&#7847;y &#273;&#7911; (full dump) | B&#7843;n ghi to&#224;n b&#7897; n&#7897;i dung text c&#7911;a repo &#273;&#7875; tra c&#7913;u/&#273;&#7889;i chi&#7871;u. |
 | Index dump | B&#7843;n &#273;&#7893; ch&#7881; m&#7909;c (index dump) | B&#7843;n t&#243;m t&#7855;t li&#7879;t k&#234; file &#273;&#227; dump/&#273;&#227; b&#7887; qua k&#232;m l&#253; do v&#224; th&#7889;ng k&#234;. |
 ---
 
-## 14) Thuáº­t ngá»¯ PowerShell
+## 14) Thuật ngữ PowerShell
 
-| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| ExecutionPolicy | ExecutionPolicy | ChÃ­nh sÃ¡ch cho phÃ©p cháº¡y script PowerShell trong phiÃªn hiá»‡n táº¡i. |
-| Scope Process | Scope Process | Pháº¡m vi Ã¡p dá»¥ng cá»§a ExecutionPolicy chá»‰ trong phiÃªn PowerShell Ä‘ang cháº¡y. |
+| ExecutionPolicy | ExecutionPolicy | Chính sách cho phép chạy script PowerShell trong phiên hiện tại. |
+| Scope Process | Scope Process | Phạm vi áp dụng của ExecutionPolicy chỉ trong phiên PowerShell đang chạy. |
 | &#272;&#7897;ng t&#7915; &#273;&#432;&#7907;c ph&#234; duy&#7879;t (approved verbs) | &#272;&#7897;ng t&#7915; &#273;&#432;&#7907;c ph&#234; duy&#7879;t (approved verbs) | Danh s&#225;ch &#273;&#7897;ng t&#7915; PowerShell chu&#7849;n d&#249;ng &#273;&#7875; &#273;&#7863;t t&#234;n cmdlet/function, gi&#250;p nh&#7845;t qu&#225;n v&#224; qua PSScriptAnalyzer. |
 ---
 
-## 15) Thuáº­t ngá»¯ Ä‘o lÆ°á»ng & sá»± kiá»‡n
+## 15) Thuật ngữ đo lường & sự kiện
 
-| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| North Star Metric (NSM) | NSM | Chá»‰ sá»‘ Ä‘á»‹nh hÆ°á»›ng chÃ­nh, Ä‘o hiá»‡u quáº£ cá»‘t lÃµi cá»§a sáº£n pháº©m. |
-| Leading indicator | Chá»‰ sá»‘ dáº«n dáº¯t | Chá»‰ sá»‘ sá»›m dá»± bÃ¡o xu hÆ°á»›ng cá»§a NSM. |
-| TMTC-7 | TMTC-7 | Tá»· lá»‡ MÃ u ThÃªu Chuáº©n trong 7 ngÃ y. |
-| TTGP | TTGP | Tá»· lá»‡ Tra cá»©u Gáº§n Ä‘Ãºng thÃ nh cÃ´ng. |
-| TLC | TLC | Tá»· lá»‡ LÆ°u vÃ o Kho chá»‰. |
-| TLK | TLK | Tá»· lá»‡ Lá»±a chá»n káº¿t quáº£. |
-| Event map | Báº£n Ä‘á»“ sá»± kiá»‡n | Danh sÃ¡ch sá»± kiá»‡n tá»‘i thiá»ƒu + thuá»™c tÃ­nh Ä‘á»ƒ Ä‘o lÆ°á»ng. |
+| North Star Metric (NSM) | NSM | Chỉ số định hướng chính, đo hiệu quả cốt lõi của sản phẩm. |
+| Leading indicator | Chỉ số dẫn dắt | Chỉ số sớm dự báo xu hướng của NSM. |
+| TMTC-7 | TMTC-7 | Tỷ lệ Màu Thêu Chuẩn trong 7 ngày. |
+| TTGP | TTGP | Tỷ lệ Tra cứu Gần đúng thành công. |
+| TLC | TLC | Tỷ lệ Lưu vào Kho chỉ. |
+| TLK | TLK | Tỷ lệ Lựa chọn kết quả. |
+| Event map | Bản đồ sự kiện | Danh sách sự kiện tối thiểu + thuộc tính để đo lường. |
 ---
 
-## 16) Thuáº­t ngá»¯ Emulator & triá»ƒn khai
+## 16) Thuật ngữ Emulator & triển khai
 
-| Thuáº­t ngá»¯ | Viáº¿t hoÃ¡ dáº¡ng trong repo | Äá»‹nh nghÄ©a ngáº¯n |
+| Thuật ngữ | Viết hoá dạng trong repo | Định nghĩa ngắn |
 |---|---|---|
-| Emulator (mÃ´ phá»ng dá»‹ch vá»¥ cháº¡y local) | Emulator | Bá»™ giáº£ láº­p dá»‹ch vá»¥ Firebase cháº¡y trÃªn mÃ¡y local Ä‘á»ƒ test nhanh. |
-| Blaze plan (gÃ³i tráº£ phÃ­ pay-as-you-go) | Blaze plan | GÃ³i tráº£ phÃ­ theo má»©c dÃ¹ng, cáº§n Ä‘á»ƒ dÃ¹ng má»™t sá»‘ tÃ­nh nÄƒng nÃ¢ng cao. |
-| Spark plan (gÃ³i miá»…n phÃ­) | Spark plan | GÃ³i miá»…n phÃ­ vá»›i giá»›i háº¡n tÃ i nguyÃªn cÆ¡ báº£n. |
-| Rewrite (Ä‘iá»u hÆ°á»›ng route trÃªn hosting) | Rewrite | Cáº¥u hÃ¬nh chuyá»ƒn hÆ°á»›ng route tÄ©nh sang Functions/API. |
-| Smoke test (kiá»ƒm thá»­ nhanh tuyáº¿n chÃ­nh) | Smoke test | Kiá»ƒm tra nhanh cÃ¡c luá»“ng chÃ­nh Ä‘á»ƒ phÃ¡t hiá»‡n lá»—i lá»›n. |
-
+| Emulator (mô phỏng dịch vụ chạy local) | Emulator | Bộ giả lập dịch vụ Firebase chạy trên máy local để test nhanh. |
+| Blaze plan (gói trả phí pay-as-you-go) | Blaze plan | Gói trả phí theo mức dùng, cần để dùng một số tính năng nâng cao. |
+| Spark plan (gói miễn phí) | Spark plan | Gói miễn phí với giới hạn tài nguyên cơ bản. |
+| Rewrite (điều hướng route trên hosting) | Rewrite | Cấu hình chuyển hướng route tĩnh sang Functions/API. |
+| Smoke test (kiểm thử nhanh tuyến chính) | Smoke test | Kiểm tra nhanh các luồng chính để phát hiện lỗi lớn. |
 

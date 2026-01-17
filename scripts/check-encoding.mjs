@@ -1,10 +1,10 @@
-import { createReadStream } from "node:fs";
+﻿import { createReadStream } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { createInterface } from "node:readline";
 import { extname, join } from "node:path";
 
 const ROOT = process.cwd();
-const TARGET_EXTS = new Set([".html", ".js", ".css", ".json"]);
+const TARGET_EXTS = new Set([".html", ".js", ".css", ".json", ".md", ".yml", ".yaml"]);
 const SKIP_DIRS = new Set([
   ".git",
   "node_modules",
@@ -18,7 +18,7 @@ const SKIP_DIRS = new Set([
   "coverage"
 ]);
 
-const SUSPECT_PATTERN = /[ÃÂÄÅÆ]|á»|áº|\uFFFD/;
+const SUSPECT_PATTERN = /(?:Ã|Ä|á»|áº|â€”|â€¢|â†’|â€|\uFFFD)/;
 
 async function walk(dir, results = []) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -38,12 +38,23 @@ async function walk(dir, results = []) {
 
 async function scanFile(filePath) {
   const rel = filePath.replace(ROOT + "\\", "");
+  const ext = extname(filePath).toLowerCase();
+  const isMarkdown = ext === ".md";
   const stream = createReadStream(filePath, { encoding: "utf8" });
   const rl = createInterface({ input: stream, crlfDelay: Infinity });
   let lineNum = 0;
   let hit = false;
+  let inFence = false;
   for await (const line of rl) {
     lineNum += 1;
+    if (isMarkdown) {
+      const trimmed = line.trimStart();
+      if (trimmed.startsWith("```")) {
+        inFence = !inFence;
+        continue;
+      }
+      if (inFence) continue;
+    }
     const match = line.search(SUSPECT_PATTERN);
     if (match !== -1) {
       hit = true;
