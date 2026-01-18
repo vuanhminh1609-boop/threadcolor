@@ -18,9 +18,12 @@ jobs:
           node-version: 20
       - name: Install data tooling deps
         run: npm ci
-      - name: Kiểm tra mã hóa
+      - name: Kiểm tra mã hoá
         run: npm run check:encoding
+      - name: Kiểm tra glossary
+        run: npm run check:glossary
       - name: Dry-run migrate when MAJOR bump exists
         run: node data/scripts/migrate_contract.mjs --dry-run
       - name: Validate data contracts
         run: npm run validate:data
+
