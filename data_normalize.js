@@ -62,6 +62,133 @@ function formatSourceForLog(source) {
   return parts.join(" | ");
 }
 
+function getRecordTimestamp(rec) {
+  const raw =
+    rec?.meta?.updatedAt ||
+    rec?.meta?.createdAt ||
+    rec?.source?.date ||
+    rec?.source?.timestamp;
+  if (!raw) return 0;
+  const parsed = new Date(raw).getTime();
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function getSourceRank(sourceType = "") {
+  const type = String(sourceType || "").toUpperCase();
+  if (type.includes("OFFICIAL")) return 3;
+  if (type === "TRID_JSON") return 2;
+  if (type === "LEGACY_JSON") return 1;
+  return 0;
+}
+
+function comparePrecedence(a, b) {
+  const rankA = getSourceRank(a?.source?.type);
+  const rankB = getSourceRank(b?.source?.type);
+  if (rankA !== rankB) return rankA - rankB;
+  const timeA = getRecordTimestamp(a);
+  const timeB = getRecordTimestamp(b);
+  if (timeA !== timeB) return timeA - timeB;
+  return 0;
+}
+
+function loadGingkoOverrides() {
+  if (loadGingkoOverrides.cache) return loadGingkoOverrides.cache;
+  const registry = new Map();
+  if (typeof window !== "undefined" && window.__tcGingkoOverrides) {
+    window.__tcGingkoOverrides.forEach((item) => {
+      if (item?.code && item?.canonicalHex) registry.set(String(item.code), item.canonicalHex);
+    });
+    loadGingkoOverrides.cache = registry;
+    return registry;
+  }
+  try {
+    const req = typeof require === "function" ? require : null;
+    if (req) {
+      const fs = req("fs");
+      const path = req("path");
+      const fullPath = path.join(process.cwd(), "data", "conflicts", "gingko_overrides.json");
+      if (fs.existsSync(fullPath)) {
+        const raw = fs.readFileSync(fullPath, "utf8");
+        const parsed = JSON.parse(raw);
+        const list = Array.isArray(parsed?.overrides) ? parsed.overrides : [];
+        list.forEach((item) => {
+          if (item?.code && item?.canonicalHex) registry.set(String(item.code), item.canonicalHex);
+        });
+      }
+    }
+  } catch (_err) {
+    // ignore overrides load failure
+  }
+  loadGingkoOverrides.cache = registry;
+  return registry;
+}
+
+function isDevRuntime() {
+  if (typeof window !== "undefined") {
+    const host = window.location?.hostname || "";
+    return host === "localhost" || host === "127.0.0.1";
+  }
+  if (typeof process !== "undefined") {
+    return process.env.NODE_ENV !== "production";
+  }
+  return false;
+}
+
+function collectSources(items = []) {
+  const seen = new Set();
+  const sources = [];
+  const pushSource = (source) => {
+    if (!source) return;
+    const key = JSON.stringify(source);
+    if (seen.has(key)) return;
+    seen.add(key);
+    sources.push(source);
+  };
+  items.forEach((item) => {
+    if (!item) return;
+    if (Array.isArray(item.sources)) item.sources.forEach(pushSource);
+    if (item.source) pushSource(item.source);
+    if (Array.isArray(item.alternates)) {
+      item.alternates.forEach((alt) => pushSource(alt?.source));
+    }
+  });
+  return sources;
+}
+
+function writeConflictReport(conflicts) {
+  if (!conflicts.length) return;
+  const payload = {
+    generatedAt: new Date().toISOString(),
+    conflicts
+  };
+  if (typeof window !== "undefined") {
+    window.__tcConflictReport = payload;
+    if (isDevRuntime()) {
+      console.info(`Found ${conflicts.length} conflicts; report saved to window.__tcConflictReport`);
+    }
+    return;
+  }
+  if (typeof process === "undefined") return;
+  const reportName = `conflicts-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+  Promise.all([
+    import("node:fs/promises"),
+    import("node:path")
+  ])
+    .then(([fs, path]) => {
+      const outDir = path.join(process.cwd(), "data", "reports");
+      const outPath = path.join(outDir, reportName);
+      return fs.mkdir(outDir, { recursive: true }).then(() =>
+        fs.writeFile(outPath, JSON.stringify(payload, null, 2), "utf8").then(() => outPath)
+      );
+    })
+    .then((outPath) => {
+      if (isDevRuntime()) {
+        console.info(`Found ${conflicts.length} conflicts; report saved to ${outPath}`);
+      }
+    })
+    .catch(() => {});
+}
+
 function resolveConfidence(rawConfidence, sourceType) {
   if (typeof rawConfidence === "number") return rawConfidence;
   const mapped = CONFIDENCE_MAP[(sourceType || "").toUpperCase()];
@@ -119,6 +246,8 @@ export function normalizeThreadRecord(raw, ctx = {}) {
 
 export function dedupeThreads(records = []) {
   const byKey = new Map();
+  const conflicts = [];
+  const gingkoOverrides = loadGingkoOverrides();
 
   records.forEach(rec => {
     if (!rec || !rec.canonicalKey) return;
@@ -140,9 +269,23 @@ export function dedupeThreads(records = []) {
       return;
     }
 
+    if (rec.brandKey === "gingko" && gingkoOverrides.size) {
+      const overrideHex = gingkoOverrides.get(rec.code);
+      if (overrideHex) {
+        const normalizedHex = normalizeHexValue(overrideHex);
+        if (!normalizedHex) return;
+        const forced = { ...existing };
+        forced.hex = normalizedHex;
+        forced.rgb = hexToRgb(normalizedHex);
+        byKey.set(rec.canonicalKey, forced);
+        return;
+      }
+    }
+
     const existingConf = typeof existing.confidence === "number" ? existing.confidence : 0;
     const incomingConf = typeof rec.confidence === "number" ? rec.confidence : 0;
-    const keepIncoming = incomingConf > existingConf;
+    const precedence = comparePrecedence(existing, rec);
+    const keepIncoming = precedence < 0 ? true : precedence > 0 ? false : incomingConf > existingConf;
     const keep = keepIncoming ? rec : existing;
     const alt = keepIncoming ? existing : rec;
 
@@ -159,12 +302,17 @@ export function dedupeThreads(records = []) {
     keep.alternates = alternates;
 
     byKey.set(rec.canonicalKey, keep);
-    console.warn(
-      `[dedupe] Conflict on ${rec.canonicalKey} (${formatSourceForLog(rec.source)}): ` +
-        `${existing.hex} vs ${rec.hex} -> keeping ${keepIncoming ? rec.hex : existing.hex}`
-    );
+    conflicts.push({
+      code: rec.code,
+      hexCandidates: Array.from(new Set([existing.hex, rec.hex])),
+      sources: collectSources([existing, rec]),
+      chosenHex: keep.hex,
+      status: "NEEDS_REVIEW",
+      timestamp: new Date().toISOString()
+    });
   });
 
+  writeConflictReport(conflicts);
   return Array.from(byKey.values());
 }
 

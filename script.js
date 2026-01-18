@@ -245,6 +245,18 @@ const telemetry = (() => {
     || "https://us-central1-thread-colors-for-community.cloudfunctions.net/telemetryIngest";
   const sessionKey = "tc_session_id";
   const now = () => Date.now();
+  const isLocalhost = () => {
+    const host = window.location?.hostname || "";
+    return host === "localhost" || host === "127.0.0.1";
+  };
+  const isTelemetryEnabled = () => {
+    if (!isLocalhost()) return true;
+    try {
+      return new URLSearchParams(window.location.search).get("telemetry") === "1";
+    } catch (_err) {
+      return false;
+    }
+  };
   const getSessionId = () => {
     try {
       const existing = sessionStorage.getItem(sessionKey);
@@ -261,6 +273,31 @@ const telemetry = (() => {
   const lastSent = { ...counts };
   let flushTimer = null;
   let lastFlushAt = now();
+
+  const sendPayload = (payload, useBeacon = false) => {
+    if (!isTelemetryEnabled()) return false;
+    const body = JSON.stringify(payload);
+    try {
+      if (useBeacon && navigator.sendBeacon) {
+        const blob = new Blob([body], { type: "application/json" });
+        navigator.sendBeacon(endpoint, blob);
+        return true;
+      }
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 1200);
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        signal: controller.signal
+      })
+        .catch(() => {})
+        .finally(() => window.clearTimeout(timeoutId));
+      return true;
+    } catch (_err) {
+      return false;
+    }
+  };
 
   const buildDelta = () => {
     const delta = {};
@@ -284,25 +321,11 @@ const telemetry = (() => {
       ts: new Date().toISOString(),
       counts: delta
     };
-    const body = JSON.stringify(payload);
-    try {
-      if (useBeacon && navigator.sendBeacon) {
-        const blob = new Blob([body], { type: "application/json" });
-        navigator.sendBeacon(endpoint, blob);
-      } else {
-        fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body
-        }).catch(() => {});
-      }
-      Object.keys(delta).forEach((key) => {
-        lastSent[key] += delta[key];
-      });
-      lastFlushAt = now();
-    } catch (_err) {
-      // fail-safe: không làm gãy UI
-    }
+    sendPayload(payload, useBeacon);
+    Object.keys(delta).forEach((key) => {
+      lastSent[key] += delta[key];
+    });
+    lastFlushAt = now();
   };
 
   const scheduleFlush = () => {
@@ -2421,6 +2444,8 @@ if (fallbackColorPicker) {
   });
 }
   
+
+
 
 
 
