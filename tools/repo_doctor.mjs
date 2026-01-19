@@ -54,7 +54,14 @@ function walk(dir, relBase = "", out = []) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     if (entry.isDirectory()) {
-      if (SKIP_DIRS.has(entry.name)) continue;
+      if (entry.name !== "dist") {
+        if (SKIP_DIRS.has(entry.name)) continue;
+      } else {
+        const relPosix = relBase.split(path.sep).join("/");
+        if (!(relPosix === "assets" || relPosix.startsWith("assets/"))) {
+          continue;
+        }
+      }
       walk(path.join(dir, entry.name), path.join(relBase, entry.name), out);
     } else if (entry.isFile()) {
       out.push(path.join(relBase, entry.name));
