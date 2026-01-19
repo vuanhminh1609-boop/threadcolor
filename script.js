@@ -55,6 +55,21 @@ function t(key, fallback, params) {
   return fallback || "";
 }
 
+function isDevEnv() {
+  const host = window.location?.hostname || "";
+  if (host === "localhost" || host === "127.0.0.1") return true;
+  try {
+    return new URLSearchParams(window.location.search).get("debug") === "1";
+  } catch (_err) {
+    return false;
+  }
+}
+
+function logDebug(...args) {
+  if (!isDevEnv()) return;
+  console.debug(...args);
+}
+
 function ensureLab(thread) {
   if (!thread) return null;
   if (!Array.isArray(thread.lab) || thread.lab.length !== 3) {
@@ -572,7 +587,7 @@ async function fetchVerifiedThreads() {
   if (!authApi?.db || typeof authApi.getDocs !== "function") return [];
   try {
     const ref = authApi.collection(authApi.db, "verifiedThreads");
-    console.info("[fetchVerifiedThreads] path", ref.path || "verifiedThreads");
+    logDebug("[fetchVerifiedThreads] path", ref.path || "verifiedThreads");
     const snap = await authApi.getDocs(ref);
     const raws = [];
     snap.forEach(d => {
