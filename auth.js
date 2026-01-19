@@ -150,6 +150,7 @@ function getAuthApi() {
 
 function resolveToolUrl() {
   const path = window.location.pathname || "";
+  if (path.includes("/worlds/palette.html")) return "palette.html";
   return path.includes("/worlds/") ? "threadcolor.html" : "./worlds/threadcolor.html";
 }
 

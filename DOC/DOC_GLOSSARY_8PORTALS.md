@@ -122,6 +122,11 @@
 | Repo Doctor | Bác sĩ kho mã | Công cụ quét repo: lỗi gãy (BLOCK), cảnh báo (WARN), thông tin (INFO). |
 | Health Score | Điểm sức khoẻ | Điểm 0–100 phản ánh tình trạng repo theo quy tắc đã thống nhất. |
 | Trend 7 ngày | Xu hướng 7 ngày | Chuỗi điểm/đếm trong 7 ngày gần nhất để xem tiến hay lùi. |
+| Gradient (dải chuyển màu liên tục) | Gradient | Dải màu chuyển liên tục giữa nhiều màu theo một hướng. |
+| Điểm neo màu (color stop: điểm màu trên dải) | Điểm neo màu | Vị trí màu cụ thể trong gradient, xác định độ chuyển và tỉ lệ. |
+| Token màu (biến màu dùng lại cho UI/thiết kế) | Token màu | Biến màu tái sử dụng trong thiết kế hoặc CSS, giúp thống nhất hệ màu. |
+| Remix (tạo biến thể từ mẫu có sẵn) | Remix | Tạo biến thể màu mới bằng cách chỉnh sửa từ một dải gốc. |
+| Palette Link (chia sẻ dải màu bằng URL) | Palette Link | Đường link chứa thông tin dải màu để chia sẻ hoặc tái sử dụng nhanh. |
 | BLOCK | Chặn khẩn cấp | Lỗi mức P0: làm gãy chạy/thiếu file runtime/syntax… => không merge. |
 | WARN | Cảnh báo | Vấn đề cần dọn/tối ưu nhưng chưa làm gãy hệ. |
 | INFO | Ghi nhận | Thông tin thống kê, không phải lỗi. |

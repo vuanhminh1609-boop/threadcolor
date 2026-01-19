@@ -20,6 +20,7 @@
 ## Checklist test PASS/FAIL
 - Mo index.html: khong co loi console nghiem trong
 - Vao 3 world: threadcolor / threadvault / palette
+- Mo palette: khong loi console, tab hoat dong, export ok
 - Login hien thi top-right, khong nhay layout
 - Search dung worker hoat dong
 - threads.json load OK (khong 404)
