@@ -1,6 +1,6 @@
 {
   "phienBanManifest": "1.0.0",
-  "capNhatLuc": "2026-01-19T13:15:11.966Z",
+  "capNhatLuc": "2026-01-19T16:45:46.369Z",
   "datasets": {
     "threads": {
       "duongDan": "threads.json",
@@ -25,7 +25,7 @@
       "schema": "data/schemas/palettes/0.1.0.json",
       "phienBanSchema": "0.1.0",
       "phienBanDuLieu": "0.1.0",
-      "checksumSha256": "81bed9d9753672410c13b2a849c934993343c9cda5088020d89ee050c44afa4e",
+      "checksumSha256": "2d6bb9b22866898e5e460ead7f167af2569a1552b445b14e44660d4c23ac687a",
       "tinhTrang": "dang-dung",
       "ghiChu": "Seed palettes World2 (48) - đắt & sang"
     },

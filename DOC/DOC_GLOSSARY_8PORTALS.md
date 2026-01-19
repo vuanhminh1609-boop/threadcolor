@@ -77,6 +77,8 @@
 | Taxonomy (hệ phân loại) | Hệ phân loại | Khung phân loại có cấu trúc để nhóm dữ liệu theo chủ đề/thuộc tính. |
 | Seed dữ liệu (bộ mồi dữ liệu) | Seed dữ liệu | Bộ dữ liệu mồi ban đầu để khởi tạo hoặc bootstrap hệ thống. |
 | Tuyển chọn (curation: chọn lọc chất lượng cao) | Tuyển chọn | Quá trình chọn lọc dữ liệu chất lượng cao theo tiêu chí rõ ràng. |
+| checksum SHA-256 (mã kiểm tra toàn vẹn tệp bằng thuật toán SHA-256) | checksum SHA-256 | Mã băm SHA-256 dùng để kiểm tra tính toàn vẹn nội dung tệp. |
+| eol=lf (chuẩn xuống dòng LF để ổn định checksum trên CI) | eol=lf | Quy ước xuống dòng LF để tránh lệch checksum do khác hệ điều hành. |
 
 ---
 
@@ -123,6 +125,8 @@
 | Timeout/Abort request (huỷ request khi quá thời gian để không treo UI) | Timeout/Abort request | Giới hạn thời gian request; quá hạn thì huỷ để tránh treo giao diện. |
 | Cổng kiểm tra mã hoá (Encoding gate) | Cổng kiểm tra mã hoá (Encoding gate) | Cổng CI chặn merge khi phát hiện chuỗi vỡ dấu hoặc mã hoá sai trong tài liệu. |
 | Mojibake (lỗi vỡ dấu do sai mã hoá) | Mojibake | Hiện tượng chữ bị vỡ dấu do đọc sai mã hoá. Ví dụ ở khối code bên dưới. |
+| Repo Doctor (công cụ kiểm tra “sức khoẻ repo”, dò lỗi tham chiếu nội bộ) | Repo Doctor | Công cụ kiểm tra sức khoẻ repo và dò lỗi tham chiếu nội bộ. |
+| SKIP_DIRS (danh sách thư mục bị bỏ qua khi quét) | SKIP_DIRS | Danh sách thư mục được bỏ qua khi quét để giảm nhiễu. |
 | Repo Doctor | Bác sĩ kho mã | Công cụ quét repo: lỗi gãy (BLOCK), cảnh báo (WARN), thông tin (INFO). |
 | Health Score | Điểm sức khoẻ | Điểm 0–100 phản ánh tình trạng repo theo quy tắc đã thống nhất. |
 | Trend 7 ngày | Xu hướng 7 ngày | Chuỗi điểm/đếm trong 7 ngày gần nhất để xem tiến hay lùi. |
