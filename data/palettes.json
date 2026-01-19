@@ -1,146 +1,290 @@
 [
   {
-    "id": "pal-aurora-01",
-    "ten": "Bình minh nhiệt",
-    "tags": ["ấm", "rạng", "năng lượng"],
-    "stops": ["#ff5f6d", "#ffc371", "#ffe29a"]
+    "id": "pl_0001",
+    "ten": "Ngà – Cát – Da thuộc",
+    "tags": ["Trung tính cao cấp", "Ấm", "Da", "Công sở", "Tương phản vừa"],
+    "stops": ["#F7F3E8", "#E8D9C3", "#C7A57A", "#7A5B3A", "#2B1E17"]
   },
   {
-    "id": "pal-ocean-02",
-    "ten": "Biển ngọc sớm",
-    "tags": ["biển", "mát", "trong"],
-    "stops": ["#0ea5a8", "#4dd4ff", "#c7f9ff"]
+    "id": "pl_0002",
+    "ten": "Lụa khói",
+    "tags": ["Trung tính cao cấp", "Trung tính", "Lụa", "Tối giản", "Tương phản thấp"],
+    "stops": ["#FAF7F2", "#EDE6DD", "#CFC3B5", "#8D7F73", "#2D2A27"]
   },
   {
-    "id": "pal-ink-03",
-    "ten": "Mực tàu trầm",
-    "tags": ["tĩnh", "đậm", "đêm"],
-    "stops": ["#0f172a", "#475569", "#cbd5f5"]
+    "id": "pl_0003",
+    "ten": "Cà phê sữa",
+    "tags": ["Trung tính cao cấp", "Ấm", "Công sở", "Tương phản vừa"],
+    "stops": ["#FFF7EE", "#EAD8C2", "#C9A47D", "#8B5E3B", "#3A2418"]
   },
   {
-    "id": "pal-lotus-04",
-    "ten": "Hồng sen sương",
-    "tags": ["dịu", "nữ tính", "mơ"],
-    "stops": ["#f472b6", "#f9a8d4", "#fde7f3"]
+    "id": "pl_0004",
+    "ten": "Gỗ óc chó",
+    "tags": ["Trung tính cao cấp", "Ấm", "Gỗ", "Tương phản vừa"],
+    "stops": ["#F4EFE8", "#D8C7B0", "#B08A63", "#6B4A2F", "#2A1B12"]
   },
   {
-    "id": "pal-sunset-05",
-    "ten": "Hoàng hôn phố",
-    "tags": ["hoàng hôn", "ấm", "đô thị"],
-    "stops": ["#ff6b6b", "#ff8e53", "#ffc371"]
+    "id": "pl_0005",
+    "ten": "Bê tông sang",
+    "tags": ["Trung tính cao cấp", "Lạnh", "Tối giản", "Công sở", "Tương phản vừa"],
+    "stops": ["#F5F6F7", "#D9DDE2", "#A9B2BF", "#5B6472", "#1F232A"]
   },
   {
-    "id": "pal-forest-06",
-    "ten": "Rừng thông non",
-    "tags": ["xanh", "tươi", "mát"],
-    "stops": ["#16a34a", "#86efac", "#dcfce7"]
+    "id": "pl_0006",
+    "ten": "Than đá tinh khiết",
+    "tags": ["Trung tính cao cấp", "Trung tính", "Tối giản", "Quyền lực", "Tương phản cao"],
+    "stops": ["#F2F2F2", "#C9CCD1", "#7D828A", "#3A3F46", "#0F1115"]
   },
   {
-    "id": "pal-citrus-07",
-    "ten": "Cam quýt vui",
-    "tags": ["tươi", "nắng", "rộn"],
-    "stops": ["#f97316", "#fbbf24", "#fde68a"]
+    "id": "pl_0007",
+    "ten": "Sâm panh ánh kim",
+    "tags": ["Kim loại ánh sang", "Ấm", "Kim loại", "Dạ tiệc", "Tương phản vừa"],
+    "stops": ["#FFF4D8", "#F0D9A7", "#D2B46F", "#8E6B2F", "#2B1D0A"]
   },
   {
-    "id": "pal-violet-08",
-    "ten": "Tím ngân hà",
-    "tags": ["huyền", "đêm", "sâu"],
-    "stops": ["#4c1d95", "#7c3aed", "#a78bfa"]
+    "id": "pl_0008",
+    "ten": "Vàng cổ điển",
+    "tags": ["Kim loại ánh sang", "Ấm", "Kim loại", "Hoài cổ", "Tương phản vừa"],
+    "stops": ["#FFF0C2", "#E8C87C", "#C9A24D", "#7C5A22", "#2B1D0C"]
   },
   {
-    "id": "pal-ice-09",
-    "ten": "Băng tuyết",
-    "tags": ["lạnh", "sạch", "tinh khiết"],
-    "stops": ["#e2e8f0", "#cbd5f5", "#93c5fd"]
+    "id": "pl_0009",
+    "ten": "Đồng hun khói",
+    "tags": ["Kim loại ánh sang", "Ấm", "Kim loại", "Da", "Tương phản cao"],
+    "stops": ["#FFE6D0", "#E6B68D", "#B77745", "#6A3F25", "#2B1A12"]
   },
   {
-    "id": "pal-sand-10",
-    "ten": "Đồi cát sớm",
-    "tags": ["cát", "ấm", "tĩnh"],
-    "stops": ["#e3b87b", "#d39b54", "#b3743d"]
+    "id": "pl_0010",
+    "ten": "Bạc lạnh",
+    "tags": ["Kim loại ánh sang", "Lạnh", "Kim loại", "Tối giản", "Tương phản thấp"],
+    "stops": ["#F8FAFC", "#E6EEF6", "#C1CEDA", "#7B8999", "#2A313A"]
   },
   {
-    "id": "pal-neon-11",
-    "ten": "Neon đêm",
-    "tags": ["neon", "đậm", "nổi"],
-    "stops": ["#ff3dcd", "#7c3aed", "#20e3b2"]
+    "id": "pl_0011",
+    "ten": "Chrome tối",
+    "tags": ["Kim loại ánh sang", "Lạnh", "Kim loại", "Tương lai", "Tương phản cao"],
+    "stops": ["#F2F5F7", "#BFC7D1", "#7A8494", "#323A46", "#0F1116"]
   },
   {
-    "id": "pal-rose-12",
-    "ten": "Vườn hồng",
-    "tags": ["lãng mạn", "ngọt", "ấm"],
-    "stops": ["#fb7185", "#fda4af", "#ffe4e6"]
+    "id": "pl_0012",
+    "ten": "Đen vàng quyền lực",
+    "tags": ["Kim loại ánh sang", "Trung tính", "Quyền lực", "Dạ tiệc", "Tương phản cao"],
+    "stops": ["#F7E6B5", "#D8B86A", "#8A6A2A", "#1C1B18", "#050505"]
   },
   {
-    "id": "pal-lake-13",
-    "ten": "Hồ thu",
-    "tags": ["trầm", "xanh", "sương"],
-    "stops": ["#0f766e", "#2dd4bf", "#99f6e4"]
+    "id": "pl_0013",
+    "ten": "Ngọc lục bảo",
+    "tags": ["Đá quý quyền lực", "Lạnh", "Đá quý", "Quyền lực", "Tương phản cao"],
+    "stops": ["#E9F6EF", "#A7E0C1", "#3FB37E", "#0E6B44", "#062A1C"]
   },
   {
-    "id": "pal-copper-14",
-    "ten": "Đồng cổ",
-    "tags": ["kim", "ấm", "vintage"],
-    "stops": ["#7c2d12", "#c2410c", "#f59e0b"]
+    "id": "pl_0014",
+    "ten": "Lam sapphire",
+    "tags": ["Đá quý quyền lực", "Lạnh", "Đá quý", "Công sở", "Tương phản cao"],
+    "stops": ["#EAF1FF", "#A9C6FF", "#3A72E6", "#183A8C", "#08152F"]
   },
   {
-    "id": "pal-mist-15",
-    "ten": "Sương bạc",
-    "tags": ["mờ", "nhẹ", "tinh tế"],
-    "stops": ["#f1f5f9", "#e2e8f0", "#94a3b8"]
+    "id": "pl_0015",
+    "ten": "Tím amethyst",
+    "tags": ["Đá quý quyền lực", "Lạnh", "Đá quý", "Dạ tiệc", "Tương phản cao"],
+    "stops": ["#F3ECFF", "#D0B7FF", "#8B5CF6", "#4B2AA6", "#1A1036"]
   },
   {
-    "id": "pal-mint-16",
-    "ten": "Bạc hà chín",
-    "tags": ["mát", "trong", "trẻ"],
-    "stops": ["#2dd4bf", "#5eead4", "#ccfbf1"]
+    "id": "pl_0016",
+    "ten": "Đỏ ruby",
+    "tags": ["Đá quý quyền lực", "Ấm", "Đá quý", "Dạ tiệc", "Tương phản cao"],
+    "stops": ["#FFECEF", "#FFB7C2", "#E11D48", "#7A0B24", "#25040D"]
   },
   {
-    "id": "pal-ember-17",
-    "ten": "Tàn lửa",
-    "tags": ["nóng", "đậm", "đất"],
-    "stops": ["#7f1d1d", "#b91c1c", "#f97316"]
+    "id": "pl_0017",
+    "ten": "Ngọc trai & onyx",
+    "tags": ["Đá quý quyền lực", "Trung tính", "Đá quý", "Tối giản", "Tương phản cao"],
+    "stops": ["#FAF7F2", "#E6E2DA", "#B8B2A8", "#3B3B3B", "#0B0B0B"]
   },
   {
-    "id": "pal-lime-18",
-    "ten": "Chanh non",
-    "tags": ["năng lượng", "tươi", "xanh"],
-    "stops": ["#84cc16", "#bef264", "#ecfccb"]
+    "id": "pl_0018",
+    "ten": "Xanh ngọc thạch",
+    "tags": ["Đá quý quyền lực", "Lạnh", "Đá quý", "Du thuyền", "Tương phản vừa"],
+    "stops": ["#F0FBF7", "#BFEBD8", "#55C7A5", "#1C7A62", "#0B2B23"]
   },
   {
-    "id": "pal-orchid-19",
-    "ten": "Lan tím mịn",
-    "tags": ["dịu", "tím", "mềm"],
-    "stops": ["#a855f7", "#d8b4fe", "#f3e8ff"]
+    "id": "pl_0019",
+    "ten": "Vang đỏ dạ tiệc",
+    "tags": ["Nhung và rượu vang", "Ấm", "Nhung", "Dạ tiệc", "Tương phản cao"],
+    "stops": ["#FFF0F3", "#F7B2C0", "#B23A57", "#57162A", "#1A070D"]
   },
   {
-    "id": "pal-skyline-20",
-    "ten": "Đường chân trời",
-    "tags": ["đô thị", "xanh", "sáng"],
-    "stops": ["#0ea5e9", "#38bdf8", "#bae6fd"]
+    "id": "pl_0020",
+    "ten": "Mận chín nhung",
+    "tags": ["Nhung và rượu vang", "Lạnh", "Nhung", "Bí ẩn", "Tương phản cao"],
+    "stops": ["#F8F0FF", "#DAB7FF", "#7C3AED", "#3B1A77", "#13081F"]
   },
   {
-    "id": "pal-chocolate-21",
-    "ten": "Sô-cô-la",
-    "tags": ["đậm", "ấm", "mượt"],
-    "stops": ["#4a1d1f", "#7c2d12", "#fbbf24"]
+    "id": "pl_0021",
+    "ten": "Hồng cổ điển",
+    "tags": ["Nhung và rượu vang", "Ấm", "Lãng mạn", "Hoài cổ", "Tương phản vừa"],
+    "stops": ["#FFF2F6", "#F6C0D0", "#D06E8A", "#7A2D44", "#220A14"]
   },
   {
-    "id": "pal-lavender-22",
-    "ten": "Oải hương",
-    "tags": ["dịu", "tím", "mơ"],
-    "stops": ["#8b5cf6", "#c4b5fd", "#ede9fe"]
+    "id": "pl_0022",
+    "ten": "Cacao đậm",
+    "tags": ["Nhung và rượu vang", "Ấm", "Gỗ", "Công sở", "Tương phản vừa"],
+    "stops": ["#F9F3EE", "#E6D1C4", "#B48A77", "#6A3D33", "#251411"]
   },
   {
-    "id": "pal-slate-23",
-    "ten": "Phiến đá",
-    "tags": ["trầm", "tĩnh", "xám"],
-    "stops": ["#1f2937", "#475569", "#94a3b8"]
+    "id": "pl_0023",
+    "ten": "Rượu chát & da",
+    "tags": ["Nhung và rượu vang", "Ấm", "Da", "Dạ tiệc", "Tương phản cao"],
+    "stops": ["#FFF2E8", "#E9BFA6", "#B86E54", "#5A2E22", "#1B0F0B"]
   },
   {
-    "id": "pal-gold-24",
-    "ten": "Vàng rực",
-    "tags": ["sáng", "quý", "ấm"],
-    "stops": ["#f59e0b", "#facc15", "#fef08a"]
+    "id": "pl_0024",
+    "ten": "Hồng tro sang",
+    "tags": ["Nhung và rượu vang", "Trung tính", "Tối giản", "Công sở", "Tương phản thấp"],
+    "stops": ["#FAF2F4", "#E4C7CD", "#B08B96", "#5C3A42", "#1A1013"]
+  },
+  {
+    "id": "pl_0025",
+    "ten": "Sương lam",
+    "tags": ["Sương và pha lê", "Lạnh", "Pha lê", "Tối giản", "Tương phản vừa"],
+    "stops": ["#F7FBFF", "#DCEBFF", "#A8C7E8", "#5E85B7", "#20324F"]
+  },
+  {
+    "id": "pl_0026",
+    "ten": "Pha lê băng",
+    "tags": ["Sương và pha lê", "Lạnh", "Pha lê", "Thiền", "Tương phản thấp"],
+    "stops": ["#FAFDFF", "#E4F2F8", "#B9D6E6", "#6EA0B7", "#1F3A46"]
+  },
+  {
+    "id": "pl_0027",
+    "ten": "Xám sương",
+    "tags": ["Sương và pha lê", "Trung tính", "Tối giản", "Công sở", "Tương phản thấp"],
+    "stops": ["#F8F8F8", "#E5E5E5", "#B9B9B9", "#7A7A7A", "#2E2E2E"]
+  },
+  {
+    "id": "pl_0028",
+    "ten": "Hồ muối",
+    "tags": ["Sương và pha lê", "Lạnh", "Thiền", "Tương phản vừa"],
+    "stops": ["#F7FFFA", "#D9F4E6", "#A7D9C1", "#4F9B7E", "#173A2D"]
+  },
+  {
+    "id": "pl_0029",
+    "ten": "Trà trắng",
+    "tags": ["Sương và pha lê", "Ấm", "Tối giản", "Công sở", "Tương phản thấp"],
+    "stops": ["#FFFCF5", "#F1E9D8", "#D7C7A8", "#9A875F", "#3A2F1D"]
+  },
+  {
+    "id": "pl_0030",
+    "ten": "Mây xám Paris",
+    "tags": ["Sương và pha lê", "Trung tính", "Tối giản", "Công sở", "Tương phản vừa"],
+    "stops": ["#FAFAFA", "#E0E3E8", "#A3ABB8", "#4B5563", "#111827"]
+  },
+  {
+    "id": "pl_0031",
+    "ten": "Đêm xanh đen",
+    "tags": ["Đêm đô thị", "Lạnh", "Quyền lực", "Tương phản cao"],
+    "stops": ["#EAF2FF", "#8FB3FF", "#2E5BD0", "#142B63", "#070A12"]
+  },
+  {
+    "id": "pl_0032",
+    "ten": "Đèn phố",
+    "tags": ["Đêm đô thị", "Ấm", "Kịch tính", "Dạ tiệc", "Tương phản cao"],
+    "stops": ["#FFF7E8", "#F2D39C", "#D97706", "#2D2A28", "#0B0B0E"]
+  },
+  {
+    "id": "pl_0033",
+    "ten": "Neon tinh tế",
+    "tags": ["Đêm đô thị", "Lạnh", "Tương lai", "Kịch tính", "Tương phản cao"],
+    "stops": ["#FDF2F8", "#C026D3", "#5B21B6", "#1E2A5A", "#0B1020"]
+  },
+  {
+    "id": "pl_0034",
+    "ten": "Sân khấu",
+    "tags": ["Đêm đô thị", "Ấm", "Kịch tính", "Dạ tiệc", "Tương phản cao"],
+    "stops": ["#FFF1E7", "#FCA5A5", "#EF4444", "#7F1D1D", "#0F0F12"]
+  },
+  {
+    "id": "pl_0035",
+    "ten": "Đen tím huyền",
+    "tags": ["Đêm đô thị", "Lạnh", "Bí ẩn", "Tương phản cao"],
+    "stops": ["#F3E8FF", "#C4B5FD", "#6D28D9", "#2E1065", "#0B0615"]
+  },
+  {
+    "id": "pl_0036",
+    "ten": "Xanh rêu thành thị",
+    "tags": ["Đêm đô thị", "Trung tính", "Công sở", "Tương phản vừa"],
+    "stops": ["#F1F8F2", "#C7E6CD", "#4D9A5E", "#1F4D2A", "#0B1A0E"]
+  },
+  {
+    "id": "pl_0037",
+    "ten": "Ngọc trai biển",
+    "tags": ["Biển sâu và ngọc trai", "Lạnh", "Du thuyền", "Thanh lịch", "Tương phản vừa"],
+    "stops": ["#FFFDF8", "#E8F2F2", "#B7D7D5", "#3A8F8B", "#0B2B2C"]
+  },
+  {
+    "id": "pl_0038",
+    "ten": "Đại dương trầm",
+    "tags": ["Biển sâu và ngọc trai", "Lạnh", "Bí ẩn", "Tương phản cao"],
+    "stops": ["#E8F7FF", "#9AD8F2", "#2BA6CB", "#0B4B6B", "#06202B"]
+  },
+  {
+    "id": "pl_0039",
+    "ten": "San hô sang",
+    "tags": ["Biển sâu và ngọc trai", "Ấm", "Resort", "Lãng mạn", "Tương phản vừa"],
+    "stops": ["#FFF5F1", "#FFD1C1", "#FF8A7A", "#B3403A", "#3A1213"]
+  },
+  {
+    "id": "pl_0040",
+    "ten": "Vỏ sò",
+    "tags": ["Biển sâu và ngọc trai", "Ấm", "Hoài cổ", "Tương phản vừa"],
+    "stops": ["#FFF9F2", "#F1E0CF", "#D0B59B", "#8E6F55", "#2F231B"]
+  },
+  {
+    "id": "pl_0041",
+    "ten": "Đầm xanh ngọc",
+    "tags": ["Biển sâu và ngọc trai", "Lạnh", "Thiền", "Tương phản cao"],
+    "stops": ["#F1FFFB", "#B6F2E3", "#35C9A8", "#0D7B63", "#052C25"]
+  },
+  {
+    "id": "pl_0042",
+    "ten": "Hoàng hôn biển",
+    "tags": ["Biển sâu và ngọc trai", "Trung tính", "Kịch tính", "Du thuyền", "Tương phản cao"],
+    "stops": ["#FFF1E6", "#F6C7A1", "#E07A5F", "#3D5A80", "#0B1320"]
+  },
+  {
+    "id": "pl_0043",
+    "ten": "Tranh sơn dầu",
+    "tags": ["Hoài cổ phòng tranh", "Ấm", "Gỗ", "Hoài cổ", "Tương phản vừa"],
+    "stops": ["#F7F2E7", "#D9C6A3", "#A67C52", "#5E3B2A", "#22130D"]
+  },
+  {
+    "id": "pl_0044",
+    "ten": "Giấy cũ",
+    "tags": ["Hoài cổ phòng tranh", "Ấm", "Tối giản", "Hoài cổ", "Tương phản thấp"],
+    "stops": ["#FFFBF1", "#F2E6C9", "#D6C1A0", "#A58B63", "#3D2F1E"]
+  },
+  {
+    "id": "pl_0045",
+    "ten": "Xanh olive cổ",
+    "tags": ["Hoài cổ phòng tranh", "Trung tính", "Hoài cổ", "Tương phản vừa"],
+    "stops": ["#F7F8F2", "#DDE3C8", "#A6B37A", "#5E6D32", "#242A12"]
+  },
+  {
+    "id": "pl_0046",
+    "ten": "Mực tàu sang",
+    "tags": ["Hoài cổ phòng tranh", "Lạnh", "Tối giản", "Quyền lực", "Tương phản cao"],
+    "stops": ["#F7F7F7", "#C9CDD3", "#7C8594", "#2A3340", "#0A0D12"]
+  },
+  {
+    "id": "pl_0047",
+    "ten": "Da lộn",
+    "tags": ["Hoài cổ phòng tranh", "Ấm", "Da", "Công sở", "Tương phản vừa"],
+    "stops": ["#FFF7EE", "#E7D0B8", "#C59B74", "#7A5738", "#2C1E14"]
+  },
+  {
+    "id": "pl_0048",
+    "ten": "Lụa đen",
+    "tags": ["Hoài cổ phòng tranh", "Lạnh", "Nhung", "Bí ẩn", "Tương phản cao"],
+    "stops": ["#F5F2FF", "#B9A7FF", "#4C1D95", "#1F1235", "#05030A"]
   }
 ]
