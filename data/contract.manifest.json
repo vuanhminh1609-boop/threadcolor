@@ -25,7 +25,7 @@
       "schema": "data/schemas/palettes/0.1.0.json",
       "phienBanSchema": "0.1.0",
       "phienBanDuLieu": "0.1.0",
-      "checksumSha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "checksumSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
       "tinhTrang": "khoi-tao",
       "ghiChu": "Khoi tao rong cho hop dong palettes."
     },
@@ -34,7 +34,7 @@
       "schema": "data/schemas/vault/0.1.0.json",
       "phienBanSchema": "0.1.0",
       "phienBanDuLieu": "0.1.0",
-      "checksumSha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "checksumSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
       "tinhTrang": "khoi-tao",
       "ghiChu": "Khoi tao rong cho hop dong vault."
     }

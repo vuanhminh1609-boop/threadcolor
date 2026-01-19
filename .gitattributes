@@ -1,0 +1,4 @@
+data/*.json text eol=lf
+data/**/*.json text eol=lf
+threads.json text eol=lf
+data/contract.manifest.json text eol=lf
