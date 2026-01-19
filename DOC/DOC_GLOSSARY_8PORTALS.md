@@ -100,6 +100,10 @@
 | Debounce | Trễ có chủ đích | Chờ người dùng dừng gõ rồi mới tìm, tránh giật. |
 | Virtual list | Danh sách ảo | Chỉ render phần đang nhìn thấy để khỏi lag. |
 | Latency | Độ trễ | Thời gian chờ phản hồi. |
+| CDN | CDN | Mạng phân phối nội dung để phân phối tài nguyên tĩnh nhanh và ổn định. |
+| PostCSS | PostCSS | Công cụ xử lý CSS trong pipeline build (thêm prefix, tối ưu). |
+| Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |
+| DEV flag / Logger | Cờ DEV / Logger | Cơ chế bật/tắt log theo môi trường để giữ console sạch ở production. |
 
 ---
 

@@ -1,0 +1,488 @@
+{
+  "generatedAt": "2026-01-18T18:43:59.403Z",
+  "totalGroups": 13,
+  "groups": [
+    {
+      "dupKey": "gingko::y2183",
+      "brand": "Gingko",
+      "code": "Y2183",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 16,
+          "name": "Hồng",
+          "hex": "#FFC0CB",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 55,
+          "name": "Pantone 706 U",
+          "hex": "#FFD4E6",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y2182",
+      "brand": "Gingko",
+      "code": "Y2182",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 17,
+          "name": "Hồng lợt",
+          "hex": "#FFC6D0",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 54,
+          "name": "Pantone 1767 C",
+          "hex": "#FFBAE0",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y2180",
+      "brand": "Gingko",
+      "code": "Y2180",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 19,
+          "name": "Hồng lợt 2",
+          "hex": "#FFCFD7",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 53,
+          "name": "Pantone 196 C",
+          "hex": "#FFBFF5",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y2206",
+      "brand": "Gingko",
+      "code": "Y2206",
+      "count": 3,
+      "candidates": [
+        {
+          "index": 25,
+          "name": "Hồng đậm rực",
+          "hex": "#E90074",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 26,
+          "name": "Hồng đậm sẫm",
+          "hex": "#B5005B",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 62,
+          "name": "Pantone 226 C",
+          "hex": "#FF00FF",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y2291",
+      "brand": "Gingko",
+      "code": "Y2291",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 27,
+          "name": "Đỏ ánh hồng",
+          "hex": "#EA272F",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 90,
+          "name": "Pantone 032 C",
+          "hex": "#FF1A24",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y2192",
+      "brand": "Gingko",
+      "code": "Y2192",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 28,
+          "name": "Hồng nhạt",
+          "hex": "#FFD5EA",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 58,
+          "name": "Pantone 692 C",
+          "hex": "#FAC0E1",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y2460",
+      "brand": "Gingko",
+      "code": "Y2460",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 38,
+          "name": "Đỏ ánh cam",
+          "hex": "#FA3333",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 147,
+          "name": "Pantone 171 C",
+          "hex": "#FF7852",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y3469",
+      "brand": "Gingko",
+      "code": "Y3469",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 43,
+          "name": "Xanh thiên thanh sáng",
+          "hex": "#33CCFF",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 396,
+          "name": "Pantone 306 C",
+          "hex": "#40FFED",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y3685",
+      "brand": "Gingko",
+      "code": "Y3685",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 47,
+          "name": "Xanh bích nhạt",
+          "hex": "#3445DB",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 455,
+          "name": "Pantone 2728 C",
+          "hex": "#0A4FFF",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y3686",
+      "brand": "Gingko",
+      "code": "Y3686",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 48,
+          "name": "Xanh bích sẫm",
+          "hex": "#00008B",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 456,
+          "name": "Pantone 662 C",
+          "hex": "#003BD1",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y3195",
+      "brand": "Gingko",
+      "code": "Y3195",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 50,
+          "name": "Xanh lawn",
+          "hex": "#42B833",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 324,
+          "name": "Pantone 365 U",
+          "hex": "#E0FFB5",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y3698",
+      "brand": "Gingko",
+      "code": "Y3698",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 51,
+          "name": "Xanh bích",
+          "hex": "#2233C3",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 461,
+          "name": "Pantone 2736 C",
+          "hex": "#0017FF",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    },
+    {
+      "dupKey": "gingko::y3362",
+      "brand": "Gingko",
+      "code": "Y3362",
+      "count": 2,
+      "candidates": [
+        {
+          "index": 368,
+          "name": "Pantone 647 C",
+          "hex": "#0056C4",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        },
+        {
+          "index": 449,
+          "name": "Xanh lam",
+          "hex": "#375E9E",
+          "source": {
+            "type": "legacy_json",
+            "file": "77a33705-a316-4888-bbd3-5716e25c671d.json",
+            "imported_at": "2025-12-18"
+          },
+          "rating": {
+            "score": null,
+            "votes": 0
+          }
+        }
+      ]
+    }
+  ]
+}
