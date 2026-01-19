@@ -1,1 +1,146 @@
-[]
+[
+  {
+    "id": "pal-aurora-01",
+    "ten": "Bình minh nhiệt",
+    "tags": ["ấm", "rạng", "năng lượng"],
+    "stops": ["#ff5f6d", "#ffc371", "#ffe29a"]
+  },
+  {
+    "id": "pal-ocean-02",
+    "ten": "Biển ngọc sớm",
+    "tags": ["biển", "mát", "trong"],
+    "stops": ["#0ea5a8", "#4dd4ff", "#c7f9ff"]
+  },
+  {
+    "id": "pal-ink-03",
+    "ten": "Mực tàu trầm",
+    "tags": ["tĩnh", "đậm", "đêm"],
+    "stops": ["#0f172a", "#475569", "#cbd5f5"]
+  },
+  {
+    "id": "pal-lotus-04",
+    "ten": "Hồng sen sương",
+    "tags": ["dịu", "nữ tính", "mơ"],
+    "stops": ["#f472b6", "#f9a8d4", "#fde7f3"]
+  },
+  {
+    "id": "pal-sunset-05",
+    "ten": "Hoàng hôn phố",
+    "tags": ["hoàng hôn", "ấm", "đô thị"],
+    "stops": ["#ff6b6b", "#ff8e53", "#ffc371"]
+  },
+  {
+    "id": "pal-forest-06",
+    "ten": "Rừng thông non",
+    "tags": ["xanh", "tươi", "mát"],
+    "stops": ["#16a34a", "#86efac", "#dcfce7"]
+  },
+  {
+    "id": "pal-citrus-07",
+    "ten": "Cam quýt vui",
+    "tags": ["tươi", "nắng", "rộn"],
+    "stops": ["#f97316", "#fbbf24", "#fde68a"]
+  },
+  {
+    "id": "pal-violet-08",
+    "ten": "Tím ngân hà",
+    "tags": ["huyền", "đêm", "sâu"],
+    "stops": ["#4c1d95", "#7c3aed", "#a78bfa"]
+  },
+  {
+    "id": "pal-ice-09",
+    "ten": "Băng tuyết",
+    "tags": ["lạnh", "sạch", "tinh khiết"],
+    "stops": ["#e2e8f0", "#cbd5f5", "#93c5fd"]
+  },
+  {
+    "id": "pal-sand-10",
+    "ten": "Đồi cát sớm",
+    "tags": ["cát", "ấm", "tĩnh"],
+    "stops": ["#e3b87b", "#d39b54", "#b3743d"]
+  },
+  {
+    "id": "pal-neon-11",
+    "ten": "Neon đêm",
+    "tags": ["neon", "đậm", "nổi"],
+    "stops": ["#ff3dcd", "#7c3aed", "#20e3b2"]
+  },
+  {
+    "id": "pal-rose-12",
+    "ten": "Vườn hồng",
+    "tags": ["lãng mạn", "ngọt", "ấm"],
+    "stops": ["#fb7185", "#fda4af", "#ffe4e6"]
+  },
+  {
+    "id": "pal-lake-13",
+    "ten": "Hồ thu",
+    "tags": ["trầm", "xanh", "sương"],
+    "stops": ["#0f766e", "#2dd4bf", "#99f6e4"]
+  },
+  {
+    "id": "pal-copper-14",
+    "ten": "Đồng cổ",
+    "tags": ["kim", "ấm", "vintage"],
+    "stops": ["#7c2d12", "#c2410c", "#f59e0b"]
+  },
+  {
+    "id": "pal-mist-15",
+    "ten": "Sương bạc",
+    "tags": ["mờ", "nhẹ", "tinh tế"],
+    "stops": ["#f1f5f9", "#e2e8f0", "#94a3b8"]
+  },
+  {
+    "id": "pal-mint-16",
+    "ten": "Bạc hà chín",
+    "tags": ["mát", "trong", "trẻ"],
+    "stops": ["#2dd4bf", "#5eead4", "#ccfbf1"]
+  },
+  {
+    "id": "pal-ember-17",
+    "ten": "Tàn lửa",
+    "tags": ["nóng", "đậm", "đất"],
+    "stops": ["#7f1d1d", "#b91c1c", "#f97316"]
+  },
+  {
+    "id": "pal-lime-18",
+    "ten": "Chanh non",
+    "tags": ["năng lượng", "tươi", "xanh"],
+    "stops": ["#84cc16", "#bef264", "#ecfccb"]
+  },
+  {
+    "id": "pal-orchid-19",
+    "ten": "Lan tím mịn",
+    "tags": ["dịu", "tím", "mềm"],
+    "stops": ["#a855f7", "#d8b4fe", "#f3e8ff"]
+  },
+  {
+    "id": "pal-skyline-20",
+    "ten": "Đường chân trời",
+    "tags": ["đô thị", "xanh", "sáng"],
+    "stops": ["#0ea5e9", "#38bdf8", "#bae6fd"]
+  },
+  {
+    "id": "pal-chocolate-21",
+    "ten": "Sô-cô-la",
+    "tags": ["đậm", "ấm", "mượt"],
+    "stops": ["#4a1d1f", "#7c2d12", "#fbbf24"]
+  },
+  {
+    "id": "pal-lavender-22",
+    "ten": "Oải hương",
+    "tags": ["dịu", "tím", "mơ"],
+    "stops": ["#8b5cf6", "#c4b5fd", "#ede9fe"]
+  },
+  {
+    "id": "pal-slate-23",
+    "ten": "Phiến đá",
+    "tags": ["trầm", "tĩnh", "xám"],
+    "stops": ["#1f2937", "#475569", "#94a3b8"]
+  },
+  {
+    "id": "pal-gold-24",
+    "ten": "Vàng rực",
+    "tags": ["sáng", "quý", "ấm"],
+    "stops": ["#f59e0b", "#facc15", "#fef08a"]
+  }
+]
