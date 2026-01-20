@@ -6,6 +6,7 @@
 - worlds/threadcolor.html
 - worlds/threadvault.html
 - worlds/palette.html
+- worlds/gradient.html
 - auth.js
 - i18n.js
 - script.js
@@ -19,7 +20,7 @@
 
 ## Checklist test PASS/FAIL
 - Mo index.html: khong co loi console nghiem trong
-- Vao 3 world: threadcolor / threadvault / palette
+- Vao 4 world: threadcolor / threadvault / palette / gradient
 - Mo palette: khong loi console, tab hoat dong, export ok
 - validate_contract PASS
 - Login hien thi top-right, khong nhay layout

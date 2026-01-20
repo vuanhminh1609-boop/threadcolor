@@ -32,7 +32,7 @@
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
-| Palette | Thế giới Dải màu (Palette) | Thế giới tạo/ghép/dùng dải màu; có thể là “Sắp ra mắt”. |
+| Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
 | Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
 | Slot đăng nhập | Vị trí Đăng nhập | Khu vực “neo” hiển thị đăng nhập/đăng xuất ở top-right (không được đổi tuỳ tiện). |
 | Microcopy | Vi mô ngôn từ | Câu chữ ngắn trong UI (nhãn nút, mô tả) — phải “đắt và sạch”. |
@@ -130,11 +130,16 @@
 | Repo Doctor | Bác sĩ kho mã | Công cụ quét repo: lỗi gãy (BLOCK), cảnh báo (WARN), thông tin (INFO). |
 | Health Score | Điểm sức khoẻ | Điểm 0–100 phản ánh tình trạng repo theo quy tắc đã thống nhất. |
 | Trend 7 ngày | Xu hướng 7 ngày | Chuỗi điểm/đếm trong 7 ngày gần nhất để xem tiến hay lùi. |
-| Gradient (dải chuyển màu liên tục) | Gradient | Dải màu chuyển liên tục giữa nhiều màu theo một hướng. |
+| Dải chuyển màu (gradient: chuyển màu liên tục) | Dải chuyển màu | Dải màu chuyển liên tục giữa nhiều màu theo một hướng. |
 | Điểm neo màu (color stop: điểm màu trên dải) | Điểm neo màu | Vị trí màu cụ thể trong gradient, xác định độ chuyển và tỉ lệ. |
 | Token màu (biến màu dùng lại cho UI/thiết kế) | Token màu | Biến màu tái sử dụng trong thiết kế hoặc CSS, giúp thống nhất hệ màu. |
 | Remix (tạo biến thể từ mẫu có sẵn) | Remix | Tạo biến thể màu mới bằng cách chỉnh sửa từ một dải gốc. |
 | Palette Link (chia sẻ dải màu bằng URL) | Palette Link | Đường link chứa thông tin dải màu để chia sẻ hoặc tái sử dụng nhanh. |
+| Bảng phối màu (palette: bộ phối màu gồm nhiều màu rời) | Bảng phối màu | Bộ phối màu gồm nhiều màu rời dùng để thiết kế nhất quán. |
+| Ô màu (swatch: ô hiển thị một màu) | Ô màu | Ô hiển thị một màu cụ thể trong bảng phối. |
+| Dải xem nhanh (strip: thanh mảnh hiển thị dải) | Dải xem nhanh | Thanh mảnh hiển thị dải màu để tham chiếu nhanh. |
+| Chế độ hiển thị (view mode: cách trình bày dữ liệu) | Chế độ hiển thị | Cách sắp xếp và trình bày dữ liệu theo nhu cầu sử dụng. |
+| Góc dải (angle: hướng dải trong CSS) | Góc dải | Góc xác định hướng dải chuyển màu trong CSS (ví dụ 90deg). |
 | BLOCK | Chặn khẩn cấp | Lỗi mức P0: làm gãy chạy/thiếu file runtime/syntax… => không merge. |
 | WARN | Cảnh báo | Vấn đề cần dọn/tối ưu nhưng chưa làm gãy hệ. |
 | INFO | Ghi nhận | Thông tin thống kê, không phải lỗi. |
