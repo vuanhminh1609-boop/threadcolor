@@ -117,6 +117,15 @@
 | Giả lập in | Giả lập in | Mô phỏng màu in ra từ CMYK để ước lượng hiển thị trên màn hình. |
 | Hồ sơ in | Hồ sơ in | Preset thông số in (đặc biệt ngưỡng TAC) cho từng chất liệu. |
 | Độ lệch màu | Độ lệch màu | Mức chênh giữa màu gốc và màu giả lập in (thấp/vừa/cao). |
+| Rich black (đen giàu) | Đen giàu | Công thức đen có thêm C/M/Y để đen sâu hơn cho mảng lớn. |
+| Misregistration (lệch chồng bản) | Lệch chồng bản | Sai lệch chồng giữa các bản in màu khiến viền lem hoặc lệch. |
+| GCR/UCR | GCR/UCR | Kỹ thuật thay màu xám bằng K (GCR) hoặc giảm CMY ở vùng tối (UCR). |
+| Rendering intent | Rendering intent | Cách ưu tiên khi chuyển đổi màu (giữ cảm giác, giữ tuyệt đối, bão hoà...). |
+| BPC (Black Point Compensation) | BPC (bù điểm đen) | Bù điểm đen để map vùng tối giữa profile nguồn/đích. |
+| Soft proof | Giả lập in trên màn hình (soft proof) | Mô phỏng màu in ra trên màn hình theo ICC. |
+| PCS (Profile Connection Space) | Không gian nối profile (PCS) | Không gian trung gian (thường Lab/XYZ) để chuyển đổi giữa các profile. |
+| Lab | Lab | Không gian màu độc lập thiết bị, dùng cho PCS và đo sai khác. |
+| DeltaE | DeltaE | Chỉ số đo độ lệch màu giữa hai màu trong không gian Lab. |
 
 ---
 

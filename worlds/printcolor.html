@@ -184,6 +184,19 @@
       align-items: center;
       gap: 8px;
     }
+    .tc-row-gamut{
+      background: rgba(185, 28, 28, 0.08);
+    }
+    .tc-row-gamut .tc-swatch{
+      box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.55);
+    }
+    .tc-details summary{
+      list-style: none;
+      cursor: pointer;
+    }
+    .tc-details summary::-webkit-details-marker{
+      display: none;
+    }
     .tc-table th,
     .tc-table td{
       padding: 10px 12px;
@@ -417,6 +430,52 @@
               <input id="tacRange" class="tc-range" type="range" min="200" max="360" step="5" value="300">
             </div>
           </div>
+          <div class="tc-card p-4">
+            <h2 class="text-sm font-semibold">Hồ sơ ICC</h2>
+            <p class="tc-muted text-xs mt-1">Nạp ICC local-first để chuyển đổi chính xác hơn.</p>
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+              <label class="tc-btn tc-chip px-3 py-2 text-sm" for="iccInput">Nạp ICC</label>
+              <input id="iccInput" type="file" accept=".icc,.icm" hidden>
+              <select id="iccProfile" class="tc-input w-full md:w-[220px]"></select>
+            </div>
+            <p id="iccStatus" class="tc-muted text-xs mt-2">Đang dùng sRGB xấp xỉ (chưa có ICC).</p>
+            <details class="tc-details mt-3">
+              <summary class="tc-btn tc-chip px-3 py-2 text-xs inline-flex">Nâng cao</summary>
+              <div class="mt-3 space-y-3">
+                <label class="text-sm font-semibold" for="iccIntent">Rendering intent</label>
+                <select id="iccIntent" class="tc-input">
+                  <option value="perceptual">Perceptual (0)</option>
+                  <option value="relative">Relative Colorimetric (1)</option>
+                  <option value="saturation">Saturation (2)</option>
+                  <option value="absolute">Absolute Colorimetric (3)</option>
+                </select>
+                <label class="text-sm font-semibold flex items-center gap-2">
+                  <input id="iccBpc" type="checkbox" class="accent-black">
+                  Bù điểm đen (BPC)
+                </label>
+                <label class="text-sm font-semibold" for="gamutThreshold">Ngưỡng DeltaE</label>
+                <input id="gamutThreshold" class="tc-input" type="number" min="1" max="20" step="1" value="5">
+                <label class="text-sm font-semibold flex items-center gap-2">
+                  <input id="gamutOverlay" type="checkbox" class="accent-black">
+                  Tô phủ cảnh báo
+                </label>
+              </div>
+            </details>
+          </div>
+          <div class="tc-card p-4">
+            <h2 class="text-sm font-semibold">Đen giàu (Rich black)</h2>
+            <p class="tc-muted text-xs mt-1">Áp dụng cho vùng tối/đen khi xuất in.</p>
+            <div class="mt-3 space-y-3">
+              <label class="text-sm font-semibold" for="richBlackPreset">Preset</label>
+              <select id="richBlackPreset" class="tc-input">
+                <option value="text">Đen chữ (K=100)</option>
+                <option value="coated">Đen mảng - Couche</option>
+                <option value="uncoated">Đen mảng - Thường</option>
+                <option value="newsprint">Đen mảng - Báo</option>
+              </select>
+              <p class="tc-muted text-xs">Tự cắt TAC nếu vượt ngưỡng.</p>
+            </div>
+          </div>
         </div>
 
         <div class="tc-card p-4">
@@ -426,7 +485,8 @@
               <p class="tc-muted text-xs mt-1">TAC = C + M + Y + K. Cảnh báo khi vượt ngưỡng.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 justify-end">
-              <button id="reduceAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Giảm TAC tất cả</button>
+              <button id="safePrintAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Đưa về an toàn in</button>
+              <button id="reduceAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Giảm TAC theo ngưỡng</button>
               <span class="tc-badge">TAC ngưỡng <span id="tacBadge">300%</span></span>
             </div>
           </div>
@@ -452,6 +512,7 @@
               <option value="csv">Xuất CSV</option>
               <option value="json">JSON tokens</option>
               <option value="css">CSS variables</option>
+              <option value="report">Báo cáo in</option>
             </select>
             <button id="exportCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép</button>
           </div>

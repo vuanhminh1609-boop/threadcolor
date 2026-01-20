@@ -4,6 +4,20 @@ const PROFILE_PRESETS = {
   "240": { name: "Báo 240%", tac: 240 }
 };
 
+const INTENT_LABELS = {
+  perceptual: "Perceptual",
+  relative: "Relative Colorimetric",
+  saturation: "Saturation",
+  absolute: "Absolute Colorimetric"
+};
+
+const RICH_BLACK_PRESETS = {
+  text: { name: "Đen chữ", cmyk: { c: 0, m: 0, y: 0, k: 100 } },
+  coated: { name: "Đen mảng - Couche", cmyk: { c: 60, m: 40, y: 40, k: 100 } },
+  uncoated: { name: "Đen mảng - Thường", cmyk: { c: 50, m: 40, y: 40, k: 100 } },
+  newsprint: { name: "Đen mảng - Báo", cmyk: { c: 40, m: 30, y: 30, k: 100 } }
+};
+
 const elements = {
   input: document.getElementById("hexInput"),
   apply: document.getElementById("hexApply"),
@@ -18,12 +32,31 @@ const elements = {
   tacBadge: document.getElementById("tacBadge"),
   reduceAll: document.getElementById("reduceAll"),
   exportFormat: document.getElementById("exportFormat"),
-  exportCopy: document.getElementById("exportCopy")
+  exportCopy: document.getElementById("exportCopy"),
+  iccInput: document.getElementById("iccInput"),
+  iccProfile: document.getElementById("iccProfile"),
+  iccStatus: document.getElementById("iccStatus"),
+  iccIntent: document.getElementById("iccIntent"),
+  iccBpc: document.getElementById("iccBpc"),
+  gamutThreshold: document.getElementById("gamutThreshold"),
+  gamutOverlay: document.getElementById("gamutOverlay"),
+  richBlackPreset: document.getElementById("richBlackPreset"),
+  safePrintAll: document.getElementById("safePrintAll")
 };
 
 const state = {
   items: [],
-  tacLimit: 300
+  tacLimit: 300,
+  iccProfiles: [],
+  iccSelectedId: "srgb",
+  iccIntent: "perceptual",
+  iccBpc: true,
+  gamutThreshold: 5,
+  gamutOverlay: false,
+  richBlackPreset: "text",
+  iccEngine: null,
+  iccReady: false,
+  iccLoading: false
 };
 
 const normalizeHex = (value) => {
@@ -91,6 +124,49 @@ const cmykToRgb = ({ c, m, y, k }) => {
   return { r, g, b };
 };
 
+const srgbToLinear = (value) => {
+  const v = value / 255;
+  return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+};
+
+const rgbToXyz = ({ r, g, b }) => {
+  const rl = srgbToLinear(r);
+  const gl = srgbToLinear(g);
+  const bl = srgbToLinear(b);
+  return {
+    x: rl * 0.4124 + gl * 0.3576 + bl * 0.1805,
+    y: rl * 0.2126 + gl * 0.7152 + bl * 0.0722,
+    z: rl * 0.0193 + gl * 0.1192 + bl * 0.9505
+  };
+};
+
+const xyzToLab = ({ x, y, z }) => {
+  const refX = 0.95047;
+  const refY = 1.00000;
+  const refZ = 1.08883;
+  const fx = x / refX;
+  const fy = y / refY;
+  const fz = z / refZ;
+  const eps = 0.008856;
+  const kappa = 903.3;
+  const f = (t) => (t > eps ? Math.cbrt(t) : (kappa * t + 16) / 116);
+  const fxn = f(fx);
+  const fyn = f(fy);
+  const fzn = f(fz);
+  return {
+    l: Math.max(0, 116 * fyn - 16),
+    a: 500 * (fxn - fyn),
+    b: 200 * (fyn - fzn)
+  };
+};
+
+const deltaE = (lab1, lab2) => {
+  const dl = lab1.l - lab2.l;
+  const da = lab1.a - lab2.a;
+  const db = lab1.b - lab2.b;
+  return Math.sqrt(dl * dl + da * da + db * db);
+};
+
 const getHashParams = () => {
   const hash = window.location.hash ? window.location.hash.slice(1) : "";
   if (!hash) return {};
@@ -155,7 +231,119 @@ const copyToClipboard = (text) => {
   });
 };
 
+const openIccDb = () => new Promise((resolve) => {
+  if (!("indexedDB" in window)) {
+    resolve(null);
+    return;
+  }
+  const request = indexedDB.open("tc_icc_profiles", 1);
+  request.onupgradeneeded = () => {
+    const db = request.result;
+    if (!db.objectStoreNames.contains("profiles")) {
+      db.createObjectStore("profiles", { keyPath: "id" });
+    }
+  };
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => resolve(null);
+});
+
+const loadProfilesFromDb = async () => {
+  const db = await openIccDb();
+  if (!db) return [];
+  return new Promise((resolve) => {
+    const tx = db.transaction("profiles", "readonly");
+    const store = tx.objectStore("profiles");
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => resolve([]);
+  });
+};
+
+const saveProfileToDb = async (profile) => {
+  const db = await openIccDb();
+  if (!db) return;
+  await new Promise((resolve) => {
+    const tx = db.transaction("profiles", "readwrite");
+    tx.objectStore("profiles").put(profile);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => resolve();
+  });
+};
+
+const resolveIccEngine = () => {
+  if (window.Lcms2Wasm?.rgbToCmyk && window.Lcms2Wasm?.cmykToRgb) {
+    return window.Lcms2Wasm;
+  }
+  if (window.lcms2?.rgbToCmyk && window.lcms2?.cmykToRgb) {
+    return window.lcms2;
+  }
+  return null;
+};
+
+const loadIccEngine = () => {
+  if (state.iccReady || state.iccLoading) return;
+  state.iccLoading = true;
+  const script = document.createElement("script");
+  script.src = "../assets/wasm/lcms2.js";
+  script.async = true;
+  script.onload = () => {
+    const engine = resolveIccEngine();
+    if (engine) {
+      state.iccEngine = engine;
+      state.iccReady = true;
+      updateIccStatus();
+      rebuildItems();
+    } else {
+      state.iccReady = false;
+      updateIccStatus("Chưa thấy engine ICC trong lcms2.js.");
+    }
+  };
+  script.onerror = () => {
+    state.iccReady = false;
+    updateIccStatus("Không tải được lcms2 WASM.");
+  };
+  document.head.appendChild(script);
+};
+
+const getSelectedProfile = () =>
+  state.iccProfiles.find((profile) => profile.id === state.iccSelectedId) || state.iccProfiles[0];
+
+const convertRgbToCmyk = (rgb) => {
+  const profile = getSelectedProfile();
+  if (state.iccReady && state.iccEngine && profile?.data) {
+    try {
+      return state.iccEngine.rgbToCmyk(rgb, profile.data, {
+        intent: state.iccIntent,
+        bpc: state.iccBpc
+      });
+    } catch (_err) {
+      return rgbToCmyk(rgb);
+    }
+  }
+  return rgbToCmyk(rgb);
+};
+
+const convertCmykToRgb = (cmyk) => {
+  const profile = getSelectedProfile();
+  if (state.iccReady && state.iccEngine && profile?.data) {
+    try {
+      return state.iccEngine.cmykToRgb(cmyk, profile.data, {
+        intent: state.iccIntent,
+        bpc: state.iccBpc
+      });
+    } catch (_err) {
+      return cmykToRgb(cmyk);
+    }
+  }
+  return cmykToRgb(cmyk);
+};
+
 const getTac = (cmyk) => cmyk.c + cmyk.m + cmyk.y + cmyk.k;
+
+const getLuminance = ({ r, g, b }) =>
+  0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+const isNearBlack = (rgb) => getLuminance(rgb) <= 20;
 
 const reduceTac = (cmyk, limit) => {
   const tac = getTac(cmyk);
@@ -174,28 +362,34 @@ const reduceTac = (cmyk, limit) => {
   return scaled;
 };
 
-const getDeltaLabel = (baseRgb, simRgb) => {
-  const diff = Math.sqrt(
-    Math.pow(baseRgb.r - simRgb.r, 2) +
-    Math.pow(baseRgb.g - simRgb.g, 2) +
-    Math.pow(baseRgb.b - simRgb.b, 2)
-  );
-  if (diff < 35) return "Thấp";
-  if (diff < 80) return "Vừa";
+const getDeltaLabel = (deltaValue) => {
+  if (deltaValue < 2) return "Thấp";
+  if (deltaValue < 6) return "Vừa";
   return "Cao";
 };
 
 const buildItems = (list) => list.map((hex) => {
   const baseRgb = hexToRgb(hex);
-  const cmyk = rgbToCmyk(baseRgb);
-  const simRgb = cmykToRgb(cmyk);
+  const cmyk = convertRgbToCmyk(baseRgb);
+  const simRgb = convertCmykToRgb(cmyk);
+  const baseLab = xyzToLab(rgbToXyz(baseRgb));
+  const simLab = xyzToLab(rgbToXyz(simRgb));
+  const delta = deltaE(baseLab, simLab);
   return {
     hex,
     baseRgb,
     cmyk,
-    simRgb
+    simRgb,
+    delta
   };
 });
+
+const updateItemMetrics = (item) => {
+  item.simRgb = convertCmykToRgb(item.cmyk);
+  const baseLab = xyzToLab(rgbToXyz(item.baseRgb));
+  const simLab = xyzToLab(rgbToXyz(item.simRgb));
+  item.delta = deltaE(baseLab, simLab);
+};
 
 const renderTable = () => {
   if (!elements.tableBody || !elements.tableWrap || !elements.empty) return;
@@ -210,10 +404,13 @@ const renderTable = () => {
     const warn = tac > state.tacLimit ? "Vượt ngưỡng" : "Ổn";
     const warnClass = tac > state.tacLimit ? "tc-warn" : "";
     const simHex = rgbToHex(item.simRgb);
-    const delta = getDeltaLabel(item.baseRgb, item.simRgb);
+    const deltaLabel = getDeltaLabel(item.delta);
+    const isGamut = item.delta > state.gamutThreshold;
+    const gamutBadge = isGamut ? '<span class="tc-badge tc-warn">Vượt gamut</span>' : "";
     const disabled = tac <= state.tacLimit ? "disabled" : "";
+    const rowClass = isGamut && state.gamutOverlay ? "tc-row-gamut" : "";
     return `
-      <tr data-row="${index}">
+      <tr data-row="${index}" class="${rowClass}">
         <td>
           <div class="tc-swatch-duo">
             <span class="tc-swatch" style="background:${item.hex};"></span>
@@ -223,8 +420,8 @@ const renderTable = () => {
         <td class="font-semibold">${item.hex}</td>
         <td>C ${item.cmyk.c}% · M ${item.cmyk.m}% · Y ${item.cmyk.y}% · K ${item.cmyk.k}%</td>
         <td>${tac}%</td>
-        <td class="${warnClass}">${warn}</td>
-        <td>${delta}</td>
+        <td class="${warnClass}">${warn} ${gamutBadge}</td>
+        <td>${deltaLabel} · ΔE ${item.delta.toFixed(1)}</td>
         <td>
           <button class="tc-btn tc-chip px-3 py-1 text-xs" data-action="reduce" data-index="${index}" ${disabled}>
             Giảm TAC
@@ -241,6 +438,34 @@ const updateTacDisplay = () => {
   const label = `${state.tacLimit}%`;
   if (elements.tacValue) elements.tacValue.textContent = label;
   if (elements.tacBadge) elements.tacBadge.textContent = label;
+};
+
+const updateIccStatus = (override) => {
+  if (!elements.iccStatus) return;
+  if (override) {
+    elements.iccStatus.textContent = override;
+    return;
+  }
+  const profile = getSelectedProfile();
+  if (!profile || profile.id === "srgb") {
+    elements.iccStatus.textContent = "Đang dùng sRGB xấp xỉ (chưa có ICC).";
+    return;
+  }
+  const intentLabel = INTENT_LABELS[state.iccIntent] || "Perceptual";
+  const bpcLabel = state.iccBpc ? "BPC bật" : "BPC tắt";
+  if (state.iccReady) {
+    elements.iccStatus.textContent = `ICC: ${profile.name} · ${intentLabel} · ${bpcLabel}`;
+  } else if (state.iccLoading) {
+    elements.iccStatus.textContent = "Đang tải engine ICC...";
+  } else {
+    elements.iccStatus.textContent = "Chưa tải engine ICC, đang dùng xấp xỉ.";
+  }
+};
+
+const rebuildItems = () => {
+  const list = state.items.map((item) => item.hex);
+  state.items = buildItems(list);
+  renderTable();
 };
 
 const applyFromInput = () => {
@@ -268,35 +493,61 @@ const handleReduce = (index) => {
   if (!item) return;
   const reduced = reduceTac(item.cmyk, state.tacLimit);
   item.cmyk = reduced;
-  item.simRgb = cmykToRgb(reduced);
+  updateItemMetrics(item);
   renderTable();
 };
 
 const reduceAll = () => {
   state.items = state.items.map((item) => {
     const reduced = reduceTac(item.cmyk, state.tacLimit);
-    return {
-      ...item,
-      cmyk: reduced,
-      simRgb: cmykToRgb(reduced)
-    };
+    const next = { ...item, cmyk: reduced };
+    updateItemMetrics(next);
+    return next;
+  });
+  renderTable();
+};
+
+const applyRichBlack = (item) => {
+  if (!isNearBlack(item.baseRgb)) return item;
+  const preset = RICH_BLACK_PRESETS[state.richBlackPreset];
+  if (!preset) return item;
+  const next = { ...item, cmyk: { ...preset.cmyk } };
+  next.cmyk = reduceTac(next.cmyk, state.tacLimit);
+  updateItemMetrics(next);
+  return next;
+};
+
+const safePrintAll = () => {
+  state.items = state.items.map((item) => {
+    let next = { ...item };
+    if (isNearBlack(item.baseRgb)) {
+      next = applyRichBlack(next);
+    } else {
+      next.cmyk = reduceTac(next.cmyk, state.tacLimit);
+      updateItemMetrics(next);
+    }
+    return next;
   });
   renderTable();
 };
 
 const buildExportCsv = () => {
-  const header = "hex,sim_hex,c,m,y,k,tac,delta";
+  const header = "hex,sim_hex,c,m,y,k,tac,delta,profile,intent,bpc";
+  const profile = getSelectedProfile();
+  const intentLabel = INTENT_LABELS[state.iccIntent] || "Perceptual";
+  const bpcLabel = state.iccBpc ? "on" : "off";
   const rows = state.items.map((item) => {
     const simHex = rgbToHex(item.simRgb);
     const tac = getTac(item.cmyk);
-    const delta = getDeltaLabel(item.baseRgb, item.simRgb);
-    return `${item.hex},${simHex},${item.cmyk.c},${item.cmyk.m},${item.cmyk.y},${item.cmyk.k},${tac},${delta}`;
+    const delta = getDeltaLabel(item.delta);
+    return `${item.hex},${simHex},${item.cmyk.c},${item.cmyk.m},${item.cmyk.y},${item.cmyk.k},${tac},${delta},${profile?.name || "sRGB"},${intentLabel},${bpcLabel}`;
   });
   return [header, ...rows].join("\n");
 };
 
 const buildExportJson = () => {
   const tokens = {};
+  const profile = getSelectedProfile();
   state.items.forEach((item, index) => {
     const id = String(index + 1).padStart(2, "0");
     tokens[`cmyk-${id}`] = {
@@ -306,7 +557,10 @@ const buildExportJson = () => {
       m: item.cmyk.m,
       y: item.cmyk.y,
       k: item.cmyk.k,
-      tac: getTac(item.cmyk)
+      tac: getTac(item.cmyk),
+      profile: profile?.name || "sRGB",
+      intent: state.iccIntent,
+      bpc: state.iccBpc
     };
   });
   return JSON.stringify({ tokens }, null, 2);
@@ -324,6 +578,29 @@ const buildExportCss = () => {
   }).join("\n");
 };
 
+const buildExportReport = () => {
+  const profile = getSelectedProfile();
+  const intentLabel = INTENT_LABELS[state.iccIntent] || "Perceptual";
+  const bpcLabel = state.iccBpc ? "Bật" : "Tắt";
+  const lines = [];
+  lines.push("Báo cáo in");
+  lines.push(`Profile: ${profile?.name || "sRGB"}`);
+  lines.push(`Intent: ${intentLabel}`);
+  lines.push(`BPC: ${bpcLabel}`);
+  lines.push(`TAC ngưỡng: ${state.tacLimit}%`);
+  lines.push(`Ngưỡng DeltaE: ${state.gamutThreshold}`);
+  lines.push("");
+  const outOfGamut = state.items.filter((item) => item.delta > state.gamutThreshold);
+  lines.push(`Số màu vượt gamut: ${outOfGamut.length}`);
+  if (outOfGamut.length) {
+    lines.push("Danh sách vượt gamut:");
+    outOfGamut.forEach((item) => {
+      lines.push(`- ${item.hex} (ΔE ${item.delta.toFixed(1)})`);
+    });
+  }
+  return lines.join("\n");
+};
+
 const exportData = () => {
   if (!state.items.length) {
     showToast("Chưa có dữ liệu để xuất.");
@@ -333,10 +610,50 @@ const exportData = () => {
   let text = "";
   if (format === "json") text = buildExportJson();
   else if (format === "css") text = buildExportCss();
+  else if (format === "report") text = buildExportReport();
   else text = buildExportCsv();
   copyToClipboard(text).then(() => {
     showToast("Đã sao chép dữ liệu xuất.");
   });
+};
+
+const renderProfileOptions = () => {
+  if (!elements.iccProfile) return;
+  const options = state.iccProfiles.map((profile) =>
+    `<option value="${profile.id}">${profile.name}</option>`
+  );
+  elements.iccProfile.innerHTML = options.join("");
+  elements.iccProfile.value = state.iccSelectedId;
+};
+
+const initProfiles = async () => {
+  const stored = await loadProfilesFromDb();
+  state.iccProfiles = [
+    { id: "srgb", name: "sRGB (mặc định)", data: null },
+    ...stored
+  ];
+  renderProfileOptions();
+  updateIccStatus();
+};
+
+const handleIccUpload = async (file) => {
+  if (!file) return;
+  const buffer = await file.arrayBuffer();
+  const id = `icc_${Date.now()}`;
+  const profile = {
+    id,
+    name: file.name.replace(/\.[^.]+$/, ""),
+    data: buffer,
+    addedAt: Date.now()
+  };
+  state.iccProfiles.push(profile);
+  await saveProfileToDb(profile);
+  state.iccSelectedId = id;
+  renderProfileOptions();
+  updateIccStatus();
+  loadIccEngine();
+  rebuildItems();
+  showToast("Đã nạp ICC.");
 };
 
 const bindEvents = () => {
@@ -383,9 +700,71 @@ const bindEvents = () => {
   if (elements.exportCopy) {
     elements.exportCopy.addEventListener("click", exportData);
   }
+  if (elements.iccInput) {
+    elements.iccInput.addEventListener("change", (event) => {
+      const [file] = event.target.files || [];
+      handleIccUpload(file);
+    });
+  }
+  if (elements.iccProfile) {
+    elements.iccProfile.addEventListener("change", () => {
+      state.iccSelectedId = elements.iccProfile.value;
+      updateIccStatus();
+      if (state.iccSelectedId !== "srgb") loadIccEngine();
+      rebuildItems();
+    });
+  }
+  if (elements.iccIntent) {
+    elements.iccIntent.addEventListener("change", () => {
+      state.iccIntent = elements.iccIntent.value;
+      updateIccStatus();
+      rebuildItems();
+    });
+  }
+  if (elements.iccBpc) {
+    elements.iccBpc.addEventListener("change", () => {
+      state.iccBpc = elements.iccBpc.checked;
+      updateIccStatus();
+      rebuildItems();
+    });
+  }
+  if (elements.gamutThreshold) {
+    elements.gamutThreshold.addEventListener("input", () => {
+      const next = Number(elements.gamutThreshold.value || 5);
+      state.gamutThreshold = Number.isNaN(next) ? 5 : next;
+      renderTable();
+    });
+  }
+  if (elements.gamutOverlay) {
+    elements.gamutOverlay.addEventListener("change", () => {
+      state.gamutOverlay = elements.gamutOverlay.checked;
+      renderTable();
+    });
+  }
+  if (elements.richBlackPreset) {
+    elements.richBlackPreset.addEventListener("change", () => {
+      state.richBlackPreset = elements.richBlackPreset.value;
+    });
+  }
+  if (elements.safePrintAll) {
+    elements.safePrintAll.addEventListener("click", safePrintAll);
+  }
 };
 
 updateTacDisplay();
+if (elements.iccBpc) {
+  elements.iccBpc.checked = state.iccBpc;
+}
+if (elements.gamutThreshold) {
+  elements.gamutThreshold.value = String(state.gamutThreshold);
+}
+if (elements.gamutOverlay) {
+  elements.gamutOverlay.checked = state.gamutOverlay;
+}
+if (elements.richBlackPreset) {
+  elements.richBlackPreset.value = state.richBlackPreset;
+}
+initProfiles();
 bindEvents();
 applyFromHash();
 

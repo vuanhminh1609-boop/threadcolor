@@ -23,7 +23,7 @@
 - Mo index.html: khong co loi console nghiem trong
 - Vào 5 world: threadcolor / threadvault / palette / gradient / printcolor
 - Mo palette: khong loi console, tab hoat dong, export ok
-- Mo printcolor: nhap HEX, TAC slider/preset ok, giam TAC + export ok
+- Mo printcolor: nhap HEX, preset/ICC/intent ok, giam TAC + export ok
 - validate_contract PASS
 - Login hien thi top-right, khong nhay layout
 - Search dung worker hoat dong
