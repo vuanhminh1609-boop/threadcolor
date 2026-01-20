@@ -33,6 +33,10 @@
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
+| CMYK | CMYK | Hệ màu in 4 kênh: Cyan, Magenta, Yellow, Key (đen). |
+| ICC profile | Hồ sơ ICC | Hồ sơ màu mô tả thiết bị in/hiển thị để chuyển đổi màu chính xác. |
+| TAC | Tổng lượng mực (TAC) | Tổng % mực C+M+Y+K; vượt ngưỡng gây lem/đậm. |
+| Gamut | Dải màu tái tạo (gamut) | Tập màu thiết bị có thể tái tạo; ngoài gamut sẽ bị lệch. |
 | Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
 | Slot đăng nhập | Vị trí Đăng nhập | Khu vực “neo” hiển thị đăng nhập/đăng xuất ở top-right (không được đổi tuỳ tiện). |
 | Microcopy | Vi mô ngôn từ | Câu chữ ngắn trong UI (nhãn nút, mô tả) — phải “đắt và sạch”. |
@@ -110,6 +114,18 @@
 | PostCSS | PostCSS | Công cụ xử lý CSS trong pipeline build (thêm prefix, tối ưu). |
 | Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |
 | DEV flag / Logger | Cờ DEV / Logger | Cơ chế bật/tắt log theo môi trường để giữ console sạch ở production. |
+| Giả lập in | Giả lập in | Mô phỏng màu in ra từ CMYK để ước lượng hiển thị trên màn hình. |
+| Hồ sơ in | Hồ sơ in | Preset thông số in (đặc biệt ngưỡng TAC) cho từng chất liệu. |
+| Độ lệch màu | Độ lệch màu | Mức chênh giữa màu gốc và màu giả lập in (thấp/vừa/cao). |
+| Rich black (đen giàu) | Đen giàu | Công thức đen có thêm C/M/Y để đen sâu hơn cho mảng lớn. |
+| Misregistration (lệch chồng bản) | Lệch chồng bản | Sai lệch chồng giữa các bản in màu khiến viền lem hoặc lệch. |
+| GCR/UCR | GCR/UCR | Kỹ thuật thay màu xám bằng K (GCR) hoặc giảm CMY ở vùng tối (UCR). |
+| Rendering intent | Rendering intent | Cách ưu tiên khi chuyển đổi màu (giữ cảm giác, giữ tuyệt đối, bão hoà...). |
+| BPC (Black Point Compensation) | BPC (bù điểm đen) | Bù điểm đen để map vùng tối giữa profile nguồn/đích. |
+| Soft proof | Giả lập in trên màn hình (soft proof) | Mô phỏng màu in ra trên màn hình theo ICC. |
+| PCS (Profile Connection Space) | Không gian nối profile (PCS) | Không gian trung gian (thường Lab/XYZ) để chuyển đổi giữa các profile. |
+| Lab | Lab | Không gian màu độc lập thiết bị, dùng cho PCS và đo sai khác. |
+| DeltaE | DeltaE | Chỉ số đo độ lệch màu giữa hai màu trong không gian Lab. |
 
 ---
 

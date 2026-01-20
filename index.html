@@ -435,6 +435,7 @@
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/gradient.html" role="menuitem">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u</a>
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/palette.html" role="menuitem">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/printcolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u in (CMYK)</a>
             <a id="portalAdminLink" class="tc-menu-item block w-full text-left px-3 py-2 rounded-md hidden" href="./admin.html" role="menuitem" aria-hidden="true">Qu&#7843;n tr&#7883;</a>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
@@ -495,66 +496,65 @@
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
-            <h3 class="font-semibold">Thế giới màu thêu</h3>
-            <p class="tc-muted text-sm mt-2">Tra cứu mã chỉ theo ảnh, màu và mã HEX.Tra ngược màu theo mã chỉ.Hỗ trợ nhiều hãng chỉ phổ biến. Kiểm soát tồn dư kho chỉ.Đặt mua chỉ trực tiếp.</p>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
+            <h3 class="font-semibold">Thế giới màu thêu (Embroidery)</h3>
+            <p class="tc-muted text-sm mt-2">Tra mã chỉ từ ảnh/HEX, so màu gần nhất, quản lý kho chỉ và đặt mua.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-max" href="./worlds/threadcolor.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/threadcolor.html">Mở</a>
         </div>
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
-            <h3 class="font-semibold">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u</h3>
-            <p class="tc-muted text-sm mt-2">T&#7841;o d&#7843;i chuy&#7875;n m&#224;u, tinh ch&#7881;nh g&#243;c v&#224; &#273;i&#7875;m neo.</p>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
+            <h3 class="font-semibold">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u (Gradient)</h3>
+            <p class="tc-muted text-sm mt-2">T&#7841;o d&#7843;i chuy&#7875;n m&#224;u, chỉnh góc &amp; điểm neo, xuất CSS/Token nhanh.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-max" href="./worlds/gradient.html">M&#7903;</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/gradient.html">M&#7903;</a>
         </div>
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
-            <h3 class="font-semibold">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u</h3>
-            <p class="tc-muted text-sm mt-2">Kh&#225;m ph&#225; b&#7897; ph&#7889;i m&#224;u theo phong c&#225;ch v&#224; c&#7843;m x&#250;c.</p>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
+            <h3 class="font-semibold">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u (Palette)</h3>
+            <p class="tc-muted text-sm mt-2">Khám phá phối màu theo cảm xúc, lưu bộ sưu tập, xuất token/HEX.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-max" href="./worlds/palette.html">M&#7903;</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/palette.html">M&#7903;</a>
         </div>
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
+            <h3 class="font-semibold">Thế giới Màu in (CMYK)</h3>
+            <p class="tc-muted text-sm mt-2">Đổi HEX → CMYK, theo dõi TAC, cảnh báo lệch in và xuất bảng cho nhà in.</p>
+          </div>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/printcolor.html">Mở</a>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
             <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
             <h3 class="font-semibold mt-3">Thế giới tơ lụa</h3>
-            <p class="tc-muted text-sm mt-2">Bảng màu mềm, mịn và mơ màng.</p>
+            <p class="tc-muted text-sm mt-2">Mô phỏng màu trên chất liệu lụa, ánh sáng mềm và phối sang.</p>
           </div>
-          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
         </div>
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
             <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
             <h3 class="font-semibold mt-3">Thế giới thủ công</h3>
-            <p class="tc-muted text-sm mt-2">Sắc màu truyền thống, ấm và gần gũi.</p>
+            <p class="tc-muted text-sm mt-2">Bảng màu thủ công ấm áp, gợi ý phối vintage và ứng dụng trang trí.</p>
           </div>
-          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
         </div>
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
             <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
             <h3 class="font-semibold mt-3">Thế giới ánh sáng</h3>
-            <p class="tc-muted text-sm mt-2">Dải màu rực rỡ, phản quang và sáng bừng.</p>
+            <p class="tc-muted text-sm mt-2">Chọn nhiệt độ màu, mô phỏng đèn/ban ngày và xem màu thay đổi.</p>
           </div>
-          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
         </div>
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
             <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
             <h3 class="font-semibold mt-3">Thế giới tối giản</h3>
-            <p class="tc-muted text-sm mt-2">Bảng màu tối giản, tinh gọn và sang.</p>
+            <p class="tc-muted text-sm mt-2">Bảng màu tối giản cao cấp, tương phản chuẩn UI/Brand.</p>
           </div>
-          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
-        </div>
-        <div class="tc-card p-5 flex flex-col gap-4">
-          <div>
-            <div class="inline-flex items-center gap-2 tc-chip px-2.5 py-1 rounded-full text-xs">Sắp ra mắt</div>
-            <h3 class="font-semibold mt-3">Thế giới ký ức</h3>
-            <p class="tc-muted text-sm mt-2">Màu sắc hoài niệm và chất liệu xưa.</p>
-          </div>
-          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-max opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
+          <button class="tc-btn tc-chip px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start opacity-60 cursor-not-allowed" disabled>Sắp ra mắt</button>
         </div>
       </div>
     </section>
