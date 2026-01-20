@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="vi" data-world="origami">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thế giới Màu in (CMYK)</title>
+  <link rel="stylesheet" href="../assets/dist/tailwind.css">
+  <style>
+    :root{
+      --z-topbar: 2000;
+      --z-topbar-menu: 4000;
+      --bg: #f6f1e9;
+      --text: #201a14;
+      --muted: #6b5d4b;
+      --glass: rgba(255, 255, 255, 0.72);
+      --stroke: rgba(32, 26, 20, 0.10);
+      --a1: #c27b4b;
+      --a2: #d59e6d;
+      --a3: #8c6d54;
+    }
+    html[data-world="nebula"]{
+      --bg:#040512;
+      --text:#eef2ff;
+      --muted:#b8c2ff;
+      --glass:rgba(12,16,34,0.72);
+      --stroke:rgba(255,255,255,0.14);
+      --a1:#6ee7ff;
+      --a2:#8b5cf6;
+      --a3:#f472b6;
+    }
+    html[data-world="ocean"]{
+      --bg:#dff6ff;
+      --text:#062a3a;
+      --muted:#3f6b7f;
+      --glass:rgba(255,255,255,0.76);
+      --stroke:rgba(6,42,58,0.12);
+      --a1:#1fb6ff;
+      --a2:#0ea5a8;
+      --a3:#4dd4ff;
+    }
+    html[data-world="ink"]{
+      --bg:#0b0d12;
+      --text:#f4f6fb;
+      --muted:#a6afbd;
+      --glass:rgba(16,18,24,0.76);
+      --stroke:rgba(255,255,255,0.12);
+      --a1:#e2e8f0;
+      --a2:#94a3b8;
+      --a3:#64748b;
+    }
+    html[data-world="origami"]{
+      --bg:#f6f1e9;
+      --text:#201a14;
+      --muted:#6b5d4b;
+      --glass:rgba(255,255,255,0.74);
+      --stroke:rgba(32,26,20,0.10);
+      --a1:#c27b4b;
+      --a2:#d59e6d;
+      --a3:#8c6d54;
+    }
+    html[data-world="arcade"]{
+      --bg:#05040f;
+      --text:#fff7ff;
+      --muted:#d8c9f6;
+      --glass:rgba(14,12,28,0.80);
+      --stroke:rgba(255,255,255,0.16);
+      --a1:#ff3dcd;
+      --a2:#7c3aed;
+      --a3:#20e3b2;
+    }
+    html[data-world="dunes"]{
+      --bg:#f7f0e1;
+      --text:#3a2d1a;
+      --muted:#7a644a;
+      --glass:rgba(255,255,255,0.74);
+      --stroke:rgba(58,45,26,0.12);
+      --a1:#d39b54;
+      --a2:#e3b87b;
+      --a3:#b3743d;
+    }
+    html[data-world="chrome"]{
+      --bg:#f1f4f8;
+      --text:#1c232b;
+      --muted:#5f6b79;
+      --glass:rgba(255,255,255,0.72);
+      --stroke:rgba(28,35,43,0.12);
+      --a1:#3b82f6;
+      --a2:#94a3b8;
+      --a3:#0f172a;
+    }
+    html[data-world="circuit"]{
+      --bg:#04110a;
+      --text:#eafff2;
+      --muted:#a6d6bb;
+      --glass:rgba(8,20,14,0.76);
+      --stroke:rgba(255,255,255,0.12);
+      --a1:#22c55e;
+      --a2:#16a34a;
+      --a3:#86efac;
+    }
+    body{
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .tc-topbar{
+      background: var(--glass);
+      border-bottom: 1px solid var(--stroke);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: var(--z-topbar);
+      overflow: visible;
+    }
+    .tc-topbar::after{
+      content:"";
+      position:absolute; left:0; right:0; bottom:-1px; height:1px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+      opacity: .35;
+    }
+    .tc-chip{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+    }
+    .tc-btn{
+      border-radius: 0.75rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      line-height: 1;
+    }
+    .tc-btn:hover{ filter: brightness(1.03); }
+    .tc-btn:active{ transform: translateY(1px); }
+    .tc-btn:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    .tc-btn-primary{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .tc-btn-primary:hover{ filter: brightness(1.06); }
+    .tc-dot{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
+      box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+    }
+    .tc-card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1.25rem;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+    }
+    .tc-muted{ color: var(--muted); }
+    .tc-input{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 0.75rem;
+      padding: 0.55rem 0.75rem;
+      color: var(--text);
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+    }
+    .tc-range{
+      width: 100%;
+    }
+    .tc-swatch{
+      width: 32px;
+      height: 32px;
+      border-radius: 0.6rem;
+      border: 1px solid var(--stroke);
+    }
+    .tc-swatch-duo{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tc-table th,
+    .tc-table td{
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--stroke);
+      white-space: nowrap;
+    }
+    .tc-table th{
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+    .tc-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.6);
+      font-size: 12px;
+    }
+    .tc-warn{
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    .tc-toast{
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 80;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 0.9rem;
+      padding: 0.6rem 0.9rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,.18);
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .tc-toast.is-visible{
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #portalMenu[data-open="0"],
+    #worldMenu[data-open="0"]{ display: none; }
+    #portalMenu,
+    #worldMenu{
+      z-index: var(--z-topbar-menu);
+    }
+    .tc-menu-item{
+      color: var(--text);
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    .tc-menu-item:hover{ background: rgba(255,255,255,.10); }
+    .tc-menu-item:active{ transform: translateY(1px); }
+    .tc-menu-item:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+      border-radius: 0.6rem;
+      background: rgba(255,255,255,.08);
+    }
+    #worldMenu .tc-world-item{
+      color: var(--text);
+      transition: background-color .15s ease, transform .05s ease;
+    }
+    #worldMenu .tc-world-item:hover{ background: rgba(255,255,255,.10); }
+    #worldMenu .tc-world-item:active{ transform: translateY(1px); }
+    @media (max-width: 520px) {
+      .tc-topbar > .max-w-6xl {
+        flex-wrap: wrap;
+        row-gap: 8px;
+        column-gap: 8px;
+      }
+      .tc-topbar > .max-w-6xl > :nth-child(1) {
+        order: 1;
+        min-width: 0;
+      }
+      .tc-topbar > .max-w-6xl > :nth-child(2) {
+        order: 3;
+        flex: 1 1 100%;
+        min-width: 0;
+      }
+      .tc-topbar > .max-w-6xl > :nth-child(3) {
+        order: 2;
+        margin-left: auto;
+      }
+      .tc-topbar #portalSwitcher,
+      .tc-topbar #portalBtn {
+        width: 100%;
+        max-width: 100%;
+      }
+      .tc-topbar .tc-brand {
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #topbarAuthSlot #userName {
+        display: none;
+      }
+      .tc-topbar a,
+      .tc-topbar button {
+        min-height: 40px;
+      }
+      .tc-table th,
+      .tc-table td{
+        font-size: 12px;
+      }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body, button, input, select, textarea {
+      font-family: "Inter", "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <header class="tc-topbar relative">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <a href="../index.html" class="flex items-center gap-3 min-w-0">
+          <span class="h-11 w-11 md:h-12 md:w-12 rounded-xl shrink-0 flex items-center justify-center bg-white/5 ring-1 ring-white/10">
+            <picture>
+              <source srcset="../assets/spacecolors-mark.svg" type="image/svg+xml">
+              <img
+                src="../assets/spacecolors-mark-128.png"
+                srcset="../assets/spacecolors-mark-128.png 1x, ../assets/spacecolors-mark-256.png 2x"
+                class="h-full w-full object-contain select-none"
+                alt="SpaceColors"
+                decoding="async"
+                loading="eager"
+              />
+            </picture>
+          </span>
+          <span class="min-w-0 flex flex-col justify-center leading-tight">
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap">SpaceColors · 8Portal</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px]">Một chạm mở không gian màu vô hạn</span>
+          </span>
+        </a>
+      </div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="relative" id="portalSwitcher">
+          <button id="portalBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between" aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
+            Chọn Thế giới
+          </button>
+          <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Thế giới màu thêu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Thế giới Dải chuyển màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Thế giới Bảng phối màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Thế giới Màu in (CMYK)</a>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="relative" id="worldSwitcher">
+          <button id="worldBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between" aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
+            <span class="flex items-center gap-2">
+              <span class="tc-dot" aria-hidden="true"></span>
+              <span id="worldLabel">Origami</span>
+            </span>
+            <span aria-hidden="true">&#9662;</span>
+          </button>
+          <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
+          </div>
+        </div>
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="flex items-center justify-end min-w-[210px]"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 pt-10 pb-16">
+    <section class="tc-card p-6 md:p-8">
+      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World4 · CMYK</p>
+          <h1 class="text-3xl md:text-4xl font-bold">Thế giới Màu in (CMYK)</h1>
+          <p class="mt-2 tc-muted">Chuyển HEX sang CMYK xấp xỉ, xem TAC và cảnh báo quá ngưỡng.</p>
+        </div>
+        <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
+          <span class="tc-dot" aria-hidden="true"></span>
+          <span>Local-first · CMYK nhanh</span>
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+        <div class="space-y-4">
+          <div class="tc-card p-4">
+            <label class="text-sm font-semibold" for="hexInput">Danh sách mã màu (HEX)</label>
+            <textarea id="hexInput" class="tc-input mt-2" placeholder="#FFAA00, #123456&#10;#0F766E"></textarea>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button id="hexApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Áp dụng</button>
+              <button id="hexClear" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Xóa</button>
+            </div>
+            <p class="tc-muted text-xs mt-3">Hỗ trợ hash <strong>#c=</strong>, <strong>#p=</strong>, <strong>#g=</strong> (VD: <code>#c=ffcc00,0033aa</code>).</p>
+          </div>
+          <div class="tc-card p-4">
+            <h2 class="text-sm font-semibold">Hồ sơ in</h2>
+            <p class="tc-muted text-xs mt-1">Chọn preset và tinh chỉnh ngưỡng TAC.</p>
+            <div class="mt-3 space-y-3">
+              <label class="text-sm font-semibold" for="profilePreset">Preset</label>
+              <select id="profilePreset" class="tc-input">
+                <option value="300">Couche 300%</option>
+                <option value="280">Thường 280%</option>
+                <option value="240">Báo 240%</option>
+              </select>
+              <div class="flex items-center justify-between text-xs tc-muted">
+                <span>Ngưỡng TAC</span>
+                <span id="tacValue">300%</span>
+              </div>
+              <input id="tacRange" class="tc-range" type="range" min="200" max="360" step="5" value="300">
+            </div>
+          </div>
+        </div>
+
+        <div class="tc-card p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-semibold">Bảng chuyển đổi</h2>
+              <p class="tc-muted text-xs mt-1">TAC = C + M + Y + K. Cảnh báo khi vượt ngưỡng.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 justify-end">
+              <button id="reduceAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Giảm TAC tất cả</button>
+              <span class="tc-badge">TAC ngưỡng <span id="tacBadge">300%</span></span>
+            </div>
+          </div>
+          <div id="printEmpty" class="mt-4 tc-muted text-sm">Chưa có màu để chuyển đổi.</div>
+          <div id="printTableWrap" class="mt-4 overflow-auto hidden">
+            <table class="tc-table w-full text-sm">
+              <thead>
+                <tr>
+                  <th>Màu</th>
+                  <th>HEX</th>
+                  <th>CMYK</th>
+                  <th>TAC</th>
+                  <th>Cảnh báo</th>
+                  <th>Độ lệch</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="printTableBody"></tbody>
+            </table>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <select id="exportFormat" class="tc-input w-[190px]">
+              <option value="csv">Xuất CSV</option>
+              <option value="json">JSON tokens</option>
+              <option value="css">CSS variables</option>
+            </select>
+            <button id="exportCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="printToast" class="tc-toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="../auth.js"></script>
+  <script type="module" src="../printcolor.js"></script>
+  <script>
+    (() => {
+      const portalBtn = document.getElementById("portalBtn");
+      const portalMenu = document.getElementById("portalMenu");
+      if (!portalBtn || !portalMenu) return;
+      const setOpen = (open) => {
+        portalMenu.dataset.open = open ? "1" : "0";
+        portalMenu.hidden = !open;
+        portalBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      setOpen(portalMenu.dataset.open === "1");
+      portalBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setOpen(portalMenu.dataset.open !== "1");
+      });
+      portalMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-menu-item");
+        if (!item || !portalMenu.contains(item)) return;
+        setOpen(false);
+      });
+      document.addEventListener("click", (event) => {
+        if (!portalMenu.contains(event.target) && !portalBtn.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setOpen(false);
+      });
+    })();
+  </script>
+  <script>
+    (() => {
+      const worldBtn = document.getElementById("worldBtn");
+      const worldMenu = document.getElementById("worldMenu");
+      const switcher = document.getElementById("worldSwitcher");
+      if (!worldBtn || !worldMenu || !switcher) return;
+      const worlds = ["nebula","ocean","ink","origami","arcade","dunes","chrome","circuit"];
+      const labels = {
+        nebula: "Tinh vân",
+        ocean: "Đại dương",
+        ink: "Mực tàu",
+        origami: "Origami",
+        arcade: "Arcade",
+        dunes: "Đồi cát",
+        chrome: "Chrome",
+        circuit: "Mạch điện"
+      };
+      const storageKey = "tc_world";
+      const defaultWorld = "origami";
+
+      const applyWorld = (name) => {
+        const next = labels[name] ? name : defaultWorld;
+        document.documentElement.setAttribute("data-world", next);
+        const label = document.getElementById("worldLabel");
+        if (label) label.textContent = labels[next];
+        try { localStorage.setItem(storageKey, next); } catch (_err) {}
+      };
+      const stored = (() => {
+        try { return localStorage.getItem(storageKey); } catch (_err) { return null; }
+      })();
+      applyWorld(stored || defaultWorld);
+
+      const setOpen = (open) => {
+        worldMenu.dataset.open = open ? "1" : "0";
+        worldMenu.hidden = !open;
+        worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      setOpen(worldMenu.dataset.open === "1");
+
+      worldBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setOpen(worldMenu.dataset.open !== "1");
+      });
+      worldMenu.addEventListener("click", (event) => {
+        const item = event.target.closest(".tc-world-item");
+        if (!item || !worldMenu.contains(item)) return;
+        applyWorld(item.dataset.world);
+        setOpen(false);
+      });
+      document.addEventListener("click", (event) => {
+        if (!worldMenu.contains(event.target) && !worldBtn.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setOpen(false);
+      });
+    })();
+  </script>
+</body>
+</html>
