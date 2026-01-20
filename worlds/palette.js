@@ -1,30 +1,14 @@
-const STORAGE_KEY = "tc_palettes_saved";
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
 
 const state = {
   palettes: [],
-  saved: [],
-  currentStops: ["#ff6b6b", "#ffd93d", "#6ee7b7"],
-  currentName: ""
+  hashPalette: null
 };
 
 const el = {
-  tabs: document.querySelectorAll("[data-tab]"),
-  panels: document.querySelectorAll("[data-tab-panel]"),
-  exploreGrid: document.getElementById("paletteExploreGrid"),
-  exploreEmpty: document.getElementById("paletteExploreEmpty"),
-  savedGrid: document.getElementById("paletteSavedGrid"),
-  savedEmpty: document.getElementById("paletteSavedEmpty"),
-  nameInput: document.getElementById("paletteName"),
-  stopsWrap: document.getElementById("paletteStops"),
-  preview: document.getElementById("palettePreview"),
-  hexList: document.getElementById("paletteHexList"),
-  btnAdd: document.getElementById("paletteAdd"),
-  btnRandom: document.getElementById("paletteRandom"),
-  btnExport: document.getElementById("paletteExport"),
-  btnSave: document.getElementById("paletteSave"),
-  btnLink: document.getElementById("paletteLink")
+  grid: document.getElementById("paletteGrid"),
+  empty: document.getElementById("paletteEmpty")
 };
 
 function normalizeHex(input) {
@@ -36,13 +20,14 @@ function normalizeHex(input) {
   return /^#[0-9a-f]{6}$/.test(value) ? value : null;
 }
 
-function randomHex() {
-  const n = Math.floor(Math.random() * 0xffffff);
-  return `#${n.toString(16).padStart(6, "0")}`;
-}
-
-function gradientFor(stops) {
-  return `linear-gradient(90deg, ${stops.join(", ")})`;
+function gradientCss(stops) {
+  const total = stops.length;
+  if (total <= 1) return stops[0] || "#000000";
+  const parts = stops.map((hex, idx) => {
+    const pct = Math.round((idx / (total - 1)) * 100);
+    return `${hex} ${pct}%`;
+  });
+  return `linear-gradient(90deg, ${parts.join(", ")})`;
 }
 
 function tokensFor(stops) {
@@ -52,11 +37,9 @@ function tokensFor(stops) {
 }
 
 function exportText(palette) {
-  const name = palette.ten || "Dải màu";
+  const name = palette.ten || "Bảng phối màu";
   const stops = palette.stops || [];
-  return `/* ${name} */\n${gradientFor(stops)}\n\nHex: ${stops.join(
-    ", "
-  )}\n\n:root {\n${tokensFor(stops)}\n}\n`;
+  return `/* ${name} */\nHex: ${stops.join(", ")}\n\n:root {\n${tokensFor(stops)}\n}\n`;
 }
 
 function showToast(message) {
@@ -72,7 +55,7 @@ function showToast(message) {
   window.clearTimeout(showToast._timer);
   showToast._timer = window.setTimeout(() => {
     toast.classList.remove("is-visible");
-  }, 1600);
+  }, 1400);
 }
 
 async function copyText(text) {
@@ -102,297 +85,118 @@ async function copyText(text) {
   }
 }
 
-function setActiveTab(tab) {
-  el.tabs.forEach((btn) => {
-    const active = btn.dataset.tab === tab;
-    btn.setAttribute("aria-selected", active ? "true" : "false");
+function renderPaletteCard(palette) {
+  const card = document.createElement("div");
+  card.className = "tc-card p-4 flex flex-col gap-3";
+
+  const header = document.createElement("div");
+  header.className = "flex items-start justify-between gap-3";
+
+  const meta = document.createElement("div");
+  const title = document.createElement("p");
+  title.className = "text-sm font-semibold";
+  title.textContent = palette.ten || "Bảng phối màu";
+  const tags = document.createElement("p");
+  tags.className = "tc-muted text-xs mt-1";
+  tags.textContent = (palette.tags || []).join(" · ");
+  meta.appendChild(title);
+  meta.appendChild(tags);
+
+  const actions = document.createElement("div");
+  actions.className = "flex flex-wrap gap-2";
+
+  const exportBtn = document.createElement("button");
+  exportBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  exportBtn.type = "button";
+  exportBtn.textContent = "Xuất";
+  exportBtn.addEventListener("click", async () => {
+    const ok = await copyText(exportText(palette));
+    showToast(ok ? "Đã sao chép bảng phối." : "Không thể sao chép.");
   });
-  el.panels.forEach((panel) => {
-    panel.hidden = panel.dataset.tabPanel !== tab;
+
+  const bridgeBtn = document.createElement("button");
+  bridgeBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  bridgeBtn.type = "button";
+  bridgeBtn.textContent = "Biến thành dải";
+  bridgeBtn.addEventListener("click", () => {
+    const stops = (palette.stops || []).join(",");
+    window.location.href = `gradient.html#g=${encodeURIComponent(stops)}`;
   });
+
+  actions.appendChild(exportBtn);
+  actions.appendChild(bridgeBtn);
+
+  header.appendChild(meta);
+  header.appendChild(actions);
+
+  const swatchRow = document.createElement("div");
+  swatchRow.className = "tc-swatch-row";
+
+  (palette.stops || []).forEach((hex) => {
+    const swatch = document.createElement("button");
+    swatch.type = "button";
+    swatch.className = "tc-swatch";
+    swatch.style.background = hex;
+    swatch.textContent = hex.toUpperCase();
+    swatch.addEventListener("click", async () => {
+      const ok = await copyText(hex.toUpperCase());
+      showToast(ok ? `Đã sao chép ${hex.toUpperCase()}` : "Không thể sao chép.");
+    });
+    swatchRow.appendChild(swatch);
+  });
+
+  const strip = document.createElement("div");
+  strip.className = "tc-strip";
+  strip.style.background = gradientCss(palette.stops || []);
+
+  card.appendChild(header);
+  card.appendChild(swatchRow);
+  card.appendChild(strip);
+
+  return card;
 }
 
-function loadSaved() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const list = raw ? JSON.parse(raw) : [];
-    return Array.isArray(list) ? list : [];
-  } catch (_err) {
-    return [];
+function renderPalettes() {
+  if (!el.grid || !el.empty) return;
+  el.grid.innerHTML = "";
+  const list = [...state.palettes];
+  if (state.hashPalette) {
+    list.unshift(state.hashPalette);
   }
-}
-
-function persistSaved() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.saved));
-}
-
-function ensureUniqueById(list) {
-  const seen = new Set();
-  return list.filter((item) => {
-    if (!item?.id || seen.has(item.id)) return false;
-    seen.add(item.id);
-    return true;
-  });
-}
-
-function addToSaved(palette) {
-  if (!palette?.id) return;
-  const exists = state.saved.find((p) => p.id === palette.id);
-  if (exists) {
-    showToast("Dải màu đã có trong bộ sưu tập.");
+  if (!list.length) {
+    el.empty.classList.remove("hidden");
     return;
   }
-  state.saved.unshift({ ...palette, savedAt: new Date().toISOString(), favorite: false });
-  state.saved = ensureUniqueById(state.saved);
-  persistSaved();
-  renderSaved();
-  showToast("Đã lưu vào bộ sưu tập.");
-}
-
-function toggleFavorite(id) {
-  const item = state.saved.find((p) => p.id === id);
-  if (!item) return;
-  item.favorite = !item.favorite;
-  persistSaved();
-  renderSaved();
-}
-
-function removeSaved(id) {
-  state.saved = state.saved.filter((p) => p.id !== id);
-  persistSaved();
-  renderSaved();
-}
-
-function renderStops() {
-  if (!el.stopsWrap) return;
-  el.stopsWrap.innerHTML = "";
-  state.currentStops.forEach((hex, index) => {
-    const row = document.createElement("div");
-    row.className = "flex items-center gap-3";
-
-    const colorInput = document.createElement("input");
-    colorInput.type = "color";
-    colorInput.value = hex;
-    colorInput.className = "tc-color-input";
-    colorInput.addEventListener("input", () => {
-      state.currentStops[index] = colorInput.value;
-      renderPreview();
-    });
-
-    const textInput = document.createElement("input");
-    textInput.type = "text";
-    textInput.value = hex;
-    textInput.className = "tc-input flex-1";
-    textInput.placeholder = "#ffffff";
-    textInput.addEventListener("input", () => {
-      const normalized = normalizeHex(textInput.value);
-      if (normalized) {
-        state.currentStops[index] = normalized;
-        colorInput.value = normalized;
-        renderPreview();
-      }
-    });
-
-    row.appendChild(colorInput);
-    row.appendChild(textInput);
-
-    if (state.currentStops.length > MIN_STOPS) {
-      const removeBtn = document.createElement("button");
-      removeBtn.className = "tc-btn tc-chip px-3 py-2 text-sm";
-      removeBtn.type = "button";
-      removeBtn.textContent = "Xóa";
-      removeBtn.addEventListener("click", () => {
-        state.currentStops.splice(index, 1);
-        renderStops();
-        renderPreview();
-      });
-      row.appendChild(removeBtn);
-    }
-
-    el.stopsWrap.appendChild(row);
+  el.empty.classList.add("hidden");
+  list.forEach((palette) => {
+    el.grid.appendChild(renderPaletteCard(palette));
   });
 }
 
-function renderPreview() {
-  if (el.preview) {
-    el.preview.style.background = gradientFor(state.currentStops);
-  }
-  if (el.hexList) {
-    el.hexList.textContent = state.currentStops.join(", ");
-  }
-}
-
-function renderExplore() {
-  if (!el.exploreGrid || !el.exploreEmpty) return;
-  el.exploreGrid.innerHTML = "";
-  if (!state.palettes.length) {
-    el.exploreEmpty.classList.remove("hidden");
-    return;
-  }
-  el.exploreEmpty.classList.add("hidden");
-  state.palettes.forEach((palette) => {
-    const card = document.createElement("div");
-    card.className = "tc-card p-4 flex flex-col gap-3";
-
-    const header = document.createElement("div");
-    header.className = "flex items-start justify-between gap-3";
-
-    const meta = document.createElement("div");
-    const title = document.createElement("p");
-    title.className = "text-sm font-semibold";
-    title.textContent = palette.ten || "Dải màu";
-    const tags = document.createElement("p");
-    tags.className = "tc-muted text-xs mt-1";
-    tags.textContent = (palette.tags || []).join(" · ");
-    meta.appendChild(title);
-    meta.appendChild(tags);
-
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
-    saveBtn.type = "button";
-    saveBtn.textContent = "Lưu";
-    saveBtn.addEventListener("click", () => addToSaved(palette));
-
-    header.appendChild(meta);
-    header.appendChild(saveBtn);
-
-    const preview = document.createElement("div");
-    preview.className = "tc-gradient";
-    preview.style.background = gradientFor(palette.stops);
-
-    const swatches = document.createElement("div");
-    swatches.className = "flex flex-wrap gap-2";
-    palette.stops.forEach((hex) => {
-      const chip = document.createElement("span");
-      chip.className = "inline-flex items-center gap-2 text-xs tc-muted";
-      const dot = document.createElement("span");
-      dot.className = "w-4 h-4 rounded-full border";
-      dot.style.background = hex;
-      chip.appendChild(dot);
-      const label = document.createElement("span");
-      label.textContent = hex;
-      chip.appendChild(label);
-      swatches.appendChild(chip);
-    });
-
-    const actions = document.createElement("div");
-    actions.className = "flex flex-wrap gap-2";
-
-    const remixBtn = document.createElement("button");
-    remixBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
-    remixBtn.type = "button";
-    remixBtn.textContent = "Remix";
-    remixBtn.addEventListener("click", () => {
-      state.currentStops = [...palette.stops];
-      state.currentName = `Remix · ${palette.ten || "Dải màu"}`;
-      if (el.nameInput) el.nameInput.value = state.currentName;
-      renderStops();
-      renderPreview();
-      setActiveTab("create");
-    });
-
-    const exportBtn = document.createElement("button");
-    exportBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
-    exportBtn.type = "button";
-    exportBtn.textContent = "Xuất";
-    exportBtn.addEventListener("click", async () => {
-      const ok = await copyText(exportText(palette));
-      showToast(ok ? "Đã sao chép xuất." : "Không thể sao chép.");
-    });
-
-    actions.appendChild(remixBtn);
-    actions.appendChild(exportBtn);
-
-    card.appendChild(header);
-    card.appendChild(preview);
-    card.appendChild(swatches);
-    card.appendChild(actions);
-
-    el.exploreGrid.appendChild(card);
-  });
-}
-
-function renderSaved() {
-  if (!el.savedGrid || !el.savedEmpty) return;
-  el.savedGrid.innerHTML = "";
-  if (!state.saved.length) {
-    el.savedEmpty.classList.remove("hidden");
-    return;
-  }
-  el.savedEmpty.classList.add("hidden");
-  const items = [...state.saved].sort((a, b) => {
-    if (a.favorite === b.favorite) return 0;
-    return a.favorite ? -1 : 1;
-  });
-  items.forEach((palette) => {
-    const card = document.createElement("div");
-    card.className = "tc-card p-4 flex flex-col gap-3";
-
-    const header = document.createElement("div");
-    header.className = "flex items-start justify-between gap-3";
-
-    const meta = document.createElement("div");
-    const title = document.createElement("p");
-    title.className = "text-sm font-semibold";
-    title.textContent = palette.ten || "Dải màu";
-    const tags = document.createElement("p");
-    tags.className = "tc-muted text-xs mt-1";
-    tags.textContent = (palette.tags || []).join(" · ");
-    meta.appendChild(title);
-    meta.appendChild(tags);
-
-    const favBtn = document.createElement("button");
-    favBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
-    favBtn.type = "button";
-    favBtn.textContent = palette.favorite ? "★ Ghim" : "☆ Ghim";
-    favBtn.addEventListener("click", () => toggleFavorite(palette.id));
-
-    header.appendChild(meta);
-    header.appendChild(favBtn);
-
-    const preview = document.createElement("div");
-    preview.className = "tc-gradient";
-    preview.style.background = gradientFor(palette.stops);
-
-    const actions = document.createElement("div");
-    actions.className = "flex flex-wrap gap-2";
-
-    const exportBtn = document.createElement("button");
-    exportBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
-    exportBtn.type = "button";
-    exportBtn.textContent = "Xuất";
-    exportBtn.addEventListener("click", async () => {
-      const ok = await copyText(exportText(palette));
-      showToast(ok ? "Đã sao chép xuất." : "Không thể sao chép.");
-    });
-
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
-    removeBtn.type = "button";
-    removeBtn.textContent = "Xóa";
-    removeBtn.addEventListener("click", () => removeSaved(palette.id));
-
-    actions.appendChild(exportBtn);
-    actions.appendChild(removeBtn);
-
-    card.appendChild(header);
-    card.appendChild(preview);
-    card.appendChild(actions);
-
-    el.savedGrid.appendChild(card);
-  });
-}
-
-function applyStopsFromQuery() {
-  const params = new URLSearchParams(window.location.search);
-  const raw = params.get("stops");
-  if (!raw) return;
+function getHashStops(key) {
+  const hash = (window.location.hash || "").replace("#", "");
+  if (!hash) return null;
+  const params = new URLSearchParams(hash);
+  const raw = params.get(key);
+  if (!raw) return null;
   const stops = raw.split(",").map((s) => normalizeHex(s)).filter(Boolean);
   if (stops.length >= MIN_STOPS && stops.length <= MAX_STOPS) {
-    state.currentStops = stops;
-    renderStops();
-    renderPreview();
+    return stops;
   }
+  return null;
+}
+
+function handleBackwardCompatibility() {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get("mode");
+  const hashStops = getHashStops("g");
+  if (mode === "gradient" || hashStops) {
+    const stops = hashStops ? hashStops.join(",") : "";
+    const target = stops ? `gradient.html#g=${encodeURIComponent(stops)}` : "gradient.html";
+    window.location.replace(target);
+    return true;
+  }
+  return false;
 }
 
 async function loadPalettes() {
@@ -403,67 +207,21 @@ async function loadPalettes() {
   } catch (_err) {
     state.palettes = [];
   }
-  renderExplore();
-}
-
-function initEvents() {
-  el.tabs.forEach((btn) => {
-    btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
-  });
-  document.querySelectorAll("[data-empty-action=\"create\"]").forEach((btn) => {
-    btn.addEventListener("click", () => setActiveTab("create"));
-  });
-
-  el.btnAdd?.addEventListener("click", () => {
-    if (state.currentStops.length >= MAX_STOPS) return;
-    state.currentStops.push(randomHex());
-    renderStops();
-    renderPreview();
-  });
-  el.btnRandom?.addEventListener("click", () => {
-    state.currentStops = Array.from({ length: state.currentStops.length }, () => randomHex());
-    renderStops();
-    renderPreview();
-  });
-  el.nameInput?.addEventListener("input", () => {
-    state.currentName = el.nameInput.value.trim();
-  });
-  el.btnExport?.addEventListener("click", async () => {
-    const payload = {
-      id: `local-${Date.now()}`,
-      ten: state.currentName || "Dải màu mới",
-      tags: ["tự tạo"],
-      stops: state.currentStops
-    };
-    const ok = await copyText(exportText(payload));
-    showToast(ok ? "Đã sao chép xuất." : "Không thể sao chép.");
-  });
-  el.btnSave?.addEventListener("click", () => {
-    const palette = {
-      id: `local-${Date.now()}-${Math.random().toString(16).slice(2, 6)}`,
-      ten: state.currentName || "Dải màu mới",
-      tags: ["tự tạo"],
-      stops: [...state.currentStops]
-    };
-    addToSaved(palette);
-  });
-  el.btnLink?.addEventListener("click", async () => {
-    const stops = state.currentStops.join(",");
-    const url = `${window.location.origin}${window.location.pathname}?stops=${encodeURIComponent(stops)}`;
-    const ok = await copyText(url);
-    showToast(ok ? "Đã sao chép Palette Link." : "Không thể sao chép.");
-  });
+  renderPalettes();
 }
 
 function init() {
-  state.saved = loadSaved();
-  if (el.nameInput) el.nameInput.value = state.currentName;
-  renderStops();
-  renderPreview();
-  renderSaved();
+  if (handleBackwardCompatibility()) return;
+  const stops = getHashStops("p");
+  if (stops) {
+    state.hashPalette = {
+      id: "hash-palette",
+      ten: "Palette từ dải chuyển màu",
+      tags: ["từ hash"],
+      stops
+    };
+  }
   loadPalettes();
-  applyStopsFromQuery();
-  initEvents();
 }
 
 init();

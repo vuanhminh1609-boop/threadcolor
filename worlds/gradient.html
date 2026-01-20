@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thế giới Bảng phối màu</title>
+  <title>Thế giới Dải chuyển màu</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <style>
     :root{
@@ -160,27 +160,26 @@
       box-shadow: 0 24px 60px rgba(0,0,0,0.12);
     }
     .tc-muted{ color: var(--muted); }
-    .tc-swatch-row{
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 8px;
-    }
-    .tc-swatch{
-      aspect-ratio: 1 / 1;
-      border-radius: 0.9rem;
+    .tc-input{
+      background: var(--glass);
       border: 1px solid var(--stroke);
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-      padding: 6px;
-      font-size: 10px;
-      color: rgba(255,255,255,.8);
-      text-shadow: 0 1px 2px rgba(0,0,0,.3);
+      border-radius: 0.75rem;
+      padding: 0.55rem 0.75rem;
+      color: var(--text);
     }
-    .tc-strip{
-      height: 12px;
-      border-radius: 999px;
+    .tc-color-input{
+      background: var(--glass);
       border: 1px solid var(--stroke);
+      border-radius: 0.75rem;
+      width: 3rem;
+      height: 2.25rem;
+      padding: 0.15rem;
+    }
+    .tc-gradient-preview{
+      border-radius: 1.1rem;
+      border: 1px solid var(--stroke);
+      min-height: 180px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
     }
     .tc-toast{
       position: fixed;
@@ -345,28 +344,67 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World3 · Palette</p>
-          <h1 class="text-3xl md:text-4xl font-bold">Thế giới Bảng phối màu</h1>
-          <p class="mt-2 tc-muted">Các ô màu rời đặt cạnh nhau, nhấn để sao chép.</p>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World2 · Gradient</p>
+          <h1 class="text-3xl md:text-4xl font-bold">Thế giới Dải chuyển màu</h1>
+          <p class="mt-2 tc-muted">Tạo dải chuyển màu, tinh chỉnh góc và xuất CSS/tokens.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
-          <span>Swatches · Xuất token · 1 chạm</span>
+          <span>Gradient-first · Xuất nhanh</span>
         </div>
       </div>
 
-      <div id="paletteEmpty" class="mt-6 hidden">
-        <div class="tc-card p-6 text-center">
-          <p class="tc-muted">Chưa có dữ liệu bảng phối màu.</p>
+      <div class="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm font-semibold">Xem trước</label>
+            <div id="gradientPreview" class="tc-gradient-preview mt-2"></div>
+          </div>
+          <div class="tc-card p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="text-sm font-semibold">Góc dải (độ)</label>
+              <span id="gradientAngleValue" class="tc-muted text-sm">90°</span>
+            </div>
+            <input id="gradientAngle" class="w-full" type="range" min="0" max="360" value="90">
+            <div class="flex items-center gap-3">
+              <input id="gradientAngleInput" class="tc-input w-24" type="number" min="0" max="360" value="90">
+              <button id="gradientResetAngle" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Đặt lại</button>
+            </div>
+          </div>
+          <div class="tc-card p-4">
+            <div class="flex items-center justify-between">
+              <label class="text-sm font-semibold">Điểm neo màu (2–7)</label>
+              <div class="flex items-center gap-2">
+                <button id="gradientAdd" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Thêm màu</button>
+                <button id="gradientRandom" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Ngẫu nhiên</button>
+              </div>
+            </div>
+            <div id="gradientStops" class="mt-3 space-y-3"></div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="tc-card p-4">
+            <p class="text-sm font-semibold">Xuất nhanh</p>
+            <p class="tc-muted text-xs mt-1">Sao chép CSS linear-gradient và token màu.</p>
+            <div class="mt-3 flex flex-wrap gap-3">
+              <button id="gradientExport" class="tc-btn tc-btn-primary px-4 py-2" type="button">Xuất</button>
+              <button id="gradientToPalette" class="tc-btn tc-chip px-4 py-2" type="button">Tách thành palette</button>
+            </div>
+          </div>
+
+          <div class="tc-card p-4">
+            <p class="text-sm font-semibold">Mẫu dải phối</p>
+            <p class="tc-muted text-xs mt-1">Chọn nhanh từ dữ liệu palettes.json.</p>
+            <div id="gradientSamples" class="mt-4 space-y-3"></div>
+          </div>
         </div>
       </div>
-
-      <div id="paletteGrid" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
     </section>
   </main>
 
   <script type="module" src="../auth.js"></script>
-  <script type="module" src="./palette.js"></script>
+  <script type="module" src="./gradient.js"></script>
   <script>
     (() => {
       const portalBtn = document.getElementById("portalBtn");
