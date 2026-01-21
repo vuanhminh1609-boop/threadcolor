@@ -42,7 +42,9 @@ jobs:
           elif [ -n "${FIREBASE_TOKEN}" ]; then
             echo "FIREBASE_AUTH_MODE=token" >> "${GITHUB_ENV}"
           else
-            echo "Thiếu FIREBASE_SERVICE_ACCOUNT hoặc FIREBASE_TOKEN" >&2
+            echo "Thiếu FIREBASE_SERVICE_ACCOUNT hoặc FIREBASE_TOKEN." >&2
+            echo "Vào Settings -> Secrets and variables -> Actions -> New repository secret" >&2
+            echo "Tạo FIREBASE_SERVICE_ACCOUNT (khuyến nghị) hoặc FIREBASE_TOKEN (fallback)." >&2
             exit 1
           fi
 

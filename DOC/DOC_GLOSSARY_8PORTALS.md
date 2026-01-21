@@ -207,6 +207,9 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Least privilege | Tối thiểu quyền | Mỗi người chỉ có đúng quyền cần thiết. |
 | Auth | Xác thực | Định danh người dùng (đăng nhập/đăng xuất). |
 | Custom claims | Quyền đặc biệt | “Cờ” phân quyền nâng cao (admin/mod). |
+| GitHub Secrets | Kho bí mật GitHub | Kho biến bí mật của repo dùng trong GitHub Actions. |
+| Service account | Tài khoản dịch vụ | Tài khoản máy phục vụ tác vụ tự động, không gắn người dùng. |
+| CI token | Mã đăng nhập tự động | Mã dùng trong CI để xác thực với dịch vụ bên ngoài. |
 | Quét không dùng lịch sử Git (no-git scan) | Quét không dùng lịch sử Git (no-git scan) | Quét theo tree hiện tại, không duyệt lịch sử commit để tránh kết quả từ patch cũ. |
 | ESM (ECMAScript Module: chuẩn module dùng import/export) | ESM | Chuẩn module hiện đại dùng `import`/`export` theo ES. |
 | CJS (CommonJS: chuẩn module mặc định của Node với require/module.exports) | CJS | Chuẩn module truyền thống của Node dùng `require`/`module.exports`. |
