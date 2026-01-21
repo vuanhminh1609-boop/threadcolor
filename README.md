@@ -27,3 +27,14 @@ Thuộc hệ sinh thái 8Portals / SpaceColors.
 
 ## Ownership
 - CODEOWNERS: `.github/CODEOWNERS`
+
+## Deploy Firebase Hosting (Production/Preview)
+- Production: workflow chạy khi push/merge vào `main`.
+- Preview: workflow chạy khi có pull request vào `main`, deploy preview channel `pr-<số>`.
+
+### Thiết lập secrets trên GitHub
+1) Vào **Settings → Secrets and variables → Actions → New repository secret**
+2) Tạo **một trong hai**:
+   - `FIREBASE_SERVICE_ACCOUNT` (khuyến nghị): nội dung JSON service account.
+   - `FIREBASE_TOKEN` (fallback): token từ `firebase login:ci`.
+Workflow sẽ ưu tiên `FIREBASE_SERVICE_ACCOUNT`, nếu không có sẽ dùng `FIREBASE_TOKEN`.

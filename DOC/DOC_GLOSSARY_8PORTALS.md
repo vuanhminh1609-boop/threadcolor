@@ -114,6 +114,9 @@
 | PostCSS | PostCSS | Công cụ xử lý CSS trong pipeline build (thêm prefix, tối ưu). |
 | Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |
 | DEV flag / Logger | Cờ DEV / Logger | Cơ chế bật/tắt log theo môi trường để giữ console sạch ở production. |
+| Trạm thao tác nhanh | Trạm thao tác nhanh | Khu làm nhanh ngay tại sảnh, cho ra kết quả trước khi vào chi tiết. |
+| action-first / navigate-second | action-first / navigate-second | Ưu tiên làm ra kết quả trước, điều hướng sâu sau khi cần. |
+| lazy-load | lazy-load | Chỉ tải tài nguyên khi cần để trang chính nhẹ và nhanh. |
 | Giả lập in | Giả lập in | Mô phỏng màu in ra từ CMYK để ước lượng hiển thị trên màn hình. |
 | Hồ sơ in | Hồ sơ in | Preset thông số in (đặc biệt ngưỡng TAC) cho từng chất liệu. |
 | Độ lệch màu | Độ lệch màu | Mức chênh giữa màu gốc và màu giả lập in (thấp/vừa/cao). |
@@ -204,6 +207,9 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Least privilege | Tối thiểu quyền | Mỗi người chỉ có đúng quyền cần thiết. |
 | Auth | Xác thực | Định danh người dùng (đăng nhập/đăng xuất). |
 | Custom claims | Quyền đặc biệt | “Cờ” phân quyền nâng cao (admin/mod). |
+| GitHub Secrets | Kho bí mật GitHub | Kho biến bí mật của repo dùng trong GitHub Actions. |
+| Service account | Tài khoản dịch vụ | Tài khoản máy phục vụ tác vụ tự động, không gắn người dùng. |
+| CI token | Mã đăng nhập tự động | Mã dùng trong CI để xác thực với dịch vụ bên ngoài. |
 | Quét không dùng lịch sử Git (no-git scan) | Quét không dùng lịch sử Git (no-git scan) | Quét theo tree hiện tại, không duyệt lịch sử commit để tránh kết quả từ patch cũ. |
 | ESM (ECMAScript Module: chuẩn module dùng import/export) | ESM | Chuẩn module hiện đại dùng `import`/`export` theo ES. |
 | CJS (CommonJS: chuẩn module mặc định của Node với require/module.exports) | CJS | Chuẩn module truyền thống của Node dùng `require`/`module.exports`. |
