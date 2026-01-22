@@ -53,6 +53,7 @@
 | Nguồn sự thật (single source of truth) | Nguồn sự thật (single source of truth) | Nguồn dữ liệu thống nhất để tránh lệch số |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
+| Schema (khung dữ liệu chuẩn) | Schema (khung dữ liệu chuẩn) | Khung định nghĩa cấu trúc dữ liệu chuẩn để kiểm tra/đồng nhất. |
 | JSON Schema | JSON Schema | Chuan mo ta cau truc JSON de kiem tra hop le |
 | SemVer | SemVer | Chuan danh phien ban MAJOR.MINOR.PATCH |
 | Manifest hop dong | Manifest hop dong | Tep ke khai: dataset nao dung schema nao + phien ban + checksum |
@@ -77,8 +78,18 @@
 | Validate | Kiểm tra hợp lệ | Kiểm tra cấu trúc/logic dữ liệu để phát hiện lỗi sớm. |
 | Normalize | Chuẩn hoá | Biến dữ liệu về dạng thống nhất (tên, mã, format). |
 | Conflicts | Mâu thuẫn dữ liệu | Các điểm dữ liệu xung đột cần xử lý. |
-| Versioning | Đánh phiên bản | Gắn phiên bản dữ liệu để cache và truy vết thay đổi. |
+| Versioning (phiên bản hoá) | Đánh phiên bản | Gắn phiên bản dữ liệu để cache và truy vết thay đổi. |
 | Taxonomy (hệ phân loại) | Hệ phân loại | Khung phân loại có cấu trúc để nhóm dữ liệu theo chủ đề/thuộc tính. |
+| Asset (tài sản số) | Tài sản số | Mục dữ liệu đã chuẩn hoá để tái sử dụng (ví dụ: palette/gradient). |
+| Spec (bản thông số) | Bản thông số | Mô tả rút gọn + JSON của một asset để chia sẻ/áp dụng. |
+| Tài sản | Tài sản | Tên gọi ngắn cho asset; một mục dữ liệu chuẩn dùng lại trong các World. |
+| Bản thông số | Bản thông số | Tập thông tin mô tả ngắn gọn kèm JSON để chia sẻ/áp dụng nhanh. |
+| Naming convention (quy tắc đặt tên) | Quy tắc đặt tên | Chuẩn thống nhất để đặt tên tài sản dễ hiểu, nhất quán và dễ tìm. |
+| Material profile (hồ sơ chất liệu) | Hồ sơ chất liệu | Nhóm thuộc tính mô tả bề mặt/vật liệu (loại chất liệu, độ bóng, ánh sáng, vân bề mặt). |
+| Finish (độ bóng) | Độ bóng | Mức phản xạ bề mặt (mờ/bóng) ảnh hưởng cảm giác màu và ánh sáng. |
+| Texture (vân bề mặt) | Vân bề mặt | Mô tả độ vân/mịn của bề mặt để giả lập chất liệu. |
+| Adapter (lớp chuyển đổi dữ liệu) | Adapter | Lớp trung gian chuyển dữ liệu giữa các hệ/format khác nhau. |
+| Payload (gói dữ liệu) | Payload | Gói dữ liệu mang thông tin chính để xử lý/áp dụng. |
 | Seed dữ liệu (bộ mồi dữ liệu) | Seed dữ liệu | Bộ dữ liệu mồi ban đầu để khởi tạo hoặc bootstrap hệ thống. |
 | Tuyển chọn (curation: chọn lọc chất lượng cao) | Tuyển chọn | Quá trình chọn lọc dữ liệu chất lượng cao theo tiêu chí rõ ràng. |
 | checksum SHA-256 (mã kiểm tra toàn vẹn tệp bằng thuật toán SHA-256) | checksum SHA-256 | Mã băm SHA-256 dùng để kiểm tra tính toàn vẹn nội dung tệp. |

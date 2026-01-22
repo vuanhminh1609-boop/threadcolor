@@ -1,5 +1,6 @@
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
+const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 
 const state = {
   palettes: [],
@@ -58,6 +59,19 @@ function showToast(message) {
   }, 1400);
 }
 
+function addAssetToLibrary(asset) {
+  try {
+    const raw = localStorage.getItem(ASSET_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift(asset);
+    localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
+    return true;
+  } catch (_err) {
+    return false;
+  }
+}
+
 async function copyText(text) {
   if (!text) return false;
   try {
@@ -108,7 +122,7 @@ function renderPaletteCard(palette) {
   const exportBtn = document.createElement("button");
   exportBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
   exportBtn.type = "button";
-  exportBtn.textContent = "Xuất";
+  exportBtn.textContent = "Xuất Bản thông số";
   exportBtn.addEventListener("click", async () => {
     const ok = await copyText(exportText(palette));
     showToast(ok ? "Đã sao chép bảng phối." : "Không thể sao chép.");
@@ -125,6 +139,28 @@ function renderPaletteCard(palette) {
 
   actions.appendChild(exportBtn);
   actions.appendChild(bridgeBtn);
+
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  saveBtn.type = "button";
+  saveBtn.textContent = "Lưu thành Tài sản";
+  saveBtn.addEventListener("click", () => {
+    const now = new Date().toISOString();
+    const asset = {
+      id: `asset_${Date.now()}`,
+      type: "palette",
+      name: palette.ten || "Bảng phối màu",
+      tags: Array.isArray(palette.tags) ? palette.tags : [],
+      payload: { colors: palette.stops || [] },
+      createdAt: now,
+      updatedAt: now,
+      sourceWorld: "palette"
+    };
+    const ok = addAssetToLibrary(asset);
+    showToast(ok ? "Đã lưu thành Tài sản." : "Không thể lưu tài sản.");
+  });
+
+  actions.appendChild(saveBtn);
 
   header.appendChild(meta);
   header.appendChild(actions);

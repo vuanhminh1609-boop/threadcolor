@@ -33,6 +33,7 @@ const elements = {
   reduceAll: document.getElementById("reduceAll"),
   exportFormat: document.getElementById("exportFormat"),
   exportCopy: document.getElementById("exportCopy"),
+  exportWrap: document.getElementById("exportCopy")?.parentElement || null,
   iccInput: document.getElementById("iccInput"),
   iccProfile: document.getElementById("iccProfile"),
   iccStatus: document.getElementById("iccStatus"),
@@ -58,6 +59,8 @@ const state = {
   iccReady: false,
   iccLoading: false
 };
+
+const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 
 const normalizeHex = (value) => {
   if (!value) return null;
@@ -229,6 +232,19 @@ const copyToClipboard = (text) => {
     ta.remove();
     resolve();
   });
+};
+
+const addAssetToLibrary = (asset) => {
+  try {
+    const raw = localStorage.getItem(ASSET_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift(asset);
+    localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
+    return true;
+  } catch (_err) {
+    return false;
+  }
 };
 
 const openIccDb = () => new Promise((resolve) => {
@@ -601,6 +617,17 @@ const buildExportReport = () => {
   return lines.join("\n");
 };
 
+const buildCmykPayload = () => {
+  return state.items.map((item) => ({
+    hex: item.hex,
+    c: item.cmyk.c,
+    m: item.cmyk.m,
+    y: item.cmyk.y,
+    k: item.cmyk.k,
+    tac: getTac(item.cmyk)
+  }));
+};
+
 const exportData = () => {
   if (!state.items.length) {
     showToast("Chưa có dữ liệu để xuất.");
@@ -698,7 +725,37 @@ const bindEvents = () => {
     });
   }
   if (elements.exportCopy) {
+    elements.exportCopy.textContent = "Xuất Bản thông số";
     elements.exportCopy.addEventListener("click", exportData);
+  }
+  if (elements.exportWrap && !document.getElementById("printSaveLibrary")) {
+    const saveBtn = document.createElement("button");
+    saveBtn.id = "printSaveLibrary";
+    saveBtn.className = "tc-btn tc-chip px-4 py-2 text-sm";
+    saveBtn.type = "button";
+    saveBtn.textContent = "Lưu thành Tài sản";
+    saveBtn.addEventListener("click", () => {
+      if (!state.items.length) {
+        showToast("Chưa có dữ liệu để lưu.");
+        return;
+      }
+      const now = new Date().toISOString();
+      const profile = getSelectedProfile();
+      const asset = {
+        id: `asset_${Date.now()}`,
+        type: "cmyk_recipe",
+        name: `CMYK ${profile?.name || "sRGB"}`,
+        tags: ["cmyk", "in"],
+        payload: { cmyk: buildCmykPayload() },
+        notes: `TAC ${state.tacLimit}% · intent ${state.iccIntent} · BPC ${state.iccBpc ? "on" : "off"}`,
+        createdAt: now,
+        updatedAt: now,
+        sourceWorld: "printcolor"
+      };
+      const ok = addAssetToLibrary(asset);
+      showToast(ok ? "Đã lưu thành Tài sản." : "Không thể lưu tài sản.");
+    });
+    elements.exportWrap.appendChild(saveBtn);
   }
   if (elements.iccInput) {
     elements.iccInput.addEventListener("change", (event) => {

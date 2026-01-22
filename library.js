@@ -99,3 +99,44 @@ export async function getSavedSearch(db, uid, docId) {
   if (!snap.exists()) return null;
   return { id: snap.id, ...snap.data() };
 }
+
+export const MATERIAL_PROFILE_SCHEMA = {
+  materialType: ["vai", "son"],
+  finish: ["mo", "bong"],
+  lighting: ["trang", "am", "tu_nhien"],
+  textureHint: "string"
+};
+
+export const ASSET_SCHEMA = {
+  id: "string",
+  type: "string",
+  name: "string",
+  tags: "string[]",
+  core: "object",
+  profiles: {
+    material: MATERIAL_PROFILE_SCHEMA
+  },
+  notes: "string",
+  version: "string",
+  createdAt: "string",
+  updatedAt: "string",
+  sourceWorld: "string"
+};
+
+export function createAsset(payload = {}) {
+  const now = new Date().toISOString();
+  const coreFallback = payload.payload || payload.core || {};
+  return {
+    id: payload.id || `asset_${Date.now()}`,
+    type: payload.type || "palette",
+    name: payload.name || "Asset mới",
+    tags: Array.isArray(payload.tags) ? payload.tags : [],
+    core: payload.core || coreFallback,
+    profiles: payload.profiles || {},
+    notes: payload.notes || "",
+    version: payload.version || "1.0.0",
+    createdAt: payload.createdAt || now,
+    updatedAt: payload.updatedAt || now,
+    sourceWorld: payload.sourceWorld || ""
+  };
+}
