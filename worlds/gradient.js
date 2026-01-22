@@ -1,5 +1,6 @@
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
+const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 
 const state = {
   stops: ["#ff6b6b", "#ffd93d", "#6ee7b7"],
@@ -76,6 +77,19 @@ function showToast(message) {
   showToast._timer = window.setTimeout(() => {
     toast.classList.remove("is-visible");
   }, 1600);
+}
+
+function addAssetToLibrary(asset) {
+  try {
+    const raw = localStorage.getItem(ASSET_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift(asset);
+    localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
+    return true;
+  } catch (_err) {
+    return false;
+  }
 }
 
 async function copyText(text) {
@@ -242,14 +256,39 @@ function initEvents() {
     renderStops();
     renderPreview();
   });
+  if (el.exportBtn) el.exportBtn.textContent = "Xuất Bản thông số";
   el.exportBtn?.addEventListener("click", async () => {
     const ok = await copyText(exportText());
-    showToast(ok ? "Đã sao chép xuất." : "Không thể sao chép.");
+    showToast(ok ? "Đã sao chép bản thông số." : "Không thể sao chép bản thông số.");
   });
   el.toPalette?.addEventListener("click", () => {
     const stops = state.stops.join(",");
     window.location.href = `palette.html#p=${encodeURIComponent(stops)}`;
   });
+
+  if (el.exportBtn?.parentElement && !document.getElementById("gradientSaveLibrary")) {
+    const saveBtn = document.createElement("button");
+    saveBtn.id = "gradientSaveLibrary";
+    saveBtn.className = "tc-btn tc-chip px-4 py-2";
+    saveBtn.type = "button";
+    saveBtn.textContent = "Lưu thành Tài sản";
+    saveBtn.addEventListener("click", () => {
+      const now = new Date().toISOString();
+      const asset = {
+        id: `asset_${Date.now()}`,
+        type: "gradient",
+        name: "Dải chuyển màu nhanh",
+        tags: ["gradient"],
+        payload: { gradientParams: { stops: [...state.stops], angle: state.angle } },
+        createdAt: now,
+        updatedAt: now,
+        sourceWorld: "gradient"
+      };
+      const ok = addAssetToLibrary(asset);
+      showToast(ok ? "Đã lưu thành Tài sản." : "Không thể lưu tài sản.");
+    });
+    el.exportBtn.parentElement.appendChild(saveBtn);
+  }
 }
 
 function init() {

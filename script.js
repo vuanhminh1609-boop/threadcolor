@@ -284,7 +284,8 @@ const telemetry = (() => {
     }
   };
   const sessionId = getSessionId();
-  const counts = { search_start: 0, search_result: 0, pin: 0, copy: 0, save: 0 };
+const counts = { search_start: 0, search_result: 0, pin: 0, copy: 0, save: 0 };
+const ASSET_STORAGE_KEY = "tc_asset_library_v1";
   const lastSent = { ...counts };
   let flushTimer = null;
   let lastFlushAt = now();
@@ -1289,9 +1290,12 @@ function renderGroupedResults(groups, chosenHex, limit) {
       </div>`
     : "";
   resultBox.innerHTML = `
-    <div class="flex items-center gap-3 mb-6">
-      <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
-      <div class="font-semibold">${chosenLabel}</div>
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
+        <div class="font-semibold">${chosenLabel}</div>
+      </div>
+      <button class="tc-btn tc-chip px-3 py-2 text-sm" data-action="save-thread-library">Lưu thành Tài sản</button>
     </div>
     ${projectBlock}
     ${sections}
@@ -1339,6 +1343,19 @@ function showToast(text) {
     item.classList.add("opacity-0", "translate-y-1");
     setTimeout(() => item.remove(), 400);
   }, 1500);
+}
+
+function addAssetToLibrary(asset) {
+  try {
+    const raw = localStorage.getItem(ASSET_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift(asset);
+    localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
+    return true;
+  } catch (_err) {
+    return false;
+  }
 }
 
 function copyToClipboard(text, label) {
@@ -1441,6 +1458,37 @@ function handleResultContainerClick(e) {
   if (retryBtn) {
     e.preventDefault();
     if (typeof loadThreads === "function") loadThreads();
+    return;
+  }
+  const saveLibraryBtn = e.target.closest('[data-action="save-thread-library"]');
+  if (saveLibraryBtn) {
+    e.preventDefault();
+    const threads = Array.isArray(currentRendered)
+      ? currentRendered.map((item) => ({
+          brand: item.brand || "",
+          code: item.code || "",
+          name: item.name || "",
+          hex: item.hex || "",
+          delta: item.delta
+        }))
+      : [];
+    if (!threads.length) {
+      showToast("Chưa có dữ liệu để lưu.");
+      return;
+    }
+    const now = new Date().toISOString();
+    const asset = {
+      id: `asset_${Date.now()}`,
+      type: "thread_set",
+      name: lastChosenHex ? `Mã chỉ cho ${lastChosenHex}` : "Bộ mã chỉ",
+      tags: ["thêu"],
+      payload: { threads },
+      createdAt: now,
+      updatedAt: now,
+      sourceWorld: "threadcolor"
+    };
+    const ok = addAssetToLibrary(asset);
+    showToast(ok ? "Đã lưu thành Tài sản." : "Không thể lưu tài sản.");
     return;
   }
   const loadMoreBtn = e.target.closest('[data-action="load-more-results"]');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thế giới Màu in (CMYK)</title>
+  <title>Thế giới Thư viện Tài sản Màu</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <style>
     :root{
@@ -166,83 +166,12 @@
       border-radius: 0.75rem;
       padding: 0.55rem 0.75rem;
       color: var(--text);
-      width: 100%;
-      min-height: 120px;
-      resize: vertical;
-    }
-    .tc-range{
-      width: 100%;
     }
     .tc-swatch{
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 0.6rem;
       border: 1px solid var(--stroke);
-    }
-    .tc-swatch-duo{
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tc-row-gamut{
-      background: rgba(185, 28, 28, 0.08);
-    }
-    .tc-row-gamut .tc-swatch{
-      box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.55);
-    }
-    .tc-details summary{
-      list-style: none;
-      cursor: pointer;
-    }
-    .tc-details summary::-webkit-details-marker{
-      display: none;
-    }
-    .tc-table th,
-    .tc-table td{
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--stroke);
-      white-space: nowrap;
-    }
-    .tc-table th{
-      text-align: left;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-    }
-    .tc-badge{
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border-radius: 999px;
-      padding: 4px 10px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.6);
-      font-size: 12px;
-    }
-    .tc-warn{
-      color: #b91c1c;
-      font-weight: 600;
-    }
-    .tc-toast{
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 80;
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      color: var(--text);
-      border-radius: 0.9rem;
-      padding: 0.6rem 0.9rem;
-      box-shadow: 0 16px 40px rgba(0,0,0,.18);
-      opacity: 0;
-      transform: translateY(6px);
-      pointer-events: none;
-      transition: opacity .18s ease, transform .18s ease;
-    }
-    .tc-toast.is-visible{
-      opacity: 1;
-      transform: translateY(0);
     }
     #portalMenu[data-open="0"],
     #worldMenu[data-open="0"]{ display: none; }
@@ -305,10 +234,6 @@
       .tc-topbar button {
         min-height: 40px;
       }
-      .tc-table th,
-      .tc-table td{
-        font-size: 12px;
-      }
     }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -354,9 +279,7 @@
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Thế giới Dải chuyển màu</a>
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Thế giới Bảng phối màu</a>
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Thế giới Màu in (CMYK)</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Thế giới màu Sơn&Vải</a>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Thế giới Thư viện Tài sản Màu</a>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
             <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
@@ -393,139 +316,72 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World4 · CMYK</p>
-          <h1 class="text-3xl md:text-4xl font-bold">Thế giới Màu in (CMYK)</h1>
-          <p class="mt-2 tc-muted">Chuyển HEX sang CMYK xấp xỉ, xem TAC và cảnh báo quá ngưỡng.</p>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World5 · Thư viện</p>
+          <h1 class="text-3xl md:text-4xl font-bold">Thư viện Tài sản Màu</h1>
+          <p class="mt-2 tc-muted">Lưu, tìm, áp dụng nhanh các tài sản màu đã chuẩn hoá.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
-          <span>Local-first · CMYK nhanh</span>
+          <span>Tài sản-first · Áp dụng nhanh</span>
         </div>
       </div>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
-        <div class="space-y-4">
-          <div class="tc-card p-4">
-            <label class="text-sm font-semibold" for="hexInput">Danh sách mã màu (HEX)</label>
-            <textarea id="hexInput" class="tc-input mt-2" placeholder="#FFAA00, #123456&#10;#0F766E"></textarea>
-            <div class="mt-3 flex flex-wrap gap-2">
-              <button id="hexApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Áp dụng</button>
-              <button id="hexClear" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Xóa</button>
-            </div>
-            <p class="tc-muted text-xs mt-3">Hỗ trợ hash <strong>#c=</strong>, <strong>#p=</strong>, <strong>#g=</strong> (VD: <code>#c=ffcc00,0033aa</code>).</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <input id="assetSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo tên/tags...">
+        <select id="assetFilter" class="tc-input w-full md:w-[200px]">
+          <option value="all">Tất cả loại</option>
+          <option value="palette">Palette</option>
+          <option value="gradient">Gradient</option>
+          <option value="thread_set">Thêu (thread_set)</option>
+          <option value="cmyk_recipe">In (cmyk_recipe)</option>
+          <option value="other">Khác</option>
+        </select>
+        <button id="assetCreateDemo" class="tc-btn tc-btn-primary px-4 py-2">Tạo tài sản demo</button>
+        <details class="tc-card tc-chip px-4 py-3 text-sm">
+          <summary class="cursor-pointer font-semibold">Hướng dẫn đặt tên Tài sản</summary>
+          <div class="mt-2 tc-muted text-xs leading-relaxed space-y-1">
+            <div>Định dạng chung: {Ngữ cảnh} — {World} — {Thuộc tính chính} — v01</div>
+            <div>Ngắn, giàu ngữ nghĩa, tránh ký tự thừa; dùng dấu “—” để tách cụm.</div>
+            <div>Ví dụ: “Tường Phòng khách — Sơn&Vải — Trắng · Mờ · Tĩnh — v01”.</div>
           </div>
-          <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Hồ sơ in</h2>
-            <p class="tc-muted text-xs mt-1">Chọn preset và tinh chỉnh ngưỡng TAC.</p>
-            <div class="mt-3 space-y-3">
-              <label class="text-sm font-semibold" for="profilePreset">Preset</label>
-              <select id="profilePreset" class="tc-input">
-                <option value="300">Couche 300%</option>
-                <option value="280">Thường 280%</option>
-                <option value="240">Báo 240%</option>
-              </select>
-              <div class="flex items-center justify-between text-xs tc-muted">
-                <span>Ngưỡng TAC</span>
-                <span id="tacValue">300%</span>
-              </div>
-              <input id="tacRange" class="tc-range" type="range" min="200" max="360" step="5" value="300">
-            </div>
-          </div>
-          <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Hồ sơ ICC</h2>
-            <p class="tc-muted text-xs mt-1">Nạp ICC local-first để chuyển đổi chính xác hơn.</p>
-            <div class="mt-3 flex flex-wrap items-center gap-2">
-              <label class="tc-btn tc-chip px-3 py-2 text-sm" for="iccInput">Nạp ICC</label>
-              <input id="iccInput" type="file" accept=".icc,.icm" hidden>
-              <select id="iccProfile" class="tc-input w-full md:w-[220px]"></select>
-            </div>
-            <p id="iccStatus" class="tc-muted text-xs mt-2">Đang dùng sRGB xấp xỉ (chưa có ICC).</p>
-            <details class="tc-details mt-3">
-              <summary class="tc-btn tc-chip px-3 py-2 text-xs inline-flex">Nâng cao</summary>
-              <div class="mt-3 space-y-3">
-                <label class="text-sm font-semibold" for="iccIntent">Rendering intent</label>
-                <select id="iccIntent" class="tc-input">
-                  <option value="perceptual">Perceptual (0)</option>
-                  <option value="relative">Relative Colorimetric (1)</option>
-                  <option value="saturation">Saturation (2)</option>
-                  <option value="absolute">Absolute Colorimetric (3)</option>
-                </select>
-                <label class="text-sm font-semibold flex items-center gap-2">
-                  <input id="iccBpc" type="checkbox" class="accent-black">
-                  Bù điểm đen (BPC)
-                </label>
-                <label class="text-sm font-semibold" for="gamutThreshold">Ngưỡng DeltaE</label>
-                <input id="gamutThreshold" class="tc-input" type="number" min="1" max="20" step="1" value="5">
-                <label class="text-sm font-semibold flex items-center gap-2">
-                  <input id="gamutOverlay" type="checkbox" class="accent-black">
-                  Tô phủ cảnh báo
-                </label>
-              </div>
-            </details>
-          </div>
-          <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Đen giàu (Rich black)</h2>
-            <p class="tc-muted text-xs mt-1">Áp dụng cho vùng tối/đen khi xuất in.</p>
-            <div class="mt-3 space-y-3">
-              <label class="text-sm font-semibold" for="richBlackPreset">Preset</label>
-              <select id="richBlackPreset" class="tc-input">
-                <option value="text">Đen chữ (K=100)</option>
-                <option value="coated">Đen mảng - Couche</option>
-                <option value="uncoated">Đen mảng - Thường</option>
-                <option value="newsprint">Đen mảng - Báo</option>
-              </select>
-              <p class="tc-muted text-xs">Tự cắt TAC nếu vượt ngưỡng.</p>
-            </div>
-          </div>
+        </details>
+      </div>
+      <div class="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div>
+          <div id="assetGrid" class="grid gap-4 sm:grid-cols-2"></div>
         </div>
-
-        <div class="tc-card p-4">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <h2 class="text-sm font-semibold">Bảng chuyển đổi</h2>
-              <p class="tc-muted text-xs mt-1">TAC = C + M + Y + K. Cảnh báo khi vượt ngưỡng.</p>
+        <div>
+          <div class="tc-card p-4">
+            <h2 class="text-sm font-semibold">Xem nhanh</h2>
+            <div id="assetPanelEmpty" class="mt-3 tc-muted text-sm">Chọn một tài sản để xem nhanh.</div>
+            <div id="assetPanel" class="mt-3 hidden">
+              <div class="space-y-2 text-sm">
+                <div><strong id="assetPanelName"></strong></div>
+                <div class="tc-muted" id="assetPanelType"></div>
+                <div class="flex flex-wrap gap-2" id="assetPanelTags"></div>
+                <div class="flex flex-wrap gap-2" id="assetPanelSwatches"></div>
+                <div class="tc-muted text-xs" id="assetPanelNotes"></div>
+              </div>
+              <button id="assetApply" class="tc-btn tc-btn-primary px-4 py-2 mt-4">Áp dụng</button>
+              <div class="mt-4">
+                <p class="text-xs font-semibold">Bản thông số (Văn bản)</p>
+                <pre id="assetSpecText" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>
+                <button id="assetCopyText" class="tc-btn tc-chip px-3 py-2 text-xs mt-2">Sao chép</button>
+              </div>
+              <div class="mt-4">
+                <p class="text-xs font-semibold">Bản thông số (JSON)</p>
+                <pre id="assetSpecJson" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>
+                <button id="assetCopyJson" class="tc-btn tc-chip px-3 py-2 text-xs mt-2">Sao chép</button>
+              </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2 justify-end">
-              <button id="safePrintAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Đưa về an toàn in</button>
-              <button id="reduceAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Giảm TAC theo ngưỡng</button>
-              <span class="tc-badge">TAC ngưỡng <span id="tacBadge">300%</span></span>
-            </div>
-          </div>
-          <div id="printEmpty" class="mt-4 tc-muted text-sm">Chưa có màu để chuyển đổi.</div>
-          <div id="printTableWrap" class="mt-4 overflow-auto hidden">
-            <table class="tc-table w-full text-sm">
-              <thead>
-                <tr>
-                  <th>Màu</th>
-                  <th>HEX</th>
-                  <th>CMYK</th>
-                  <th>TAC</th>
-                  <th>Cảnh báo</th>
-                  <th>Độ lệch</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="printTableBody"></tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex flex-wrap items-center gap-2">
-            <select id="exportFormat" class="tc-input w-[190px]">
-              <option value="csv">Xuất CSV</option>
-              <option value="json">JSON tokens</option>
-              <option value="css">CSS variables</option>
-              <option value="report">Báo cáo in</option>
-            </select>
-            <button id="exportCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép</button>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <div id="printToast" class="tc-toast" role="status" aria-live="polite"></div>
-
   <script type="module" src="../auth.js"></script>
-  <script type="module" src="../printcolor.js"></script>
+  <script type="module" src="./library.js"></script>
   <script>
     (() => {
       const portalBtn = document.getElementById("portalBtn");
