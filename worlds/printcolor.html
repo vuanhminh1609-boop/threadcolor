@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tháº¿ giá»›i MÃ u in (CMYK)</title>
+  <title>Thế giới Màu in (CMYK)</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <style>
     :root{
@@ -340,14 +340,14 @@
           </span>
           <span class="min-w-0 flex flex-col justify-center leading-tight">
             <span class="tc-brand text-base md:text-lg whitespace-nowrap">SpaceColors Â· 8Portal</span>
-            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px]">Má»™t cháº¡m má»Ÿ khÃ´ng gian mÃ u vÃ´ háº¡n</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px]">Một chạm mở không gian màu vô hạn</span>
           </span>
         </a>
       </div>
       <div class="flex-1 flex items-center justify-center">
         <div class="relative" id="portalSwitcher">
           <button id="portalBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between" aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
-            Chá»n Tháº¿ giá»›i
+            Chọn Thế giới
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
@@ -371,14 +371,14 @@
             <span aria-hidden="true">&#9662;</span>
           </button>
           <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vÃ¢n</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Äáº¡i dÆ°Æ¡ng</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Má»±c tÃ u</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Äá»“i cÃ¡t</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Máº¡ch Ä‘iá»‡n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
           </div>
         </div>
         <div id="topbarAuthSlot" data-auth-slot="topbar" class="flex items-center justify-end min-w-[210px]"></div>
@@ -391,8 +391,8 @@
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <p class="text-xs uppercase tracking-[0.35em] tc-muted">World4 Â· CMYK</p>
-          <h1 class="text-3xl md:text-4xl font-bold">Tháº¿ giá»›i MÃ u in (CMYK)</h1>
-          <p class="mt-2 tc-muted">Chuyá»ƒn HEX sang CMYK xáº¥p xá»‰, xem TAC vÃ  cáº£nh bÃ¡o quÃ¡ ngÆ°á»¡ng.</p>
+          <h1 class="text-3xl md:text-4xl font-bold">Thế giới Màu in (CMYK)</h1>
+          <p class="mt-2 tc-muted">Chuyển HEX sang CMYK xấp xỉ, xem TAC và cảnh báo quá ngưỡng.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
@@ -403,42 +403,42 @@
       <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
         <div class="space-y-4">
           <div class="tc-card p-4">
-            <label class="text-sm font-semibold" for="hexInput">Danh sÃ¡ch mÃ£ mÃ u (HEX)</label>
+            <label class="text-sm font-semibold" for="hexInput">Danh sách mã màu (HEX)</label>
             <textarea id="hexInput" class="tc-input mt-2" placeholder="#FFAA00, #123456&#10;#0F766E"></textarea>
             <div class="mt-3 flex flex-wrap gap-2">
-              <button id="hexApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Ãp dá»¥ng</button>
-              <button id="hexClear" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">XÃ³a</button>
+              <button id="hexApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Áp dụng</button>
+              <button id="hexClear" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Xóa</button>
             </div>
-            <p class="tc-muted text-xs mt-3">Há»— trá»£ hash <strong>#c=</strong>, <strong>#p=</strong>, <strong>#g=</strong> (VD: <code>#c=ffcc00,0033aa</code>).</p>
+            <p class="tc-muted text-xs mt-3">Hỗ trợ hash <strong>#c=</strong>, <strong>#p=</strong>, <strong>#g=</strong> (VD: <code>#c=ffcc00,0033aa</code>).</p>
           </div>
           <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Há»“ sÆ¡ in</h2>
-            <p class="tc-muted text-xs mt-1">Chá»n preset vÃ  tinh chá»‰nh ngÆ°á»¡ng TAC.</p>
+            <h2 class="text-sm font-semibold">Hồ sơ in</h2>
+            <p class="tc-muted text-xs mt-1">Chọn preset và tinh chỉnh ngưỡng TAC.</p>
             <div class="mt-3 space-y-3">
               <label class="text-sm font-semibold" for="profilePreset">Preset</label>
               <select id="profilePreset" class="tc-input">
                 <option value="300">Couche 300%</option>
-                <option value="280">ThÆ°á»ng 280%</option>
-                <option value="240">BÃ¡o 240%</option>
+                <option value="280">Thường 280%</option>
+                <option value="240">Báo 240%</option>
               </select>
               <div class="flex items-center justify-between text-xs tc-muted">
-                <span>NgÆ°á»¡ng TAC</span>
+                <span>Ngưỡng TAC</span>
                 <span id="tacValue">300%</span>
               </div>
               <input id="tacRange" class="tc-range" type="range" min="200" max="360" step="5" value="300">
             </div>
           </div>
           <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Há»“ sÆ¡ ICC</h2>
-            <p class="tc-muted text-xs mt-1">Náº¡p ICC local-first Ä‘á»ƒ chuyá»ƒn Ä‘á»•i chÃ­nh xÃ¡c hÆ¡n.</p>
+            <h2 class="text-sm font-semibold">Hồ sơ ICC</h2>
+            <p class="tc-muted text-xs mt-1">Nạp ICC local-first để chuyển đổi chính xác hơn.</p>
             <div class="mt-3 flex flex-wrap items-center gap-2">
-              <label class="tc-btn tc-chip px-3 py-2 text-sm" for="iccInput">Náº¡p ICC</label>
+              <label class="tc-btn tc-chip px-3 py-2 text-sm" for="iccInput">Nạp ICC</label>
               <input id="iccInput" type="file" accept=".icc,.icm" hidden>
               <select id="iccProfile" class="tc-input w-full md:w-[220px]"></select>
             </div>
-            <p id="iccStatus" class="tc-muted text-xs mt-2">Äang dÃ¹ng sRGB xáº¥p xá»‰ (chÆ°a cÃ³ ICC).</p>
+            <p id="iccStatus" class="tc-muted text-xs mt-2">Đang dùng sRGB xấp xỉ (chưa có ICC).</p>
             <details class="tc-details mt-3">
-              <summary class="tc-btn tc-chip px-3 py-2 text-xs inline-flex">NÃ¢ng cao</summary>
+              <summary class="tc-btn tc-chip px-3 py-2 text-xs inline-flex">Nâng cao</summary>
               <div class="mt-3 space-y-3">
                 <label class="text-sm font-semibold" for="iccIntent">Rendering intent</label>
                 <select id="iccIntent" class="tc-input">
@@ -449,29 +449,29 @@
                 </select>
                 <label class="text-sm font-semibold flex items-center gap-2">
                   <input id="iccBpc" type="checkbox" class="accent-black">
-                  BÃ¹ Ä‘iá»ƒm Ä‘en (BPC)
+                  Bù điểm đen (BPC)
                 </label>
-                <label class="text-sm font-semibold" for="gamutThreshold">NgÆ°á»¡ng DeltaE</label>
+                <label class="text-sm font-semibold" for="gamutThreshold">Ngưỡng DeltaE</label>
                 <input id="gamutThreshold" class="tc-input" type="number" min="1" max="20" step="1" value="5">
                 <label class="text-sm font-semibold flex items-center gap-2">
                   <input id="gamutOverlay" type="checkbox" class="accent-black">
-                  TÃ´ phá»§ cáº£nh bÃ¡o
+                  Tô phủ cảnh báo
                 </label>
               </div>
             </details>
           </div>
           <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Äen giÃ u (Rich black)</h2>
-            <p class="tc-muted text-xs mt-1">Ãp dá»¥ng cho vÃ¹ng tá»‘i/Ä‘en khi xuáº¥t in.</p>
+            <h2 class="text-sm font-semibold">Đen giàu (Rich black)</h2>
+            <p class="tc-muted text-xs mt-1">Áp dụng cho vùng tối/đen khi xuất in.</p>
             <div class="mt-3 space-y-3">
               <label class="text-sm font-semibold" for="richBlackPreset">Preset</label>
               <select id="richBlackPreset" class="tc-input">
-                <option value="text">Äen chá»¯ (K=100)</option>
-                <option value="coated">Äen máº£ng - Couche</option>
-                <option value="uncoated">Äen máº£ng - ThÆ°á»ng</option>
-                <option value="newsprint">Äen máº£ng - BÃ¡o</option>
+                <option value="text">Đen chữ (K=100)</option>
+                <option value="coated">Đen mảng - Couche</option>
+                <option value="uncoated">Đen mảng - Thường</option>
+                <option value="newsprint">Đen mảng - Báo</option>
               </select>
-              <p class="tc-muted text-xs">Tá»± cáº¯t TAC náº¿u vÆ°á»£t ngÆ°á»¡ng.</p>
+              <p class="tc-muted text-xs">Tự cắt TAC nếu vượt ngưỡng.</p>
             </div>
           </div>
         </div>
@@ -479,26 +479,26 @@
         <div class="tc-card p-4">
           <div class="flex items-start justify-between gap-3">
             <div>
-              <h2 class="text-sm font-semibold">Báº£ng chuyá»ƒn Ä‘á»•i</h2>
-              <p class="tc-muted text-xs mt-1">TAC = C + M + Y + K. Cáº£nh bÃ¡o khi vÆ°á»£t ngÆ°á»¡ng.</p>
+              <h2 class="text-sm font-semibold">Bảng chuyển đổi</h2>
+              <p class="tc-muted text-xs mt-1">TAC = C + M + Y + K. Cảnh báo khi vượt ngưỡng.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 justify-end">
-              <button id="safePrintAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">ÄÆ°a vá» an toÃ n in</button>
-              <button id="reduceAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Giáº£m TAC theo ngÆ°á»¡ng</button>
-              <span class="tc-badge">TAC ngÆ°á»¡ng <span id="tacBadge">300%</span></span>
+              <button id="safePrintAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Đưa về an toàn in</button>
+              <button id="reduceAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Giảm TAC theo ngưỡng</button>
+              <span class="tc-badge">TAC ngưỡng <span id="tacBadge">300%</span></span>
             </div>
           </div>
-          <div id="printEmpty" class="mt-4 tc-muted text-sm">ChÆ°a cÃ³ mÃ u Ä‘á»ƒ chuyá»ƒn Ä‘á»•i.</div>
+          <div id="printEmpty" class="mt-4 tc-muted text-sm">Chưa có màu để chuyển đổi.</div>
           <div id="printTableWrap" class="mt-4 overflow-auto hidden">
             <table class="tc-table w-full text-sm">
               <thead>
                 <tr>
-                  <th>MÃ u</th>
+                  <th>Màu</th>
                   <th>HEX</th>
                   <th>CMYK</th>
                   <th>TAC</th>
-                  <th>Cáº£nh bÃ¡o</th>
-                  <th>Äá»™ lá»‡ch</th>
+                  <th>Cảnh báo</th>
+                  <th>Độ lệch</th>
                   <th></th>
                 </tr>
               </thead>
@@ -507,12 +507,12 @@
           </div>
           <div class="mt-4 flex flex-wrap items-center gap-2">
             <select id="exportFormat" class="tc-input w-[190px]">
-              <option value="csv">Xuáº¥t CSV</option>
+              <option value="csv">Xuất CSV</option>
               <option value="json">JSON tokens</option>
               <option value="css">CSS variables</option>
-              <option value="report">BÃ¡o cÃ¡o in</option>
+              <option value="report">Báo cáo in</option>
             </select>
-            <button id="exportCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chÃ©p</button>
+            <button id="exportCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép</button>
             <button id="printSaveLibrary" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Lưu vào Thư viện</button>
             <button id="printUseLibrary" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Dùng từ Thư viện</button>
             <button id="printShare" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chia sẻ</button>
@@ -564,14 +564,14 @@
       if (!worldBtn || !worldMenu || !switcher) return;
       const worlds = ["nebula","ocean","ink","origami","arcade","dunes","chrome","circuit"];
       const labels = {
-        nebula: "Tinh vÃ¢n",
-        ocean: "Äáº¡i dÆ°Æ¡ng",
-        ink: "Má»±c tÃ u",
+        nebula: "Tinh vân",
+        ocean: "Đại dương",
+        ink: "Mực tàu",
         origami: "Origami",
         arcade: "Arcade",
-        dunes: "Äá»“i cÃ¡t",
+        dunes: "Đồi cát",
         chrome: "Chrome",
-        circuit: "Máº¡ch Ä‘iá»‡n"
+        circuit: "Mạch điện"
       };
       const storageKey = "tc_world";
       const defaultWorld = "origami";
