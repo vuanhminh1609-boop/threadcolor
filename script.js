@@ -1,4 +1,5 @@
-import { saveSearch, getSavedSearch, listSavedSearches } from "./library.js";
+import { saveSearch, getSavedSearch, listSavedSearches, deleteSavedSearch } from "./library.js";
+import { composeHandoff } from "./scripts/handoff.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
   submitThread,
@@ -286,6 +287,8 @@ const telemetry = (() => {
   const sessionId = getSessionId();
 const counts = { search_start: 0, search_result: 0, pin: 0, copy: 0, save: 0 };
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
+const FEED_STORAGE_KEY = "tc_community_feed";
+const HANDOFF_FROM = "threadcolor";
   const lastSent = { ...counts };
   let flushTimer = null;
   let lastFlushAt = now();
@@ -392,6 +395,7 @@ const PROJECT_RECENT_KEY = "tc_projects_recent";
 let currentProject = "";
 let recentProjects = [];
 let libraryItemsCache = [];
+let libraryProjectFilter = "";
 
 function renderBrandFilters(brands) {
   if (!brandFilters) return;
@@ -1295,7 +1299,11 @@ function renderGroupedResults(groups, chosenHex, limit) {
         <div class="w-10 h-10 rounded-lg border" style="background:${chosenHex}"></div>
         <div class="font-semibold">${chosenLabel}</div>
       </div>
-      <button class="tc-btn tc-chip px-3 py-2 text-sm" data-action="save-thread-library">Lưu thành Tài sản</button>
+      <div class="flex flex-wrap items-center gap-2">
+        <button class="tc-btn tc-chip px-3 py-2 text-sm" data-action="save-thread-library">Lưu vào Thư viện</button>
+        <button class="tc-btn tc-chip px-3 py-2 text-sm" data-action="use-thread-library">Dùng từ Thư viện</button>
+        <button class="tc-btn tc-chip px-3 py-2 text-sm" data-action="share-thread-library">Chia sẻ</button>
+      </div>
     </div>
     ${projectBlock}
     ${sections}
@@ -1354,6 +1362,36 @@ function addAssetToLibrary(asset) {
     localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
     return true;
   } catch (_err) {
+    return false;
+  }
+}
+
+function isLoggedIn() {
+  const auth = window.tcAuth || null;
+  if (typeof auth?.isLoggedIn === "function") return auth.isLoggedIn();
+  return false;
+}
+
+function publishToFeed(asset) {
+  if (!asset) return false;
+  if (!isLoggedIn()) {
+    showToast("Cần đăng nhập để chia sẻ.");
+    return false;
+  }
+  try {
+    const raw = localStorage.getItem(FEED_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift({
+      id: `post_${Date.now()}`,
+      asset,
+      createdAt: new Date().toISOString()
+    });
+    localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
+    showToast("Đã chia sẻ lên feed.");
+    return true;
+  } catch (_err) {
+    showToast("Không thể chia sẻ.");
     return false;
   }
 }
@@ -1485,10 +1523,53 @@ function handleResultContainerClick(e) {
       payload: { threads },
       createdAt: now,
       updatedAt: now,
-      sourceWorld: "threadcolor"
+      sourceWorld: "threadcolor",
+      project: currentProject || ""
     };
     const ok = addAssetToLibrary(asset);
-    showToast(ok ? "Đã lưu thành Tài sản." : "Không thể lưu tài sản.");
+    showToast(ok ? "Đã lưu vào Thư viện." : "Không thể lưu vào Thư viện.");
+    return;
+  }
+  const useLibraryBtn = e.target.closest('[data-action="use-thread-library"]');
+  if (useLibraryBtn) {
+    e.preventDefault();
+    const payload = composeHandoff({
+      from: HANDOFF_FROM,
+      intent: "use",
+      projectId: currentProject || ""
+    });
+    window.location.href = `./library.html${payload}`;
+    return;
+  }
+  const shareLibraryBtn = e.target.closest('[data-action="share-thread-library"]');
+  if (shareLibraryBtn) {
+    e.preventDefault();
+    const threads = Array.isArray(currentRendered)
+      ? currentRendered.map((item) => ({
+          brand: item.brand || "",
+          code: item.code || "",
+          name: item.name || "",
+          hex: item.hex || "",
+          delta: item.delta
+        }))
+      : [];
+    if (!threads.length) {
+      showToast("Chưa có dữ liệu để chia sẻ.");
+      return;
+    }
+    const now = new Date().toISOString();
+    const asset = {
+      id: `asset_${Date.now()}`,
+      type: "thread_set",
+      name: lastChosenHex ? `Mã chỉ cho ${lastChosenHex}` : "Bộ mã chỉ",
+      tags: ["thêu"],
+      payload: { threads },
+      createdAt: now,
+      updatedAt: now,
+      sourceWorld: "threadcolor",
+      project: currentProject || ""
+    };
+    publishToFeed(asset);
     return;
   }
   const loadMoreBtn = e.target.closest('[data-action="load-more-results"]');
@@ -1816,6 +1897,80 @@ function ensureLibraryControls() {
   if (closeBtn) {
     closeBtn.setAttribute("aria-label", t("tc.action.close", "Đóng"));
   }
+
+  let projectFilter = document.getElementById("libraryProjectFilter");
+  if (!projectFilter) {
+    projectFilter = document.createElement("select");
+    projectFilter.id = "libraryProjectFilter";
+    projectFilter.className = "tc-field text-xs";
+    projectFilter.setAttribute("aria-label", t("tc.project.filter", "Lọc theo dự án"));
+    if (closeBtn) {
+      actions.insertBefore(projectFilter, closeBtn);
+    } else {
+      actions.appendChild(projectFilter);
+    }
+  }
+  syncLibraryProjectFilter(projectFilter);
+  if (projectFilter.dataset.bound !== "1") {
+    projectFilter.dataset.bound = "1";
+    projectFilter.addEventListener("change", () => {
+      libraryProjectFilter = projectFilter.value === "__all__" ? "" : projectFilter.value;
+      renderLibraryList(libraryItemsCache);
+    });
+  }
+}
+
+function syncLibraryProjectFilter(selectEl) {
+  if (!selectEl) return;
+  const allLabel = t("tc.project.all", "Tất cả dự án");
+  const options = [];
+  const seen = new Set();
+  options.push({ value: "__all__", label: allLabel });
+  const preferred = [currentProject, ...recentProjects].filter(Boolean);
+  preferred.forEach((item) => {
+    if (seen.has(item)) return;
+    seen.add(item);
+    options.push({ value: item, label: item });
+  });
+  selectEl.innerHTML = options
+    .map((opt) => `<option value="${opt.value}">${opt.label}</option>`)
+    .join("");
+  const fallback = currentProject || "__all__";
+  if (!libraryProjectFilter && currentProject) {
+    libraryProjectFilter = currentProject;
+  }
+  selectEl.value = libraryProjectFilter || fallback;
+}
+
+function getFilteredLibraryItems(items) {
+  if (!libraryProjectFilter) return items;
+  return items.filter((item) => (item.project || "") === libraryProjectFilter);
+}
+
+function renderLibraryList(items) {
+  if (!libraryList) return;
+  const filtered = getFilteredLibraryItems(items || []);
+  if (!filtered.length) {
+    libraryList.innerHTML = `<div class='text-gray-500'>${t("tc.library.empty", "Chưa có bản lưu")}</div>`;
+    return;
+  }
+  libraryList.innerHTML = filtered.map(it => {
+    const ts = it.createdAt && typeof it.createdAt.toDate === "function" ? it.createdAt.toDate().toLocaleString() : "";
+    const projectLine = it.project ? `<div class="text-xs tc-muted">${t("tc.project.label", "Dự án")}: ${it.project}</div>` : "";
+    return `
+        <div class="border border-gray-200 rounded-lg p-3 flex items-center justify-between" data-saved-item="${it.id}">
+          <div>
+            <div class="font-semibold text-gray-800">${it.inputHex || ""}</div>
+            ${projectLine}
+            <div class="text-xs text-gray-500">${ts}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-action="open-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border bg-white hover:bg-gray-50 text-indigo-700">${t("tc.library.open", "Mở")}</button>
+            <button data-action="delete-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border border-red-200 bg-white hover:bg-red-50 text-red-600">${t("tc.library.delete", "Xóa")}</button>
+          </div>
+        </div>
+      `;
+  }).join("");
 }
 
 async function loadLibraryListV2() {
@@ -1841,20 +1996,7 @@ async function loadLibraryListV2() {
       recentProjects = [...new Set([...fromItems, ...recentProjects])].slice(0, 10);
       saveProjectPrefs(currentProject);
     }
-    libraryList.innerHTML = items.map(it => {
-      const ts = it.createdAt && typeof it.createdAt.toDate === "function" ? it.createdAt.toDate().toLocaleString() : "";
-      const projectLine = it.project ? `<div class="text-xs tc-muted">${t("tc.project.label", "Dự án")}: ${it.project}</div>` : "";
-      return `
-        <div class="border border-gray-200 rounded-lg p-3 flex items-center justify-between">
-          <div>
-            <div class="font-semibold text-gray-800">${it.inputHex || ""}</div>
-            ${projectLine}
-            <div class="text-xs text-gray-500">${ts}</div>
-          </div>
-          <button data-action="open-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border bg-white hover:bg-gray-50 text-indigo-700">${t("tc.library.open", "Mở")}</button>
-        </div>
-      `;
-    }).join("");
+    renderLibraryList(items);
   } catch (err) {
     console.error("Tải thư viện thất bại", err);
     const friendly = formatFirestoreError(err, t("tc.library.error", "Không tải được thư viện"));
@@ -2137,7 +2279,7 @@ document.addEventListener("tc-auth-action", (event) => {
   const isLoggedIn = typeof auth?.isLoggedIn === "function" ? auth.isLoggedIn() : false;
   if (openAction === "library") {
     if (String(window.location.pathname || "").includes("/worlds/threadcolor.html")) {
-      window.location.href = "threadvault.html?tab=saved";
+      window.location.href = "threadvault.html?tab=saved&open=library";
       return;
     }
     handleAuthAction(openAction);
@@ -2162,6 +2304,32 @@ document.addEventListener("tc-auth-action", (event) => {
 
 if (libraryList) {
   libraryList.addEventListener("click", e => {
+    const deleteBtn = e.target.closest("[data-action=\"delete-saved\"]");
+    if (deleteBtn) {
+      e.preventDefault();
+      const docId = deleteBtn.dataset.id;
+      if (!docId) return;
+      const confirmMsg = t("tc.library.deleteConfirm", "X\u00f3a b\u1ea3n l\u01b0u n\u00e0y?");
+      if (!window.confirm(confirmMsg)) return;
+      if (!ensureAuthReady()) return;
+      const api = getAuthApi();
+      const user = api?.auth?.currentUser || currentUser;
+      if (!user) {
+        openAuth(t("tc.auth.needLoginLibrary", "Cần đăng nhập để xem thư viện."));
+        return;
+      }
+      deleteSavedSearch(api.db, user.uid, docId)
+        .then(() => {
+          libraryItemsCache = libraryItemsCache.filter((item) => item.id !== docId);
+          renderLibraryList(libraryItemsCache);
+          showToast(t("tc.library.deleted", "\u0110\u00e3 x\u00f3a b\u1ea3n l\u01b0u."));
+        })
+        .catch((err) => {
+          console.error("X\u00f3a b\u1ea3n l\u01b0u th\u1ea5t b\u1ea1i", err);
+          showToast(t("tc.library.deleteFail", "Kh\u00f4ng th\u1ec3 x\u00f3a b\u1ea3n l\u01b0u."));
+        });
+      return;
+    }
     const openBtn = e.target.closest("[data-action=\"open-saved\"]");
     if (openBtn) {
       e.preventDefault();

@@ -81,15 +81,21 @@
 | Versioning (phiên bản hoá) | Đánh phiên bản | Gắn phiên bản dữ liệu để cache và truy vết thay đổi. |
 | Taxonomy (hệ phân loại) | Hệ phân loại | Khung phân loại có cấu trúc để nhóm dữ liệu theo chủ đề/thuộc tính. |
 | Asset (tài sản số) | Tài sản số | Mục dữ liệu đã chuẩn hoá để tái sử dụng (ví dụ: palette/gradient). |
-| Spec (bản thông số) | Bản thông số | Mô tả rút gọn + JSON của một asset để chia sẻ/áp dụng. |
 | Tài sản | Tài sản | Tên gọi ngắn cho asset; một mục dữ liệu chuẩn dùng lại trong các World. |
 | Bản thông số | Bản thông số | Tập thông tin mô tả ngắn gọn kèm JSON để chia sẻ/áp dụng nhanh. |
+| Đặc tả tài sản màu (asset spec) | Đặc tả tài sản màu | Bộ quy tắc/schema để tạo, đọc và xác thực tài sản màu thống nhất toàn hệ. |
+| Lấy mẫu màu (color sampling) | Lấy mẫu màu | Trích xuất các màu tiêu biểu từ ảnh/dữ liệu để tạo bảng phối màu. |
+| Chia sẻ (share) | Chia sẻ | Xuất bản tài sản lên feed cộng đồng để người khác xem và remix. |
+| Remix | Remix | Tạo phiên bản mới từ tài sản có sẵn, lưu về Thư viện cá nhân. |
 | Naming convention (quy tắc đặt tên) | Quy tắc đặt tên | Chuẩn thống nhất để đặt tên tài sản dễ hiểu, nhất quán và dễ tìm. |
 | Material profile (hồ sơ chất liệu) | Hồ sơ chất liệu | Nhóm thuộc tính mô tả bề mặt/vật liệu (loại chất liệu, độ bóng, ánh sáng, vân bề mặt). |
 | Finish (độ bóng) | Độ bóng | Mức phản xạ bề mặt (mờ/bóng) ảnh hưởng cảm giác màu và ánh sáng. |
 | Texture (vân bề mặt) | Vân bề mặt | Mô tả độ vân/mịn của bề mặt để giả lập chất liệu. |
 | Adapter (lớp chuyển đổi dữ liệu) | Adapter | Lớp trung gian chuyển dữ liệu giữa các hệ/format khác nhau. |
 | Payload (gói dữ liệu) | Payload | Gói dữ liệu mang thông tin chính để xử lý/áp dụng. |
+| Handoff (hợp đồng chuyển giao) | Hợp đồng chuyển giao | Quy ước truyền tham số giữa các World (assetId, projectId, from, intent, shade). |
+| intent (ý định hành động) | intent | Tham số cho biết mục đích khi mở World (dùng, chia sẻ, v.v.). |
+| shade (sắc độ) | shade | Tham số mô tả sắc độ/biểu hiện màu khi chuyển giao. |
 | Seed dữ liệu (bộ mồi dữ liệu) | Seed dữ liệu | Bộ dữ liệu mồi ban đầu để khởi tạo hoặc bootstrap hệ thống. |
 | Tuyển chọn (curation: chọn lọc chất lượng cao) | Tuyển chọn | Quá trình chọn lọc dữ liệu chất lượng cao theo tiêu chí rõ ràng. |
 | checksum SHA-256 (mã kiểm tra toàn vẹn tệp bằng thuật toán SHA-256) | checksum SHA-256 | Mã băm SHA-256 dùng để kiểm tra tính toàn vẹn nội dung tệp. |
@@ -163,7 +169,7 @@
 | Dải chuyển màu (gradient: chuyển màu liên tục) | Dải chuyển màu | Dải màu chuyển liên tục giữa nhiều màu theo một hướng. |
 | Điểm neo màu (color stop: điểm màu trên dải) | Điểm neo màu | Vị trí màu cụ thể trong gradient, xác định độ chuyển và tỉ lệ. |
 | Token màu (biến màu dùng lại cho UI/thiết kế) | Token màu | Biến màu tái sử dụng trong thiết kế hoặc CSS, giúp thống nhất hệ màu. |
-| Remix (tạo biến thể từ mẫu có sẵn) | Remix | Tạo biến thể màu mới bằng cách chỉnh sửa từ một dải gốc. |
+| Remix (tạo biến thể từ mẫu có sẵn) | Tạo biến thể | Tạo biến thể màu mới bằng cách chỉnh sửa từ một dải gốc. |
 | Palette Link (chia sẻ dải màu bằng URL) | Palette Link | Đường link chứa thông tin dải màu để chia sẻ hoặc tái sử dụng nhanh. |
 | Bảng phối màu (palette: bộ phối màu gồm nhiều màu rời) | Bảng phối màu | Bộ phối màu gồm nhiều màu rời dùng để thiết kế nhất quán. |
 | Ô màu (swatch: ô hiển thị một màu) | Ô màu | Ô hiển thị một màu cụ thể trong bảng phối. |
@@ -358,3 +364,5 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 - Bước 2: nếu có rồi thì cập nhật dòng cũ, không thêm dòng mới.
 - Bước 3: thêm đúng section, giữ định nghĩa 1–2 câu, không lặp.
 - Bước 4: chạy npm run check:glossary trước khi commit.
+
+

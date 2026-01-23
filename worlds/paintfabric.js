@@ -1,4 +1,10 @@
+import { composeHandoff } from "../scripts/handoff.js";
+
 const STORAGE_KEY = "tc_paintfabric_assets";
+const ASSET_LIBRARY_KEY = "tc_asset_library_v1";
+const PROJECT_STORAGE_KEY = "tc_project_current";
+const FEED_STORAGE_KEY = "tc_community_feed";
+const HANDOFF_FROM = "paintfabric";
 
 const elements = {
   tabs: document.getElementById("pfTabs"),
@@ -14,6 +20,8 @@ const elements = {
   fabricPanel: document.getElementById("pfFabricPanel"),
   preview: document.getElementById("pfPreview"),
   save: document.getElementById("pfSave"),
+  useLibrary: document.getElementById("pfUseLibrary"),
+  share: document.getElementById("pfShare"),
   export: document.getElementById("pfExport"),
   seed: document.getElementById("pfSeed"),
   savedSelect: document.getElementById("pfSavedSelect"),
@@ -136,6 +144,81 @@ const getAssets = () => {
   }
 };
 
+const getCurrentProject = () => {
+  try {
+    return localStorage.getItem(PROJECT_STORAGE_KEY) || "";
+  } catch (_err) {
+    return "";
+  }
+};
+
+const addAssetToLibrary = (asset) => {
+  try {
+    const raw = localStorage.getItem(ASSET_LIBRARY_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift(asset);
+    localStorage.setItem(ASSET_LIBRARY_KEY, JSON.stringify(next));
+    return true;
+  } catch (_err) {
+    return false;
+  }
+};
+
+const buildLibraryAsset = (spec) => {
+  return {
+    id: `asset_${Date.now()}`,
+    type: spec.type,
+    name: spec.name,
+    tags: ["paintfabric"],
+    payload: {
+      materialProfile: {
+        colorHex: spec.colorHex,
+        finish: spec.finish,
+        lighting: spec.lighting,
+        surface: spec.surface,
+        fabricType: spec.fabricType,
+        textureLevel: spec.textureLevel
+      }
+    },
+    notes: "Sơn&Vải",
+    createdAt: spec.createdAt,
+    updatedAt: spec.createdAt,
+    sourceWorld: HANDOFF_FROM,
+    project: getCurrentProject()
+  };
+};
+
+const isLoggedIn = () => {
+  const auth = window.tcAuth || null;
+  if (typeof auth?.isLoggedIn === "function") return auth.isLoggedIn();
+  return false;
+};
+
+const publishToFeed = (asset) => {
+  if (!asset) return false;
+  if (!isLoggedIn()) {
+    setStatus("Cần đăng nhập để chia sẻ.");
+    return false;
+  }
+  try {
+    const raw = localStorage.getItem(FEED_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift({
+      id: `post_${Date.now()}`,
+      asset,
+      createdAt: new Date().toISOString()
+    });
+    localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
+    setStatus("Đã chia sẻ lên feed.");
+    return true;
+  } catch (_err) {
+    setStatus("Không thể chia sẻ.");
+    return false;
+  }
+};
+
 const saveAssets = (assets) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(assets));
@@ -157,7 +240,8 @@ const buildSpec = () => {
     colorHex: hex,
     finish: activeTab === "paint" ? elements.finish?.value : elements.finishFabric?.value,
     lighting: activeTab === "paint" ? elements.lighting?.value : elements.lightingFabric?.value,
-    createdAt
+    createdAt,
+    project: getCurrentProject()
   };
   if (activeTab === "paint") {
     return {
@@ -317,7 +401,8 @@ const handleSave = () => {
   const spec = buildSpec();
   addAsset(spec);
   renderSpec(spec);
-  setStatus("Đã lưu tài sản vào Thư viện cục bộ.");
+  const ok = addAssetToLibrary(buildLibraryAsset(spec));
+  setStatus(ok ? "Đã lưu vào Thư viện." : "Đã lưu cục bộ, nhưng chưa thể lưu vào Thư viện.");
 };
 
 const handleExport = async () => {
@@ -381,6 +466,18 @@ const bindEvents = () => {
   });
 
   elements.save?.addEventListener("click", handleSave);
+  elements.useLibrary?.addEventListener("click", () => {
+    const payload = composeHandoff({
+      from: HANDOFF_FROM,
+      intent: "use",
+      projectId: getCurrentProject()
+    });
+    window.location.href = `./library.html${payload}`;
+  });
+  elements.share?.addEventListener("click", () => {
+    const spec = buildSpec();
+    publishToFeed(buildLibraryAsset(spec));
+  });
   elements.export?.addEventListener("click", handleExport);
   elements.seed?.addEventListener("click", handleSeed);
 

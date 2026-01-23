@@ -303,17 +303,15 @@
             Chọn Thế giới
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Thế giới màu thêu</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Thế giới Dải chuyển màu</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Thế giới Bảng phối màu</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Thế giới màu Sơn&Vải</a>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-          </div>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u in (CMYK)</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Th&#7871; gi&#7899;i Th&#432; vi&#7879;n T&#224;i s&#7843;n M&#224;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u S&#417;n&amp;V&#7843;i</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u t&#7915; &#7842;nh</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Th&#7871; gi&#7899;i Chia s&#7867; + Remix</a>
+                                                                                                                                                                                                                                                                                                                                </div>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -345,7 +343,7 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World2 · Gradient</p>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World2 Â· Gradient</p>
           <h1 class="text-3xl md:text-4xl font-bold">Thế giới Dải chuyển màu</h1>
           <p class="mt-2 tc-muted">Tạo dải chuyển màu, tinh chỉnh góc và xuất CSS/tokens.</p>
         </div>
@@ -364,7 +362,7 @@
           <div class="tc-card p-4 space-y-3">
             <div class="flex items-center justify-between">
               <label class="text-sm font-semibold">Góc dải (độ)</label>
-              <span id="gradientAngleValue" class="tc-muted text-sm">90°</span>
+              <span id="gradientAngleValue" class="tc-muted text-sm">90Â°</span>
             </div>
             <input id="gradientAngle" class="w-full" type="range" min="0" max="360" value="90">
             <div class="flex items-center gap-3">
@@ -391,6 +389,9 @@
             <div class="mt-3 flex flex-wrap gap-3">
               <button id="gradientExport" class="tc-btn tc-btn-primary px-4 py-2" type="button">Xuất</button>
               <button id="gradientToPalette" class="tc-btn tc-chip px-4 py-2" type="button">Tách thành palette</button>
+              <button id="gradientSaveLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
+              <button id="gradientUseLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Dùng từ Thư viện</button>
+              <button id="gradientShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
             </div>
           </div>
 
@@ -497,3 +498,7 @@
   </script>
 </body>
 </html>
+
+
+
+

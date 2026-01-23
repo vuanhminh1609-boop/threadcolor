@@ -1,6 +1,11 @@
+import { composeHandoff } from "../scripts/handoff.js";
+
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
+const PROJECT_STORAGE_KEY = "tc_project_current";
+const FEED_STORAGE_KEY = "tc_community_feed";
+const HANDOFF_FROM = "gradient";
 
 const state = {
   stops: ["#ff6b6b", "#ffd93d", "#6ee7b7"],
@@ -19,7 +24,10 @@ const el = {
   randomStop: document.getElementById("gradientRandom"),
   exportBtn: document.getElementById("gradientExport"),
   toPalette: document.getElementById("gradientToPalette"),
-  samplesWrap: document.getElementById("gradientSamples")
+  samplesWrap: document.getElementById("gradientSamples"),
+  saveLibrary: document.getElementById("gradientSaveLibrary"),
+  useLibrary: document.getElementById("gradientUseLibrary"),
+  share: document.getElementById("gradientShare")
 };
 
 function normalizeHex(input) {
@@ -88,6 +96,59 @@ function addAssetToLibrary(asset) {
     localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
     return true;
   } catch (_err) {
+    return false;
+  }
+}
+
+function getCurrentProject() {
+  try {
+    return localStorage.getItem(PROJECT_STORAGE_KEY) || "";
+  } catch (_err) {
+    return "";
+  }
+}
+
+function buildGradientAsset() {
+  const now = new Date().toISOString();
+  return {
+    id: `asset_${Date.now()}`,
+    type: "gradient",
+    name: "Dải chuyển màu nhanh",
+    tags: ["gradient"],
+    payload: { gradientParams: { stops: [...state.stops], angle: state.angle } },
+    createdAt: now,
+    updatedAt: now,
+    sourceWorld: HANDOFF_FROM,
+    project: getCurrentProject()
+  };
+}
+
+function isLoggedIn() {
+  const auth = window.tcAuth || null;
+  if (typeof auth?.isLoggedIn === "function") return auth.isLoggedIn();
+  return false;
+}
+
+function publishToFeed(asset) {
+  if (!asset) return false;
+  if (!isLoggedIn()) {
+    showToast("Cần đăng nhập để chia sẻ.");
+    return false;
+  }
+  try {
+    const raw = localStorage.getItem(FEED_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift({
+      id: `post_${Date.now()}`,
+      asset,
+      createdAt: new Date().toISOString()
+    });
+    localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
+    showToast("Đã chia sẻ lên feed.");
+    return true;
+  } catch (_err) {
+    showToast("Không thể chia sẻ.");
     return false;
   }
 }
@@ -266,29 +327,22 @@ function initEvents() {
     window.location.href = `palette.html#p=${encodeURIComponent(stops)}`;
   });
 
-  if (el.exportBtn?.parentElement && !document.getElementById("gradientSaveLibrary")) {
-    const saveBtn = document.createElement("button");
-    saveBtn.id = "gradientSaveLibrary";
-    saveBtn.className = "tc-btn tc-chip px-4 py-2";
-    saveBtn.type = "button";
-    saveBtn.textContent = "Lưu thành Tài sản";
-    saveBtn.addEventListener("click", () => {
-      const now = new Date().toISOString();
-      const asset = {
-        id: `asset_${Date.now()}`,
-        type: "gradient",
-        name: "Dải chuyển màu nhanh",
-        tags: ["gradient"],
-        payload: { gradientParams: { stops: [...state.stops], angle: state.angle } },
-        createdAt: now,
-        updatedAt: now,
-        sourceWorld: "gradient"
-      };
-      const ok = addAssetToLibrary(asset);
-      showToast(ok ? "Đã lưu thành Tài sản." : "Không thể lưu tài sản.");
+  el.saveLibrary?.addEventListener("click", () => {
+    const asset = buildGradientAsset();
+    const ok = addAssetToLibrary(asset);
+    showToast(ok ? "Đã lưu vào Thư viện." : "Không thể lưu tài sản.");
+  });
+  el.useLibrary?.addEventListener("click", () => {
+    const payload = composeHandoff({
+      from: HANDOFF_FROM,
+      intent: "use",
+      projectId: getCurrentProject()
     });
-    el.exportBtn.parentElement.appendChild(saveBtn);
-  }
+    window.location.href = `./library.html${payload}`;
+  });
+  el.share?.addEventListener("click", () => {
+    publishToFeed(buildGradientAsset());
+  });
 }
 
 function init() {

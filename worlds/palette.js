@@ -1,15 +1,24 @@
+import { composeHandoff } from "../scripts/handoff.js";
+
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
+const PROJECT_STORAGE_KEY = "tc_project_current";
+const FEED_STORAGE_KEY = "tc_community_feed";
+const HANDOFF_FROM = "palette";
 
 const state = {
   palettes: [],
-  hashPalette: null
+  hashPalette: null,
+  selectedPaletteId: ""
 };
 
 const el = {
   grid: document.getElementById("paletteGrid"),
-  empty: document.getElementById("paletteEmpty")
+  empty: document.getElementById("paletteEmpty"),
+  saveLibrary: document.getElementById("paletteSaveLibrary"),
+  useLibrary: document.getElementById("paletteUseLibrary"),
+  share: document.getElementById("paletteShare")
 };
 
 function normalizeHex(input) {
@@ -59,6 +68,21 @@ function showToast(message) {
   }, 1400);
 }
 
+function buildPaletteAsset(palette) {
+  const now = new Date().toISOString();
+  return {
+    id: `asset_${Date.now()}`,
+    type: "palette",
+    name: palette.ten || "Bảng phối màu",
+    tags: Array.isArray(palette.tags) ? palette.tags : [],
+    payload: { colors: palette.stops || [] },
+    createdAt: now,
+    updatedAt: now,
+    sourceWorld: HANDOFF_FROM,
+    project: getCurrentProject()
+  };
+}
+
 function addAssetToLibrary(asset) {
   try {
     const raw = localStorage.getItem(ASSET_STORAGE_KEY);
@@ -68,6 +92,59 @@ function addAssetToLibrary(asset) {
     localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
     return true;
   } catch (_err) {
+    return false;
+  }
+}
+
+function getCurrentProject() {
+  try {
+    return localStorage.getItem(PROJECT_STORAGE_KEY) || "";
+  } catch (_err) {
+    return "";
+  }
+}
+
+function getSelectedPalette() {
+  if (state.selectedPaletteId === "hash-palette") return state.hashPalette;
+  if (!state.selectedPaletteId) return null;
+  return state.palettes.find((item) => item.id === state.selectedPaletteId) || null;
+}
+
+function selectPalette(palette) {
+  if (!palette) return;
+  state.selectedPaletteId = palette.id || "";
+}
+
+function getActivePalette() {
+  return getSelectedPalette() || state.hashPalette;
+}
+
+function isLoggedIn() {
+  const auth = window.tcAuth || null;
+  if (typeof auth?.isLoggedIn === "function") return auth.isLoggedIn();
+  return false;
+}
+
+function publishToFeed(asset) {
+  if (!asset) return false;
+  if (!isLoggedIn()) {
+    showToast("Cần đăng nhập để chia sẻ.");
+    return false;
+  }
+  try {
+    const raw = localStorage.getItem(FEED_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift({
+      id: `post_${Date.now()}`,
+      asset,
+      createdAt: new Date().toISOString()
+    });
+    localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
+    showToast("Đã chia sẻ lên feed.");
+    return true;
+  } catch (_err) {
+    showToast("Không thể chia sẻ.");
     return false;
   }
 }
@@ -102,6 +179,7 @@ async function copyText(text) {
 function renderPaletteCard(palette) {
   const card = document.createElement("div");
   card.className = "tc-card p-4 flex flex-col gap-3";
+  card.dataset.paletteId = palette.id || "";
 
   const header = document.createElement("div");
   header.className = "flex items-start justify-between gap-3";
@@ -124,6 +202,7 @@ function renderPaletteCard(palette) {
   exportBtn.type = "button";
   exportBtn.textContent = "Xuất Bản thông số";
   exportBtn.addEventListener("click", async () => {
+    selectPalette(palette);
     const ok = await copyText(exportText(palette));
     showToast(ok ? "Đã sao chép bảng phối." : "Không thể sao chép.");
   });
@@ -133,6 +212,7 @@ function renderPaletteCard(palette) {
   bridgeBtn.type = "button";
   bridgeBtn.textContent = "Biến thành dải";
   bridgeBtn.addEventListener("click", () => {
+    selectPalette(palette);
     const stops = (palette.stops || []).join(",");
     window.location.href = `gradient.html#g=${encodeURIComponent(stops)}`;
   });
@@ -143,21 +223,11 @@ function renderPaletteCard(palette) {
   const saveBtn = document.createElement("button");
   saveBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
   saveBtn.type = "button";
-  saveBtn.textContent = "Lưu thành Tài sản";
+  saveBtn.textContent = "Lưu vào Thư viện";
   saveBtn.addEventListener("click", () => {
-    const now = new Date().toISOString();
-    const asset = {
-      id: `asset_${Date.now()}`,
-      type: "palette",
-      name: palette.ten || "Bảng phối màu",
-      tags: Array.isArray(palette.tags) ? palette.tags : [],
-      payload: { colors: palette.stops || [] },
-      createdAt: now,
-      updatedAt: now,
-      sourceWorld: "palette"
-    };
-    const ok = addAssetToLibrary(asset);
-    showToast(ok ? "Đã lưu thành Tài sản." : "Không thể lưu tài sản.");
+    selectPalette(palette);
+    const ok = addAssetToLibrary(buildPaletteAsset(palette));
+    showToast(ok ? "Đã lưu vào Thư viện." : "Không thể lưu tài sản.");
   });
 
   actions.appendChild(saveBtn);
@@ -188,6 +258,11 @@ function renderPaletteCard(palette) {
   card.appendChild(header);
   card.appendChild(swatchRow);
   card.appendChild(strip);
+
+  card.addEventListener("click", (event) => {
+    if (event.target.closest("button")) return;
+    selectPalette(palette);
+  });
 
   return card;
 }
@@ -256,8 +331,37 @@ function init() {
       tags: ["từ hash"],
       stops
     };
+    state.selectedPaletteId = "hash-palette";
   }
   loadPalettes();
+
+  el.saveLibrary?.addEventListener("click", () => {
+    const active = getActivePalette();
+    if (!active) {
+      showToast("Hãy chọn một bảng phối màu.");
+      return;
+    }
+    const ok = addAssetToLibrary(buildPaletteAsset(active));
+    showToast(ok ? "Đã lưu vào Thư viện." : "Không thể lưu tài sản.");
+  });
+
+  el.useLibrary?.addEventListener("click", () => {
+    const payload = composeHandoff({
+      from: HANDOFF_FROM,
+      intent: "use",
+      projectId: getCurrentProject()
+    });
+    window.location.href = `./library.html${payload}`;
+  });
+
+  el.share?.addEventListener("click", () => {
+    const active = getActivePalette();
+    if (!active) {
+      showToast("Hãy chọn một bảng phối màu.");
+      return;
+    }
+    publishToFeed(buildPaletteAsset(active));
+  });
 }
 
 init();

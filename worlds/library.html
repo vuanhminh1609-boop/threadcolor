@@ -275,16 +275,15 @@
             Chọn Thế giới
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Thế giới màu thêu</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Thế giới Dải chuyển màu</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Thế giới Bảng phối màu</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Thế giới Màu in (CMYK)</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Thế giới Thư viện Tài sản Màu</a>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
-          </div>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u in (CMYK)</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Th&#7871; gi&#7899;i Th&#432; vi&#7879;n T&#224;i s&#7843;n M&#224;u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u S&#417;n&amp;V&#7843;i</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u t&#7915; &#7842;nh</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Th&#7871; gi&#7899;i Chia s&#7867; + Remix</a>
+                                                                                                                                                                                                                                                                                                                                </div>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -336,6 +335,9 @@
           <option value="cmyk_recipe">In (cmyk_recipe)</option>
           <option value="other">Khác</option>
         </select>
+        <select id="assetProjectFilter" class="tc-input w-full md:w-[200px]">
+          <option value="__all__">Tất cả dự án</option>
+        </select>
         <button id="assetCreateDemo" class="tc-btn tc-btn-primary px-4 py-2">Tạo tài sản demo</button>
         <details class="tc-card tc-chip px-4 py-3 text-sm">
           <summary class="cursor-pointer font-semibold">Hướng dẫn đặt tên Tài sản</summary>
@@ -362,7 +364,11 @@
                 <div class="flex flex-wrap gap-2" id="assetPanelSwatches"></div>
                 <div class="tc-muted text-xs" id="assetPanelNotes"></div>
               </div>
-              <button id="assetApply" class="tc-btn tc-btn-primary px-4 py-2 mt-4">Áp dụng</button>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <button id="assetSave" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
+                <button id="assetApply" class="tc-btn tc-btn-primary px-4 py-2" type="button">Dùng từ Thư viện</button>
+                <button id="assetShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
+              </div>
               <div class="mt-4">
                 <p class="text-xs font-semibold">Bản thông số (Văn bản)</p>
                 <pre id="assetSpecText" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>

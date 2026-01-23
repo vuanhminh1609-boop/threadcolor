@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thế giới màu Sơn&Vải</title>
+  <title>Thế giới Chia sẻ + Remix</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <style>
     :root{
@@ -17,86 +17,6 @@
       --a1: #c27b4b;
       --a2: #d59e6d;
       --a3: #8c6d54;
-    }
-    html[data-world="nebula"]{
-      --bg:#040512;
-      --text:#eef2ff;
-      --muted:#b8c2ff;
-      --glass:rgba(12,16,34,0.72);
-      --stroke:rgba(255,255,255,0.14);
-      --a1:#6ee7ff;
-      --a2:#8b5cf6;
-      --a3:#f472b6;
-    }
-    html[data-world="ocean"]{
-      --bg:#dff6ff;
-      --text:#062a3a;
-      --muted:#3f6b7f;
-      --glass:rgba(255,255,255,0.76);
-      --stroke:rgba(6,42,58,0.12);
-      --a1:#1fb6ff;
-      --a2:#0ea5a8;
-      --a3:#4dd4ff;
-    }
-    html[data-world="ink"]{
-      --bg:#0b0d12;
-      --text:#f4f6fb;
-      --muted:#a6afbd;
-      --glass:rgba(16,18,24,0.76);
-      --stroke:rgba(255,255,255,0.12);
-      --a1:#e2e8f0;
-      --a2:#94a3b8;
-      --a3:#64748b;
-    }
-    html[data-world="origami"]{
-      --bg:#f6f1e9;
-      --text:#201a14;
-      --muted:#6b5d4b;
-      --glass:rgba(255,255,255,0.74);
-      --stroke:rgba(32,26,20,0.10);
-      --a1:#c27b4b;
-      --a2:#d59e6d;
-      --a3:#8c6d54;
-    }
-    html[data-world="arcade"]{
-      --bg:#05040f;
-      --text:#fff7ff;
-      --muted:#d8c9f6;
-      --glass:rgba(14,12,28,0.80);
-      --stroke:rgba(255,255,255,0.16);
-      --a1:#ff3dcd;
-      --a2:#7c3aed;
-      --a3:#20e3b2;
-    }
-    html[data-world="dunes"]{
-      --bg:#f7f0e1;
-      --text:#3a2d1a;
-      --muted:#7a644a;
-      --glass:rgba(255,255,255,0.74);
-      --stroke:rgba(58,45,26,0.12);
-      --a1:#d39b54;
-      --a2:#e3b87b;
-      --a3:#b3743d;
-    }
-    html[data-world="chrome"]{
-      --bg:#f1f4f8;
-      --text:#1c232b;
-      --muted:#5f6b79;
-      --glass:rgba(255,255,255,0.72);
-      --stroke:rgba(28,35,43,0.12);
-      --a1:#3b82f6;
-      --a2:#94a3b8;
-      --a3:#0f172a;
-    }
-    html[data-world="circuit"]{
-      --bg:#04110a;
-      --text:#eafff2;
-      --muted:#a6d6bb;
-      --glass:rgba(8,20,14,0.76);
-      --stroke:rgba(255,255,255,0.12);
-      --a1:#22c55e;
-      --a2:#16a34a;
-      --a3:#86efac;
     }
     body{
       background: var(--bg);
@@ -147,7 +67,6 @@
       color: #fff;
       border: 1px solid rgba(255,255,255,.18);
     }
-    .tc-btn-primary:hover{ filter: brightness(1.06); }
     .tc-dot{
       width: 10px; height: 10px; border-radius: 999px;
       background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
@@ -160,94 +79,32 @@
       box-shadow: 0 24px 60px rgba(0,0,0,0.12);
     }
     .tc-muted{ color: var(--muted); }
-    .tc-input{
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      border-radius: 0.75rem;
-      padding: 0.55rem 0.75rem;
-      color: var(--text);
-      width: 100%;
-    }
     .tc-swatch{
-      width: 26px;
-      height: 26px;
-      border-radius: 0.6rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 0.7rem;
       border: 1px solid var(--stroke);
     }
-    .tc-preview{
-      border-radius: 1.1rem;
-      border: 1px solid var(--stroke);
-      min-height: 220px;
+    .tc-toast{
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #111827;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: .2s ease;
+      z-index: 5000;
     }
-    .tc-menu-item{
-      color: var(--text);
-      transition: background-color .15s ease, transform .05s ease;
-    }
-    .tc-menu-item:hover{ background: rgba(255,255,255,.10); }
-    .tc-menu-item:active{ transform: translateY(1px); }
-    .tc-menu-item:focus-visible{
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
-      border-radius: 0.6rem;
-      background: rgba(255,255,255,.08);
-    }
+    .tc-toast.is-visible{ opacity: 1; transform: translateY(0); }
     #portalMenu[data-open="0"],
     #worldMenu[data-open="0"]{ display: none; }
     #portalMenu,
     #worldMenu{
       z-index: var(--z-topbar-menu);
-    }
-    #worldMenu .tc-world-item{
-      color: var(--text);
-      transition: background-color .15s ease, transform .05s ease;
-    }
-    #worldMenu .tc-world-item:hover{ background: rgba(255,255,255,.10); }
-    #worldMenu .tc-world-item:active{ transform: translateY(1px); }
-    @media (max-width: 520px) {
-      .tc-topbar > .max-w-6xl {
-        flex-wrap: wrap;
-        row-gap: 8px;
-        column-gap: 8px;
-      }
-      .tc-topbar > .max-w-6xl > :nth-child(1) {
-        order: 1;
-        min-width: 0;
-      }
-      .tc-topbar > .max-w-6xl > :nth-child(2) {
-        order: 3;
-        flex: 1 1 100%;
-        min-width: 0;
-      }
-      .tc-topbar > .max-w-6xl > :nth-child(3) {
-        order: 2;
-        margin-left: auto;
-      }
-      .tc-topbar #portalSwitcher,
-      .tc-topbar #portalBtn {
-        width: 100%;
-        max-width: 100%;
-      }
-      .tc-topbar .tc-brand {
-        max-width: 160px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      #topbarAuthSlot #userName {
-        display: none;
-      }
-      .tc-topbar a,
-      .tc-topbar button {
-        min-height: 40px;
-      }
-    }
-  </style>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    html, body, button, input, select, textarea {
-      font-family: "Inter", "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
   </style>
 </head>
@@ -289,7 +146,7 @@
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u S&#417;n&amp;V&#7843;i</a>
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u t&#7915; &#7842;nh</a>
             <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Th&#7871; gi&#7899;i Chia s&#7867; + Remix</a>
-                                                                                                                                                                                                                                                                                                                                </div>
+                    </div>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -321,130 +178,30 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World6 · Sơn&Vải</p>
-          <h1 class="text-3xl md:text-4xl font-bold">Thế giới màu Sơn&Vải</h1>
-          <p class="mt-2 tc-muted">Chọn màu, chất liệu, độ bóng và ánh sáng để preview nhanh.</p>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World8 Â· Community</p>
+          <h1 class="text-3xl md:text-4xl font-bold">Chia sẻ + Remix</h1>
+          <p class="mt-2 tc-muted">Khám phá tài sản mới nhất, remix và lưu về Thư viện của bạn.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
-          <span>Material-first Â· LÆ°u nhanh</span>
+          <span>Feed mới nhất</span>
         </div>
       </div>
-
-      <div class="mt-6 flex gap-2 overflow-x-auto pb-2" id="pfTabs">
-        <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="paint" aria-selected="true">SÆ¡n</button>
-        <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="fabric" aria-selected="false">Vải</button>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <button id="communitySaveLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
+        <button id="communityUseLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Dùng từ Thư viện</button>
+        <button id="communityShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
       </div>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1fr]">
-        <div id="pfControls">
-          <div class="space-y-4">
-            <div>
-              <label class="text-sm font-semibold">Màu HEX</label>
-              <div class="mt-2 flex flex-wrap gap-2 items-center">
-                <input id="pfHex" class="tc-input w-[180px]" placeholder="#C27B4B">
-                <div class="flex gap-2">
-                  <button class="tc-btn tc-chip px-3 py-2 text-xs" data-quick="#C27B4B">Cát</button>
-                  <button class="tc-btn tc-chip px-3 py-2 text-xs" data-quick="#1FB6FF">Biển</button>
-                  <button class="tc-btn tc-chip px-3 py-2 text-xs" data-quick="#111827">Đen</button>
-                </div>
-              </div>
-            </div>
-
-            <div id="pfPaintPanel">
-              <div class="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label class="text-sm font-semibold">Độ bóng</label>
-                  <select id="pfFinish" class="tc-input">
-                    <option value="mo">Mờ</option>
-                    <option value="bong">Bóng</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-sm font-semibold">Ánh sáng</label>
-                  <select id="pfLighting" class="tc-input">
-                    <option value="trang">Trắng</option>
-                    <option value="am">Ấm</option>
-                    <option value="tu_nhien">Tự nhiên</option>
-                  </select>
-                </div>
-              </div>
-              <div class="mt-3">
-                <label class="text-sm font-semibold">Bề mặt</label>
-                <select id="pfSurface" class="tc-input">
-                  <option value="tuong">Tường</option>
-                  <option value="xi_mang">Xi măng</option>
-                  <option value="go">Gỗ sơn</option>
-                </select>
-              </div>
-            </div>
-
-            <div id="pfFabricPanel" class="hidden">
-              <div class="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label class="text-sm font-semibold">Loại vải</label>
-                  <select id="pfFabricType" class="tc-input">
-                    <option value="lua">Lụa</option>
-                    <option value="cotton">Cotton</option>
-                    <option value="len">Len</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-sm font-semibold">Độ bóng</label>
-                  <select id="pfFinishFabric" class="tc-input">
-                    <option value="mo">Mờ</option>
-                    <option value="bong">Bóng</option>
-                  </select>
-                </div>
-              </div>
-              <div class="grid gap-3 sm:grid-cols-2 mt-3">
-                <div>
-                  <label class="text-sm font-semibold">Ánh sáng</label>
-                  <select id="pfLightingFabric" class="tc-input">
-                    <option value="trang">Trắng</option>
-                    <option value="am">Ấm</option>
-                    <option value="tu_nhien">Tự nhiên</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-sm font-semibold">Độ vân</label>
-                  <select id="pfTexture" class="tc-input">
-                    <option value="min">Mịn</option>
-                    <option value="tho">Thô</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2">
-              <button id="pfSave" class="tc-btn tc-btn-primary px-4 py-2">Lưu vào Thư viện</button>
-              <button id="pfUseLibrary" class="tc-btn tc-chip px-4 py-2">Dùng từ Thư viện</button>
-              <button id="pfShare" class="tc-btn tc-chip px-4 py-2">Chia sẻ</button>
-              <button id="pfExport" class="tc-btn tc-chip px-4 py-2">Xuất bản thông số</button>
-              <button id="pfSeed" class="tc-btn tc-chip px-4 py-2">Tạo nhanh 6 mẫu</button>
-            </div>
-
-            <div>
-              <label class="text-sm font-semibold">Chọn lại asset đã lưu</label>
-              <select id="pfSavedSelect" class="tc-input">
-                <option value="">-- Chọn asset --</option>
-              </select>
-            </div>
-
-            <p id="pfStatus" class="text-xs tc-muted"></p>
-            <pre id="pfSpec" class="text-xs tc-muted whitespace-pre-wrap"></pre>
-          </div>
-        </div>
-
-        <div>
-          <div id="pfPreview" class="tc-preview"></div>
-        </div>
-      </div>
+      <div id="communityEmpty" class="mt-6 tc-muted text-sm hidden">Chưa có bài chia sẻ nào.</div>
+      <div id="communityFeed" class="mt-6 grid gap-4 sm:grid-cols-2"></div>
     </section>
   </main>
 
+  <div id="toast" class="tc-toast"></div>
+
   <script type="module" src="../auth.js"></script>
-  <script type="module" src="./paintfabric.js"></script>
+  <script type="module" src="../scripts/community.js"></script>
   <script>
     (() => {
       const portalBtn = document.getElementById("portalBtn");
@@ -481,7 +238,6 @@
       const worldMenu = document.getElementById("worldMenu");
       const switcher = document.getElementById("worldSwitcher");
       if (!worldBtn || !worldMenu || !switcher) return;
-      const worlds = ["nebula","ocean","ink","origami","arcade","dunes","chrome","circuit"];
       const labels = {
         nebula: "Tinh vân",
         ocean: "Đại dương",
@@ -494,7 +250,6 @@
       };
       const storageKey = "tc_world";
       const defaultWorld = "origami";
-
       const applyWorld = (name) => {
         const next = labels[name] ? name : defaultWorld;
         document.documentElement.setAttribute("data-world", next);
@@ -536,5 +291,4 @@
   </script>
 </body>
 </html>
-
 
