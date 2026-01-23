@@ -1,8 +1,25 @@
+import { parseHandoff, withHandoff } from "../scripts/handoff.js";
+
 const STORAGE_KEY = "tc_asset_library_v1";
+const PROJECT_STORAGE_KEY = "tc_project_current";
+const PROJECT_RECENT_KEY = "tc_projects_recent";
+const FEED_STORAGE_KEY = "tc_community_feed";
+const HANDOFF_FROM = "library";
+const WORLD_PATHS = {
+  threadcolor: "./threadcolor.html",
+  gradient: "./gradient.html",
+  palette: "./palette.html",
+  printcolor: "./printcolor.html",
+  library: "./library.html",
+  paintfabric: "./paintfabric.html",
+  imagecolor: "./imagecolor.html",
+  community: "./community.html"
+};
 
 const elements = {
   search: document.getElementById("assetSearch"),
   filter: document.getElementById("assetFilter"),
+  projectFilter: document.getElementById("assetProjectFilter"),
   grid: document.getElementById("assetGrid"),
   createDemo: document.getElementById("assetCreateDemo"),
   panel: document.getElementById("assetPanel"),
@@ -12,7 +29,9 @@ const elements = {
   panelTags: document.getElementById("assetPanelTags"),
   panelSwatches: document.getElementById("assetPanelSwatches"),
   panelNotes: document.getElementById("assetPanelNotes"),
+  save: document.getElementById("assetSave"),
   apply: document.getElementById("assetApply"),
+  share: document.getElementById("assetShare"),
   specText: document.getElementById("assetSpecText"),
   specJson: document.getElementById("assetSpecJson"),
   copyText: document.getElementById("assetCopyText"),
@@ -21,10 +40,42 @@ const elements = {
 
 const state = {
   assets: [],
-  selected: null
+  selected: null,
+  currentProject: "",
+  recentProjects: [],
+  projectFilter: "",
+  handoff: parseHandoff()
 };
 
 const normalizeText = (value) => (value || "").toLowerCase();
+
+const loadProjectPrefs = () => {
+  try {
+    state.currentProject = localStorage.getItem(PROJECT_STORAGE_KEY) || "";
+  } catch (_err) {
+    state.currentProject = "";
+  }
+  try {
+    const raw = localStorage.getItem(PROJECT_RECENT_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    state.recentProjects = Array.isArray(parsed) ? parsed.slice(0, 10) : [];
+  } catch (_err) {
+    state.recentProjects = [];
+  }
+};
+
+const syncProjectFilter = () => {
+  if (!elements.projectFilter) return;
+  const options = ["T\u1ea5t c\u1ea3 d\u1ef1 \u00e1n", ...new Set([state.currentProject, ...state.recentProjects].filter(Boolean))];
+  elements.projectFilter.innerHTML = options.map((label, index) => {
+    const value = index === 0 ? "__all__" : label;
+    return `<option value="${value}">${label}</option>`;
+  }).join("");
+  if (!state.projectFilter && state.currentProject) {
+    state.projectFilter = state.currentProject;
+  }
+  elements.projectFilter.value = state.projectFilter || "__all__";
+};
 
 const loadAssets = () => {
   try {
@@ -60,7 +111,8 @@ const createDemoAsset = () => {
     version: "1.0.0",
     createdAt: now,
     updatedAt: now,
-    sourceWorld: "library"
+    sourceWorld: "library",
+    project: state.currentProject || ""
   };
 };
 
@@ -79,6 +131,29 @@ const getStopsFromAsset = (asset) => {
   return [];
 };
 
+const resolveWorldKey = (asset) => {
+  if (state.handoff?.from) return state.handoff.from;
+  const type = asset?.type || "";
+  const mapping = {
+    palette: "palette",
+    gradient: "gradient",
+    thread_set: "threadcolor",
+    cmyk_recipe: "printcolor",
+    paint_profile: "paintfabric",
+    fabric_profile: "paintfabric",
+    image_palette: "imagecolor"
+  };
+  return mapping[type] || "";
+};
+
+export const openInWorld = (worldKey, payload = {}) => {
+  const path = WORLD_PATHS[worldKey];
+  if (!path) return false;
+  const url = withHandoff(path, payload);
+  window.location.href = url;
+  return true;
+};
+
 const filterAssets = () => {
   const query = normalizeText(elements.search?.value);
   const typeFilter = elements.filter?.value || "all";
@@ -87,6 +162,8 @@ const filterAssets = () => {
       || (typeFilter === "other" && !["palette", "gradient"].includes(asset.type))
       || asset.type === typeFilter;
     if (!matchType) return false;
+    const projectFilter = state.projectFilter || "";
+    if (projectFilter && (asset.project || "") !== projectFilter) return false;
     if (!query) return true;
     const haystack = [
       asset.name,
@@ -148,10 +225,16 @@ const renderPanel = (asset) => {
       `<span class="tc-swatch" style="background:${hex};"></span>`
     ).join("");
   }
+  const worldKey = resolveWorldKey(asset);
+  if (elements.save) {
+    elements.save.disabled = true;
+    elements.save.title = "Tài sản đã ở Thư viện.";
+    elements.save.classList.add("opacity-60", "cursor-not-allowed");
+  }
   if (elements.apply) {
-    const canApply = asset.type === "palette" || asset.type === "gradient";
+    const canApply = Boolean(worldKey);
     elements.apply.disabled = !canApply;
-    elements.apply.textContent = canApply ? "Áp dụng" : "Chưa hỗ trợ";
+    elements.apply.textContent = canApply ? "Dùng từ Thư viện" : "Chưa hỗ trợ";
     elements.apply.classList.toggle("opacity-60", !canApply);
     elements.apply.classList.toggle("cursor-not-allowed", !canApply);
   }
@@ -165,6 +248,7 @@ const renderPanel = (asset) => {
     `name: ${asset.name}`,
     `tags: ${(asset.tags || []).join(", ")}`,
     `sourceWorld: ${asset.sourceWorld || ""}`,
+    asset.project ? `project: ${asset.project}` : "",
     materialLine,
     `stops: ${getStopsFromAsset(asset).join(", ")}`,
     `version: ${asset.version}`
@@ -175,18 +259,16 @@ const renderPanel = (asset) => {
 
 const applyAsset = (asset) => {
   if (!asset) return;
-  const stops = getStopsFromAsset(asset);
-  if (!stops.length) return;
-  if (asset.type === "palette") {
-    const payload = stops.map((hex) => hex.replace("#", "")).join(",");
-    window.location.href = `./palette.html#p=${encodeURIComponent(payload)}`;
-    return;
-  }
-  if (asset.type === "gradient") {
-    const payload = stops.map((hex) => hex.replace("#", "")).join(",");
-    window.location.href = `./gradient.html#g=${encodeURIComponent(payload)}`;
-    return;
-  }
+  const worldKey = resolveWorldKey(asset);
+  if (!worldKey) return;
+  const payload = {
+    assetId: asset.id,
+    projectId: asset.project || state.handoff?.projectId || "",
+    from: HANDOFF_FROM,
+    intent: state.handoff?.intent || "use",
+    shade: state.handoff?.shade || ""
+  };
+  openInWorld(worldKey, payload);
 };
 
 const copyText = (text) => {
@@ -208,9 +290,43 @@ const copyText = (text) => {
   });
 };
 
+const isLoggedIn = () => {
+  const auth = window.tcAuth || null;
+  if (typeof auth?.isLoggedIn === "function") return auth.isLoggedIn();
+  return false;
+};
+
+const publishToFeed = (asset) => {
+  if (!asset) return false;
+  if (!isLoggedIn()) {
+    alert("Cần đăng nhập để chia sẻ.");
+    return false;
+  }
+  try {
+    const raw = localStorage.getItem(FEED_STORAGE_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    const next = Array.isArray(list) ? list : [];
+    next.unshift({
+      id: `post_${Date.now()}`,
+      asset,
+      createdAt: new Date().toISOString()
+    });
+    localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
+    alert("Đã chia sẻ lên feed.");
+    return true;
+  } catch (_err) {
+    alert("Không thể chia sẻ.");
+    return false;
+  }
+};
+
 const bindEvents = () => {
   elements.search?.addEventListener("input", renderGrid);
   elements.filter?.addEventListener("change", renderGrid);
+  elements.projectFilter?.addEventListener("change", () => {
+    state.projectFilter = elements.projectFilter.value === "__all__" ? "" : elements.projectFilter.value;
+    renderGrid();
+  });
   elements.createDemo?.addEventListener("click", () => {
     const asset = createDemoAsset();
     state.assets.unshift(asset);
@@ -225,6 +341,7 @@ const bindEvents = () => {
     renderPanel(state.selected);
   });
   elements.apply?.addEventListener("click", () => applyAsset(state.selected));
+  elements.share?.addEventListener("click", () => publishToFeed(state.selected));
   elements.copyText?.addEventListener("click", () => {
     if (!elements.specText) return;
     copyText(elements.specText.textContent || "");
@@ -236,6 +353,12 @@ const bindEvents = () => {
 };
 
 state.assets = loadAssets();
+loadProjectPrefs();
+syncProjectFilter();
 renderGrid();
 renderPanel(state.selected);
 bindEvents();
+
+if (typeof window !== "undefined") {
+  window.tcOpenInWorld = openInWorld;
+}

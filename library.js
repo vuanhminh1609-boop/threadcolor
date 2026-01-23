@@ -11,6 +11,7 @@ import {
   doc,
   setDoc
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { normalizeSpec } from "./scripts/spec.js";
 
 export async function saveSearch(db, uid, payload) {
   if (!db || !uid || !payload) throw new Error("Missing db/uid/payload");
@@ -108,11 +109,13 @@ export const MATERIAL_PROFILE_SCHEMA = {
 };
 
 export const ASSET_SCHEMA = {
+  specVersion: "string",
   id: "string",
   type: "string",
   name: "string",
   tags: "string[]",
   core: "object",
+  payload: "object",
   profiles: {
     material: MATERIAL_PROFILE_SCHEMA
   },
@@ -120,23 +123,10 @@ export const ASSET_SCHEMA = {
   version: "string",
   createdAt: "string",
   updatedAt: "string",
-  sourceWorld: "string"
+  sourceWorld: "string",
+  project: "string"
 };
 
 export function createAsset(payload = {}) {
-  const now = new Date().toISOString();
-  const coreFallback = payload.payload || payload.core || {};
-  return {
-    id: payload.id || `asset_${Date.now()}`,
-    type: payload.type || "palette",
-    name: payload.name || "Asset mới",
-    tags: Array.isArray(payload.tags) ? payload.tags : [],
-    core: payload.core || coreFallback,
-    profiles: payload.profiles || {},
-    notes: payload.notes || "",
-    version: payload.version || "1.0.0",
-    createdAt: payload.createdAt || now,
-    updatedAt: payload.updatedAt || now,
-    sourceWorld: payload.sourceWorld || ""
-  };
+  return normalizeSpec(payload);
 }

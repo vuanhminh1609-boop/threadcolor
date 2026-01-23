@@ -1,0 +1,31 @@
+{
+  "name": "Color Asset Spec",
+  "version": "1.0.0",
+  "description": "Normalized schema for color assets across all worlds.",
+  "required": [
+    "specVersion",
+    "id",
+    "type",
+    "name",
+    "core",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "specVersion": "string",
+    "id": "string",
+    "type": "string",
+    "name": "string",
+    "tags": "string[]",
+    "core": "object",
+    "payload": "object",
+    "profiles": "object",
+    "sourceImage": "object",
+    "notes": "string",
+    "version": "string",
+    "createdAt": "string",
+    "updatedAt": "string",
+    "sourceWorld": "string",
+    "project": "string"
+  }
+}
