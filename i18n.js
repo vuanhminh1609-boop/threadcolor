@@ -18,10 +18,10 @@
             spaces: "Không gian"
           },
                     portal: {
-            placeholder: "Ch?n Th? gi?i",
-            threadcolor: "Th? gi?i m?u th?u",
-            palette: "Th? gi?i d?i m?u",
-            soon: "S?p ra m?t"
+            placeholder: "Chọn Thế giới",
+            threadcolor: "Thế giới màu thêu",
+            palette: "Thế giới Dải chuyển màu",
+            soon: "Sắp ra mắt"
           },
           communityContribute: "Đóng góp dữ liệu",
           communityVerify: "Xác minh",
@@ -30,7 +30,7 @@
         },
         vault: {
           title: "Kho chỉ",
-          desc: "Không gian này đang được hoàn thiện. Quay lại sau nhé.",
+          desc: "Lưu & quản lý các mã chỉ bạn đã chọn theo Dự án. Mở lại kết quả, ghim, xuất CSV và đồng bộ theo tài khoản.",
           tabSaved: "Kết quả đã lưu",
           tabStock: "Tồn kho",
           stockPlaceholder: "Tồn kho đang được chuẩn bị.",

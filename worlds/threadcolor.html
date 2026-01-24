@@ -393,6 +393,48 @@
     }
     #brandFilters label:hover{ filter: brightness(1.03); }
     #brandFilters input[type="checkbox"] { accent-color: var(--a1); }
+    .brand-badge{
+      font-size: 11px;
+      line-height: 1;
+      padding: 0.25rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(99,102,241,0.25);
+      background: rgba(99,102,241,0.08);
+      color: #4338ca;
+      font-weight: 600;
+    }
+    .brand-popover{
+      position: relative;
+    }
+    .brand-info-btn{
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.85);
+      font-size: 12px;
+      font-weight: 700;
+      color: #4c1d95;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-popover-panel{
+      position: absolute;
+      left: 0;
+      top: calc(100% + 8px);
+      min-width: 220px;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      display: none;
+      z-index: 20;
+    }
+    .brand-popover[data-open="1"] .brand-popover-panel{
+      display: block;
+    }
     /* --- Result UI (tokenized, premium) --- */
     #result .result-item{
       background: var(--glass);
@@ -779,11 +821,21 @@
           <input id="verifiedOnlyToggle" type="checkbox" class="tc-check">
           <span data-i18n="tc.section.brand.verified">Chỉ đã xác minh</span>
         </label>
+        <p class="mt-2 text-xs tc-muted">Chạm biểu tượng “i” để xem thông tin hãng.</p>
       </section>
+
+      <details class="mb-6 tc-card p-4">
+        <summary class="cursor-pointer font-semibold">Hướng dẫn nhanh cho người mới</summary>
+        <div class="mt-3 text-sm tc-muted space-y-2 leading-relaxed">
+          <div>1) Chọn hãng chỉ → chọn màu (hoặc nhập HEX/ảnh) → xem mã gần nhất.</div>
+          <div>2) ΔE càng nhỏ càng giống. ΔE76 phù hợp kiểm nhanh; CIEDE2000 chính xác hơn khi so màu gần.</div>
+          <div>3) Khi kết quả ổn, bấm “Lưu” để lưu vào Kho chỉ theo tài khoản.</div>
+        </div>
+      </details>
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2">
           <span data-i18n="tc.section.delta.title">Độ tương đồng màu (ΔE)</span>
-          <span id="deltaValue" class="text-sm tc-muted">(Î”E 3.0)</span>
+          <span id="deltaValue" class="text-sm tc-muted">(ΔE 3.0)</span>
         </h3>
 
         <input
@@ -802,7 +854,7 @@
             <option value="2000" data-i18n="tc.section.delta.method2000">Chuẩn hơn (CIEDE2000)</option>
           </select>
         </div>
-        <span id="deltaValueText" class="tc-muted">Î”E 3.0</span>
+        <span id="deltaValueText" class="tc-muted">ΔE 3.0</span>
         <div class="flex justify-between text-xs tc-muted mt-1">
           <span data-i18n="tc.section.delta.low">Rất giống</span>
           <span data-i18n="tc.section.delta.high">Khác hẳn</span>
@@ -830,7 +882,11 @@
 
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.image.title">Chọn màu từ ảnh</h3>
-        <input type="file" id="imgInput" accept="image/*" class="mb-2">
+        <div class="mb-2 flex flex-wrap items-center gap-3">
+          <input type="file" id="imgInput" accept="image/*" class="hidden">
+          <button id="imgInputBtn" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chọn tệp ảnh</button>
+          <span id="imgInputName" class="text-sm tc-muted">Chưa chọn tệp</span>
+        </div>
         <canvas
           id="canvas"
           class="border rounded-lg max-w-full min-h-[200px] bg-gray-100">
@@ -841,7 +897,7 @@
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.code.title">Tra ngược theo mã chỉ</h3>
         <div class="flex items-center gap-4">
-          <input type="text" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="tc-field flex-1" data-i18n-attr="placeholder:tc.section.code.placeholder">
+          <input type="search" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="tc-field flex-1" data-i18n-attr="placeholder:tc.section.code.placeholder" autocomplete="off" name="thread_code_query" inputmode="search" spellcheck="false" autocorrect="off" autocapitalize="none">
           <button id="btnFindByCode" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.code.action">
             Tra cứu
           </button>
@@ -849,6 +905,22 @@
       </section>
 
       <section id="result" class="p-4 tc-chip rounded-lg shadow-inner"></section>
+
+      <section class="mt-6 tc-card p-4">
+        <h3 class="text-sm font-semibold">Liên thông nhanh</h3>
+        <p class="tc-muted text-xs mt-1">Màu đang chuyển: <span id="handoffColor">#F472B6</span></p>
+        <div class="mt-2 text-xs tc-muted space-y-1">
+          <div>Palette: <span id="handoffPaletteParam">#p=%23F472B6,%230EA5A8,%23F59E0B</span></div>
+          <div>Gradient: <span id="handoffGradientParam">#g=%23F472B6,%230EA5A8,%23F59E0B</span></div>
+          <div>In: <span id="handoffPrintParam">#c=%23F472B6</span></div>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a id="handoffPaletteLink" class="tc-btn tc-chip px-4 py-2 text-sm" href="./palette.html#p=%23F472B6,%230EA5A8,%23F59E0B">Tạo Palette</a>
+          <a id="handoffGradientLink" class="tc-btn tc-chip px-4 py-2 text-sm" href="./gradient.html#g=%23F472B6,%230EA5A8,%23F59E0B">Tạo Gradient</a>
+          <a id="handoffPrintLink" class="tc-btn tc-chip px-4 py-2 text-sm" href="./printcolor.html#c=%23F472B6">Mở ở In</a>
+          <button id="handoffCopyLink" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép liên kết</button>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -1180,6 +1252,19 @@
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       update();
+    })();
+  </script>
+  <script>
+    (() => {
+      const input = document.getElementById("imgInput");
+      const btn = document.getElementById("imgInputBtn");
+      const name = document.getElementById("imgInputName");
+      if (!input || !btn || !name) return;
+      btn.addEventListener("click", () => input.click());
+      input.addEventListener("change", () => {
+        const fileName = input.files && input.files[0] ? input.files[0].name : "Chưa chọn tệp";
+        name.textContent = fileName;
+      });
     })();
   </script>
 </body>

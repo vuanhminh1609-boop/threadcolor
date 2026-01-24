@@ -35,7 +35,19 @@ const elements = {
   specText: document.getElementById("assetSpecText"),
   specJson: document.getElementById("assetSpecJson"),
   copyText: document.getElementById("assetCopyText"),
-  copyJson: document.getElementById("assetCopyJson")
+  copyJson: document.getElementById("assetCopyJson"),
+  tabAssets: document.getElementById("assetTabBtn"),
+  tabHex: document.getElementById("hexTabBtn"),
+  tabAssetsPanel: document.getElementById("assetTabPanel"),
+  tabHexPanel: document.getElementById("hexTabPanel"),
+  hexSearch: document.getElementById("hexSearch"),
+  hexPageSize: document.getElementById("hexPageSize"),
+  hexGrid: document.getElementById("hexGrid"),
+  hexStats: document.getElementById("hexStats"),
+  hexPrev: document.getElementById("hexPrev"),
+  hexNext: document.getElementById("hexNext"),
+  hexPageInfo: document.getElementById("hexPageInfo"),
+  hexStatus: document.getElementById("hexStatus")
 };
 
 const state = {
@@ -44,10 +56,89 @@ const state = {
   currentProject: "",
   recentProjects: [],
   projectFilter: "",
-  handoff: parseHandoff()
+  handoff: parseHandoff(),
+  hexEntries: [],
+  hexQuery: "",
+  hexPage: 1,
+  hexPageSize: 60,
+  hexLoaded: false
 };
 
 const normalizeText = (value) => (value || "").toLowerCase();
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const setupAutofillTrap = (input) => {
+  if (!input) return;
+  input.setAttribute("readonly", "readonly");
+  input.dataset.userTouched = "0";
+  const clearIfAutofill = () => {
+    if (input.dataset.userTouched === "1") return;
+    const value = String(input.value || "");
+    if (value.includes("@") && value.includes(".")) {
+      input.value = "";
+    }
+  };
+  const unlock = () => {
+    input.removeAttribute("readonly");
+    input.dataset.userTouched = "1";
+  };
+  input.addEventListener("focus", unlock, { once: true });
+  input.addEventListener("pointerdown", unlock, { once: true });
+  input.addEventListener("keydown", () => {
+    input.dataset.userTouched = "1";
+  });
+  input.addEventListener("input", () => {
+    input.dataset.userTouched = "1";
+  });
+  window.setTimeout(clearIfAutofill, 500);
+};
+
+const debounce = (fn, delay = 250) => {
+  let timer = null;
+  return (...args) => {
+    if (timer) window.clearTimeout(timer);
+    timer = window.setTimeout(() => fn(...args), delay);
+  };
+};
+
+const sanitizeHex = (value) => {
+  if (!value) return "";
+  const cleaned = value.toString().trim().replace(/^#/, "");
+  if (!/^[0-9a-fA-F]{6}$/.test(cleaned)) return "";
+  return `#${cleaned.toUpperCase()}`;
+};
+
+const hexToRgb = (hex) => {
+  const cleaned = sanitizeHex(hex);
+  if (!cleaned) return null;
+  const r = parseInt(cleaned.slice(1, 3), 16);
+  const g = parseInt(cleaned.slice(3, 5), 16);
+  const b = parseInt(cleaned.slice(5, 7), 16);
+  return { r, g, b };
+};
+
+const rgbToLab = (rgb) => {
+  if (!rgb) return null;
+  const srgbToLinear = (c) => {
+    const v = c / 255;
+    return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  };
+  const rl = srgbToLinear(rgb.r);
+  const gl = srgbToLinear(rgb.g);
+  const bl = srgbToLinear(rgb.b);
+  const x = (rl * 0.4124 + gl * 0.3576 + bl * 0.1805) * 100;
+  const y = (rl * 0.2126 + gl * 0.7152 + bl * 0.0722) * 100;
+  const z = (rl * 0.0193 + gl * 0.1192 + bl * 0.9505) * 100;
+  const refX = 95.047;
+  const refY = 100.0;
+  const refZ = 108.883;
+  const f = (t) => (t > 0.008856 ? Math.cbrt(t) : (7.787 * t) + (16 / 116));
+  const fx = f(x / refX);
+  const fy = f(y / refY);
+  const fz = f(z / refZ);
+  const round = (val) => Number(val.toFixed(4));
+  return [round(116 * fy - 16), round(500 * (fx - fy)), round(200 * (fy - fz))];
+};
 
 const loadProjectPrefs = () => {
   try {
@@ -320,6 +411,149 @@ const publishToFeed = (asset) => {
   }
 };
 
+const setActiveTab = (key) => {
+  const isAssets = key === "assets";
+  if (elements.tabAssets) elements.tabAssets.setAttribute("aria-selected", isAssets ? "true" : "false");
+  if (elements.tabHex) elements.tabHex.setAttribute("aria-selected", isAssets ? "false" : "true");
+  if (elements.tabAssetsPanel) elements.tabAssetsPanel.classList.toggle("hidden", !isAssets);
+  if (elements.tabHexPanel) elements.tabHexPanel.classList.toggle("hidden", isAssets);
+  if (!isAssets && !state.hexLoaded) {
+    loadHexLibrary();
+  }
+};
+
+const setHexStatus = (message) => {
+  if (!elements.hexStatus) return;
+  elements.hexStatus.textContent = message;
+  if (!message) return;
+  window.setTimeout(() => {
+    if (elements.hexStatus.textContent === message) {
+      elements.hexStatus.textContent = "";
+    }
+  }, 2000);
+};
+
+const buildHexIndex = (threads) => {
+  const map = new Map();
+  threads.forEach((item) => {
+    const hex = sanitizeHex(item.hex);
+    if (!hex) return;
+    const key = hex.toUpperCase();
+    if (!map.has(key)) {
+      const rgb = item.rgb && typeof item.rgb === "object" ? item.rgb : hexToRgb(hex);
+      const lab = Array.isArray(item.lab) && item.lab.length === 3 ? item.lab : rgbToLab(rgb);
+      map.set(key, {
+        hex,
+        rgb,
+        lab,
+        refs: [],
+        searchText: hex.toLowerCase()
+      });
+    }
+    const entry = map.get(key);
+    entry.refs.push({
+      brand: item.brand || "",
+      code: item.code || "",
+      name: item.name || ""
+    });
+    entry.searchText += ` ${normalizeText(item.brand)} ${normalizeText(item.code)} ${normalizeText(item.name)}`;
+  });
+  return Array.from(map.values()).sort((a, b) => a.hex.localeCompare(b.hex));
+};
+
+const applyHexFilter = () => {
+  const query = normalizeText(state.hexQuery);
+  if (!query) return state.hexEntries;
+  return state.hexEntries.filter((entry) => entry.searchText.includes(query));
+};
+
+const renderHexGrid = () => {
+  if (!elements.hexGrid) return;
+  const filtered = applyHexFilter();
+  const pageSize = state.hexPageSize || 60;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  state.hexPage = clamp(state.hexPage, 1, totalPages);
+  const start = (state.hexPage - 1) * pageSize;
+  const pageItems = filtered.slice(start, start + pageSize);
+  if (!pageItems.length) {
+    elements.hexGrid.innerHTML = `<div class="tc-muted text-sm">Không tìm thấy màu phù hợp.</div>`;
+  } else {
+    elements.hexGrid.innerHTML = pageItems.map((entry) => {
+      const refsPreview = entry.refs.slice(0, 2).map((ref) => `${ref.brand} ${ref.code}`.trim()).join(" · ");
+      const refsSuffix = entry.refs.length > 2 ? ` +${entry.refs.length - 2}` : "";
+      return `
+        <div class="tc-card p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="tc-hex-swatch" style="background:${entry.hex};"></span>
+            <div>
+              <div class="font-semibold">${entry.hex}</div>
+              <div class="text-xs tc-muted">${entry.refs.length} mã · ${refsPreview}${refsSuffix}</div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <button class="tc-btn tc-chip px-3 py-2" data-hex-action="copy" data-hex="${entry.hex}" type="button">Sao chép HEX</button>
+            <button class="tc-btn tc-chip px-3 py-2" data-hex-action="threadcolor" data-hex="${entry.hex}" type="button">Mở ở Thêu</button>
+            <button class="tc-btn tc-chip px-3 py-2" data-hex-action="printcolor" data-hex="${entry.hex}" type="button">Mở ở In</button>
+            <button class="tc-btn tc-chip px-3 py-2" data-hex-action="palette" data-hex="${entry.hex}" type="button">Tạo Palette</button>
+            <button class="tc-btn tc-chip px-3 py-2" data-hex-action="gradient" data-hex="${entry.hex}" type="button">Tạo Gradient</button>
+            <button class="tc-btn tc-btn-primary px-3 py-2" data-hex-action="save" data-hex="${entry.hex}" type="button">Lưu vào Thư viện</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+  if (elements.hexStats) {
+    elements.hexStats.textContent = `Tổng ${filtered.length} màu · ${state.hexEntries.length} màu trong kho`;
+  }
+  if (elements.hexPageInfo) {
+    elements.hexPageInfo.textContent = `Trang ${state.hexPage}/${totalPages}`;
+  }
+  if (elements.hexPrev) elements.hexPrev.disabled = state.hexPage <= 1;
+  if (elements.hexNext) elements.hexNext.disabled = state.hexPage >= totalPages;
+};
+
+const loadHexLibrary = async () => {
+  if (state.hexLoaded) return;
+  state.hexLoaded = true;
+  if (elements.hexStats) elements.hexStats.textContent = "Đang nạp dữ liệu...";
+  try {
+    const response = await fetch("../threads.json", { cache: "no-store" });
+    const data = await response.json();
+    state.hexEntries = buildHexIndex(Array.isArray(data) ? data : []);
+    renderHexGrid();
+  } catch (_err) {
+    if (elements.hexStats) elements.hexStats.textContent = "Không thể nạp dữ liệu kho HEX.";
+  }
+};
+
+const saveHexToLibrary = (entry) => {
+  if (!entry) return;
+  const now = new Date().toISOString();
+  const asset = {
+    id: `hex_${entry.hex.replace("#", "")}_${Date.now()}`,
+    type: "hex_swatch",
+    name: `HEX ${entry.hex}`,
+    tags: ["hex", "swatch"],
+    core: {
+      colors: [entry.hex],
+      hex: entry.hex,
+      rgb: entry.rgb || hexToRgb(entry.hex),
+      lab: entry.lab || rgbToLab(entry.rgb || hexToRgb(entry.hex)),
+      refs: entry.refs.slice(0, 12)
+    },
+    notes: `Kho HEX: ${entry.refs.length} mã tham chiếu.`,
+    version: "1.0.0",
+    createdAt: now,
+    updatedAt: now,
+    sourceWorld: "library",
+    project: state.currentProject || ""
+  };
+  state.assets.unshift(asset);
+  saveAssets();
+  renderGrid();
+  setHexStatus(`Đã lưu ${entry.hex} vào Thư viện.`);
+};
+
 const bindEvents = () => {
   elements.search?.addEventListener("input", renderGrid);
   elements.filter?.addEventListener("change", renderGrid);
@@ -332,6 +566,60 @@ const bindEvents = () => {
     state.assets.unshift(asset);
     saveAssets();
     renderGrid();
+  });
+  elements.tabAssets?.addEventListener("click", () => setActiveTab("assets"));
+  elements.tabHex?.addEventListener("click", () => setActiveTab("hex"));
+  const onHexSearch = debounce(() => {
+    state.hexQuery = elements.hexSearch?.value || "";
+    state.hexPage = 1;
+    renderHexGrid();
+  }, 300);
+  elements.hexSearch?.addEventListener("input", onHexSearch);
+  elements.hexPageSize?.addEventListener("change", () => {
+    const next = parseInt(elements.hexPageSize.value, 10);
+    state.hexPageSize = Number.isFinite(next) ? next : 60;
+    state.hexPage = 1;
+    renderHexGrid();
+  });
+  elements.hexPrev?.addEventListener("click", () => {
+    state.hexPage = clamp(state.hexPage - 1, 1, Number.MAX_SAFE_INTEGER);
+    renderHexGrid();
+  });
+  elements.hexNext?.addEventListener("click", () => {
+    state.hexPage = clamp(state.hexPage + 1, 1, Number.MAX_SAFE_INTEGER);
+    renderHexGrid();
+  });
+  elements.hexGrid?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-hex-action]");
+    if (!btn) return;
+    const hex = btn.dataset.hex;
+    const action = btn.dataset.hexAction;
+    const entry = state.hexEntries.find((item) => item.hex === hex);
+    if (!hex || !action) return;
+    if (action === "copy") {
+      copyText(hex);
+      setHexStatus(`Đã sao chép ${hex}.`);
+      return;
+    }
+    if (action === "threadcolor") {
+      window.location.href = `../worlds/threadcolor.html?color=${hex}`;
+      return;
+    }
+    if (action === "printcolor") {
+      window.location.href = `../worlds/printcolor.html#c=${hex}`;
+      return;
+    }
+    if (action === "palette") {
+      window.location.href = `../worlds/palette.html#p=${hex}`;
+      return;
+    }
+    if (action === "gradient") {
+      window.location.href = `../worlds/gradient.html#g=${hex}`;
+      return;
+    }
+    if (action === "save") {
+      saveHexToLibrary(entry);
+    }
   });
   elements.grid?.addEventListener("click", (event) => {
     const card = event.target.closest("[data-asset-id]");
@@ -358,6 +646,8 @@ syncProjectFilter();
 renderGrid();
 renderPanel(state.selected);
 bindEvents();
+setActiveTab("assets");
+setupAutofillTrap(elements.search);
 
 if (typeof window !== "undefined") {
   window.tcOpenInWorld = openInWorld;

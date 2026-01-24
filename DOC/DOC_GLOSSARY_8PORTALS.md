@@ -33,6 +33,9 @@
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
+| Kho HEX | Kho HEX | Kho tra cứu tập trung cho mọi mã màu dạng #RRGGBB trong hệ sinh thái. |
+| Hồ sơ màu | Hồ sơ màu | Màn hiển thị chi tiết một màu: mã, chuyển đổi, gợi ý sử dụng và hành động liên quan. |
+| Hex swatch | Hex swatch | Một mẫu màu dạng ô màu dùng để chọn/copy nhanh mã #RRGGBB. |
 | CMYK | CMYK | Hệ màu in 4 kênh: Cyan, Magenta, Yellow, Key (đen). |
 | ICC profile | Hồ sơ ICC | Hồ sơ màu mô tả thiết bị in/hiển thị để chuyển đổi màu chính xác. |
 | TAC | Tổng lượng mực (TAC) | Tổng % mực C+M+Y+K; vượt ngưỡng gây lem/đậm. |
@@ -364,5 +367,4 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 - Bước 2: nếu có rồi thì cập nhật dòng cũ, không thêm dòng mới.
 - Bước 3: thêm đúng section, giữ định nghĩa 1–2 câu, không lặp.
 - Bước 4: chạy npm run check:glossary trước khi commit.
-
 

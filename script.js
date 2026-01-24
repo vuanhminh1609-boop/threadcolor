@@ -105,6 +105,7 @@ function rebuildIndexes(list = threads) {
   const byCode = new Map();
   const byCanonical = new Map();
   const brandKeyMap = new Map();
+  const statsMap = new Map();
 
   list.forEach((thread) => {
     if (!thread) return;
@@ -118,6 +119,18 @@ function rebuildIndexes(list = threads) {
 
     if (!byBrand.has(brandName)) byBrand.set(brandName, []);
     byBrand.get(brandName).push(thread);
+
+    if (!statsMap.has(brandName)) {
+      statsMap.set(brandName, {
+        count: 0,
+        sources: new Set(),
+        verifiedCount: 0
+      });
+    }
+    const stats = statsMap.get(brandName);
+    stats.count += 1;
+    if (thread?.source?.type) stats.sources.add(thread.source.type);
+    if (isVerifiedThread(thread)) stats.verifiedCount += 1;
 
     if (!byCode.has(codeKey)) byCode.set(codeKey, []);
     byCode.get(codeKey).push(thread);
@@ -135,6 +148,7 @@ function rebuildIndexes(list = threads) {
   threadsByCode = byCode;
   threadsByCanonicalKey = byCanonical;
   brandKeyToName = brandKeyMap;
+  brandStats = statsMap;
   brandNamesSorted = Array.from(brandKeyMap.entries())
     .map(([key, name]) => ({ key, name }))
     .sort((a, b) => b.name.length - a.name.length);
@@ -377,6 +391,7 @@ let threadsByCode = new Map();
 let threadsByCanonicalKey = new Map();
 let brandNamesSorted = [];
 let brandKeyToName = new Map();
+let brandStats = new Map();
 const matchCache = new Map();
 const MATCH_CACHE_LIMIT = 60;
 const MATCH_DEBOUNCE_MS = 160;
@@ -396,6 +411,83 @@ let currentProject = "";
 let recentProjects = [];
 let libraryItemsCache = [];
 let libraryProjectFilter = "";
+const handoffEls = {
+  color: document.getElementById("handoffColor"),
+  paletteParam: document.getElementById("handoffPaletteParam"),
+  gradientParam: document.getElementById("handoffGradientParam"),
+  printParam: document.getElementById("handoffPrintParam"),
+  paletteLink: document.getElementById("handoffPaletteLink"),
+  gradientLink: document.getElementById("handoffGradientLink"),
+  printLink: document.getElementById("handoffPrintLink"),
+  copyBtn: document.getElementById("handoffCopyLink")
+};
+
+const setupAutofillTrap = (input) => {
+  if (!input) return;
+  input.setAttribute("readonly", "readonly");
+  input.dataset.userTouched = "0";
+  const clearIfAutofill = () => {
+    if (input.dataset.userTouched === "1") return;
+    const value = String(input.value || "");
+    if (value.includes("@") && value.includes(".")) {
+      input.value = "";
+    }
+  };
+  const unlock = () => {
+    input.removeAttribute("readonly");
+    input.dataset.userTouched = "1";
+  };
+  input.addEventListener("focus", unlock, { once: true });
+  input.addEventListener("pointerdown", unlock, { once: true });
+  input.addEventListener("keydown", () => {
+    input.dataset.userTouched = "1";
+  });
+  input.addEventListener("input", () => {
+    input.dataset.userTouched = "1";
+  });
+  window.setTimeout(clearIfAutofill, 500);
+};
+
+const closeBrandPopovers = () => {
+  if (!brandFilters) return;
+  brandFilters.querySelectorAll(".brand-popover").forEach((el) => {
+    el.dataset.open = "0";
+  });
+};
+
+const buildHandoffStops = () => {
+  const stops = [];
+  const chosen = normalizeHex(lastChosenHex || colorPicker?.value);
+  if (chosen) stops.push(chosen);
+  if (Array.isArray(currentRendered)) {
+    currentRendered.forEach((item) => {
+      if (stops.length >= 3) return;
+      const hex = normalizeHex(item?.hex);
+      if (hex && !stops.includes(hex)) stops.push(hex);
+    });
+  }
+  while (stops.length < 3 && chosen) {
+    stops.push(chosen);
+  }
+  return stops;
+};
+
+const updateHandoffLinks = () => {
+  if (!handoffEls.color) return;
+  const stops = buildHandoffStops();
+  const base = stops[0] || "#F472B6";
+  const encodedStops = encodeURIComponent(stops.join(","));
+  const paletteParam = `#p=${encodedStops}`;
+  const gradientParam = `#g=${encodedStops}`;
+  const printParam = `#c=${encodeURIComponent(base)}`;
+  handoffEls.color.textContent = base;
+  if (handoffEls.paletteParam) handoffEls.paletteParam.textContent = paletteParam;
+  if (handoffEls.gradientParam) handoffEls.gradientParam.textContent = gradientParam;
+  if (handoffEls.printParam) handoffEls.printParam.textContent = printParam;
+  if (handoffEls.paletteLink) handoffEls.paletteLink.href = `./palette.html${paletteParam}`;
+  if (handoffEls.gradientLink) handoffEls.gradientLink.href = `./gradient.html${gradientParam}`;
+  if (handoffEls.printLink) handoffEls.printLink.href = `./printcolor.html${printParam}`;
+};
 
 function renderBrandFilters(brands) {
   if (!brandFilters) return;
@@ -403,6 +495,8 @@ function renderBrandFilters(brands) {
   brands.forEach(rawBrand => {
     const brandName = (rawBrand || "").trim();
     if (!brandName) return;
+    const stats = brandStats.get(brandName) || { count: 0, sources: new Set(), verifiedCount: 0 };
+    const sources = Array.from(stats.sources || []);
     const label = document.createElement("label");
     label.className = "cursor-pointer";
 
@@ -429,8 +523,34 @@ function renderBrandFilters(brands) {
     const text = document.createElement("span");
     text.textContent = brandName;
 
+    const badge = document.createElement("span");
+    badge.className = "brand-badge";
+    badge.textContent = stats.count ? `${stats.count}` : "0";
+
+    const popover = document.createElement("span");
+    popover.className = "brand-popover";
+    popover.dataset.open = "0";
+    const infoBtn = document.createElement("button");
+    infoBtn.type = "button";
+    infoBtn.className = "brand-info-btn";
+    infoBtn.textContent = "i";
+    infoBtn.dataset.brandInfo = "1";
+    const panel = document.createElement("div");
+    panel.className = "brand-popover-panel text-xs";
+    panel.innerHTML = `
+      <div class="font-semibold mb-1">Thông tin hãng</div>
+      <div>Mã: <strong>${stats.count || 0}</strong></div>
+      <div>Đã xác minh: <strong>${stats.verifiedCount || 0}</strong></div>
+      <div>Nguồn: <strong>${sources.length ? sources.join(", ") : "Chưa rõ"}</strong></div>
+      <div class="tc-muted mt-1">Gợi ý: chọn 2–3 hãng để so nhanh.</div>
+    `;
+    popover.appendChild(infoBtn);
+    popover.appendChild(panel);
+
     pill.appendChild(svg);
     pill.appendChild(text);
+    pill.appendChild(badge);
+    pill.appendChild(popover);
     label.appendChild(input);
     label.appendChild(pill);
     brandFilters.appendChild(label);
@@ -1321,6 +1441,7 @@ function showGroupedResults(groups, chosenHex) {
   resultRenderLimit = Math.min(RESULT_PAGE_SIZE, total);
   renderGroupedResults(groups, chosenHex, resultRenderLimit);
   bindProjectInput();
+  updateHandoffLinks();
 }
 
 function loadMoreResults() {
@@ -1423,6 +1544,23 @@ function copyToClipboard(text, label) {
   } else {
     fallbackCopy();
   }
+}
+
+function bindHandoffActions() {
+  if (!handoffEls.copyBtn) return;
+  handoffEls.copyBtn.addEventListener("click", () => {
+    const paletteUrl = handoffEls.paletteLink?.getAttribute("href") || "";
+    const gradientUrl = handoffEls.gradientLink?.getAttribute("href") || "";
+    const printUrl = handoffEls.printLink?.getAttribute("href") || "";
+    const payload = [
+      "Liên kết nhanh:",
+      paletteUrl ? `Palette: ${paletteUrl}` : "",
+      gradientUrl ? `Gradient: ${gradientUrl}` : "",
+      printUrl ? `In: ${printUrl}` : ""
+    ].filter(Boolean).join("\n");
+    copyToClipboard(payload, "liên kết");
+  });
+  updateHandoffLinks();
 }
 
 function populateInspector(data) {
@@ -1954,17 +2092,25 @@ function renderLibraryList(items) {
     libraryList.innerHTML = `<div class='text-gray-500'>${t("tc.library.empty", "Chưa có bản lưu")}</div>`;
     return;
   }
+  libraryList.classList.remove("space-y-3");
+  libraryList.classList.add("grid", "gap-3", "sm:grid-cols-2");
   libraryList.innerHTML = filtered.map(it => {
     const ts = it.createdAt && typeof it.createdAt.toDate === "function" ? it.createdAt.toDate().toLocaleString() : "";
     const projectLine = it.project ? `<div class="text-xs tc-muted">${t("tc.project.label", "Dự án")}: ${it.project}</div>` : "";
+    const top = it.topMatch || (it.results || [])[0] || {};
+    const topLabel = [top.brand, top.code].filter(Boolean).join(" ").trim();
+    const deltaText = typeof top.delta === "number" ? `ΔE ${top.delta.toFixed(2)}` : "ΔE --";
+    const swatchHex = normalizeHex(top.hex || it.inputHex || "#FFFFFF");
     return `
-        <div class="border border-gray-200 rounded-lg p-3 flex items-center justify-between" data-saved-item="${it.id}">
-          <div>
+        <div class="border border-gray-200 rounded-lg p-3 grid gap-3 sm:grid-cols-[52px_1fr_auto] items-center" data-saved-item="${it.id}">
+          <div class="w-12 h-12 rounded-lg border border-gray-200 shadow-sm" style="background:${swatchHex};"></div>
+          <div class="space-y-1">
             <div class="font-semibold text-gray-800">${it.inputHex || ""}</div>
+            <div class="text-xs tc-muted">Top: ${topLabel || "--"} · ${deltaText}</div>
             ${projectLine}
             <div class="text-xs text-gray-500">${ts}</div>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 justify-self-start sm:justify-self-end">
             <button data-action="open-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border bg-white hover:bg-gray-50 text-indigo-700">${t("tc.library.open", "Mở")}</button>
             <button data-action="delete-saved" data-id="${it.id}" class="px-3 py-1 rounded-lg border border-red-200 bg-white hover:bg-red-50 text-red-600">${t("tc.library.delete", "Xóa")}</button>
           </div>
@@ -2161,7 +2307,7 @@ async function handleOpenSaved(id) {
     if (libraryOverlay) libraryOverlay.classList.add("hidden");
     if (libraryModal) {
       libraryModal.classList.add("hidden");
-      libraryModal.classList.remove("flex");
+      libraryModal.classList.remove("flex", "flex-col");
     }
   }   catch (err) {
     console.error("Mở bản lưu thất bại", err);
@@ -2200,13 +2346,35 @@ function startEyeDropper() {
 //======================= EVENTS =======================
 window.addEventListener("firebase-auth-ready", bindAuth);
 bindAuth();
+bindHandoffActions();
+setupAutofillTrap(codeInput);
+if (brandFilters) {
+  brandFilters.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-brand-info]");
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const popover = btn.closest(".brand-popover");
+    if (!popover) return;
+    const isOpen = popover.dataset.open === "1";
+    closeBrandPopovers();
+    popover.dataset.open = isOpen ? "0" : "1";
+  });
+}
+document.addEventListener("click", (event) => {
+  if (event.target.closest(".brand-popover")) return;
+  closeBrandPopovers();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeBrandPopovers();
+});
 
 
 if (libraryClose) libraryClose.addEventListener("click", () => {
   libraryOverlay?.classList.add("hidden");
   if (libraryModal) {
     libraryModal.classList.add("hidden");
-    libraryModal.classList.remove("flex");
+    libraryModal.classList.remove("flex", "flex-col");
   }
 });
 
@@ -2215,7 +2383,7 @@ if (libraryOverlay) {
     libraryOverlay.classList.add("hidden");
     if (libraryModal) {
       libraryModal.classList.add("hidden");
-      libraryModal.classList.remove("flex");
+      libraryModal.classList.remove("flex", "flex-col");
     }
   });
 }
@@ -2231,7 +2399,7 @@ const openLibraryModal = () => {
   libraryOverlay?.classList.remove("hidden");
   if (libraryModal) {
     libraryModal.classList.remove("hidden");
-    libraryModal.classList.add("flex");
+    libraryModal.classList.add("flex", "flex-col");
   }
   loadLibraryListV2();
 };
