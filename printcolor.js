@@ -44,10 +44,27 @@ const elements = {
   iccStatus: document.getElementById("iccStatus"),
   iccIntent: document.getElementById("iccIntent"),
   iccBpc: document.getElementById("iccBpc"),
+  deltaMethod: document.getElementById("deltaMethod"),
   gamutThreshold: document.getElementById("gamutThreshold"),
   gamutOverlay: document.getElementById("gamutOverlay"),
   richBlackPreset: document.getElementById("richBlackPreset"),
-  safePrintAll: document.getElementById("safePrintAll")
+  safePrintAll: document.getElementById("safePrintAll"),
+  summaryTotal: document.getElementById("summaryTotal"),
+  summaryTac: document.getElementById("summaryTac"),
+  summaryGamut: document.getElementById("summaryGamut"),
+  summaryDelta: document.getElementById("summaryDelta"),
+  summaryHint: document.getElementById("summaryHint"),
+  pressJobName: document.getElementById("pressJobName"),
+  pressClient: document.getElementById("pressClient"),
+  pressMachine: document.getElementById("pressMachine"),
+  pressMaterial: document.getElementById("pressMaterial"),
+  pressTech: document.getElementById("pressTech"),
+  pressNote: document.getElementById("pressNote"),
+  qcInput: document.getElementById("qcInput"),
+  qcThreshold: document.getElementById("qcThreshold"),
+  qcParse: document.getElementById("qcParse"),
+  qcStatus: document.getElementById("qcStatus"),
+  qcTableBody: document.getElementById("qcTableBody")
 };
 
 const state = {
@@ -57,12 +74,15 @@ const state = {
   iccSelectedId: "srgb",
   iccIntent: "perceptual",
   iccBpc: true,
+  deltaMethod: "76",
   gamutThreshold: 5,
   gamutOverlay: false,
   richBlackPreset: "text",
   iccEngine: null,
   iccReady: false,
-  iccLoading: false
+  iccLoading: false,
+  qcEntries: [],
+  qcErrors: 0
 };
 
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
@@ -177,6 +197,69 @@ const deltaE = (lab1, lab2) => {
   const db = lab1.b - lab2.b;
   return Math.sqrt(dl * dl + da * da + db * db);
 };
+
+const deltaE2000 = (lab1, lab2) => {
+  const L1 = lab1.l;
+  const a1 = lab1.a;
+  const b1 = lab1.b;
+  const L2 = lab2.l;
+  const a2 = lab2.a;
+  const b2 = lab2.b;
+  const avgLp = (L1 + L2) / 2;
+  const C1 = Math.sqrt(a1 * a1 + b1 * b1);
+  const C2 = Math.sqrt(a2 * a2 + b2 * b2);
+  const avgC = (C1 + C2) / 2;
+  const avgC7 = Math.pow(avgC, 7);
+  const G = 0.5 * (1 - Math.sqrt(avgC7 / (avgC7 + Math.pow(25, 7))));
+  const a1p = (1 + G) * a1;
+  const a2p = (1 + G) * a2;
+  const C1p = Math.sqrt(a1p * a1p + b1 * b1);
+  const C2p = Math.sqrt(a2p * a2p + b2 * b2);
+  const avgCp = (C1p + C2p) / 2;
+  const h1p = Math.atan2(b1, a1p);
+  const h2p = Math.atan2(b2, a2p);
+  const h1pDeg = ((h1p * 180) / Math.PI + 360) % 360;
+  const h2pDeg = ((h2p * 180) / Math.PI + 360) % 360;
+  let deltahp = h2pDeg - h1pDeg;
+  if (C1p * C2p === 0) {
+    deltahp = 0;
+  } else if (deltahp > 180) {
+    deltahp -= 360;
+  } else if (deltahp < -180) {
+    deltahp += 360;
+  }
+  const deltaLp = L2 - L1;
+  const deltaCp = C2p - C1p;
+  const deltaHp = 2 * Math.sqrt(C1p * C2p) * Math.sin((deltahp * Math.PI) / 360);
+  const avgHp = (() => {
+    if (C1p * C2p === 0) return h1pDeg + h2pDeg;
+    const sum = h1pDeg + h2pDeg;
+    if (Math.abs(h1pDeg - h2pDeg) > 180) {
+      return sum < 360 ? (sum + 360) / 2 : (sum - 360) / 2;
+    }
+    return sum / 2;
+  })();
+  const T = 1
+    - 0.17 * Math.cos(((avgHp - 30) * Math.PI) / 180)
+    + 0.24 * Math.cos(((2 * avgHp) * Math.PI) / 180)
+    + 0.32 * Math.cos(((3 * avgHp + 6) * Math.PI) / 180)
+    - 0.20 * Math.cos(((4 * avgHp - 63) * Math.PI) / 180);
+  const deltaTheta = 30 * Math.exp(-(((avgHp - 275) / 25) ** 2));
+  const Rc = 2 * Math.sqrt(Math.pow(avgCp, 7) / (Math.pow(avgCp, 7) + Math.pow(25, 7)));
+  const Sl = 1 + (0.015 * ((avgLp - 50) ** 2)) / Math.sqrt(20 + ((avgLp - 50) ** 2));
+  const Sc = 1 + 0.045 * avgCp;
+  const Sh = 1 + 0.015 * avgCp * T;
+  const Rt = -Math.sin((2 * deltaTheta * Math.PI) / 180) * Rc;
+  return Math.sqrt(
+    (deltaLp / Sl) ** 2 +
+    (deltaCp / Sc) ** 2 +
+    (deltaHp / Sh) ** 2 +
+    Rt * (deltaCp / Sc) * (deltaHp / Sh)
+  );
+};
+
+const getDelta = (lab1, lab2, method) =>
+  method === "2000" ? deltaE2000(lab1, lab2) : deltaE(lab1, lab2);
 
 const getHashParams = () => {
   const hash = window.location.hash ? window.location.hash.slice(1) : "";
@@ -447,27 +530,46 @@ const getDeltaLabel = (deltaValue) => {
   return "Cao";
 };
 
+const getDeltaMethodLabel = () =>
+  state.deltaMethod === "2000" ? "CIEDE2000" : "ΔE76";
+
 const buildItems = (list) => list.map((hex) => {
   const baseRgb = hexToRgb(hex);
   const cmyk = convertRgbToCmyk(baseRgb);
   const simRgb = convertCmykToRgb(cmyk);
   const baseLab = xyzToLab(rgbToXyz(baseRgb));
   const simLab = xyzToLab(rgbToXyz(simRgb));
-  const delta = deltaE(baseLab, simLab);
+  const delta = getDelta(baseLab, simLab, state.deltaMethod);
   return {
     hex,
     baseRgb,
+    baseLab,
     cmyk,
     simRgb,
+    simLab,
     delta
   };
 });
 
 const updateItemMetrics = (item) => {
   item.simRgb = convertCmykToRgb(item.cmyk);
-  const baseLab = xyzToLab(rgbToXyz(item.baseRgb));
-  const simLab = xyzToLab(rgbToXyz(item.simRgb));
-  item.delta = deltaE(baseLab, simLab);
+  item.simLab = xyzToLab(rgbToXyz(item.simRgb));
+  if (!item.baseLab) {
+    item.baseLab = xyzToLab(rgbToXyz(item.baseRgb));
+  }
+  item.delta = getDelta(item.baseLab, item.simLab, state.deltaMethod);
+};
+
+const updateAllDeltas = () => {
+  state.items.forEach((item) => {
+    if (!item.baseLab) {
+      item.baseLab = xyzToLab(rgbToXyz(item.baseRgb));
+    }
+    if (!item.simLab) {
+      item.simLab = xyzToLab(rgbToXyz(item.simRgb));
+    }
+    item.delta = getDelta(item.baseLab, item.simLab, state.deltaMethod);
+  });
 };
 
 const renderTable = () => {
@@ -476,8 +578,11 @@ const renderTable = () => {
     elements.tableBody.innerHTML = "";
     elements.tableWrap.classList.add("hidden");
     elements.empty.classList.remove("hidden");
+    updateSummary();
+    renderQcTable();
     return;
   }
+  const deltaTag = state.deltaMethod === "2000" ? "ΔE2000" : "ΔE76";
   const rows = state.items.map((item, index) => {
     const tac = getTac(item.cmyk);
     const warn = tac > state.tacLimit ? "Vượt ngưỡng" : "Ổn";
@@ -500,7 +605,7 @@ const renderTable = () => {
         <td>C ${item.cmyk.c}% · M ${item.cmyk.m}% · Y ${item.cmyk.y}% · K ${item.cmyk.k}%</td>
         <td>${tac}%</td>
         <td class="${warnClass}">${warn} ${gamutBadge}</td>
-        <td>${deltaLabel} · ΔE ${item.delta.toFixed(1)}</td>
+        <td>${deltaLabel} · ${deltaTag} ${item.delta.toFixed(1)}</td>
         <td>
           <button class="tc-btn tc-chip px-3 py-1 text-xs" data-action="reduce" data-index="${index}" ${disabled}>
             Giảm TAC
@@ -511,6 +616,118 @@ const renderTable = () => {
   elements.tableBody.innerHTML = rows;
   elements.tableWrap.classList.remove("hidden");
   elements.empty.classList.add("hidden");
+  updateSummary();
+  renderQcTable();
+};
+
+const updateSummary = () => {
+  if (!elements.summaryTotal) return;
+  const total = state.items.length;
+  const tacOver = state.items.filter((item) => getTac(item.cmyk) > state.tacLimit).length;
+  const gamutOver = state.items.filter((item) => item.delta > state.gamutThreshold).length;
+  const maxDelta = state.items.reduce((max, item) => Math.max(max, item.delta), 0);
+  elements.summaryTotal.textContent = String(total);
+  if (elements.summaryTac) elements.summaryTac.textContent = String(tacOver);
+  if (elements.summaryGamut) elements.summaryGamut.textContent = String(gamutOver);
+  if (elements.summaryDelta) elements.summaryDelta.textContent = maxDelta.toFixed(1);
+  if (!elements.summaryHint) return;
+  if (!total) {
+    elements.summaryHint.textContent = "Chưa có dữ liệu để kiểm tra.";
+    return;
+  }
+  if (tacOver > 0) {
+    elements.summaryHint.textContent = "Gợi ý: giảm TAC cho màu vượt ngưỡng.";
+    return;
+  }
+  if (gamutOver > 0) {
+    elements.summaryHint.textContent = "Gợi ý: cân nhắc đổi profile/intent hoặc giảm ngưỡng ΔE.";
+    return;
+  }
+  elements.summaryHint.textContent = "Gợi ý: dữ liệu ổn, có thể xuất báo cáo in.";
+};
+
+const getQcThreshold = () => {
+  if (!elements.qcThreshold) return 3;
+  const value = Number(elements.qcThreshold.value || 3);
+  return Number.isFinite(value) ? value : 3;
+};
+
+const buildQcResults = () => {
+  if (!state.qcEntries.length) return [];
+  const threshold = getQcThreshold();
+  const byHex = new Map(state.items.map((item) => [item.hex, item]));
+  return state.qcEntries.map((entry) => {
+    const item = byHex.get(entry.hex);
+    if (!item || !item.simLab) {
+      return {
+        ...entry,
+        delta: null,
+        pass: false,
+        status: "Không tìm thấy"
+      };
+    }
+    const delta = deltaE2000(item.simLab, entry.lab);
+    return {
+      ...entry,
+      delta,
+      pass: delta <= threshold,
+      status: delta <= threshold ? "PASS" : "FAIL"
+    };
+  });
+};
+
+const renderQcTable = () => {
+  if (!elements.qcTableBody || !elements.qcStatus) return;
+  if (!state.qcEntries.length) {
+    elements.qcTableBody.innerHTML = "";
+    elements.qcStatus.textContent = "";
+    return;
+  }
+  const results = buildQcResults();
+  const threshold = getQcThreshold();
+  let failCount = 0;
+  const rows = results.map((row) => {
+    if (row.delta == null) {
+      return `\n      <tr>\n        <td class=\"font-semibold\">${row.hex}</td>\n        <td>-</td>\n        <td class=\"tc-muted\">${row.status}</td>\n      </tr>`;
+    }
+    const delta = row.delta.toFixed(2);
+    const status = row.pass ? "PASS" : "FAIL";
+    const statusClass = row.pass ? "tc-muted" : "tc-warn";
+    if (!row.pass) failCount += 1;
+    return `\n      <tr>\n        <td class=\"font-semibold\">${row.hex}</td>\n        <td>${delta}</td>\n        <td class=\"${statusClass}\">${status}</td>\n      </tr>`;
+  }).join("");
+  elements.qcTableBody.innerHTML = rows;
+  elements.qcStatus.textContent = `Đã phân tích ${results.length} màu · ${failCount} vượt ngưỡng (${threshold}).`;
+};
+
+const parseQcInput = () => {
+  if (!elements.qcInput) return;
+  const lines = elements.qcInput.value.split(/\r?\n/);
+  const entries = [];
+  let errors = 0;
+  lines.forEach((raw) => {
+    const line = raw.trim();
+    if (!line) return;
+    const parts = line.split(",").map((part) => part.trim());
+    if (parts.length < 4) {
+      errors += 1;
+      return;
+    }
+    const hex = normalizeHex(parts[0]);
+    const l = Number(parts[1]);
+    const a = Number(parts[2]);
+    const b = Number(parts[3]);
+    if (!hex || !Number.isFinite(l) || !Number.isFinite(a) || !Number.isFinite(b)) {
+      errors += 1;
+      return;
+    }
+    entries.push({ hex, lab: { l, a, b } });
+  });
+  state.qcEntries = entries;
+  state.qcErrors = errors;
+  if (errors > 0) {
+    showToast(`Có ${errors} dòng lỗi.`);
+  }
 };
 
 const updateTacDisplay = () => {
@@ -661,13 +878,31 @@ const buildExportReport = () => {
   const profile = getSelectedProfile();
   const intentLabel = INTENT_LABELS[state.iccIntent] || "Perceptual";
   const bpcLabel = state.iccBpc ? "Bật" : "Tắt";
+  const methodLabel = getDeltaMethodLabel();
+  const prepress = {
+    jobName: elements.pressJobName?.value.trim() || "—",
+    client: elements.pressClient?.value.trim() || "—",
+    machine: elements.pressMachine?.value.trim() || "—",
+    material: elements.pressMaterial?.value.trim() || "—",
+    tech: elements.pressTech?.value || "—",
+    note: elements.pressNote?.value.trim() || "—"
+  };
   const lines = [];
   lines.push("Báo cáo in");
+  lines.push("Phiếu Prepress");
+  lines.push(`Tên Job: ${prepress.jobName}`);
+  lines.push(`Khách hàng: ${prepress.client}`);
+  lines.push(`Máy in: ${prepress.machine}`);
+  lines.push(`Giấy/Vật liệu: ${prepress.material}`);
+  lines.push(`Công nghệ: ${prepress.tech}`);
+  lines.push(`Ghi chú: ${prepress.note}`);
+  lines.push("");
   lines.push(`Profile: ${profile?.name || "sRGB"}`);
   lines.push(`Intent: ${intentLabel}`);
   lines.push(`BPC: ${bpcLabel}`);
   lines.push(`TAC ngưỡng: ${state.tacLimit}%`);
-  lines.push(`Ngưỡng DeltaE: ${state.gamutThreshold}`);
+  lines.push(`Phương pháp ΔE: ${methodLabel}`);
+  lines.push(`Ngưỡng ΔE (${methodLabel}): ${state.gamutThreshold}`);
   lines.push("");
   const outOfGamut = state.items.filter((item) => item.delta > state.gamutThreshold);
   lines.push(`Số màu vượt gamut: ${outOfGamut.length}`);
@@ -676,6 +911,29 @@ const buildExportReport = () => {
     outOfGamut.forEach((item) => {
       lines.push(`- ${item.hex} (ΔE ${item.delta.toFixed(1)})`);
     });
+  }
+  if (state.qcEntries.length) {
+    const qcThreshold = getQcThreshold();
+    const qcResults = buildQcResults();
+    const qcFails = qcResults.filter((row) => row.delta != null && !row.pass);
+    const qcMissing = qcResults.filter((row) => row.delta == null);
+    lines.push("");
+    lines.push("QC đo màu");
+    lines.push(`Ngưỡng ΔE2000: ${qcThreshold}`);
+    lines.push(`Số màu QC: ${qcResults.length}`);
+    lines.push(`Số màu FAIL: ${qcFails.length}`);
+    if (qcMissing.length) {
+      lines.push(`Không tìm thấy trong bảng: ${qcMissing.length}`);
+    }
+    if (state.qcErrors > 0) {
+      lines.push(`Dòng lỗi khi parse: ${state.qcErrors}`);
+    }
+    if (qcFails.length) {
+      lines.push("Danh sách FAIL:");
+      qcFails.forEach((row) => {
+        lines.push(`- ${row.hex} (ΔE2000 ${row.delta.toFixed(2)})`);
+      });
+    }
   }
   return lines.join("\n");
 };
@@ -842,6 +1100,13 @@ const bindEvents = () => {
       rebuildItems();
     });
   }
+  if (elements.deltaMethod) {
+    elements.deltaMethod.addEventListener("change", () => {
+      state.deltaMethod = elements.deltaMethod.value;
+      updateAllDeltas();
+      renderTable();
+    });
+  }
   if (elements.gamutThreshold) {
     elements.gamutThreshold.addEventListener("input", () => {
       const next = Number(elements.gamutThreshold.value || 5);
@@ -863,11 +1128,37 @@ const bindEvents = () => {
   if (elements.safePrintAll) {
     elements.safePrintAll.addEventListener("click", safePrintAll);
   }
+  if (elements.qcParse) {
+    elements.qcParse.addEventListener("click", () => {
+      parseQcInput();
+      renderQcTable();
+    });
+  }
+  if (elements.qcThreshold) {
+    elements.qcThreshold.addEventListener("input", () => {
+      renderQcTable();
+    });
+  }
+};
+
+const applyHexesFromHub = (detail) => {
+  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
+  const mode = detail?.mode === "append" ? "append" : "replace";
+  const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (!normalized.length || !elements.input) return;
+  const base = mode === "append" ? parseHexList(elements.input.value) : [];
+  const combined = [...base, ...normalized];
+  const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
+  elements.input.value = unique.join(", ");
+  elements.apply?.click();
 };
 
 updateTacDisplay();
 if (elements.iccBpc) {
   elements.iccBpc.checked = state.iccBpc;
+}
+if (elements.deltaMethod) {
+  elements.deltaMethod.value = state.deltaMethod;
 }
 if (elements.gamutThreshold) {
   elements.gamutThreshold.value = String(state.gamutThreshold);
@@ -884,4 +1175,8 @@ applyFromHash();
 
 window.addEventListener("hashchange", () => {
   applyFromHash();
+});
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexesFromHub(event?.detail);
 });

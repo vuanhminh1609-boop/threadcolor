@@ -499,3 +499,15 @@ const init = () => {
 };
 
 init();
+
+const applyHexesFromHub = (detail) => {
+  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
+  const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (!normalized.length || !elements.hex) return;
+  elements.hex.value = normalized[0];
+  syncUI();
+};
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexesFromHub(event?.detail);
+});

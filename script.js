@@ -2842,6 +2842,24 @@ if (fallbackColorPicker) {
     copyToClipboard(hex, hex);
   });
 }
+
+const applyHexesFromHub = (detail) => {
+  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
+  const hex = normalizeHex(rawList[0] || "");
+  if (!hex) return;
+  if (colorPicker) {
+    colorPicker.value = hex;
+    colorPicker.dispatchEvent(new Event("input", { bubbles: true }));
+    colorPicker.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  lastChosenHex = hex;
+  runSearch(hex);
+  updateHandoffLinks();
+};
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexesFromHub(event?.detail);
+});
   
 
 

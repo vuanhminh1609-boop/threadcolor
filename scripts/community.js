@@ -14,6 +14,15 @@ const elements = {
   share: document.getElementById("communityShare")
 };
 
+let pendingColors = [];
+
+const normalizeHex = (hex) => {
+  if (!hex) return null;
+  let value = String(hex).trim().toUpperCase();
+  if (!value.startsWith("#")) value = `#${value}`;
+  return /^#[0-9A-F]{6}$/.test(value) ? value : null;
+};
+
 const showToast = (message) => {
   if (!elements.toast) return;
   elements.toast.textContent = "";
@@ -193,5 +202,23 @@ const bindEvents = () => {
   });
 };
 
+const applyHexesFromHub = (detail) => {
+  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
+  const mode = detail?.mode === "append" ? "append" : "replace";
+  const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (!normalized.length) return;
+  if (mode === "append") {
+    const combined = [...pendingColors, ...normalized];
+    pendingColors = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
+  } else {
+    pendingColors = normalized;
+  }
+  showToast(`Đã đính kèm ${pendingColors.length} màu.`);
+};
+
 renderFeed();
 bindEvents();
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexesFromHub(event?.detail);
+});

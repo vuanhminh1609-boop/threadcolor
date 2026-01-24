@@ -98,6 +98,30 @@ const rgbToHex = (r, g, b) => {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
 };
 
+const hexToRgb = (hex) => {
+  const value = hex.replace("#", "");
+  const r = parseInt(value.slice(0, 2), 16);
+  const g = parseInt(value.slice(2, 4), 16);
+  const b = parseInt(value.slice(4, 6), 16);
+  return { r, g, b };
+};
+
+const adjustRgb = (hex, amount) => {
+  const { r, g, b } = hexToRgb(hex);
+  return rgbToHex(r + amount, g + amount, b + amount);
+};
+
+const buildSeedPalette = (baseHex, count) => {
+  const steps = [-40, -20, 0, 20, 40, 60, -60];
+  const list = [];
+  steps.forEach((step) => {
+    if (list.length >= count) return;
+    list.push(adjustRgb(baseHex, step));
+  });
+  while (list.length < count) list.push(baseHex);
+  return list.map(normalizeHex).filter(Boolean);
+};
+
 const pickPalette = (pixels, count) => {
   const unique = [];
   const minDist = 28;
@@ -293,6 +317,32 @@ const bindEvents = () => {
   elements.paletteSize?.addEventListener("change", sampleImage);
 };
 
+const applyHexesFromHub = (detail) => {
+  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
+  const mode = detail?.mode === "append" ? "append" : "replace";
+  const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (!normalized.length) return;
+  if (mode === "append" && state.palette.length) {
+    const combined = [...state.palette, ...normalized];
+    state.palette = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
+    renderPalette();
+    setStatus("Đã thêm màu từ Kho HEX.");
+    return;
+  }
+  if (normalized.length >= 2) {
+    state.palette = normalized;
+  } else {
+    const count = Number(elements.paletteSize?.value || 8);
+    state.palette = buildSeedPalette(normalized[0], count);
+  }
+  renderPalette();
+  setStatus("Đã nhận màu từ Kho HEX.");
+};
+
 setPreview("");
 renderPalette();
 bindEvents();
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexesFromHub(event?.detail);
+});

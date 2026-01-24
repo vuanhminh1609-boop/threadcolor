@@ -36,6 +36,10 @@
 | Kho HEX | Kho HEX | Kho tra cứu tập trung cho mọi mã màu dạng #RRGGBB trong hệ sinh thái. |
 | Hồ sơ màu | Hồ sơ màu | Màn hiển thị chi tiết một màu: mã, chuyển đổi, gợi ý sử dụng và hành động liên quan. |
 | Hex swatch | Hex swatch | Một mẫu màu dạng ô màu dùng để chọn/copy nhanh mã #RRGGBB. |
+| Hồ sơ HEX | Hồ sơ HEX | Màn chi tiết 1 mã HEX, hiển thị chuyển đổi màu, gợi ý và thao tác nhanh. |
+| LCh | LCh | Biểu diễn Lab theo L* (độ sáng), C (độ rực), h (góc màu) để dễ so sánh trực quan. |
+| Contrast | Độ tương phản chữ/nền | Mức chênh sáng giữa chữ và nền; giúp chọn màu chữ dễ đọc. |
+| Carousel | Dải lướt ngang | Danh sách cuộn ngang để duyệt nhanh các gợi ý màu. |
 | CMYK | CMYK | Hệ màu in 4 kênh: Cyan, Magenta, Yellow, Key (đen). |
 | ICC profile | Hồ sơ ICC | Hồ sơ màu mô tả thiết bị in/hiển thị để chuyển đổi màu chính xác. |
 | TAC | Tổng lượng mực (TAC) | Tổng % mực C+M+Y+K; vượt ngưỡng gây lem/đậm. |
@@ -94,7 +98,7 @@
 | Material profile (hồ sơ chất liệu) | Hồ sơ chất liệu | Nhóm thuộc tính mô tả bề mặt/vật liệu (loại chất liệu, độ bóng, ánh sáng, vân bề mặt). |
 | Finish (độ bóng) | Độ bóng | Mức phản xạ bề mặt (mờ/bóng) ảnh hưởng cảm giác màu và ánh sáng. |
 | Texture (vân bề mặt) | Vân bề mặt | Mô tả độ vân/mịn của bề mặt để giả lập chất liệu. |
-| Adapter (lớp chuyển đổi dữ liệu) | Adapter | Lớp trung gian chuyển dữ liệu giữa các hệ/format khác nhau. |
+| Adapter (lớp chuyển đổi dữ liệu) | Adapter | Bộ chuyển đổi dữ liệu chung sang logic riêng giữa các hệ/format khác nhau. |
 | Payload (gói dữ liệu) | Payload | Gói dữ liệu mang thông tin chính để xử lý/áp dụng. |
 | Handoff (hợp đồng chuyển giao) | Hợp đồng chuyển giao | Quy ước truyền tham số giữa các World (assetId, projectId, from, intent, shade). |
 | intent (ý định hành động) | intent | Tham số cho biết mục đích khi mở World (dùng, chia sẻ, v.v.). |
@@ -130,6 +134,8 @@
 | Debounce | Trễ có chủ đích | Chờ người dùng dừng gõ rồi mới tìm, tránh giật. |
 | Virtual list | Danh sách ảo | Chỉ render phần đang nhìn thấy để khỏi lag. |
 | Latency | Độ trễ | Thời gian chờ phản hồi. |
+| FAB | Nút nổi cố định (FAB) | Nút nổi cố định ở góc màn hình để mở nhanh tác vụ chính. |
+| Bottom Sheet | Tấm trượt đáy | Tấm trượt từ dưới lên trên trên mobile để hiển thị tác vụ nhanh. |
 | CDN | CDN | Mạng phân phối nội dung để phân phối tài nguyên tĩnh nhanh và ổn định. |
 | PostCSS | PostCSS | Công cụ xử lý CSS trong pipeline build (thêm prefix, tối ưu). |
 | Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |
@@ -367,4 +373,3 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 - Bước 2: nếu có rồi thì cập nhật dòng cũ, không thêm dòng mới.
 - Bước 3: thêm đúng section, giữ định nghĩa 1–2 câu, không lặp.
 - Bước 4: chạy npm run check:glossary trước khi commit.
-
