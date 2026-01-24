@@ -47,7 +47,37 @@ const elements = {
   hexPrev: document.getElementById("hexPrev"),
   hexNext: document.getElementById("hexNext"),
   hexPageInfo: document.getElementById("hexPageInfo"),
-  hexStatus: document.getElementById("hexStatus")
+  hexStatus: document.getElementById("hexStatus"),
+  hexProfileOverlay: document.getElementById("hexProfileOverlay"),
+  hexProfileClose: document.getElementById("hexProfileClose"),
+  hexProfileSwatch: document.getElementById("hexProfileSwatch"),
+  hexProfileHex: document.getElementById("hexProfileHex"),
+  hexProfileContrast: document.getElementById("hexProfileContrast"),
+  hexProfileRgb: document.getElementById("hexProfileRgb"),
+  hexProfileHsl: document.getElementById("hexProfileHsl"),
+  hexProfileHsv: document.getElementById("hexProfileHsv"),
+  hexProfileLab: document.getElementById("hexProfileLab"),
+  hexProfileLch: document.getElementById("hexProfileLch"),
+  hexProfileCmyk: document.getElementById("hexProfileCmyk"),
+  hexProfileCopy: document.getElementById("hexProfileCopy"),
+  hexProfileOpenThread: document.getElementById("hexProfileOpenThread"),
+  hexProfileOpenGradient: document.getElementById("hexProfileOpenGradient"),
+  hexProfileOpenPalette: document.getElementById("hexProfileOpenPalette"),
+  hexProfileOpenPrint: document.getElementById("hexProfileOpenPrint"),
+  hexProfileOpenPaint: document.getElementById("hexProfileOpenPaint"),
+  hexProfileSave: document.getElementById("hexProfileSave"),
+  hexLightenGroup: document.getElementById("hexLightenGroup"),
+  hexDarkenGroup: document.getElementById("hexDarkenGroup"),
+  hexSimilarGroup: document.getElementById("hexSimilarGroup"),
+  hexSimilarRange: document.getElementById("hexSimilarRange"),
+  hexSimilarValue: document.getElementById("hexSimilarValue"),
+  hexFullscreen: document.getElementById("hexFullscreen"),
+  hexFullscreenClose: document.getElementById("hexFullscreenClose"),
+  hexFullscreenPrev: document.getElementById("hexFullscreenPrev"),
+  hexFullscreenNext: document.getElementById("hexFullscreenNext"),
+  hexFullscreenHex: document.getElementById("hexFullscreenHex"),
+  hexFullscreenMeta: document.getElementById("hexFullscreenMeta"),
+  hexFullscreenCopy: document.getElementById("hexFullscreenCopy")
 };
 
 const state = {
@@ -61,7 +91,12 @@ const state = {
   hexQuery: "",
   hexPage: 1,
   hexPageSize: 60,
-  hexLoaded: false
+  hexLoaded: false,
+  hexActiveList: [],
+  hexEntryMap: new Map(),
+  hexProfileEntry: null,
+  hexFullscreenIndex: 0,
+  hexSimilarCache: new Map()
 };
 
 const normalizeText = (value) => (value || "").toLowerCase();
@@ -117,6 +152,11 @@ const hexToRgb = (hex) => {
   return { r, g, b };
 };
 
+const rgbToHex = (rgb) => {
+  const toHex = (value) => Math.max(0, Math.min(255, value)).toString(16).padStart(2, "0");
+  return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`.toUpperCase();
+};
+
 const rgbToLab = (rgb) => {
   if (!rgb) return null;
   const srgbToLinear = (c) => {
@@ -139,6 +179,211 @@ const rgbToLab = (rgb) => {
   const round = (val) => Number(val.toFixed(4));
   return [round(116 * fy - 16), round(500 * (fx - fy)), round(200 * (fy - fz))];
 };
+
+const labToLch = (lab) => {
+  if (!Array.isArray(lab)) return null;
+  const [l, a, b] = lab;
+  const c = Math.sqrt(a * a + b * b);
+  const h = ((Math.atan2(b, a) * 180) / Math.PI + 360) % 360;
+  return [Number(l.toFixed(2)), Number(c.toFixed(2)), Number(h.toFixed(1))];
+};
+
+const labToRgb = (lab) => {
+  if (!Array.isArray(lab)) return null;
+  const [l, a, b] = lab;
+  const refX = 95.047;
+  const refY = 100.0;
+  const refZ = 108.883;
+  const fy = (l + 16) / 116;
+  const fx = a / 500 + fy;
+  const fz = fy - b / 200;
+  const inv = (t) => {
+    const t3 = t ** 3;
+    return t3 > 0.008856 ? t3 : (t - 16 / 116) / 7.787;
+  };
+  const x = refX * inv(fx);
+  const y = refY * inv(fy);
+  const z = refZ * inv(fz);
+  let r = (x * 0.032406 + y * -0.015372 + z * -0.004986) / 100;
+  let g = (x * -0.009689 + y * 0.018758 + z * 0.000415) / 100;
+  let b2 = (x * 0.000557 + y * -0.002040 + z * 0.010570) / 100;
+  const gamma = (v) => (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+  r = Math.min(1, Math.max(0, gamma(r)));
+  g = Math.min(1, Math.max(0, gamma(g)));
+  b2 = Math.min(1, Math.max(0, gamma(b2)));
+  return {
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b2 * 255)
+  };
+};
+
+const rgbToHsl = (rgb) => {
+  const r = rgb.r / 255;
+  const g = rgb.g / 255;
+  const b = rgb.b / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+      default:
+        h = 0;
+    }
+    h /= 6;
+  }
+  return [
+    Math.round(h * 360),
+    Math.round(s * 100),
+    Math.round(l * 100)
+  ];
+};
+
+const rgbToHsv = (rgb) => {
+  const r = rgb.r / 255;
+  const g = rgb.g / 255;
+  const b = rgb.b / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d !== 0) {
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+      default:
+        h = 0;
+    }
+    h /= 6;
+  }
+  const s = max === 0 ? 0 : d / max;
+  return [
+    Math.round(h * 360),
+    Math.round(s * 100),
+    Math.round(max * 100)
+  ];
+};
+
+const rgbToCmyk = (rgb) => {
+  const r = rgb.r / 255;
+  const g = rgb.g / 255;
+  const b = rgb.b / 255;
+  const k = 1 - Math.max(r, g, b);
+  if (k >= 1) {
+    return { c: 0, m: 0, y: 0, k: 100 };
+  }
+  const c = (1 - r - k) / (1 - k);
+  const m = (1 - g - k) / (1 - k);
+  const y = (1 - b - k) / (1 - k);
+  return {
+    c: Math.round(c * 100),
+    m: Math.round(m * 100),
+    y: Math.round(y * 100),
+    k: Math.round(k * 100)
+  };
+};
+
+const relativeLuminance = (rgb) => {
+  const toLinear = (v) => {
+    const s = v / 255;
+    return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  };
+  const r = toLinear(rgb.r);
+  const g = toLinear(rgb.g);
+  const b = toLinear(rgb.b);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+const pickContrastText = (rgb) => {
+  const bg = relativeLuminance(rgb);
+  const white = (1.0 + 0.05) / (bg + 0.05);
+  const black = (bg + 0.05) / 0.05;
+  return white >= black ? { label: "Trắng", ratio: white } : { label: "Đen", ratio: black };
+};
+
+const deltaE2000 = (lab1, lab2) => {
+  const [L1, a1, b1] = lab1;
+  const [L2, a2, b2] = lab2;
+  const avgLp = (L1 + L2) / 2;
+  const C1 = Math.sqrt(a1 * a1 + b1 * b1);
+  const C2 = Math.sqrt(a2 * a2 + b2 * b2);
+  const avgC = (C1 + C2) / 2;
+  const avgC7 = Math.pow(avgC, 7);
+  const G = 0.5 * (1 - Math.sqrt(avgC7 / (avgC7 + Math.pow(25, 7))));
+  const a1p = (1 + G) * a1;
+  const a2p = (1 + G) * a2;
+  const C1p = Math.sqrt(a1p * a1p + b1 * b1);
+  const C2p = Math.sqrt(a2p * a2p + b2 * b2);
+  const avgCp = (C1p + C2p) / 2;
+  const h1p = Math.atan2(b1, a1p);
+  const h2p = Math.atan2(b2, a2p);
+  const h1pDeg = ((h1p * 180) / Math.PI + 360) % 360;
+  const h2pDeg = ((h2p * 180) / Math.PI + 360) % 360;
+  let deltahp = h2pDeg - h1pDeg;
+  if (C1p * C2p === 0) {
+    deltahp = 0;
+  } else if (deltahp > 180) {
+    deltahp -= 360;
+  } else if (deltahp < -180) {
+    deltahp += 360;
+  }
+  const deltaLp = L2 - L1;
+  const deltaCp = C2p - C1p;
+  const deltaHp = 2 * Math.sqrt(C1p * C2p) * Math.sin((deltahp * Math.PI) / 360);
+  const avgHp = (() => {
+    if (C1p * C2p === 0) return h1pDeg + h2pDeg;
+    const sum = h1pDeg + h2pDeg;
+    if (Math.abs(h1pDeg - h2pDeg) > 180) {
+      return sum < 360 ? (sum + 360) / 2 : (sum - 360) / 2;
+    }
+    return sum / 2;
+  })();
+  const T = 1
+    - 0.17 * Math.cos(((avgHp - 30) * Math.PI) / 180)
+    + 0.24 * Math.cos(((2 * avgHp) * Math.PI) / 180)
+    + 0.32 * Math.cos(((3 * avgHp + 6) * Math.PI) / 180)
+    - 0.20 * Math.cos(((4 * avgHp - 63) * Math.PI) / 180);
+  const deltaTheta = 30 * Math.exp(-(((avgHp - 275) / 25) ** 2));
+  const Rc = 2 * Math.sqrt(Math.pow(avgCp, 7) / (Math.pow(avgCp, 7) + Math.pow(25, 7)));
+  const Sl = 1 + (0.015 * ((avgLp - 50) ** 2)) / Math.sqrt(20 + ((avgLp - 50) ** 2));
+  const Sc = 1 + 0.045 * avgCp;
+  const Sh = 1 + 0.015 * avgCp * T;
+  const Rt = -Math.sin((2 * deltaTheta * Math.PI) / 180) * Rc;
+  return Math.sqrt(
+    (deltaLp / Sl) ** 2 +
+    (deltaCp / Sc) ** 2 +
+    (deltaHp / Sh) ** 2 +
+    Rt * (deltaCp / Sc) * (deltaHp / Sh)
+  );
+};
+
+const formatRgb = (rgb) => `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+const formatHsl = (hsl) => `hsl(${hsl[0]}°, ${hsl[1]}%, ${hsl[2]}%)`;
+const formatHsv = (hsv) => `hsv(${hsv[0]}°, ${hsv[1]}%, ${hsv[2]}%)`;
+const formatLab = (lab) => `L ${lab[0].toFixed(1)} · a ${lab[1].toFixed(1)} · b ${lab[2].toFixed(1)}`;
+const formatLch = (lch) => `L ${lch[0]} · C ${lch[1]} · h ${lch[2]}°`;
+const formatCmyk = (cmyk) => `C ${cmyk.c}% · M ${cmyk.m}% · Y ${cmyk.y}% · K ${cmyk.k}%`;
+
 
 const loadProjectPrefs = () => {
   try {
@@ -422,6 +667,25 @@ const setActiveTab = (key) => {
   }
 };
 
+const parseHexHashParams = () => {
+  const raw = (window.location.hash || "").replace(/^#/, "");
+  if (!raw) return { tab: "", hex: "" };
+  const params = new URLSearchParams(raw);
+  const tab = params.get("tab") || "";
+  const hex = sanitizeHex(params.get("hex") || "");
+  return { tab, hex };
+};
+
+const applyHashRouting = async () => {
+  const { tab, hex } = parseHexHashParams();
+  if (tab !== "hex") return;
+  setActiveTab("hex");
+  if (!hex) return;
+  await loadHexLibrary();
+  const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+  if (entry) renderHexProfile(entry);
+};
+
 const setHexStatus = (message) => {
   if (!elements.hexStatus) return;
   elements.hexStatus.textContent = message;
@@ -431,6 +695,166 @@ const setHexStatus = (message) => {
       elements.hexStatus.textContent = "";
     }
   }, 2000);
+};
+
+const setOverlayOpen = (element, open) => {
+  if (!element) return;
+  element.classList.toggle("hidden", !open);
+  element.setAttribute("aria-hidden", open ? "false" : "true");
+};
+
+const ensureEntryMetrics = (entry) => {
+  if (!entry) return null;
+  if (!entry.rgb) entry.rgb = hexToRgb(entry.hex);
+  if (!entry.lab) entry.lab = rgbToLab(entry.rgb);
+  return entry;
+};
+
+const buildLightDarkVariants = (entry, direction) => {
+  const base = ensureEntryMetrics({ ...entry });
+  if (!base || !base.lab) return [];
+  const [l, a, b] = base.lab;
+  const steps = [8, 16, 24, 32];
+  const list = [];
+  const seen = new Set();
+  steps.forEach((step) => {
+    const nextL = direction === "light"
+      ? Math.min(100, l + step)
+      : Math.max(0, l - step);
+    const rgb = labToRgb([nextL, a, b]);
+    if (!rgb) return;
+    const hex = rgbToHex(rgb);
+    if (!seen.has(hex)) {
+      list.push({ hex });
+      seen.add(hex);
+    }
+  });
+  return list;
+};
+
+const getSimilarColors = (entry, threshold) => {
+  const key = `${entry.hex}_${threshold}`;
+  if (state.hexSimilarCache.has(key)) {
+    return state.hexSimilarCache.get(key);
+  }
+  const base = ensureEntryMetrics({ ...entry });
+  if (!base || !base.lab) return [];
+  const items = [];
+  state.hexEntries.forEach((candidate) => {
+    if (candidate.hex === base.hex) return;
+    const candidateLab = candidate.lab || rgbToLab(candidate.rgb || hexToRgb(candidate.hex));
+    if (!candidateLab) return;
+    const delta = deltaE2000(base.lab, candidateLab);
+    if (delta <= threshold) {
+      items.push({ hex: candidate.hex, delta });
+    }
+  });
+  items.sort((a, b) => a.delta - b.delta);
+  const trimmed = items.slice(0, 12);
+  state.hexSimilarCache.set(key, trimmed);
+  return trimmed;
+};
+
+const renderSuggestionRow = (container, list, showDelta = false) => {
+  if (!container) return;
+  if (!list.length) {
+    container.innerHTML = `<div class="tc-muted text-xs">Chưa có gợi ý phù hợp.</div>`;
+    return;
+  }
+  container.innerHTML = list.map((item) => {
+    const deltaLine = showDelta && item.delta != null
+      ? `<div class="text-[10px] tc-muted">ΔE ${item.delta.toFixed(1)}</div>`
+      : "";
+    return `
+      <button class="tc-card p-2 text-left" data-hex-suggest="${item.hex}" type="button">
+        <div class="flex items-center gap-2">
+          <span class="tc-swatch" style="background:${item.hex};"></span>
+          <div class="text-xs font-semibold">${item.hex}</div>
+        </div>
+        ${deltaLine}
+      </button>
+    `;
+  }).join("");
+};
+
+const renderHexProfile = (entry) => {
+  if (!entry || !elements.hexProfileOverlay) return;
+  const active = ensureEntryMetrics({ ...entry });
+  if (!active || !active.rgb || !active.lab) return;
+  state.hexProfileEntry = active;
+  const hsl = rgbToHsl(active.rgb);
+  const hsv = rgbToHsv(active.rgb);
+  const lch = labToLch(active.lab);
+  const cmyk = rgbToCmyk(active.rgb);
+  const contrast = pickContrastText(active.rgb);
+  if (elements.hexProfileSwatch) {
+    elements.hexProfileSwatch.style.background = active.hex;
+  }
+  if (elements.hexProfileHex) elements.hexProfileHex.textContent = active.hex;
+  if (elements.hexProfileRgb) elements.hexProfileRgb.textContent = formatRgb(active.rgb);
+  if (elements.hexProfileHsl) elements.hexProfileHsl.textContent = formatHsl(hsl);
+  if (elements.hexProfileHsv) elements.hexProfileHsv.textContent = formatHsv(hsv);
+  if (elements.hexProfileLab) elements.hexProfileLab.textContent = formatLab(active.lab);
+  if (elements.hexProfileLch && lch) elements.hexProfileLch.textContent = formatLch(lch);
+  if (elements.hexProfileCmyk) elements.hexProfileCmyk.textContent = formatCmyk(cmyk);
+  if (elements.hexProfileContrast) {
+    elements.hexProfileContrast.textContent = `Tương phản chữ: ${contrast.label} · ${contrast.ratio.toFixed(2)}:1`;
+  }
+  const lightList = buildLightDarkVariants(active, "light");
+  const darkList = buildLightDarkVariants(active, "dark");
+  renderSuggestionRow(elements.hexLightenGroup, lightList);
+  renderSuggestionRow(elements.hexDarkenGroup, darkList);
+  if (elements.hexSimilarRange && !elements.hexSimilarRange.value) {
+    elements.hexSimilarRange.value = "6";
+  }
+  updateSimilarForProfile();
+  setOverlayOpen(elements.hexProfileOverlay, true);
+};
+
+const updateSimilarForProfile = () => {
+  if (!state.hexProfileEntry) return;
+  const threshold = elements.hexSimilarRange ? Number(elements.hexSimilarRange.value || 6) : 6;
+  if (elements.hexSimilarValue) elements.hexSimilarValue.textContent = String(threshold);
+  const similarList = getSimilarColors(state.hexProfileEntry, threshold);
+  renderSuggestionRow(elements.hexSimilarGroup, similarList, true);
+};
+
+const closeHexProfile = () => {
+  setOverlayOpen(elements.hexProfileOverlay, false);
+  state.hexProfileEntry = null;
+};
+
+const renderFullscreen = (entry) => {
+  if (!entry || !elements.hexFullscreen) return;
+  const active = ensureEntryMetrics({ ...entry });
+  if (!active || !active.rgb || !active.lab) return;
+  if (elements.hexFullscreenHex) elements.hexFullscreenHex.textContent = active.hex;
+  if (elements.hexFullscreenMeta) {
+    const hsl = rgbToHsl(active.rgb);
+    const lab = active.lab;
+    elements.hexFullscreenMeta.textContent = `${formatRgb(active.rgb)} · ${formatHsl(hsl)} · L* ${lab[0].toFixed(1)}`;
+  }
+  elements.hexFullscreen.style.background = active.hex;
+};
+
+const openHexFullscreen = (entry) => {
+  if (!entry) return;
+  const activeList = state.hexActiveList.length ? state.hexActiveList : state.hexEntries;
+  const index = activeList.findIndex((item) => item.hex === entry.hex);
+  state.hexFullscreenIndex = index >= 0 ? index : 0;
+  renderFullscreen(activeList[state.hexFullscreenIndex]);
+  setOverlayOpen(elements.hexFullscreen, true);
+};
+
+const closeHexFullscreen = () => {
+  setOverlayOpen(elements.hexFullscreen, false);
+};
+
+const stepFullscreen = (direction) => {
+  const list = state.hexActiveList.length ? state.hexActiveList : state.hexEntries;
+  if (!list.length) return;
+  state.hexFullscreenIndex = clamp(state.hexFullscreenIndex + direction, 0, list.length - 1);
+  renderFullscreen(list[state.hexFullscreenIndex]);
 };
 
 const buildHexIndex = (threads) => {
@@ -470,6 +894,7 @@ const applyHexFilter = () => {
 const renderHexGrid = () => {
   if (!elements.hexGrid) return;
   const filtered = applyHexFilter();
+  state.hexActiveList = filtered;
   const pageSize = state.hexPageSize || 60;
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   state.hexPage = clamp(state.hexPage, 1, totalPages);
@@ -482,13 +907,14 @@ const renderHexGrid = () => {
       const refsPreview = entry.refs.slice(0, 2).map((ref) => `${ref.brand} ${ref.code}`.trim()).join(" · ");
       const refsSuffix = entry.refs.length > 2 ? ` +${entry.refs.length - 2}` : "";
       return `
-        <div class="tc-card p-4 space-y-3">
+        <div class="tc-card p-4 space-y-3" data-hex-card="${entry.hex}">
           <div class="flex items-center gap-3">
             <span class="tc-hex-swatch" style="background:${entry.hex};"></span>
-            <div>
+            <div class="flex-1">
               <div class="font-semibold">${entry.hex}</div>
               <div class="text-xs tc-muted">${entry.refs.length} mã · ${refsPreview}${refsSuffix}</div>
             </div>
+            <button class="tc-btn tc-chip px-2 py-2 text-xs" data-hex-action="fullscreen" data-hex="${entry.hex}" type="button" aria-label="Toàn màn hình">⛶</button>
           </div>
           <div class="flex flex-wrap gap-2 text-xs">
             <button class="tc-btn tc-chip px-3 py-2" data-hex-action="copy" data-hex="${entry.hex}" type="button">Sao chép HEX</button>
@@ -520,6 +946,7 @@ const loadHexLibrary = async () => {
     const response = await fetch("../threads.json", { cache: "no-store" });
     const data = await response.json();
     state.hexEntries = buildHexIndex(Array.isArray(data) ? data : []);
+    state.hexEntryMap = new Map(state.hexEntries.map((entry) => [entry.hex, entry]));
     renderHexGrid();
   } catch (_err) {
     if (elements.hexStats) elements.hexStats.textContent = "Không thể nạp dữ liệu kho HEX.";
@@ -591,34 +1018,127 @@ const bindEvents = () => {
   });
   elements.hexGrid?.addEventListener("click", (event) => {
     const btn = event.target.closest("[data-hex-action]");
+    if (btn) {
+      const hex = btn.dataset.hex;
+      const action = btn.dataset.hexAction;
+      const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+      if (!hex || !action) return;
+      if (action === "copy") {
+        copyText(hex);
+        setHexStatus(`Đã sao chép ${hex}.`);
+        return;
+      }
+      if (action === "threadcolor") {
+        window.location.href = `../worlds/threadcolor.html?color=${hex}`;
+        return;
+      }
+      if (action === "printcolor") {
+        window.location.href = `../worlds/printcolor.html#c=${hex}`;
+        return;
+      }
+      if (action === "palette") {
+        window.location.href = `../worlds/palette.html#p=${hex}`;
+        return;
+      }
+      if (action === "gradient") {
+        window.location.href = `../worlds/gradient.html#g=${hex}`;
+        return;
+      }
+      if (action === "save") {
+        saveHexToLibrary(entry);
+        return;
+      }
+      if (action === "fullscreen") {
+        openHexFullscreen(entry);
+      }
+      return;
+    }
+    const card = event.target.closest("[data-hex-card]");
+    if (!card) return;
+    const hex = card.dataset.hexCard;
+    const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+    if (entry) renderHexProfile(entry);
+  });
+  elements.hexProfileClose?.addEventListener("click", closeHexProfile);
+  elements.hexProfileOverlay?.addEventListener("click", (event) => {
+    if (event.target === elements.hexProfileOverlay) {
+      closeHexProfile();
+    }
+  });
+  elements.hexProfileCopy?.addEventListener("click", () => {
+    if (!state.hexProfileEntry) return;
+    copyText(state.hexProfileEntry.hex);
+    setHexStatus(`Đã sao chép ${state.hexProfileEntry.hex}.`);
+  });
+  elements.hexProfileSave?.addEventListener("click", () => {
+    if (!state.hexProfileEntry) return;
+    saveHexToLibrary(state.hexProfileEntry);
+  });
+  elements.hexProfileOpenThread?.addEventListener("click", () => {
+    if (!state.hexProfileEntry) return;
+    window.location.href = `../worlds/threadcolor.html?color=${state.hexProfileEntry.hex}`;
+  });
+  elements.hexProfileOpenGradient?.addEventListener("click", () => {
+    if (!state.hexProfileEntry) return;
+    window.location.href = `../worlds/gradient.html#g=${state.hexProfileEntry.hex}`;
+  });
+  elements.hexProfileOpenPalette?.addEventListener("click", () => {
+    if (!state.hexProfileEntry) return;
+    window.location.href = `../worlds/palette.html#p=${state.hexProfileEntry.hex}`;
+  });
+  elements.hexProfileOpenPrint?.addEventListener("click", () => {
+    if (!state.hexProfileEntry) return;
+    window.location.href = `../worlds/printcolor.html#c=${state.hexProfileEntry.hex}`;
+  });
+  elements.hexProfileOpenPaint?.addEventListener("click", () => {
+    if (!state.hexProfileEntry) return;
+    window.location.href = `../worlds/paintfabric.html?color=${state.hexProfileEntry.hex}`;
+  });
+  const debouncedSimilar = debounce(() => updateSimilarForProfile(), 200);
+  elements.hexSimilarRange?.addEventListener("input", () => {
+    debouncedSimilar();
+  });
+  elements.hexLightenGroup?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-hex-suggest]");
     if (!btn) return;
-    const hex = btn.dataset.hex;
-    const action = btn.dataset.hexAction;
-    const entry = state.hexEntries.find((item) => item.hex === hex);
-    if (!hex || !action) return;
-    if (action === "copy") {
-      copyText(hex);
-      setHexStatus(`Đã sao chép ${hex}.`);
-      return;
-    }
-    if (action === "threadcolor") {
-      window.location.href = `../worlds/threadcolor.html?color=${hex}`;
-      return;
-    }
-    if (action === "printcolor") {
-      window.location.href = `../worlds/printcolor.html#c=${hex}`;
-      return;
-    }
-    if (action === "palette") {
-      window.location.href = `../worlds/palette.html#p=${hex}`;
-      return;
-    }
-    if (action === "gradient") {
-      window.location.href = `../worlds/gradient.html#g=${hex}`;
-      return;
-    }
-    if (action === "save") {
-      saveHexToLibrary(entry);
+    const hex = btn.dataset.hexSuggest;
+    const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+    if (entry) renderHexProfile(entry);
+  });
+  elements.hexDarkenGroup?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-hex-suggest]");
+    if (!btn) return;
+    const hex = btn.dataset.hexSuggest;
+    const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+    if (entry) renderHexProfile(entry);
+  });
+  elements.hexSimilarGroup?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-hex-suggest]");
+    if (!btn) return;
+    const hex = btn.dataset.hexSuggest;
+    const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+    if (entry) renderHexProfile(entry);
+  });
+  elements.hexFullscreenClose?.addEventListener("click", closeHexFullscreen);
+  elements.hexFullscreenPrev?.addEventListener("click", () => stepFullscreen(-1));
+  elements.hexFullscreenNext?.addEventListener("click", () => stepFullscreen(1));
+  elements.hexFullscreenCopy?.addEventListener("click", () => {
+    const list = state.hexActiveList.length ? state.hexActiveList : state.hexEntries;
+    const entry = list[state.hexFullscreenIndex];
+    if (!entry) return;
+    copyText(entry.hex);
+    setHexStatus(`Đã sao chép ${entry.hex}.`);
+  });
+  elements.hexFullscreen?.addEventListener("touchstart", (event) => {
+    if (!event.touches?.length) return;
+    elements.hexFullscreen.dataset.touchStartX = String(event.touches[0].clientX);
+  }, { passive: true });
+  elements.hexFullscreen?.addEventListener("touchend", (event) => {
+    const startX = Number(elements.hexFullscreen?.dataset.touchStartX || 0);
+    const endX = event.changedTouches?.[0]?.clientX || 0;
+    const delta = endX - startX;
+    if (Math.abs(delta) > 50) {
+      stepFullscreen(delta < 0 ? 1 : -1);
     }
   });
   elements.grid?.addEventListener("click", (event) => {
@@ -638,6 +1158,16 @@ const bindEvents = () => {
     if (!elements.specJson) return;
     copyText(elements.specJson.textContent || "");
   });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeHexProfile();
+      closeHexFullscreen();
+    }
+    if (elements.hexFullscreen && !elements.hexFullscreen.classList.contains("hidden")) {
+      if (event.key === "ArrowLeft") stepFullscreen(-1);
+      if (event.key === "ArrowRight") stepFullscreen(1);
+    }
+  });
 };
 
 state.assets = loadAssets();
@@ -648,6 +1178,11 @@ renderPanel(state.selected);
 bindEvents();
 setActiveTab("assets");
 setupAutofillTrap(elements.search);
+applyHashRouting();
+
+window.addEventListener("hashchange", () => {
+  applyHashRouting();
+});
 
 if (typeof window !== "undefined") {
   window.tcOpenInWorld = openInWorld;

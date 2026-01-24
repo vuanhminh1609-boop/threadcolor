@@ -345,6 +345,32 @@ function initEvents() {
   });
 }
 
+function applyHexesFromHub(detail) {
+  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
+  const mode = detail?.mode === "append" ? "append" : "replace";
+  const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (!normalized.length) return;
+  const base = mode === "append" ? [...state.stops] : [];
+  const combined = [...base, ...normalized];
+  const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
+  let next = unique.slice(0, MAX_STOPS);
+  if (next.length < MIN_STOPS) {
+    const fallback = state.stops.length ? state.stops : normalized;
+    fallback.forEach((hex) => {
+      if (next.length >= MIN_STOPS) return;
+      next.push(hex);
+    });
+  }
+  if (next.length < MIN_STOPS && next.length) {
+    while (next.length < MIN_STOPS) next.push(next[next.length - 1]);
+  }
+  if (next.length >= MIN_STOPS) {
+    state.stops = next;
+    renderStops();
+    renderPreview();
+  }
+}
+
 function init() {
   const hashStops = getStopsFromHash();
   if (hashStops) {
@@ -358,3 +384,7 @@ function init() {
 }
 
 init();
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexesFromHub(event?.detail);
+});

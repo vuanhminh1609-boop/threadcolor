@@ -365,3 +365,34 @@ function init() {
 }
 
 init();
+
+function applyHexesFromHub(detail) {
+  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
+  const mode = detail?.mode === "append" ? "append" : "replace";
+  const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (normalized.length < 2) return;
+  const baseStops = mode === "append"
+    ? (getActivePalette()?.stops || [])
+    : [];
+  const combined = [...baseStops, ...normalized];
+  const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
+  let nextStops = unique.slice(0, MAX_STOPS);
+  if (nextStops.length < MIN_STOPS) {
+    while (nextStops.length < MIN_STOPS) {
+      nextStops.push(nextStops[nextStops.length - 1] || normalized[0]);
+    }
+  }
+  const palette = {
+    id: `hexhub_${Date.now()}`,
+    ten: "Palette nhanh từ Kho HEX",
+    tags: ["hex", "kho-hex"],
+    stops: nextStops
+  };
+  state.palettes.unshift(palette);
+  state.selectedPaletteId = palette.id;
+  renderPalettes();
+}
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexesFromHub(event?.detail);
+});
