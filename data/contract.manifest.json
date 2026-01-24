@@ -1,13 +1,13 @@
 {
   "phienBanManifest": "1.0.0",
-  "capNhatLuc": "2026-01-19T16:45:46.369Z",
+  "capNhatLuc": "2026-01-23T11:07:00.288Z",
   "datasets": {
     "threads": {
       "duongDan": "threads.json",
       "schema": "data/schemas/threads/0.1.0.json",
       "phienBanSchema": "0.1.0",
       "phienBanDuLieu": "0.1.0",
-      "checksumSha256": "3c23e9509d5035e46d2354c2d30d9c866b3e944586afa3fac1ce06c77b26fd1b",
+      "checksumSha256": "18b934728934e73ad9e5b34044b438c4b8e02f2145a3a2276a04eb83179b476b",
       "tinhTrang": "dang-dung",
       "ghiChu": "Du lieu chi may dang su dung cho tra cuu."
     },

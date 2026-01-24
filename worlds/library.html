@@ -173,6 +173,25 @@
       border-radius: 0.6rem;
       border: 1px solid var(--stroke);
     }
+    .tc-hex-swatch{
+      width: 44px;
+      height: 44px;
+      border-radius: 0.85rem;
+      border: 1px solid var(--stroke);
+    }
+    .tc-tab{
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      font-weight: 600;
+      padding: 0.45rem 0.95rem;
+    }
+    .tc-tab[aria-selected="true"]{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border-color: transparent;
+    }
     #portalMenu[data-open="0"],
     #worldMenu[data-open="0"]{ display: none; }
     #portalMenu,
@@ -325,63 +344,99 @@
         </div>
       </div>
 
-      <div class="mt-6 flex flex-wrap gap-3">
-        <input id="assetSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo tên/tags...">
-        <select id="assetFilter" class="tc-input w-full md:w-[200px]">
-          <option value="all">Tất cả loại</option>
-          <option value="palette">Palette</option>
-          <option value="gradient">Gradient</option>
-          <option value="thread_set">Thêu (thread_set)</option>
-          <option value="cmyk_recipe">In (cmyk_recipe)</option>
-          <option value="other">Khác</option>
-        </select>
-        <select id="assetProjectFilter" class="tc-input w-full md:w-[200px]">
-          <option value="__all__">Tất cả dự án</option>
-        </select>
-        <button id="assetCreateDemo" class="tc-btn tc-btn-primary px-4 py-2">Tạo tài sản demo</button>
-        <details class="tc-card tc-chip px-4 py-3 text-sm">
-          <summary class="cursor-pointer font-semibold">Hướng dẫn đặt tên Tài sản</summary>
-          <div class="mt-2 tc-muted text-xs leading-relaxed space-y-1">
-            <div>Định dạng chung: {Ngữ cảnh} — {World} — {Thuộc tính chính} — v01</div>
-            <div>Ngắn, giàu ngữ nghĩa, tránh ký tự thừa; dùng dấu “—” để tách cụm.</div>
-            <div>Ví dụ: “Tường Phòng khách — Sơn&Vải — Trắng · Mờ · Tĩnh — v01”.</div>
-          </div>
-        </details>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <button id="assetTabBtn" class="tc-tab" type="button" aria-selected="true">Thư viện Tài sản</button>
+        <button id="hexTabBtn" class="tc-tab" type="button" aria-selected="false">Kho HEX</button>
       </div>
-      <div class="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
-          <div id="assetGrid" class="grid gap-4 sm:grid-cols-2"></div>
+
+      <div id="assetTabPanel" class="mt-6">
+        <div class="flex flex-wrap gap-3">
+          <input id="assetSearch" type="search" name="asset_search" autocomplete="off" inputmode="search" spellcheck="false" autocapitalize="none" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo tên/tags...">
+          <select id="assetFilter" class="tc-input w-full md:w-[200px]">
+            <option value="all">Tất cả loại</option>
+            <option value="palette">Palette</option>
+            <option value="gradient">Gradient</option>
+            <option value="thread_set">Thêu (thread_set)</option>
+            <option value="cmyk_recipe">In (cmyk_recipe)</option>
+            <option value="hex_swatch">HEX swatch</option>
+            <option value="other">Khác</option>
+          </select>
+          <select id="assetProjectFilter" class="tc-input w-full md:w-[200px]">
+            <option value="__all__">Tất cả dự án</option>
+          </select>
+          <button id="assetCreateDemo" class="tc-btn tc-btn-primary px-4 py-2">Tạo tài sản demo</button>
+          <details class="tc-card tc-chip px-4 py-3 text-sm">
+            <summary class="cursor-pointer font-semibold">Hướng dẫn đặt tên Tài sản</summary>
+            <div class="mt-2 tc-muted text-xs leading-relaxed space-y-1">
+              <div>Định dạng chung: {Ngữ cảnh} — {World} — {Thuộc tính chính} — v01</div>
+              <div>Ngắn, giàu ngữ nghĩa, tránh ký tự thừa; dùng dấu “—” để tách cụm.</div>
+              <div>Ví dụ: “Tường Phòng khách — Sơn&Vải — Trắng · Mờ · Tĩnh — v01”.</div>
+            </div>
+          </details>
         </div>
-        <div>
-          <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Xem nhanh</h2>
-            <div id="assetPanelEmpty" class="mt-3 tc-muted text-sm">Chọn một tài sản để xem nhanh.</div>
-            <div id="assetPanel" class="mt-3 hidden">
-              <div class="space-y-2 text-sm">
-                <div><strong id="assetPanelName"></strong></div>
-                <div class="tc-muted" id="assetPanelType"></div>
-                <div class="flex flex-wrap gap-2" id="assetPanelTags"></div>
-                <div class="flex flex-wrap gap-2" id="assetPanelSwatches"></div>
-                <div class="tc-muted text-xs" id="assetPanelNotes"></div>
-              </div>
-              <div class="mt-4 flex flex-wrap gap-2">
-                <button id="assetSave" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
-                <button id="assetApply" class="tc-btn tc-btn-primary px-4 py-2" type="button">Dùng từ Thư viện</button>
-                <button id="assetShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
-              </div>
-              <div class="mt-4">
-                <p class="text-xs font-semibold">Bản thông số (Văn bản)</p>
-                <pre id="assetSpecText" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>
-                <button id="assetCopyText" class="tc-btn tc-chip px-3 py-2 text-xs mt-2">Sao chép</button>
-              </div>
-              <div class="mt-4">
-                <p class="text-xs font-semibold">Bản thông số (JSON)</p>
-                <pre id="assetSpecJson" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>
-                <button id="assetCopyJson" class="tc-btn tc-chip px-3 py-2 text-xs mt-2">Sao chép</button>
+        <div class="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <div id="assetGrid" class="grid gap-4 sm:grid-cols-2"></div>
+          </div>
+          <div>
+            <div class="tc-card p-4">
+              <h2 class="text-sm font-semibold">Xem nhanh</h2>
+              <div id="assetPanelEmpty" class="mt-3 tc-muted text-sm">Chọn một tài sản để xem nhanh.</div>
+              <div id="assetPanel" class="mt-3 hidden">
+                <div class="space-y-2 text-sm">
+                  <div><strong id="assetPanelName"></strong></div>
+                  <div class="tc-muted" id="assetPanelType"></div>
+                  <div class="flex flex-wrap gap-2" id="assetPanelTags"></div>
+                  <div class="flex flex-wrap gap-2" id="assetPanelSwatches"></div>
+                  <div class="tc-muted text-xs" id="assetPanelNotes"></div>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  <button id="assetSave" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
+                  <button id="assetApply" class="tc-btn tc-btn-primary px-4 py-2" type="button">Dùng từ Thư viện</button>
+                  <button id="assetShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
+                </div>
+                <div class="mt-4">
+                  <p class="text-xs font-semibold">Bản thông số (Văn bản)</p>
+                  <pre id="assetSpecText" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>
+                  <button id="assetCopyText" class="tc-btn tc-chip px-3 py-2 text-xs mt-2">Sao chép</button>
+                </div>
+                <div class="mt-4">
+                  <p class="text-xs font-semibold">Bản thông số (JSON)</p>
+                  <pre id="assetSpecJson" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>
+                  <button id="assetCopyJson" class="tc-btn tc-chip px-3 py-2 text-xs mt-2">Sao chép</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <section class="mt-6 tc-card p-4">
+          <h2 class="text-sm font-semibold">Liên thông nhanh</h2>
+          <p class="tc-muted text-xs mt-1">Chuyển màu sang World khác theo chuẩn ?color / #p / #g / #c.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./threadcolor.html?color=%23F472B6">Mở ở Thêu</a>
+            <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./palette.html#p=%23F472B6,%230EA5A8,%23F59E0B">Tạo Palette</a>
+            <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./gradient.html#g=%23F472B6,%230EA5A8,%23F59E0B">Tạo Gradient</a>
+          </div>
+        </section>
+      </div>
+
+      <div id="hexTabPanel" class="mt-6 hidden">
+        <div class="flex flex-wrap gap-3 items-center">
+          <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo HEX/brand/mã...">
+          <select id="hexPageSize" class="tc-input w-full md:w-[160px]">
+            <option value="36">36 màu/trang</option>
+            <option value="60" selected>60 màu/trang</option>
+            <option value="96">96 màu/trang</option>
+          </select>
+          <div id="hexStats" class="text-xs tc-muted">Đang nạp dữ liệu...</div>
+        </div>
+        <div id="hexGrid" class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <button id="hexPrev" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Trang trước</button>
+          <div id="hexPageInfo" class="text-xs tc-muted">Trang 1/1</div>
+          <button id="hexNext" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Trang sau</button>
+        </div>
+        <div id="hexStatus" class="mt-2 text-xs tc-muted"></div>
       </div>
     </section>
   </main>

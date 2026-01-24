@@ -244,6 +244,7 @@
 
   const initImageTab = () => {
     const imageInput = document.getElementById("qaImageInput");
+    const imageLabel = document.querySelector("label[for='qaImageInput']");
     const imageAnalyze = document.getElementById("qaImageAnalyze");
     const imageSwatches = document.getElementById("qaImageSwatches");
     const imageThreads = document.getElementById("qaImageThreads");
@@ -300,3 +301,6 @@
     });
   };
 })();
+    imageLabel?.addEventListener("click", () => {
+      if (imageInput) imageInput.click();
+    });
