@@ -703,6 +703,8 @@ const setOverlayOpen = (element, open) => {
   element.setAttribute("aria-hidden", open ? "false" : "true");
 };
 
+let warnedMissingHexOverlay = false;
+
 const ensureEntryMetrics = (entry) => {
   if (!entry) return null;
   if (!entry.rgb) entry.rgb = hexToRgb(entry.hex);
@@ -778,7 +780,13 @@ const renderSuggestionRow = (container, list, showDelta = false) => {
 };
 
 const renderHexProfile = (entry) => {
-  if (!entry || !elements.hexProfileOverlay) return;
+  if (!entry || !elements.hexProfileOverlay) {
+    if (!warnedMissingHexOverlay) {
+      warnedMissingHexOverlay = true;
+      console.warn("Thiếu #hexProfileOverlay trong library.html.");
+    }
+    return;
+  }
   const active = ensureEntryMetrics({ ...entry });
   if (!active || !active.rgb || !active.lab) return;
   state.hexProfileEntry = active;

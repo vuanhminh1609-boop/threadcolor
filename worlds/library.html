@@ -357,6 +357,84 @@
     </section>
   </main>
 
+  <div id="hexProfileOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tc-card w-full max-w-3xl overflow-auto" style="max-height:85vh;">
+      <div class="flex items-center justify-between border-b border-black/5 px-4 py-3">
+        <div class="flex items-center gap-3">
+          <span id="hexProfileSwatch" class="tc-hex-swatch"></span>
+          <div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Hồ sơ HEX</div>
+            <div id="hexProfileHex" class="text-lg font-semibold">#000000</div>
+          </div>
+        </div>
+        <button id="hexProfileClose" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Đóng</button>
+      </div>
+      <div class="grid gap-4 p-4 md:grid-cols-2">
+        <div class="space-y-3">
+          <div class="tc-card p-3">
+            <div id="hexProfileContrast" class="text-sm tc-muted">Tương phản chữ:</div>
+            <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
+              <div class="tc-chip px-2 py-2">RGB: <span id="hexProfileRgb"></span></div>
+              <div class="tc-chip px-2 py-2">HSL: <span id="hexProfileHsl"></span></div>
+              <div class="tc-chip px-2 py-2">HSV: <span id="hexProfileHsv"></span></div>
+              <div class="tc-chip px-2 py-2">Lab: <span id="hexProfileLab"></span></div>
+              <div class="tc-chip px-2 py-2">LCh: <span id="hexProfileLch"></span></div>
+              <div class="tc-chip px-2 py-2">CMYK*: <span id="hexProfileCmyk"></span></div>
+            </div>
+            <div class="text-[11px] tc-muted mt-2">* CMYK ước lượng</div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="hexProfileCopy" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Sao chép HEX</button>
+            <button id="hexProfileSave" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Lưu vào Thư viện</button>
+          </div>
+          <div class="grid gap-2 text-xs">
+            <button id="hexProfileOpenThread" class="tc-btn tc-chip px-3 py-2" type="button">Mở ở Thêu</button>
+            <button id="hexProfileOpenPrint" class="tc-btn tc-chip px-3 py-2" type="button">Mở ở In</button>
+            <button id="hexProfileOpenPalette" class="tc-btn tc-chip px-3 py-2" type="button">Tạo Palette</button>
+            <button id="hexProfileOpenGradient" class="tc-btn tc-chip px-3 py-2" type="button">Tạo Gradient</button>
+            <button id="hexProfileOpenPaint" class="tc-btn tc-chip px-3 py-2" type="button">Mở ở Sơn&Vải</button>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Sáng dần hơn</div>
+            <div id="hexLightenGroup" class="mt-2 grid grid-cols-4 gap-2"></div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Tối dần hơn</div>
+            <div id="hexDarkenGroup" class="mt-2 grid grid-cols-4 gap-2"></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-xs uppercase tracking-wide tc-muted">
+              <span>Màu tương tự</span>
+              <span>Ngưỡng ΔE: <span id="hexSimilarValue">6</span></span>
+            </div>
+            <input id="hexSimilarRange" class="mt-2 w-full" type="range" min="2" max="16" step="1" value="6">
+            <div id="hexSimilarGroup" class="mt-2 grid grid-cols-4 gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="hexFullscreen" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="absolute inset-0 flex flex-col items-center justify-between p-4">
+      <div class="w-full flex items-center justify-between">
+        <button id="hexFullscreenClose" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Đóng</button>
+        <div class="flex items-center gap-2">
+          <button id="hexFullscreenPrev" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">← Trước</button>
+          <button id="hexFullscreenNext" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Sau →</button>
+        </div>
+      </div>
+      <div class="tc-card px-4 py-3 text-center">
+        <div id="hexFullscreenHex" class="text-lg font-semibold">#000000</div>
+        <div id="hexFullscreenMeta" class="text-xs tc-muted mt-1"></div>
+      </div>
+      <button id="hexFullscreenCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép HEX</button>
+    </div>
+  </div>
+
   <script type="module" src="../auth.js"></script>
   <script type="module" src="./library.js"></script>
   
