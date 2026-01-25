@@ -1,4 +1,4 @@
-﻿import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { extname } from "node:path";
 
 const TARGET_EXTS = new Set([".html", ".js", ".css", ".json", ".md", ".yml", ".yaml"]);

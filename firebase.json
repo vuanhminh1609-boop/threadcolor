@@ -16,7 +16,6 @@
       "DOC/**",
       "reports/**",
       "tools/**",
-      "workers/**",
       "_graveyard/**"
     ],
     "headers": [

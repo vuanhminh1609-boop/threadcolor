@@ -406,7 +406,7 @@ function ensureTopbarAuthDock() {
           <button id="accountMenuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg shadow-sm tc-chip tc-btn">
             <img id="userAvatar" class="w-8 h-8 rounded-full border border-gray-200 object-cover" alt="">
             <span id="userName" class="font-semibold max-w-[110px] truncate"></span>
-            <span class="opacity-70">&#9662;</span>
+            <span class="opacity-70">▾</span>
           </button>
           <div id="accountMenu" class="hidden absolute right-0 mt-3 w-64 rounded-lg shadow-lg overflow-hidden origin-top-right tc-chip">
             <div class="tc-account-header px-3 py-3">
@@ -525,7 +525,7 @@ function ensureAuthModalExists() {
             <button id="tabLogin" class="px-3 py-1 rounded-lg text-sm font-semibold bg-indigo-50 text-indigo-700" data-i18n="tc.auth.login">Đăng nhập</button>
             <button id="tabRegister" class="px-3 py-1 rounded-lg text-sm text-gray-600 hover:bg-gray-100" data-i18n="tc.auth.register">Đăng ký</button>
           </div>
-          <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500" data-i18n-attr="aria-label:tc.auth.close">&times;</button>
+          <button id="authClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500" data-i18n-attr="aria-label:tc.auth.close">?</button>
         </div>
         <div class="p-5 space-y-4">
           <div id="authError" class="text-sm text-red-600 hidden"></div>
@@ -703,11 +703,11 @@ function bindAuthUiEvents() {
   btnLogin?.addEventListener("click", async () => {
     const email = loginEmail?.value.trim();
     const pass = loginPassword?.value;
-    if (!email || !pass) return showAuthError("Vui l&#242;ng nh&#7853;p Email v&#224; m&#7853;t kh&#7849;u");
+    if (!email || !pass) return showAuthError("Vui lòng nhập Email và mật khẩu");
     try {
       await api?.signInEmail?.(email, pass);
     } catch (err) {
-      showAuthError(err?.message || "&#272;&#259;ng nh&#7853;p th&#7845;t b&#7841;i");
+      showAuthError(err?.message || "Đăng nhập thất bại");
     }
   });
 
@@ -715,22 +715,22 @@ function bindAuthUiEvents() {
     const email = registerEmail?.value.trim();
     const pass = registerPassword?.value;
     const confirm = registerConfirm?.value;
-    if (!email || !pass || !confirm) return showAuthError("&#272;i&#7873;n &#273;&#7847;y &#273;&#7911; th&#244;ng tin");
-    if (pass !== confirm) return showAuthError("M&#7853;t kh&#7849;u kh&#244;ng tr&#249;ng kh&#7899;p");
+    if (!email || !pass || !confirm) return showAuthError("Điền đầy đủ thông tin");
+    if (pass !== confirm) return showAuthError("Mật khẩu không trùng khớp");
     try {
       await api?.registerEmail?.(email, pass);
     } catch (err) {
-      showAuthError(err?.message || "T&#7841;o t&#224;i kho&#7843;n th&#7845;t b&#7841;i");
+      showAuthError(err?.message || "Tạo tài khoản thất bại");
     }
   });
 
   btnForgot?.addEventListener("click", async () => {
     const email = loginEmail?.value.trim();
-    if (!email) return showAuthError("Nh&#7853;p email &#273;&#7875; &#273;&#7863;t l&#7841;i m&#7853;t kh&#7849;u");
+    if (!email) return showAuthError("Nhập email để đặt lại mật khẩu");
     try {
       await api?.resetPassword?.(email);
     } catch (err) {
-      showAuthError(err?.message || "Kh&#244;ng g&#7917;i &#273;&#432;&#7907;c email");
+      showAuthError(err?.message || "Không gửi được email");
     }
   });
 
@@ -738,7 +738,7 @@ function bindAuthUiEvents() {
     try {
       await api?.signInGoogle?.();
     } catch (err) {
-      showAuthError(err?.message || "Google login th&#7845;t b&#7841;i");
+      showAuthError(err?.message || "Google login thất bại");
     }
   });
 
@@ -746,7 +746,7 @@ function bindAuthUiEvents() {
     try {
       await api?.signInFacebook?.();
     } catch (err) {
-      showAuthError(err?.message || "Facebook login th&#7845;t b&#7841;i");
+      showAuthError(err?.message || "Facebook login thất bại");
     }
   });
 

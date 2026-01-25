@@ -1,166 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>8Portal v4</title>
   <link rel="stylesheet" href="assets/dist/tailwind.css">
+  <link rel="stylesheet" href="./assets/tones.css">
   <style>
-    :root {
-      --bg: #f6f1e9;
-      --text: #201a14;
-      --muted: #6b5d4b;
-      --glass: rgba(255, 255, 255, 0.72);
-      --stroke: rgba(32, 26, 20, 0.08);
-      --a1: #c27b4b;
-      --a2: #d59e6d;
-      --a3: #8c6d54;
-    }
-    html[data-world="nebula"] {
-      --bg:
-        radial-gradient(circle, rgba(255,255,255,.26) 0 1px, transparent 1.2px) 0 0/ 160px 160px repeat,
-        radial-gradient(circle, rgba(255,255,255,.14) 0 1px, transparent 1.2px) 60px 90px/ 260px 260px repeat,
-        repeating-linear-gradient(135deg, rgba(110,231,255,.045) 0 1px, transparent 1px 10px) 0 0/ 420px 420px repeat,
-        radial-gradient(1200px circle at 18% 12%, rgba(110,231,255,.26), transparent 60%) 50% 50%/ cover no-repeat,
-        radial-gradient(1100px circle at 86% 22%, rgba(139,92,246,.26), transparent 62%) 50% 50%/ cover no-repeat,
-        radial-gradient(900px circle at 62% 88%, rgba(244,114,182,.20), transparent 62%) 50% 50%/ cover no-repeat,
-        conic-gradient(from 220deg at 60% 35%, rgba(139,92,246,.18), transparent 30%, rgba(110,231,255,.14), transparent 62%, rgba(244,114,182,.16)) 50% 50%/ cover no-repeat,
-        radial-gradient(1600px circle at 50% 55%, rgba(0,0,0,0) 0 55%, rgba(0,0,0,.55) 100%) 50% 50%/ cover no-repeat,
-        #040512;
-      --text: #eef2ff;
-      --muted: #b8c2ff;
-      --glass: rgba(12, 16, 34, 0.72);
-      --stroke: rgba(255, 255, 255, 0.14);
-      --a1: #6ee7ff;
-      --a2: #8b5cf6;
-      --a3: #f472b6;
-    }
-    html[data-world="ocean"] {
-      --bg:
-        radial-gradient(circle, rgba(255,255,255,.22) 0 2px, transparent 2.6px) 0 0/ 220px 220px repeat,
-        repeating-linear-gradient(160deg, rgba(255,255,255,.10) 0 2px, transparent 2px 14px) 0 0/ 520px 520px repeat,
-        radial-gradient(1100px circle at 18% 14%, rgba(31,182,255,.24), transparent 62%) 50% 50%/ cover no-repeat,
-        radial-gradient(1000px circle at 86% 28%, rgba(14,165,168,.20), transparent 64%) 50% 50%/ cover no-repeat,
-        radial-gradient(900px circle at 52% 90%, rgba(77,212,255,.18), transparent 64%) 50% 50%/ cover no-repeat,
-        linear-gradient(180deg, rgba(255,255,255,.68), rgba(255,255,255,0) 45%) 50% 50%/ cover no-repeat,
-        conic-gradient(from 200deg at 50% 10%, rgba(77,212,255,.22), transparent 35%, rgba(31,182,255,.14), transparent 70%, rgba(14,165,168,.14)) 50% 50%/ cover no-repeat,
-        radial-gradient(1600px circle at 50% 0%, rgba(255,255,255,.55), transparent 55%) 50% 50%/ cover no-repeat,
-        #dff6ff;
-      --text: #062a3a;
-      --muted: #3f6b7f;
-      --glass: rgba(255, 255, 255, 0.76);
-      --stroke: rgba(6, 42, 58, 0.12);
-      --a1: #1fb6ff;
-      --a2: #0ea5a8;
-      --a3: #4dd4ff;
-    }
-    html[data-world="ink"] {
-      --bg:
-        repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 6px) 0 0/ 100% 100% repeat,
-        repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 10px) 0 0/ 100% 100% repeat,
-        radial-gradient(1200px circle at 20% 20%, rgba(226,232,240,.10), transparent 62%) 50% 50%/ cover no-repeat,
-        radial-gradient(1000px circle at 82% 26%, rgba(148,163,184,.10), transparent 66%) 50% 50%/ cover no-repeat,
-        radial-gradient(850px circle at 52% 92%, rgba(100,116,139,.12), transparent 66%) 50% 50%/ cover no-repeat,
-        radial-gradient(1400px circle at 50% 55%, rgba(0,0,0,0) 0 52%, rgba(0,0,0,.62) 100%) 50% 50%/ cover no-repeat,
-        linear-gradient(180deg, #0b0d12, #07080c) 50% 50%/ cover no-repeat;
-      --text: #f4f6fb;
-      --muted: #a6afbd;
-      --glass: rgba(16, 18, 24, 0.76);
-      --stroke: rgba(255, 255, 255, 0.12);
-      --a1: #e2e8f0;
-      --a2: #94a3b8;
-      --a3: #64748b;
-    }
-    html[data-world="origami"] {
-      --bg:
-        repeating-linear-gradient(0deg, rgba(32,26,20,.025) 0 1px, transparent 1px 7px) 0 0/ 100% 100% repeat,
-        repeating-linear-gradient(90deg, rgba(32,26,20,.018) 0 1px, transparent 1px 11px) 0 0/ 100% 100% repeat,
-        linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,0) 48%) 50% 50%/ cover no-repeat,
-        linear-gradient(315deg, rgba(140,109,84,.10), transparent 55%) 50% 50%/ cover no-repeat,
-        radial-gradient(1000px circle at 22% 16%, rgba(194,123,75,.18), transparent 64%) 50% 50%/ cover no-repeat,
-        radial-gradient(950px circle at 84% 26%, rgba(213,158,109,.16), transparent 66%) 50% 50%/ cover no-repeat,
-        radial-gradient(900px circle at 52% 92%, rgba(140,109,84,.12), transparent 66%) 50% 50%/ cover no-repeat,
-        linear-gradient(180deg, #f7f2ea, #f1e6d6) 50% 50%/ cover no-repeat;
-      --text: #201a14;
-      --muted: #6b5d4b;
-      --glass: rgba(255, 255, 255, 0.74);
-      --stroke: rgba(32, 26, 20, 0.10);
-      --a1: #c27b4b;
-      --a2: #d59e6d;
-      --a3: #8c6d54;
-    }
-    html[data-world="arcade"] {
-      --bg:
-        radial-gradient(circle, rgba(255,255,255,.18) 0 1px, transparent 1.2px) 0 0/ 180px 180px repeat,
-        repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 4px) 0 0/ 100% 100% repeat,
-        repeating-linear-gradient(90deg, rgba(255,61,205,.05) 0 1px, transparent 1px 18px) 0 0/ 520px 520px repeat,
-        radial-gradient(1100px circle at 18% 14%, rgba(255,61,205,.26), transparent 62%) 50% 50%/ cover no-repeat,
-        radial-gradient(1050px circle at 86% 18%, rgba(124,58,237,.26), transparent 64%) 50% 50%/ cover no-repeat,
-        radial-gradient(950px circle at 52% 92%, rgba(32,227,178,.18), transparent 66%) 50% 50%/ cover no-repeat,
-        conic-gradient(from 210deg at 56% 30%, rgba(255,61,205,.18), transparent 28%, rgba(124,58,237,.16), transparent 60%, rgba(32,227,178,.16)) 50% 50%/ cover no-repeat,
-        radial-gradient(1600px circle at 50% 55%, rgba(0,0,0,0) 0 54%, rgba(0,0,0,.60) 100%) 50% 50%/ cover no-repeat,
-        #05040f;
-      --text: #fff7ff;
-      --muted: #d8c9f6;
-      --glass: rgba(14, 12, 28, 0.80);
-      --stroke: rgba(255, 255, 255, 0.16);
-      --a1: #ff3dcd;
-      --a2: #7c3aed;
-      --a3: #20e3b2;
-    }
-    html[data-world="dunes"] {
-      --bg:
-        radial-gradient(circle, rgba(255,255,255,.18) 0 2px, transparent 2.6px) 0 0/ 260px 260px repeat,
-        repeating-linear-gradient(165deg, rgba(179,116,61,.06) 0 2px, transparent 2px 16px) 0 0/ 680px 680px repeat,
-        radial-gradient(1200px circle at 78% 10%, rgba(255,245,215,.75), transparent 60%) 50% 50%/ cover no-repeat,
-        radial-gradient(1050px circle at 20% 22%, rgba(211,155,84,.18), transparent 66%) 50% 50%/ cover no-repeat,
-        radial-gradient(950px circle at 86% 36%, rgba(227,184,123,.16), transparent 68%) 50% 50%/ cover no-repeat,
-        radial-gradient(900px circle at 52% 92%, rgba(179,116,61,.14), transparent 70%) 50% 50%/ cover no-repeat,
-        linear-gradient(180deg, #f8f2e3, #f2e4c7) 50% 50%/ cover no-repeat;
-      --text: #3a2d1a;
-      --muted: #7a644a;
-      --glass: rgba(255, 255, 255, 0.74);
-      --stroke: rgba(58, 45, 26, 0.12);
-      --a1: #d39b54;
-      --a2: #e3b87b;
-      --a3: #b3743d;
-    }
-    html[data-world="chrome"] {
-      --bg:
-        radial-gradient(circle, rgba(255,255,255,.20) 0 2px, transparent 2.6px) 0 0/ 280px 280px repeat,
-        repeating-linear-gradient(135deg, rgba(15,23,42,.03) 0 1px, transparent 1px 12px) 0 0/ 720px 720px repeat,
-        radial-gradient(1100px circle at 22% 14%, rgba(59,130,246,.14), transparent 66%) 50% 50%/ cover no-repeat,
-        radial-gradient(900px circle at 82% 26%, rgba(148,163,184,.16), transparent 68%) 50% 50%/ cover no-repeat,
-        linear-gradient(120deg, rgba(255,255,255,.75), rgba(255,255,255,0) 42%) 50% 50%/ cover no-repeat,
-        linear-gradient(300deg, rgba(15,23,42,.08), transparent 55%) 50% 50%/ cover no-repeat,
-        linear-gradient(180deg, #f6f9ff, #eef3f8) 50% 50%/ cover no-repeat;
-      --text: #1c232b;
-      --muted: #5f6b79;
-      --glass: rgba(255, 255, 255, 0.72);
-      --stroke: rgba(28, 35, 43, 0.12);
-      --a1: #3b82f6;
-      --a2: #94a3b8;
-      --a3: #0f172a;
-    }
-    html[data-world="circuit"] {
-      --bg:
-        repeating-linear-gradient(0deg, rgba(134,239,172,.06) 0 1px, transparent 1px 18px) 0 0/ 100% 100% repeat,
-        repeating-linear-gradient(90deg, rgba(34,197,94,.05) 0 1px, transparent 1px 22px) 0 0/ 100% 100% repeat,
-        radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1.2px) 0 0/ 200px 200px repeat,
-        radial-gradient(1100px circle at 20% 14%, rgba(34,197,94,.22), transparent 64%) 50% 50%/ cover no-repeat,
-        radial-gradient(1000px circle at 86% 22%, rgba(22,163,74,.20), transparent 66%) 50% 50%/ cover no-repeat,
-        radial-gradient(900px circle at 52% 92%, rgba(134,239,172,.16), transparent 68%) 50% 50%/ cover no-repeat,
-        conic-gradient(from 220deg at 56% 30%, rgba(34,197,94,.16), transparent 30%, rgba(134,239,172,.12), transparent 62%, rgba(22,163,74,.14)) 50% 50%/ cover no-repeat,
-        radial-gradient(1600px circle at 50% 55%, rgba(0,0,0,0) 0 54%, rgba(0,0,0,.58) 100%) 50% 50%/ cover no-repeat,
-        #04110a;
-      --text: #eafff2;
-      --muted: #a6d6bb;
-      --glass: rgba(8, 20, 14, 0.76);
-      --stroke: rgba(255, 255, 255, 0.12);
-      --a1: #22c55e;
-      --a2: #16a34a;
-      --a3: #86efac;
-    }
     body {
       background: var(--bg);
       color: var(--text);
@@ -404,7 +250,7 @@
   </style></head>
 <body class="font-sans">
   <!-- TOPBAR -->
-  <header class="tc-topbar relative">
+    <header class="tc-topbar relative">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
       <div class="flex items-center gap-3">
         <a href="./index.html" class="flex items-center gap-3 min-w-0">
@@ -422,54 +268,51 @@
             </picture>
           </span>
           <span class="min-w-0 flex flex-col justify-center leading-tight">
-            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors · 8Portal</span>
-            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">
-              Một chạm mở không gian màu vô hạn
-            </span>
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors ? 8Portal</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">M?t ch?m m? kh?ng gian m?u v? h?n</span>
           </span>
         </a>
       </div>
-
 
       <div class="flex-1 flex items-center justify-center">
         <div class="relative" id="portalSwitcher">
           <button id="portalBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
             aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
-            Ch&#7885;n Th&#7871; gi&#7899;i
+            Ch?n Th? gi?i
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/gradient.html" role="menuitem">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/palette.html" role="menuitem">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/printcolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u in (CMYK)</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/library.html" role="menuitem">Th&#7871; gi&#7899;i Th&#432; vi&#7879;n T&#224;i s&#7843;n M&#224;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/paintfabric.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u S&#417;n&amp;V&#7843;i</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/imagecolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u t&#7915; &#7842;nh</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/community.html" role="menuitem">Th&#7871; gi&#7899;i Chia s&#7867; + Remix</a>
-                                                                                                                                                                                                                                                                                                                                </div>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadcolor.html" role="menuitem">Th? gi?i m?u th?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/gradient.html" role="menuitem">Th? gi?i D?i chuy?n m?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/palette.html" role="menuitem">Th? gi?i B?ng ph?i m?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/printcolor.html" role="menuitem">Th? gi?i M?u in (CMYK)</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/library.html" role="menuitem">Th? gi?i Th? vi?n T?i s?n M?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/paintfabric.html" role="menuitem">Th? gi?i m?u S?n&V?i</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/imagecolor.html" role="menuitem">Th? gi?i M?u t? ?nh</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/community.html" role="menuitem">Th? gi?i Chia s? + Remix</a>
+          </div>
         </div>
       </div>
       <div class="flex items-center justify-end gap-3 min-w-[210px]">
         <div class="relative" id="worldSwitcher">
           <button id="worldBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
-            aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
+            aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu" data-i18n-attr="aria-label:topbar.tones.label">
             <span class="flex items-center gap-2">
               <span class="tc-dot" aria-hidden="true"></span>
               <span id="worldLabel">Origami</span>
             </span>
-            <span aria-hidden="true">&#9662;</span>
+            <span aria-hidden="true">?</span>
           </button>
           <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh v?n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">??i d??ng</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">M?c t?u</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">??i c?t</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">M?ch ?i?n</button>
           </div>
         </div>
         <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
@@ -509,17 +352,17 @@
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u (Gradient)</h3>
-            <p class="tc-muted text-sm mt-2">T&#7841;o d&#7843;i chuy&#7875;n m&#224;u, chỉnh góc &amp; điểm neo, xuất CSS/Token nhanh.</p>
+            <h3 class="font-semibold">Thế giới Dải chuyển màu (Gradient)</h3>
+            <p class="tc-muted text-sm mt-2">Tạo dải chuyển màu, chỉnh góc & điểm neo, xuất CSS/Token nhanh.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/gradient.html">M&#7903;</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/gradient.html">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u (Palette)</h3>
+            <h3 class="font-semibold">Thế giới Bảng phối màu (Palette)</h3>
             <p class="tc-muted text-sm mt-2">Khám phá phối màu theo cảm xúc, lưu bộ sưu tập, xuất token/HEX.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/palette.html">M&#7903;</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/palette.html">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
@@ -577,7 +420,8 @@
         <div class="mt-5 space-y-6" id="quickPanels">
           <div data-panel="paste" role="tabpanel">
             <label class="text-sm font-semibold" for="qaPasteInput">Danh sách HEX</label>
-            <textarea id="qaPasteInput" class="tc-input mt-2" placeholder="#FFAA00, #123456&#10;#0F766E"></textarea>
+            <textarea id="qaPasteInput" class="tc-input mt-2" placeholder="#FFAA00, #123456
+#0F766E"></textarea>
             <div class="mt-3 flex flex-wrap gap-2">
               <button id="qaPasteApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Áp dụng</button>
             </div>
@@ -706,8 +550,8 @@
     <section class="max-w-6xl mx-auto px-4 pb-16">
       <div class="flex items-end justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-semibold" data-i18n="gallery.title">B&#7897; s&#432;u t&#7853;p s&#7855;c th&#225;i</h2>
-          <p class="tc-muted text-sm mt-1" data-i18n="gallery.desc">8 s&#7855;c th&#225;i c&#7843;m gi&#225;c.</p>
+          <h2 class="text-2xl font-semibold" data-i18n="gallery.title">Bộ sưu tập sắc thái</h2>
+          <p class="tc-muted text-sm mt-1" data-i18n="gallery.desc">8 sắc thái cảm giác.</p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-world-grid="1">
@@ -789,288 +633,11 @@
 
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
-  <script>
-    (() => {
-      const adminLink = document.getElementById("portalAdminLink");
-      if (!adminLink) return;
-      const setVisible = (visible) => {
-        adminLink.classList.toggle("hidden", !visible);
-        adminLink.setAttribute("aria-hidden", visible ? "false" : "true");
-      };
-      const checkAdmin = async (user) => {
-        if (!user || typeof user.getIdToken !== "function") {
-          setVisible(false);
-          return;
-        }
-        try {
-          const token = await user.getIdToken();
-          const res = await fetch("/admin/ping", {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setVisible(res.ok);
-        } catch (_err) {
-          setVisible(false);
-        }
-      };
-      const bind = () => {
-        const api = window.firebaseAuth || window.firebaseAuthApi || null;
-        if (!api?.onAuthStateChanged) {
-          setVisible(false);
-          return;
-        }
-        api.onAuthStateChanged((user) => {
-          checkAdmin(user);
-        });
-      };
-      if (window.firebaseAuth) {
-        bind();
-      } else {
-        window.addEventListener("firebase-auth-ready", bind, { once: true });
-      }
-    })();
-  </script>
-  <script>
-    (() => {
-      if (window.__portalSwitcherBound) return;
-      window.__portalSwitcherBound = true;
-      const portalBtn = document.getElementById("portalBtn");
-      const portalMenu = document.getElementById("portalMenu");
-      if (!portalBtn || !portalMenu) return;
-      const setOpen = (open) => {
-        portalMenu.dataset.open = open ? "1" : "0";
-        portalMenu.hidden = !open;
-        portalBtn.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-      setOpen(portalMenu.dataset.open === "1");
-      portalBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        setOpen(portalMenu.dataset.open !== "1");
-      });
-      portalMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-menu-item");
-        if (!item || !portalMenu.contains(item)) return;
-        setOpen(false);
-      });
-      document.addEventListener("click", (event) => {
-        if (!portalMenu.contains(event.target) && !portalBtn.contains(event.target)) {
-          setOpen(false);
-        }
-      });
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") setOpen(false);
-      });
-    })();
-  </script>
-  <script>
-    (() => {
-      const worldBtn = document.getElementById("worldBtn");
-      const worldMenu = document.getElementById("worldMenu");
-      const switcher = document.getElementById("worldSwitcher");
-      if (!worldBtn || !worldMenu || !switcher) return;
-      const storageKey = "tc_world";
-      const worlds = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
-      const getItems = () => Array.from(worldMenu.querySelectorAll(".tc-world-item"));
-      const applyWorld = (key) => {
-        const current = document.documentElement.dataset.world;
-        const next = worlds.includes(key)
-          ? key
-          : (worlds.includes(current) ? current : "origami");
-        const prev = document.documentElement.getAttribute("data-world");
-        document.documentElement.setAttribute("data-world", next);
-        try {
-          localStorage.setItem(storageKey, next);
-        } catch (err) {}
-        if (prev !== next) {
-          document.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world: next } }));
-        }
-      };
-      const setMenuOpen = (open) => {
-        worldMenu.dataset.open = open ? "1" : "0";
-        worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-      worldBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        setMenuOpen(worldMenu.dataset.open !== "1");
-      });
-      worldMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-world-item");
-        if (!item || !worldMenu.contains(item)) return;
-        event.preventDefault();
-        applyWorld(item.getAttribute("data-world"));
-        setMenuOpen(false);
-        worldBtn.focus();
-      });
-      const galleryGrid = document.querySelector('[data-world-grid="1"]');
-      if (galleryGrid) {
-        galleryGrid.addEventListener("click", (event) => {
-          const card = event.target.closest('[data-world-card="1"]');
-          if (!card || !galleryGrid.contains(card)) return;
-          applyWorld(card.dataset.world);
-          if (worldMenu.dataset.open === "1") {
-            setMenuOpen(false);
-          }
-        });
-        galleryGrid.addEventListener("keydown", (event) => {
-          const card = event.target.closest('[data-world-card="1"]');
-          if (!card || !galleryGrid.contains(card) || document.activeElement !== card) return;
-          if (event.key === "Enter" || event.key === " " || event.key === "Spacebar" || event.key === "Space") {
-            event.preventDefault();
-            applyWorld(card.dataset.world);
-            if (worldMenu.dataset.open === "1") {
-              setMenuOpen(false);
-            }
-          }
-        });
-      }
-      document.addEventListener("click", (event) => {
-        if (!switcher.contains(event.target)) {
-          setMenuOpen(false);
-        }
-      });
-      document.addEventListener("keydown", (event) => {
-        const items = getItems();
-        const isOpen = worldMenu.dataset.open === "1";
-        if (event.key === "Escape") {
-          if (isOpen) {
-            setMenuOpen(false);
-            worldBtn.focus();
-          }
-          return;
-        }
-        if (event.key === "ArrowDown" && document.activeElement === worldBtn) {
-          event.preventDefault();
-          setMenuOpen(true);
-          if (!items.length) return;
-          items[0]?.focus();
-          return;
-        }
-        if (!isOpen || (event.key !== "ArrowDown" && event.key !== "ArrowUp")) return;
-        const currentIndex = items.indexOf(document.activeElement);
-        if (currentIndex === -1) return;
-        event.preventDefault();
-        const nextIndex = event.key === "ArrowDown"
-          ? (currentIndex + 1) % items.length
-          : (currentIndex - 1 + items.length) % items.length;
-        items[nextIndex]?.focus();
-      });
-      let storedWorld = null;
-      try {
-        storedWorld = localStorage.getItem(storageKey);
-      } catch (err) {}
-      if (worlds.includes(storedWorld)) {
-        applyWorld(storedWorld);
-      } else {
-        applyWorld(document.documentElement.dataset.world);
-      }
-      setMenuOpen(false);
-    })();
-  </script>
-  <script>
-    (() => {
-      const communityBtn = document.getElementById("communityBtn");
-      const communityMenu = document.getElementById("communityMenu");
-      const spacesBtn = document.getElementById("spacesBtn");
-      const spacesMenu = document.getElementById("spacesMenu");
-      if (!communityBtn || !communityMenu || !spacesBtn || !spacesMenu) return;
-      const menus = [
-        { btn: communityBtn, menu: communityMenu },
-        { btn: spacesBtn, menu: spacesMenu }
-      ];
-      const setMenuOpen = (btn, menu, open) => {
-        menu.dataset.open = open ? "1" : "0";
-        btn.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-      const closeAll = () => menus.forEach(({ btn, menu }) => setMenuOpen(btn, menu, false));
-      const goTool = (action) => {
-        const auth = window.tcAuth || null;
-        const isLoggedIn = typeof auth?.isLoggedIn === "function" ? auth.isLoggedIn() : false;
-        if (!isLoggedIn) {
-          if (typeof auth?.openAuth === "function") {
-            auth.openAuth();
-            return;
-          }
-        }
-        const target = action ? `./worlds/threadcolor.html?open=${encodeURIComponent(action)}` : "./worlds/threadcolor.html";
-        window.location.href = target;
-      };
-      communityBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        const isOpen = communityMenu.dataset.open === "1";
-        closeAll();
-        setMenuOpen(communityBtn, communityMenu, !isOpen);
-      });
-      spacesBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        const isOpen = spacesMenu.dataset.open === "1";
-        closeAll();
-        setMenuOpen(spacesBtn, spacesMenu, !isOpen);
-      });
-      communityMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-menu-item");
-        if (!item || !communityMenu.contains(item)) return;
-        const action = item.getAttribute("data-action");
-        if (action) goTool(action);
-        closeAll();
-      });
-      spacesMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-menu-item");
-        if (!item || !spacesMenu.contains(item)) return;
-        const action = item.getAttribute("data-action");
-        if (action) goTool(action);
-        closeAll();
-      });
-      document.addEventListener("click", (event) => {
-        if (menus.some(({ btn, menu }) => btn.contains(event.target) || menu.contains(event.target))) return;
-        closeAll();
-      });
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") closeAll();
-      });
-    })();
-  </script>
-  <script>
-    (() => {
-      const contributeBtn = document.querySelector('[data-qa-action="contribute"]');
-      const verifyBtn = document.querySelector('[data-qa-action="verify"]');
-      if (!contributeBtn && !verifyBtn) return;
-
-      const isLoggedIn = () => {
-        if (window.tcAuth?.isLoggedIn?.()) return true;
-        const api = (window.firebaseAuth || window.firebaseAuthApi || null);
-        if (api?.auth?.currentUser) return true;
-        if (api?.user?.uid || api?.user?.email) return true;
-        const userInfo = document.getElementById("userInfo");
-        return !!userInfo && !userInfo.classList.contains("hidden");
-      };
-
-      const openLoginOrGo = () => {
-        const btnAccount = document.getElementById("btnAccount");
-        if (btnAccount) {
-          btnAccount.click();
-          return;
-        }
-        window.location.href = "./worlds/threadcolor.html";
-      };
-
-      const goThreadcolor = () => {
-        window.location.href = "./worlds/threadcolor.html";
-      };
-
-      const bindQuickAction = (button) => {
-        if (!button) return;
-        button.addEventListener("click", () => {
-          if (isLoggedIn()) {
-            goThreadcolor();
-            return;
-          }
-          openLoginOrGo();
-        });
-      };
-
-      bindQuickAction(contributeBtn);
-      bindQuickAction(verifyBtn);
-    })();
-  </script>
+  
+  
+  
+  
+  
   <script>
     (() => {
       const root = document.documentElement;
@@ -1235,5 +802,6 @@
   <span class="sr-only" data-i18n="toast.copied">Đã sao chép!</span>
 
 <script type="module" src="./scripts/hex_hub.js"></script>
+  <script src="./scripts/topbar_behavior.js" defer></script>
 </body>
 </html>

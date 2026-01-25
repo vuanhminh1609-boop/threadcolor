@@ -16,7 +16,8 @@ const IGNORE_DIRS = new Set([
   ".vercel",
   "tmp",
   "artifacts",
-  "reports"
+  "reports",
+  "_graveyard"
 ]);
 
 const PARTIAL_DIRS = new Set([

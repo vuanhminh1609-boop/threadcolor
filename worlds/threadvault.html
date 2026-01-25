@@ -2,99 +2,11 @@
 <html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kho chỉ</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
+  <link rel="stylesheet" href="../assets/tones.css">
   <style>
-    :root {
-      --bg: #f6f1e9;
-      --text: #201a14;
-      --muted: #6b5d4b;
-      --glass: rgba(255, 255, 255, 0.72);
-      --stroke: rgba(32, 26, 20, 0.08);
-      --a1: #c27b4b;
-      --a2: #d59e6d;
-      --a3: #8c6d54;
-    }
-    html[data-world="nebula"] {
-      --bg: #0c1123;
-      --text: #eef2ff;
-      --muted: #b6bfe3;
-      --glass: rgba(18, 26, 48, 0.72);
-      --stroke: rgba(255, 255, 255, 0.12);
-      --a1: #6ee7ff;
-      --a2: #8b5cf6;
-      --a3: #f472b6;
-    }
-    html[data-world="ocean"] {
-      --bg: #e7f6ff;
-      --text: #0b2b3a;
-      --muted: #4b6b7b;
-      --glass: rgba(255, 255, 255, 0.7);
-      --stroke: rgba(11, 43, 58, 0.12);
-      --a1: #1fb6ff;
-      --a2: #0ea5a8;
-      --a3: #4dd4ff;
-    }
-    html[data-world="ink"] {
-      --bg: #0f1115;
-      --text: #f4f4f6;
-      --muted: #9aa0a9;
-      --glass: rgba(24, 26, 31, 0.72);
-      --stroke: rgba(255, 255, 255, 0.1);
-      --a1: #e2e8f0;
-      --a2: #94a3b8;
-      --a3: #64748b;
-    }
-    html[data-world="origami"] {
-      --bg: #f6f1e9;
-      --text: #201a14;
-      --muted: #6b5d4b;
-      --glass: rgba(255, 255, 255, 0.72);
-      --stroke: rgba(32, 26, 20, 0.08);
-      --a1: #c27b4b;
-      --a2: #d59e6d;
-      --a3: #8c6d54;
-    }
-    html[data-world="arcade"] {
-      --bg: #0b0b14;
-      --text: #fef7ff;
-      --muted: #c9b9e8;
-      --glass: rgba(20, 18, 36, 0.78);
-      --stroke: rgba(255, 255, 255, 0.14);
-      --a1: #ff3dcd;
-      --a2: #7c3aed;
-      --a3: #20e3b2;
-    }
-    html[data-world="dunes"] {
-      --bg: #f7f0e1;
-      --text: #3a2d1a;
-      --muted: #7a644a;
-      --glass: rgba(255, 255, 255, 0.7);
-      --stroke: rgba(58, 45, 26, 0.12);
-      --a1: #d39b54;
-      --a2: #e3b87b;
-      --a3: #b3743d;
-    }
-    html[data-world="chrome"] {
-      --bg: #f1f4f8;
-      --text: #1c232b;
-      --muted: #5f6b79;
-      --glass: rgba(255, 255, 255, 0.68);
-      --stroke: rgba(28, 35, 43, 0.12);
-      --a1: #3b82f6;
-      --a2: #94a3b8;
-      --a3: #0f172a;
-    }
-    html[data-world="circuit"] {
-      --bg: #0b1410;
-      --text: #e9fff3;
-      --muted: #9ec4ad;
-      --glass: rgba(12, 24, 18, 0.72);
-      --stroke: rgba(255, 255, 255, 0.12);
-      --a1: #22c55e;
-      --a2: #16a34a;
-      --a3: #86efac;
-    }
     body {
       background: var(--bg);
       color: var(--text);
@@ -229,85 +141,88 @@
     }
   </style></head>
 <body class="font-sans">
-  <header class="tc-topbar sticky top-0 z-30 relative">
+    <header class="tc-topbar relative">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
-      <a href="../index.html" class="flex items-center gap-3 min-w-0">
-        <span class="h-11 w-11 md:h-12 md:w-12 rounded-xl shrink-0 flex items-center justify-center bg-white/5 ring-1 ring-white/10">
-          <picture>
-            <source srcset="../assets/spacecolors-mark.svg" type="image/svg+xml">
-            <img
-              src="../assets/spacecolors-mark-128.png"
-              srcset="../assets/spacecolors-mark-128.png 1x, ../assets/spacecolors-mark-256.png 2x"
-              class="h-full w-full object-contain select-none"
-              alt="SpaceColors"
-              decoding="async"
-              loading="eager"
-            />
-          </picture>
-        </span>
-        <span class="min-w-0 flex flex-col justify-center leading-tight">
-          <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors &#183; 8Portal</span>
-          <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">M&#7897;t ch&#7841;m m&#7903; kh&#244;ng gian m&#224;u v&#244; h&#7841;n</span>
-        </span>
-      </a>
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-3 min-w-0">
+          <span class="h-11 w-11 md:h-12 md:w-12 rounded-xl shrink-0 flex items-center justify-center bg-white/5 ring-1 ring-white/10">
+            <picture>
+              <source srcset="../assets/spacecolors-mark.svg" type="image/svg+xml">
+              <img
+                src="../assets/spacecolors-mark-128.png"
+                srcset="../assets/spacecolors-mark-128.png 1x, ../assets/spacecolors-mark-256.png 2x"
+                class="h-full w-full object-contain select-none"
+                alt="SpaceColors"
+                decoding="async"
+                loading="eager"
+              />
+            </picture>
+          </span>
+          <span class="min-w-0 flex flex-col justify-center leading-tight">
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors ? 8Portal</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">M?t ch?m m? kh?ng gian m?u v? h?n</span>
+          </span>
+        </a>
+      </div>
+
       <div class="flex-1 flex items-center justify-center">
         <div class="relative" id="portalSwitcher">
           <button id="portalBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
             aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
-            Ch&#7885;n Th&#7871; gi&#7899;i
+            Ch?n Th? gi?i
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Th&#7871; gi&#7899;i D&#7843;i chuy&#7875;n m&#224;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Th&#7871; gi&#7899;i B&#7843;ng ph&#7889;i m&#224;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u in (CMYK)</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Th&#7871; gi&#7899;i Th&#432; vi&#7879;n T&#224;i s&#7843;n M&#224;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u S&#417;n&amp;V&#7843;i</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Th&#7871; gi&#7899;i M&#224;u t&#7915; &#7842;nh</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Th&#7871; gi&#7899;i Chia s&#7867; + Remix</a>
-                                                                                                                                                                                                                                                                                                                                </div>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Th? gi?i m?u th?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Th? gi?i D?i chuy?n m?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Th? gi?i B?ng ph?i m?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Th? gi?i M?u in (CMYK)</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Th? gi?i Th? vi?n T?i s?n M?u</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Th? gi?i m?u S?n&V?i</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Th? gi?i M?u t? ?nh</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Th? gi?i Chia s? + Remix</a>
+          </div>
         </div>
       </div>
       <div class="flex items-center justify-end gap-3 min-w-[210px]">
         <div class="relative" id="worldSwitcher">
           <button id="worldBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
-            aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
+            aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu" data-i18n-attr="aria-label:topbar.tones.label">
             <span class="flex items-center gap-2">
               <span class="tc-dot" aria-hidden="true"></span>
               <span id="worldLabel">Origami</span>
             </span>
-            <span aria-hidden="true">&#9662;</span>
+            <span aria-hidden="true">?</span>
           </button>
           <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh v&#226;n</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">&#272;&#7841;i d&#432;&#417;ng</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">M&#7921;c t&#224;u</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh v?n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">??i d??ng</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">M?c t?u</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">&#272;&#7891;i c&#225;t</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">??i c?t</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">M&#7841;ch &#273;i&#7879;n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">M?ch ?i?n</button>
           </div>
         </div>
-        <div id="topbarAuthSlot" data-auth-slot="topbar" class="flex items-center justify-end min-w-[210px]"></div>
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
       </div>
     </div>
   </header>
   <div class="w1-actionbar border-b border-black/5">
     <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-end gap-3">
       <div class="relative">
-        <button id="w1CommunityBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="w1CommunityMenu" data-i18n="topbar.nav.community">C&#7897;ng &#273;&#7891;ng</button>
+        <button id="w1CommunityBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="w1CommunityMenu" data-i18n="topbar.nav.community">Cộng đồng</button>
         <div id="w1CommunityMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm">
-          <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html?open=contribute" data-i18n="topbar.communityContribute" role="menuitem">&#272;&#243;ng g&#243;p d&#7919; li&#7879;u</a>
-          <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html?open=verify" data-i18n="topbar.communityVerify" role="menuitem">X&#225;c minh</a>
+          <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html?open=contribute" data-i18n="topbar.communityContribute" role="menuitem">Đóng góp dữ liệu</a>
+          <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html?open=verify" data-i18n="topbar.communityVerify" role="menuitem">Xác minh</a>
         </div>
       </div>
       <div class="relative">
-        <button id="w1SpacesBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="w1SpacesMenu" data-i18n="topbar.nav.spaces">Kh&#244;ng gian</button>
+        <button id="w1SpacesBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="w1SpacesMenu" data-i18n="topbar.nav.spaces">Không gian</button>
         <div id="w1SpacesMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm">
-          <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" aria-disabled="true" disabled data-i18n="topbar.spaceVault">Kho ch&#7881;</button>
+          <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" aria-disabled="true" disabled data-i18n="topbar.spaceVault">Kho chỉ</button>
         </div>
       </div>
     </div>
@@ -315,7 +230,7 @@
 
   <main class="mx-auto max-w-4xl px-4 pt-10 pb-16">
     <a class="tc-btn tc-chip inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold" href="./threadcolor.html">
-      &#8592; V&#7873; Th&#7871; gi&#7899;i m&#224;u th&#234;u
+      ← Về Thế giới màu thêu
     </a>
     <div class="tc-card rounded-2xl p-6 md:p-10">
       <h1 class="text-3xl font-bold" data-i18n="vault.title">Kho chỉ</h1>
@@ -447,196 +362,16 @@
     </section>
   </main>
 
-  <script>
-    (function () {
-      var worlds = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
-      var labels = {
-        nebula: "Tinh vân",
-        ocean: "Đại dương",
-        ink: "Mực tàu",
-        origami: "Origami",
-        arcade: "Arcade",
-        dunes: "Đồi cát",
-        chrome: "Chrome",
-        circuit: "Mạch điện"
-      };
-      var storageKey = "tc_world";
-      var defaultWorld = "origami";
-      var worldBtn = document.getElementById("worldBtn");
-      var worldMenu = document.getElementById("worldMenu");
-      var worldLabel = document.getElementById("worldLabel");
-      var switcher = document.getElementById("worldSwitcher");
-
-      function applyWorld(next) {
-        var world = worlds.indexOf(next) !== -1 ? next : defaultWorld;
-        document.documentElement.setAttribute("data-world", world);
-        try { localStorage.setItem(storageKey, world); } catch (err) {}
-        if (worldLabel) {
-          worldLabel.textContent = labels[world] || world;
-        }
-      }
-
-      function setMenuOpen(open) {
-        if (!worldMenu) return;
-        worldMenu.dataset.open = open ? "1" : "0";
-        if (worldBtn) {
-          worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
-        }
-      }
-
-      if (worldBtn && worldMenu) {
-        worldBtn.addEventListener("click", function (event) {
-          event.stopPropagation();
-          setMenuOpen(worldMenu.dataset.open !== "1");
-        });
-        worldMenu.querySelectorAll("[data-world]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            applyWorld(btn.getAttribute("data-world"));
-            setMenuOpen(false);
-          });
-        });
-      }
-
-      document.addEventListener("click", function (event) {
-        if (!switcher) return;
-        if (!switcher.contains(event.target)) {
-          setMenuOpen(false);
-        }
-      });
-
-      document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-          setMenuOpen(false);
-        }
-      });
-
-      var initial = defaultWorld;
-      try {
-        initial = localStorage.getItem(storageKey) || defaultWorld;
-      } catch (err) {}
-      applyWorld(initial);
-      setMenuOpen(false);
-    })();
-  </script>
-  <script>
-    (() => {
-      if (window.__portalSwitcherBound) return;
-      window.__portalSwitcherBound = true;
-      const portalBtn = document.getElementById("portalBtn");
-      const portalMenu = document.getElementById("portalMenu");
-      if (!portalBtn || !portalMenu) return;
-      const setOpen = (open) => {
-        portalMenu.dataset.open = open ? "1" : "0";
-        portalMenu.hidden = !open;
-        portalBtn.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-      setOpen(portalMenu.dataset.open === "1");
-      portalBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        setOpen(portalMenu.dataset.open !== "1");
-      });
-      portalMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-menu-item");
-        if (!item || !portalMenu.contains(item)) return;
-        setOpen(false);
-      });
-      document.addEventListener("click", (event) => {
-        if (!portalMenu.contains(event.target) && !portalBtn.contains(event.target)) {
-          setOpen(false);
-        }
-      });
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") setOpen(false);
-      });
-    })();
-  </script>
-  <script>
-    (() => {
-      const communityBtn = document.getElementById("w1CommunityBtn");
-      const communityMenu = document.getElementById("w1CommunityMenu");
-      const spacesBtn = document.getElementById("w1SpacesBtn");
-      const spacesMenu = document.getElementById("w1SpacesMenu");
-      if (!communityBtn || !communityMenu || !spacesBtn || !spacesMenu) return;
-      const menus = [
-        { btn: communityBtn, menu: communityMenu },
-        { btn: spacesBtn, menu: spacesMenu }
-      ];
-      const setMenuOpen = (btn, menu, open) => {
-        menu.dataset.open = open ? "1" : "0";
-        btn.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-      const closeAll = () => menus.forEach(({ btn, menu }) => setMenuOpen(btn, menu, false));
-      communityBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        const isOpen = communityMenu.dataset.open === "1";
-        closeAll();
-        setMenuOpen(communityBtn, communityMenu, !isOpen);
-      });
-      spacesBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        const isOpen = spacesMenu.dataset.open === "1";
-        closeAll();
-        setMenuOpen(spacesBtn, spacesMenu, !isOpen);
-      });
-      communityMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-menu-item");
-        if (!item || !communityMenu.contains(item)) return;
-        closeAll();
-      });
-      spacesMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-menu-item");
-        if (!item || !spacesMenu.contains(item)) return;
-        closeAll();
-      });
-      document.addEventListener("click", (event) => {
-        if (menus.some(({ btn, menu }) => btn.contains(event.target) || menu.contains(event.target))) return;
-        closeAll();
-      });
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") closeAll();
-      });
-    })();
-  </script>
+  
+  
+  
   <script src="../i18n.js"></script>
   <script type="module" src="../auth.js"></script>
   <script type="module" src="../script.js"></script>
   <script type="module" src="../stock.js"></script>
-  <script>
-    (() => {
-      const tabButtons = Array.from(document.querySelectorAll("[data-tab]"));
-      const panels = Array.from(document.querySelectorAll("[data-tab-panel]"));
-      let activeTab = "saved";
-      const fireSaved = () => {
-        if (activeTab !== "saved") return;
-        document.dispatchEvent(new CustomEvent("tc-auth-action", { detail: { action: "library" } }));
-      };
-      const setActive = (tab) => {
-        activeTab = tab;
-        tabButtons.forEach((btn) => {
-          const isActive = btn.getAttribute("data-tab") === tab;
-          btn.setAttribute("aria-selected", isActive ? "true" : "false");
-        });
-        panels.forEach((panel) => {
-          const isActive = panel.getAttribute("data-tab-panel") === tab;
-          panel.classList.toggle("hidden", !isActive);
-        });
-        document.dispatchEvent(new CustomEvent("tc-vault-tab-changed", { detail: { tab } }));
-        fireSaved();
-      };
-      const params = new URLSearchParams(window.location.search);
-      const hashTab = window.location.hash.replace("#", "");
-      const initial = params.get("tab") || hashTab || "saved";
-      setActive(initial === "stock" ? "stock" : "saved");
-      tabButtons.forEach((btn) => {
-        btn.addEventListener("click", () => setActive(btn.getAttribute("data-tab")));
-      });
-      document.addEventListener("tc-auth-changed", (event) => {
-        if (!event?.detail?.user) return;
-        fireSaved();
-      });
-    })();
-  </script>
+  
 
 <script type="module" src="../scripts/hex_hub.js"></script>
+  <script src="../scripts/topbar_behavior.js" defer></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(__filename), "..");
 
-const SKIP_DIRS = new Set([".git", "node_modules", "dist", "build", "__pycache__"]);
+const SKIP_DIRS = new Set([".git", "node_modules", "dist", "build", "__pycache__", "_graveyard"]);
 const TEXT_EXT = new Set([".html", ".css", ".js", ".mjs", ".json", ".md", ".yml", ".yaml", ".txt"]);
 const BINARY_EXT = new Set([
   ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".mp4", ".mov", ".psd",
