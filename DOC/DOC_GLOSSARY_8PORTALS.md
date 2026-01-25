@@ -58,7 +58,7 @@
 | Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
-| Single Source of Truth | Ngu?n chu?n duy nh?t | N?i ??nh ngh?a chu?n ?? m?i n?i d?ng chung, tr?nh copy-paste l?ch. |
+| Single Source of Truth | Nguồn chuẩn duy nhất | Nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
 | Schema (khung dữ liệu chuẩn) | Schema (khung dữ liệu chuẩn) | Khung định nghĩa cấu trúc dữ liệu chuẩn để kiểm tra/đồng nhất. |
@@ -72,7 +72,7 @@
 | SHA-256 | SHA-256 | Ham bam tao dau van tay noi dung |
 | Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema |
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main |
-| Feature Flag | C? t?nh n?ng | C? ch? b?t/t?t t?nh n?ng theo ?i?u ki?n nh? query param, user role? |
+| Feature Flag | Cờ tính năng | Cơ chế bật/tắt tính năng theo điều kiện như query param, user role… |
 | Quét bí mật (secret scan) | Quét bí mật (secret scan) | Quét tìm khoá/bí mật trong code và lịch sử để ngăn rò rỉ. |
 | gitleaks:allow (chú thích để Gitleaks bỏ qua một phát hiện cụ thể ở đúng dòng code) | gitleaks:allow | Comment gắn ở đúng dòng nhằm bỏ qua một phát hiện cụ thể, không ảnh hưởng phạm vi khác. |
 | Siết CI (harden CI) | Siết CI (harden CI) | Siết quy trình CI/CD để giảm rủi ro (thêm kiểm tra, chỉnh phân quyền). |

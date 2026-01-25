@@ -11,7 +11,7 @@
         or: "Hoặc"
       },
         topbar: {
-          brand: "SpaceColors · 8Portal",
+          brand: "SpaceColors",
           slogan: "Một chạm mở không gian màu vô hạn",
           nav: {
             community: "Cộng đồng",
