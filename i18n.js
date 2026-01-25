@@ -17,6 +17,9 @@
             community: "Cộng đồng",
             spaces: "Không gian"
           },
+          tones: {
+            label: "S?c th?i"
+          },
                     portal: {
             placeholder: "Chọn Thế giới",
             threadcolor: "Thế giới màu thêu",

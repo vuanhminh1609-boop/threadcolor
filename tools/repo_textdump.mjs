@@ -13,7 +13,8 @@ const IGNORE_DIRS = new Set([
   "functions/lib",
   ".firebase",
   "reports",
-  "artifacts"
+  "artifacts",
+  "_graveyard"
 ]);
 
 const toPosix = (p) => p.split(path.sep).join("/");

@@ -1,4 +1,4 @@
-﻿name: Repo Snapshot
+name: Repo Snapshot
 
 on:
   pull_request:

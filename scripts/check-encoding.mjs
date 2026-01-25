@@ -1,4 +1,4 @@
-﻿import { createReadStream } from "node:fs";
+import { createReadStream } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { createInterface } from "node:readline";
 import { extname, join } from "node:path";
@@ -15,7 +15,8 @@ const SKIP_DIRS = new Set([
   ".turbo",
   ".cache",
   ".parcel-cache",
-  "coverage"
+  "coverage",
+  "_graveyard"
 ]);
 
 const SUSPECT_PATTERN = /(?:Ã|Ä|á»|áº|â€”|â€¢|â†’|â€|\uFFFD)/;

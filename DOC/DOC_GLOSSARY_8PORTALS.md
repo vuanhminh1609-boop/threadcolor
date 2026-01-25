@@ -30,6 +30,7 @@
 |---|---|---|
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
+| Tone/S?c th?i | S?c th?i | B? theme giao di?n: n?n/m?u nh?n/ch?? kh?ng ph?i ?Th? gi?i? ch?c n?ng. |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
@@ -57,7 +58,7 @@
 | Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
-| Nguồn sự thật (single source of truth) | Nguồn sự thật (single source of truth) | Nguồn dữ liệu thống nhất để tránh lệch số |
+| Single Source of Truth | Ngu?n chu?n duy nh?t | N?i ??nh ngh?a chu?n ?? m?i n?i d?ng chung, tr?nh copy-paste l?ch. |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
 | Schema (khung dữ liệu chuẩn) | Schema (khung dữ liệu chuẩn) | Khung định nghĩa cấu trúc dữ liệu chuẩn để kiểm tra/đồng nhất. |
@@ -71,6 +72,7 @@
 | SHA-256 | SHA-256 | Ham bam tao dau van tay noi dung |
 | Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema |
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main |
+| Feature Flag | C? t?nh n?ng | C? ch? b?t/t?t t?nh n?ng theo ?i?u ki?n nh? query param, user role? |
 | Quét bí mật (secret scan) | Quét bí mật (secret scan) | Quét tìm khoá/bí mật trong code và lịch sử để ngăn rò rỉ. |
 | gitleaks:allow (chú thích để Gitleaks bỏ qua một phát hiện cụ thể ở đúng dòng code) | gitleaks:allow | Comment gắn ở đúng dòng nhằm bỏ qua một phát hiện cụ thể, không ảnh hưởng phạm vi khác. |
 | Siết CI (harden CI) | Siết CI (harden CI) | Siết quy trình CI/CD để giảm rủi ro (thêm kiểm tra, chỉnh phân quyền). |
@@ -107,6 +109,8 @@
 | Tuyển chọn (curation: chọn lọc chất lượng cao) | Tuyển chọn | Quá trình chọn lọc dữ liệu chất lượng cao theo tiêu chí rõ ràng. |
 | checksum SHA-256 (mã kiểm tra toàn vẹn tệp bằng thuật toán SHA-256) | checksum SHA-256 | Mã băm SHA-256 dùng để kiểm tra tính toàn vẹn nội dung tệp. |
 | eol=lf (chuẩn xuống dòng LF để ổn định checksum trên CI) | eol=lf | Quy ước xuống dòng LF để tránh lệch checksum do khác hệ điều hành. |
+| BOM | BOM | Dấu thứ tự byte ở đầu tệp; dễ gây lỗi/hiển thị sai nếu xử lý mã hoá không chuẩn. |
+| HTML Entity | Thực thể HTML | Dạng mã thay thế ký tự đặc biệt; dễ làm diff bẩn và khó đọc nếu lạm dụng. |
 
 ---
 
@@ -131,6 +135,8 @@
 | Main thread | Luồng chính | Luồng chạy UI; càng ít việc càng mượt. |
 | Index | Lập chỉ mục | Chuẩn bị cấu trúc tra cứu nhanh (theo mã, hãng, màu). |
 | Cache | Bộ nhớ đệm | Lưu tạm kết quả để tải nhanh hơn. |
+| Shared Asset | Tài nguyên dùng chung | CSS/JS dùng chung cho nhiều trang để cache tốt và giảm trùng lặp. |
+| Defer Script | Nạp script trì hoãn | Dùng thuộc tính defer để chạy sau khi HTML parse, tránh chặn render. |
 | Debounce | Trễ có chủ đích | Chờ người dùng dừng gõ rồi mới tìm, tránh giật. |
 | Virtual list | Danh sách ảo | Chỉ render phần đang nhìn thấy để khỏi lag. |
 | Latency | Độ trễ | Thời gian chờ phản hồi. |

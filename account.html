@@ -3,101 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Trung t&#226;m t&#224;i kho&#7843;n</title>
+  <title>Trung tâm tài khoản</title>
   <link rel="stylesheet" href="assets/dist/tailwind.css">
+  <link rel="stylesheet" href="./assets/tones.css">
   <style>
-    :root{
-      --z-topbar: 2000;
-      --z-topbar-menu: 4000;
-      --bg: #f6f1e9;
-      --text: #201a14;
-      --muted: #6b5d4b;
-      --glass: rgba(255, 255, 255, 0.72);
-      --stroke: rgba(32, 26, 20, 0.10);
-      --a1: #c27b4b;
-      --a2: #d59e6d;
-      --a3: #8c6d54;
-    }
-    html[data-world="nebula"]{
-      --bg:#040512;
-      --text:#eef2ff;
-      --muted:#b8c2ff;
-      --glass:rgba(12,16,34,0.72);
-      --stroke:rgba(255,255,255,0.14);
-      --a1:#6ee7ff;
-      --a2:#8b5cf6;
-      --a3:#f472b6;
-    }
-    html[data-world="ocean"]{
-      --bg:#dff6ff;
-      --text:#062a3a;
-      --muted:#3f6b7f;
-      --glass:rgba(255,255,255,0.76);
-      --stroke:rgba(6,42,58,0.12);
-      --a1:#1fb6ff;
-      --a2:#0ea5a8;
-      --a3:#4dd4ff;
-    }
-    html[data-world="ink"]{
-      --bg:#0b0d12;
-      --text:#f4f6fb;
-      --muted:#a6afbd;
-      --glass:rgba(16,18,24,0.76);
-      --stroke:rgba(255,255,255,0.12);
-      --a1:#e2e8f0;
-      --a2:#94a3b8;
-      --a3:#64748b;
-    }
-    html[data-world="origami"]{
-      --bg:#f6f1e9;
-      --text:#201a14;
-      --muted:#6b5d4b;
-      --glass:rgba(255,255,255,0.74);
-      --stroke:rgba(32,26,20,0.10);
-      --a1:#c27b4b;
-      --a2:#d59e6d;
-      --a3:#8c6d54;
-    }
-    html[data-world="arcade"]{
-      --bg:#05040f;
-      --text:#fff7ff;
-      --muted:#d8c9f6;
-      --glass:rgba(14,12,28,0.80);
-      --stroke:rgba(255,255,255,0.16);
-      --a1:#ff3dcd;
-      --a2:#7c3aed;
-      --a3:#20e3b2;
-    }
-    html[data-world="dunes"]{
-      --bg:#f7f0e1;
-      --text:#3a2d1a;
-      --muted:#7a644a;
-      --glass:rgba(255,255,255,0.74);
-      --stroke:rgba(58,45,26,0.12);
-      --a1:#d39b54;
-      --a2:#e3b87b;
-      --a3:#b3743d;
-    }
-    html[data-world="chrome"]{
-      --bg:#f1f4f8;
-      --text:#1c232b;
-      --muted:#5f6b79;
-      --glass:rgba(255,255,255,0.72);
-      --stroke:rgba(28,35,43,0.12);
-      --a1:#3b82f6;
-      --a2:#94a3b8;
-      --a3:#0f172a;
-    }
-    html[data-world="circuit"]{
-      --bg:#04110a;
-      --text:#eafff2;
-      --muted:#a6d6bb;
-      --glass:rgba(8,20,14,0.76);
-      --stroke:rgba(255,255,255,0.12);
-      --a1:#22c55e;
-      --a2:#16a34a;
-      --a3:#86efac;
-    }
     body{
       background: var(--bg);
       color: var(--text);
@@ -434,25 +343,25 @@
             </picture>
           </span>
           <span class="min-w-0 flex flex-col justify-center leading-tight">
-            <span class="tc-brand text-base md:text-lg whitespace-nowrap">SpaceColors &#183; 8Portal</span>
-            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px]">M&#7897;t ch&#7841;m m&#7903; kh&#244;ng gian m&#224;u v&#244; h&#7841;n</span>
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap">SpaceColors · 8Portal</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px]">Một chạm mở không gian màu vô hạn</span>
           </span>
         </a>
       </div>
       <div class="flex-1 flex items-center justify-center">
         <div class="relative" id="portalSwitcher">
           <button id="portalBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between" aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
-            Ch&#7885;n Th&#7871; gi&#7899;i
+            Chọn Thế giới
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadcolor.html" role="menuitem">Th&#7871; gi&#7899;i m&#224;u th&#234;u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/palette.html" role="menuitem">Th&#7871; gi&#7899;i d&#7843;i m&#224;u</a>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
-            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>S&#7855;p ra m&#7855;t</button>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/threadcolor.html" role="menuitem">Thế giới màu thêu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./worlds/palette.html" role="menuitem">Thế giới dải màu</a>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
+            <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" role="menuitem" aria-disabled="true" disabled>Sắp ra mắt</button>
           </div>
         </div>
       </div>
@@ -463,17 +372,17 @@
               <span class="tc-dot" aria-hidden="true"></span>
               <span id="worldLabel">Origami</span>
             </span>
-            <span aria-hidden="true">&#9662;</span>
+            <span aria-hidden="true">▾</span>
           </button>
           <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh v&#226;n</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">&#272;&#7841;i d&#432;&#417;ng</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">M&#7921;c t&#224;u</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">&#272;&#7891;i c&#225;t</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">M&#7841;ch &#273;i&#7879;n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
           </div>
         </div>
         <div id="topbarAuthSlot" data-auth-slot="topbar" class="flex items-center justify-end min-w-[210px]"></div>
@@ -485,40 +394,40 @@
     <div class="flex flex-col gap-6 lg:flex-row">
       <aside class="lg:w-60">
         <div class="tc-card p-4 space-y-4">
-          <a id="returnLink" class="tc-btn tc-chip w-full justify-center text-sm font-semibold hidden" href="#">&larr; Quay l&#7841;i</a>
+          <a id="returnLink" class="tc-btn tc-chip w-full justify-center text-sm font-semibold hidden" href="#">? Quay lại</a>
           <div>
-            <div class="text-xs uppercase tracking-wide tc-muted">T&#224;i kho&#7843;n</div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Tài khoản</div>
             <nav class="account-nav mt-2 space-y-1">
-              <a class="account-nav-link" href="#section-overview">T&#7893;ng quan</a>
-              <a class="account-nav-link" href="#section-profile">H&#7891; s&#417;</a>
-              <a class="account-nav-link" href="#section-security">B&#7843;o m&#7853;t</a>
+              <a class="account-nav-link" href="#section-overview">Tổng quan</a>
+              <a class="account-nav-link" href="#section-profile">Hồ sơ</a>
+              <a class="account-nav-link" href="#section-security">Bảo mật</a>
             </nav>
           </div>
           <div>
-            <div class="text-xs uppercase tracking-wide tc-muted">T&#249;y bi&#7871;n</div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Tùy biến</div>
             <nav class="account-nav mt-2 space-y-1">
-              <a class="account-nav-link" href="#section-preferences">T&#249;y bi&#7871;n</a>
+              <a class="account-nav-link" href="#section-preferences">Tùy biến</a>
             </nav>
           </div>
           <div>
-            <div class="text-xs uppercase tracking-wide tc-muted">D&#7919; li&#7879;u &amp; &#273;&#7891;ng b&#7897;</div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Dữ liệu & đồng bộ</div>
             <nav class="account-nav mt-2 space-y-1">
-              <a class="account-nav-link" href="#section-data">D&#7919; li&#7879;u &amp; &#273;&#7891;ng b&#7897;</a>
-              <a class="account-nav-link" href="#section-privacy">Quy&#7873;n ri&#234;ng t&#432;</a>
+              <a class="account-nav-link" href="#section-data">Dữ liệu & đồng bộ</a>
+              <a class="account-nav-link" href="#section-privacy">Quyền riêng tư</a>
             </nav>
           </div>
           <div>
-            <div class="text-xs uppercase tracking-wide tc-muted">H&#7879; sinh th&#225;i</div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Hệ sinh thái</div>
             <nav class="account-nav mt-2 space-y-1">
-              <a class="account-nav-link opacity-60 cursor-not-allowed" href="#section-plan" aria-disabled="true">G&#243;i d&#7883;ch v&#7909; (s&#7855;p ra m&#7855;t)</a>
-              <a class="account-nav-link opacity-60 cursor-not-allowed" href="#section-team" aria-disabled="true">Kh&#244;ng gian l&#224;m vi&#7879;c / Nh&#243;m (s&#7855;p ra m&#7855;t)</a>
+              <a class="account-nav-link opacity-60 cursor-not-allowed" href="#section-plan" aria-disabled="true">Gói dịch vụ (sắp ra mắt)</a>
+              <a class="account-nav-link opacity-60 cursor-not-allowed" href="#section-team" aria-disabled="true">Không gian làm việc / Nhóm (sắp ra mắt)</a>
             </nav>
           </div>
           <div>
-            <div class="text-xs uppercase tracking-wide tc-muted">H&#7895; tr&#7907;</div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Hỗ trợ</div>
             <nav class="account-nav mt-2 space-y-1">
-              <a class="account-nav-link" href="#section-support">H&#7895; tr&#7907; &amp; ph&#7843;n h&#7891;i</a>
-              <a class="account-nav-link" href="#section-logout">&#272;&#259;ng xu&#7845;t</a>
+              <a class="account-nav-link" href="#section-support">Hỗ trợ & phản hồi</a>
+              <a class="account-nav-link" href="#section-logout">Đăng xuất</a>
             </nav>
           </div>
         </div>
@@ -528,15 +437,15 @@
         <div id="accountAuthGate" class="tc-card p-6 hidden" data-section="auth-gate">
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <div class="text-xs uppercase tracking-wide tc-muted">Qu&#7843;n l&#253; t&#224;i kho&#7843;n</div>
-              <div class="text-lg font-semibold mt-2">&#272;&#259;ng nh&#7853;p &#273;&#7875; &#273;&#7891;ng b&#7897; h&#7891; s&#417;</div>
-              <div class="tc-muted text-sm mt-1">M&#7903; kh&#243;a sao l&#432;u, l&#7883;ch s&#7917; v&#224; d&#7919; li&#7879;u &#273;&#227; l&#432;u.</div>
+              <div class="text-xs uppercase tracking-wide tc-muted">Quản lý tài khoản</div>
+              <div class="text-lg font-semibold mt-2">Đăng nhập để đồng bộ hồ sơ</div>
+              <div class="tc-muted text-sm mt-1">Mở khóa sao lưu, lịch sử và dữ liệu đã lưu.</div>
             </div>
-            <button id="btnAccountLogin" data-action="login" class="tc-btn tc-btn-primary px-5 py-2 text-sm font-semibold">&#272;&#259;ng nh&#7853;p</button>
+            <button id="btnAccountLogin" data-action="login" class="tc-btn tc-btn-primary px-5 py-2 text-sm font-semibold">Đăng nhập</button>
           </div>
         </div>
         <div id="section-overview" class="tc-card p-6">
-          <h2 class="text-xl font-semibold">T&#7893;ng quan</h2>
+          <h2 class="text-xl font-semibold">Tổng quan</h2>
           <div class="mt-4 grid gap-4 md:grid-cols-2">
             <div class="tc-card p-4 overview-card is-loading" data-overview-card="1" data-overview-index="0" tabindex="0">
               <div class="overview-content">
@@ -546,12 +455,12 @@
                       <path d="M12 3l8 8-8 8-8-8 8-8z"></path>
                       <circle cx="12" cy="12" r="2.2"></circle>
                     </svg>
-                    <span class="text-sm tc-muted">Tr&#7841;ng th&#225;i t&#224;i kho&#7843;n</span>
+                    <span class="text-sm tc-muted">Trạng thái tài khoản</span>
                   </div>
-                  <span class="overview-pill" data-role="pill">&#272;ang k&#7871;t n&#7889;i</span>
+                  <span class="overview-pill" data-role="pill">Đang kết nối</span>
                 </div>
-                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">&#7892;n &#273;&#7883;nh</div>
-                <div class="text-xs tc-muted mt-1" data-role="sub">Phi&#234;n ho&#7841;t &#273;&#7897;ng li&#234;n t&#7909;c</div>
+                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">Ổn định</div>
+                <div class="text-xs tc-muted mt-1" data-role="sub">Phiên hoạt động liên tục</div>
               </div>
               <div class="overview-skeleton" aria-hidden="true">
                 <div class="overview-head">
@@ -571,12 +480,12 @@
                     <svg class="overview-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                       <path d="M4 7h16M4 12h16M4 17h10"></path>
                     </svg>
-                    <span class="text-sm tc-muted">D&#7919; li&#7879;u</span>
+                    <span class="text-sm tc-muted">Dữ liệu</span>
                   </div>
-                  <span class="overview-pill" data-role="pill">&#272;ang &#273;&#7891;ng b&#7897;</span>
+                  <span class="overview-pill" data-role="pill">Đang đồng bộ</span>
                 </div>
-                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">12 b&#7843;n l&#432;u</div>
-                <div class="text-xs tc-muted mt-1" data-role="sub">3 d&#7921; &#225;n &#273;ang theo d&#245;i</div>
+                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">12 bản lưu</div>
+                <div class="text-xs tc-muted mt-1" data-role="sub">3 dự án đang theo dõi</div>
               </div>
               <div class="overview-skeleton" aria-hidden="true">
                 <div class="overview-head">
@@ -597,12 +506,12 @@
                       <path d="M4 12a8 8 0 0 1 16 0"></path>
                       <path d="M12 4v6l4 2"></path>
                     </svg>
-                    <span class="text-sm tc-muted">&#272;&#7891;ng b&#7897;</span>
+                    <span class="text-sm tc-muted">Đồng bộ</span>
                   </div>
-                  <span class="overview-pill" data-role="pill">&#272;ang b&#7853;t</span>
+                  <span class="overview-pill" data-role="pill">Đang bật</span>
                 </div>
-                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">&#272;ang b&#7853;t</div>
-                <div class="text-xs tc-muted mt-1" data-role="sub">T&#7889;c &#273;&#7897; ti&#234;u chu&#7849;n</div>
+                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">Đang bật</div>
+                <div class="text-xs tc-muted mt-1" data-role="sub">Tốc độ tiêu chuẩn</div>
               </div>
               <div class="overview-skeleton" aria-hidden="true">
                 <div class="overview-head">
@@ -623,12 +532,12 @@
                       <path d="M12 6v6l4 2"></path>
                       <circle cx="12" cy="12" r="8"></circle>
                     </svg>
-                    <span class="text-sm tc-muted">Ho&#7841;t &#273;&#7897;ng g&#7847;n &#273;&#226;y</span>
+                    <span class="text-sm tc-muted">Hoạt động gần đây</span>
                   </div>
-                  <span class="overview-pill" data-role="pill">M&#7899;i</span>
+                  <span class="overview-pill" data-role="pill">Mới</span>
                 </div>
-                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">3 thao t&#225;c</div>
-                <div class="text-xs tc-muted mt-1" data-role="sub">C&#7853;p nh&#7853;t h&#244;m nay</div>
+                <div class="mt-3 text-lg font-semibold leading-tight" data-role="value">3 thao tác</div>
+                <div class="text-xs tc-muted mt-1" data-role="sub">Cập nhật hôm nay</div>
               </div>
               <div class="overview-skeleton" aria-hidden="true">
                 <div class="overview-head">
@@ -645,22 +554,22 @@
         </div>
 
         <div id="section-profile" class="tc-card p-6" data-section="profile">
-          <h2 class="text-xl font-semibold">H&#7891; s&#417;</h2>
-          <div class="mt-2 tc-muted text-sm">C&#7853;p nh&#7853;t th&#244;ng tin hi&#7875;n th&#7883; trong h&#7879; sinh th&#225;i.</div>
+          <h2 class="text-xl font-semibold">Hồ sơ</h2>
+          <div class="mt-2 tc-muted text-sm">Cập nhật thông tin hiển thị trong hệ sinh thái.</div>
           <div class="mt-4 space-y-3">
             <div class="tc-card p-4 setting-row" data-setting="display-name">
               <div>
-                <div class="text-sm tc-muted">T&#234;n hi&#7875;n th&#7883;</div>
-                <div class="text-xs tc-muted">T&#234;n hi&#7875;n th&#7883; tr&#234;n menu t&#224;i kho&#7843;n.</div>
+                <div class="text-sm tc-muted">Tên hiển thị</div>
+                <div class="text-xs tc-muted">Tên hiển thị trên menu tài khoản.</div>
               </div>
               <div class="setting-control">
-                <input id="profileDisplayName" data-field="profile.displayName" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="V&#237; d&#7909;: SpaceColors Studio">
+                <input id="profileDisplayName" data-field="profile.displayName" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="Ví dụ: SpaceColors Studio">
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="photo-url">
               <div>
-                <div class="text-sm tc-muted">&#7842;nh (URL)</div>
-                <div class="text-xs tc-muted">Link &#7843;nh &#273;&#7841;i di&#7879;n c&#244;ng khai.</div>
+                <div class="text-sm tc-muted">Ảnh (URL)</div>
+                <div class="text-xs tc-muted">Link ảnh đại diện công khai.</div>
               </div>
               <div class="setting-control">
                 <input id="profilePhotoUrl" data-field="profile.photoURL" type="url" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="https://">
@@ -668,126 +577,126 @@
             </div>
             <div class="tc-card p-4 setting-row" data-setting="org-unit">
               <div>
-                <div class="text-sm tc-muted">&#272;&#417;n v&#7883; / Nh&#243;m</div>
-                <div class="text-xs tc-muted">D&#249;ng cho v&#7883; tr&#237; l&#224;m vi&#7879;c.</div>
+                <div class="text-sm tc-muted">Đơn vị / Nhóm</div>
+                <div class="text-xs tc-muted">Dùng cho vị trí làm việc.</div>
               </div>
               <div class="setting-control">
-                <input id="profileOrgUnit" data-field="profile.orgUnit" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="V&#237; d&#7909;: X&#432;&#7903;ng Th&#234;u 01">
+                <input id="profileOrgUnit" data-field="profile.orgUnit" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="Ví dụ: Xưởng Thêu 01">
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="goal">
               <div>
-                <div class="text-sm tc-muted">M&#7909;c ti&#234;u</div>
-                <div class="text-xs tc-muted">Ghi ng&#7855;n g&#7885;n nhu c&#7847;u ch&#237;nh.</div>
+                <div class="text-sm tc-muted">Mục tiêu</div>
+                <div class="text-xs tc-muted">Ghi ngắn gọn nhu cầu chính.</div>
               </div>
               <div class="setting-control">
-                <input id="profileGoal" data-field="profile.goal" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="V&#237; d&#7909;: T&#432;&#417;ng th&#237;ch m&#224;u ch&#237;nh x&#225;c">
+                <input id="profileGoal" data-field="profile.goal" type="text" class="tc-chip px-3 py-2 text-sm font-semibold w-full" placeholder="Ví dụ: Tương thích màu chính xác">
               </div>
             </div>
           </div>
           <div class="mt-4 flex flex-wrap items-center gap-3">
-            <button id="btnProfileSave" data-action="profile-save" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">L&#432;u h&#7891; s&#417;</button>
+            <button id="btnProfileSave" data-action="profile-save" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Lưu hồ sơ</button>
             <div id="profileStatus" data-role="profile-status" class="text-sm tc-muted"></div>
           </div>
         </div>
 
         <div id="section-security" class="tc-card p-6" data-section="security">
-          <h2 class="text-xl font-semibold">B&#7843;o m&#7853;t</h2>
+          <h2 class="text-xl font-semibold">Bảo mật</h2>
           <div class="mt-4 space-y-3">
             <div class="tc-card p-4 setting-row" data-setting="password">
               <div>
-                <div class="text-sm tc-muted">&#272;&#7893;i m&#7853;t kh&#7849;u</div>
-                <div class="text-xs tc-muted">G&#7917;i li&#234;n k&#7871;t &#273;&#7863;t l&#7841;i qua email.</div>
+                <div class="text-sm tc-muted">Đổi mật khẩu</div>
+                <div class="text-xs tc-muted">Gửi liên kết đặt lại qua email.</div>
               </div>
               <div class="setting-control">
-                <button id="btnPasswordAction" data-action="password-reset" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">C&#7853;p nh&#7853;t</button>
+                <button id="btnPasswordAction" data-action="password-reset" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Cập nhật</button>
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="sessions">
               <div>
-                <div class="text-sm tc-muted">Phi&#234;n &#273;&#259;ng nh&#7853;p</div>
-                <div class="text-xs tc-muted">Thu h&#7891;i t&#7845;t c&#7843; phi&#234;n &#273;&#227; m&#7903;.</div>
+                <div class="text-sm tc-muted">Phiên đăng nhập</div>
+                <div class="text-xs tc-muted">Thu hồi tất cả phiên đã mở.</div>
               </div>
               <div class="setting-control">
-                <button id="btnSignOutAllDevices" data-action="revoke-sessions" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;&#259;ng xu&#7845;t m&#7885;i thi&#7871;t b&#7883;</button>
+                <button id="btnSignOutAllDevices" data-action="revoke-sessions" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Đăng xuất mọi thiết bị</button>
               </div>
             </div>
           </div>
         </div>
 
         <div id="section-preferences" class="tc-card p-6" data-section="preferences">
-          <h2 class="text-xl font-semibold">T&#249;y bi&#7871;n</h2>
+          <h2 class="text-xl font-semibold">Tùy biến</h2>
           <div class="mt-4 space-y-3">
             <div class="tc-card p-4 setting-row tc-pref-row" data-setting="world">
               <div>
-                <div class="text-sm tc-muted">S&#7855;c th&#225;i m&#7863;c &#273;&#7883;nh</div>
-                <div class="text-xs tc-muted">Ch&#7885;n s&#7855;c th&#225;i m&#7863;c &#273;&#7883;nh.</div>
+                <div class="text-sm tc-muted">Sắc thái mặc định</div>
+                <div class="text-xs tc-muted">Chọn sắc thái mặc định.</div>
               </div>
               <div class="setting-control">
                 <div class="relative">
                   <button id="btnPrefWorld" data-action="pref-world" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold flex items-center gap-2" aria-expanded="false" aria-haspopup="menu" aria-controls="prefWorldMenu">
                     <span id="prefWorldLabel">Origami</span>
-                    <span aria-hidden="true">&#9662;</span>
+                    <span aria-hidden="true">▾</span>
                   </button>
                   <div id="prefWorldMenu" data-open="0" role="menu" class="tc-pref-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip hidden">
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="nebula" role="menuitem">Tinh v&#226;n</button>
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="ocean" role="menuitem">&#272;&#7841;i d&#432;&#417;ng</button>
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="ink" role="menuitem">M&#7921;c t&#224;u</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="nebula" role="menuitem">Tinh vân</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="ocean" role="menuitem">Đại dương</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="ink" role="menuitem">Mực tàu</button>
                     <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="origami" role="menuitem">Origami</button>
                     <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="arcade" role="menuitem">Arcade</button>
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="dunes" role="menuitem">&#272;&#7891;i c&#225;t</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="dunes" role="menuitem">Đồi cát</button>
                     <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="chrome" role="menuitem">Chrome</button>
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="circuit" role="menuitem">M&#7841;ch &#273;i&#7879;n</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="circuit" role="menuitem">Mạch điện</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="tc-card p-4 setting-row tc-pref-row" data-setting="language">
               <div>
-                <div class="text-sm tc-muted">Ng&#244;n ng&#7919;</div>
-                <div class="text-xs tc-muted">D&#249;ng ng&#244;n ng&#7919; &#432;a th&#237;ch.</div>
+                <div class="text-sm tc-muted">Ngôn ngữ</div>
+                <div class="text-xs tc-muted">Dùng ngôn ngữ ưa thích.</div>
               </div>
               <div class="setting-control">
                 <div class="relative">
                   <button id="btnPrefLanguage" data-action="pref-language" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold flex items-center gap-2" aria-expanded="false" aria-haspopup="menu" aria-controls="prefLanguageMenu">
-                    <span id="prefLanguageLabel">Ti&#7871;ng Vi&#7879;t</span>
-                    <span aria-hidden="true">&#9662;</span>
+                    <span id="prefLanguageLabel">Tiếng Việt</span>
+                    <span aria-hidden="true">▾</span>
                   </button>
                   <div id="prefLanguageMenu" data-open="0" role="menu" class="tc-pref-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip hidden">
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="vi" role="menuitem">Ti&#7871;ng Vi&#7879;t</button>
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" data-value="en" role="menuitem" aria-disabled="true" disabled>English (s&#7855;p ra m&#7855;t)</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="vi" role="menuitem">Tiếng Việt</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md opacity-60 cursor-not-allowed" data-value="en" role="menuitem" aria-disabled="true" disabled>English (sắp ra mắt)</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="tc-card p-4 setting-row tc-pref-row" data-setting="density">
               <div>
-                <div class="text-sm tc-muted">M&#7853;t &#273;&#7897; UI</div>
-                <div class="text-xs tc-muted">&#272;i&#7873;u ch&#7881;nh &#273;&#7897; tho&#225;ng giao di&#7879;n.</div>
+                <div class="text-sm tc-muted">Mật độ UI</div>
+                <div class="text-xs tc-muted">Điều chỉnh độ thoáng giao diện.</div>
               </div>
               <div class="setting-control">
                 <div class="relative">
                   <button id="btnPrefDensity" data-action="pref-density" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold flex items-center gap-2" aria-expanded="false" aria-haspopup="menu" aria-controls="prefDensityMenu">
-                    <span id="prefDensityLabel">Chu&#7849;n</span>
-                    <span aria-hidden="true">&#9662;</span>
+                    <span id="prefDensityLabel">Chuẩn</span>
+                    <span aria-hidden="true">▾</span>
                   </button>
                   <div id="prefDensityMenu" data-open="0" role="menu" class="tc-pref-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip hidden">
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="chuan" role="menuitem">Chu&#7849;n</button>
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="gon" role="menuitem">G&#7885;n</button>
-                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="thoang" role="menuitem">Tho&#225;ng</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="chuan" role="menuitem">Chuẩn</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="gon" role="menuitem">Gọn</button>
+                    <button class="tc-menu-item w-full text-left px-3 py-2 rounded-md" data-value="thoang" role="menuitem">Thoáng</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="tc-card p-4 setting-row tc-pref-row" data-setting="shortcuts">
               <div>
-                <div class="text-sm tc-muted">Ph&#237;m t&#7855;t</div>
-                <div class="text-xs tc-muted">B&#7853;t/t&#7855;t ph&#237;m t&#7855;t n&#7893;i.</div>
+                <div class="text-sm tc-muted">Phím tắt</div>
+                <div class="text-xs tc-muted">Bật/tắt phím tắt nổi.</div>
               </div>
               <div class="setting-control setting-toggle flex flex-col items-end gap-2">
-                <button id="btnPrefShortcutsToggle" data-toggle="shortcuts" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang b&#7853;t</button>
+                <button id="btnPrefShortcutsToggle" data-toggle="shortcuts" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Đang bật</button>
                 <div id="shortcutsListWrap" class="hidden">
-                  <button id="btnShortcutsList" data-action="shortcuts-list" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xem danh s&#225;ch ph&#237;m t&#7855;t</button>
+                  <button id="btnShortcutsList" data-action="shortcuts-list" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xem danh sách phím tắt</button>
                 </div>
               </div>
             </div>
@@ -795,126 +704,126 @@
         </div>
 
         <div id="section-data" class="tc-card p-6" data-section="data">
-          <h2 class="text-xl font-semibold">D&#7919; li&#7879;u &amp; &#273;&#7891;ng b&#7897;</h2>
+          <h2 class="text-xl font-semibold">Dữ liệu & đồng bộ</h2>
           <div class="mt-4 space-y-3">
             <div class="tc-card p-4 setting-row" data-setting="export">
               <div>
-                <div class="text-sm tc-muted">Xu&#7845;t d&#7919; li&#7879;u</div>
-                <div class="text-xs tc-muted">T&#7843;i v&#7873; JSON ho&#7863;c CSV.</div>
+                <div class="text-sm tc-muted">Xuất dữ liệu</div>
+                <div class="text-xs tc-muted">Tải về JSON hoặc CSV.</div>
               </div>
               <div class="setting-control flex flex-wrap gap-2 justify-end">
-                <button id="btnExportJson" data-action="export-json" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xu&#7845;t JSON</button>
-                <button id="btnExportCsv" data-action="export-csv" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xu&#7845;t CSV</button>
+                <button id="btnExportJson" data-action="export-json" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xuất JSON</button>
+                <button id="btnExportCsv" data-action="export-csv" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Xuất CSV</button>
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="import">
               <div>
-                <div class="text-sm tc-muted">Nh&#7853;p d&#7919; li&#7879;u</div>
-                <div class="text-xs tc-muted">Nh&#7853;p t&#7879;p t&#7915; b&#7897; s&#432;u t&#7853;p kh&#225;c.</div>
+                <div class="text-sm tc-muted">Nhập dữ liệu</div>
+                <div class="text-xs tc-muted">Nhập tệp từ bộ sưu tập khác.</div>
               </div>
               <div class="setting-control">
-                <button id="btnImportFile" data-action="import-file" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Nh&#7853;p t&#7879;p</button>
+                <button id="btnImportFile" data-action="import-file" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Nhập tệp</button>
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="backup">
               <div>
-                <div class="text-sm tc-muted">Sao l&#432;u / Kh&#244;i ph&#7909;c</div>
-                <div class="text-xs tc-muted">L&#432;u nhanh ho&#7863;c kh&#244;i ph&#7909;c t&#7915; b&#7843;n sao.</div>
+                <div class="text-sm tc-muted">Sao lưu / Khôi phục</div>
+                <div class="text-xs tc-muted">Lưu nhanh hoặc khôi phục từ bản sao.</div>
               </div>
               <div class="setting-control flex flex-wrap gap-2 justify-end">
-                <button id="btnBackupCreate" data-action="backup-create" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">T&#7841;o sao l&#432;u</button>
-                <button id="btnBackupRestore" data-action="backup-restore" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Kh&#244;i ph&#7909;c</button>
+                <button id="btnBackupCreate" data-action="backup-create" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Tạo sao lưu</button>
+                <button id="btnBackupRestore" data-action="backup-restore" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Khôi phục</button>
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="sync">
               <div>
-                <div class="text-sm tc-muted">&#272;&#7891;ng b&#7897;</div>
-                <div class="text-xs tc-muted">B&#7853;t t&#7927; l&#7879; &#273;&#7891;ng b&#7897; v&#7899;i t&#224;i kho&#7843;n.</div>
+                <div class="text-sm tc-muted">Đồng bộ</div>
+                <div class="text-xs tc-muted">Bật tỷ lệ đồng bộ với tài khoản.</div>
               </div>
               <div class="setting-control setting-toggle">
-                <button id="btnSyncToggle" data-toggle="sync" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang b&#7853;t</button>
+                <button id="btnSyncToggle" data-toggle="sync" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Đang bật</button>
               </div>
             </div>
           </div>
           <input id="accountImportInput" data-role="import-input" type="file" accept=".json,.csv" class="hidden">
         </div>
         <div id="section-privacy" class="tc-card p-6" data-section="privacy">
-          <h2 class="text-xl font-semibold">Quy&#7873;n ri&#234;ng t&#432;</h2>
+          <h2 class="text-xl font-semibold">Quyền riêng tư</h2>
           <div class="mt-4 space-y-3">
             <div class="tc-card p-4 setting-row" data-setting="telemetry">
               <div>
-                <div class="text-sm tc-muted">&#272;&#243;ng g&#243;p d&#7919; li&#7879;u</div>
-                <div class="text-xs tc-muted">Chia s&#7867; nh&#7865; &#273;&#7875; c&#7843;i thi&#7879;n s&#7843;n ph&#7849;m.</div>
+                <div class="text-sm tc-muted">Đóng góp dữ liệu</div>
+                <div class="text-xs tc-muted">Chia sẻ nhẹ để cải thiện sản phẩm.</div>
               </div>
               <div class="setting-control setting-toggle">
-                <button id="btnPrivacyTelemetryToggle" data-toggle="telemetry" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang b&#7853;t</button>
+                <button id="btnPrivacyTelemetryToggle" data-toggle="telemetry" aria-pressed="true" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Đang bật</button>
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="read-only">
               <div>
-                <div class="text-sm tc-muted">Chia s&#7867; ch&#7871; &#273;&#7897; xem</div>
-                <div class="text-xs tc-muted">Cho ph&#233;p ng&#432;&#7901;i kh&#225;c xem m&#7909;c c&#244;ng khai.</div>
+                <div class="text-sm tc-muted">Chia sẻ chế độ xem</div>
+                <div class="text-xs tc-muted">Cho phép người khác xem mục công khai.</div>
               </div>
               <div class="setting-control setting-toggle">
-                <button id="btnPrivacyReadonlyToggle" data-toggle="read-only" aria-pressed="false" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">&#272;ang t&#7855;t</button>
+                <button id="btnPrivacyReadonlyToggle" data-toggle="read-only" aria-pressed="false" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Đang tắt</button>
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="anonymous">
               <div>
-                <div class="text-sm tc-muted">Ch&#7871; &#273;&#7897; &#7849;n danh</div>
-                <div class="text-xs tc-muted">&#7848;n t&#234;n hi&#7875;n th&#7883; trong b&#7843;ng x&#7871;p h&#7841;ng.</div>
+                <div class="text-sm tc-muted">Chế độ ẩn danh</div>
+                <div class="text-xs tc-muted">Ẩn tên hiển thị trong bảng xếp hạng.</div>
               </div>
               <div class="setting-control setting-toggle">
-                <button id="btnPrivacyAnonymousToggle" data-toggle="anonymous" aria-pressed="false" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Kh&#244;ng k&#237;ch ho&#7841;t</button>
+                <button id="btnPrivacyAnonymousToggle" data-toggle="anonymous" aria-pressed="false" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Không kích hoạt</button>
               </div>
             </div>
           </div>
         </div>
 
         <div id="section-plan" class="tc-card p-6">
-          <h2 class="text-xl font-semibold">G&#243;i d&#7883;ch v&#7909; (s&#7855;p ra m&#7855;t)</h2>
-          <p class="mt-2 tc-muted">Chu&#7849;n b&#7883; ra m&#7855;t g&#243;i c&#225; nh&#226;n v&#224; doanh nghi&#7879;p.</p>
+          <h2 class="text-xl font-semibold">Gói dịch vụ (sắp ra mắt)</h2>
+          <p class="mt-2 tc-muted">Chuẩn bị ra mắt gói cá nhân và doanh nghiệp.</p>
         </div>
 
         <div id="section-team" class="tc-card p-6">
-          <h2 class="text-xl font-semibold">Kh&#244;ng gian l&#224;m vi&#7879;c / Nh&#243;m (s&#7855;p ra m&#7855;t)</h2>
-          <p class="mt-2 tc-muted">T&#7893; ch&#7913;c nh&#243;m, quy tr&#236;nh v&#224; ph&#226;n quy&#7873;n s&#7869; &#273;&#432;&#7907;c m&#7903; sau.</p>
+          <h2 class="text-xl font-semibold">Không gian làm việc / Nhóm (sắp ra mắt)</h2>
+          <p class="mt-2 tc-muted">Tổ chức nhóm, quy trình và phân quyền sẽ được mở sau.</p>
         </div>
 
         <div id="section-support" class="tc-card p-6" data-section="support">
-          <h2 class="text-xl font-semibold">H&#7895; tr&#7907; &amp; ph&#7843;n h&#7891;i</h2>
+          <h2 class="text-xl font-semibold">Hỗ trợ & phản hồi</h2>
           <div class="mt-4 space-y-3">
             <div class="tc-card p-4 setting-row" data-setting="feedback">
               <div>
-                <div class="text-sm tc-muted">G&#7917;i ph&#7843;n h&#7891;i</div>
-                <div class="text-xs tc-muted">N&#243;i nhanh nhu c&#7847;u ho&#7863;c l&#7895;i g&#7863;p ph&#7843;i.</div>
+                <div class="text-sm tc-muted">Gửi phản hồi</div>
+                <div class="text-xs tc-muted">Nói nhanh nhu cầu hoặc lỗi gặp phải.</div>
               </div>
               <div class="setting-control">
-                <button id="btnSupportFeedback" data-action="support-feedback" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">G&#7917;i ph&#7843;n h&#7891;i</button>
+                <button id="btnSupportFeedback" data-action="support-feedback" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Gửi phản hồi</button>
               </div>
             </div>
             <div class="tc-card p-4 setting-row" data-setting="contact">
               <div>
-                <div class="text-sm tc-muted">Li&#234;n h&#7879; h&#7895; tr&#7907;</div>
-                <div class="text-xs tc-muted">&#431;u ti&#234;n nh&#432;&#771;ng v&#7845;n &#273;&#7873; kh&#7849;n c&#7845;p.</div>
+                <div class="text-sm tc-muted">Liên hệ hỗ trợ</div>
+                <div class="text-xs tc-muted">Ưu tiên những vấn đề khẩn cấp.</div>
               </div>
               <div class="setting-control">
-                <button id="btnSupportContact" data-action="support-contact" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Li&#234;n h&#7879; ngay</button>
+                <button id="btnSupportContact" data-action="support-contact" class="tc-btn tc-chip px-3 py-2 text-sm font-semibold">Liên hệ ngay</button>
               </div>
             </div>
           </div>
         </div>
 
         <div id="section-logout" class="tc-card p-6" data-section="logout">
-          <h2 class="text-xl font-semibold">&#272;&#259;ng xu&#7845;t</h2>
+          <h2 class="text-xl font-semibold">Đăng xuất</h2>
           <div class="mt-4 space-y-3">
             <div class="tc-card p-4 setting-row" data-setting="logout">
               <div>
-                <div class="text-sm tc-muted">Tho&#225;t t&#224;i kho&#7843;n</div>
-                <div class="text-xs tc-muted">K&#7871;t th&#250;c phi&#234;n hi&#7879;n t&#7841;i tr&#234;n thi&#7871;t b&#7883; n&#224;y.</div>
+                <div class="text-sm tc-muted">Thoát tài khoản</div>
+                <div class="text-xs tc-muted">Kết thúc phiên hiện tại trên thiết bị này.</div>
               </div>
               <div class="setting-control">
-                <button id="btnLogout" data-action="logout" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Tho&#225;t t&#224;i kho&#7843;n</button>
+                <button id="btnLogout" data-action="logout" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Thoát tài khoản</button>
               </div>
             </div>
           </div>
@@ -924,18 +833,18 @@
       <aside class="lg:w-72">
         <div class="account-rail tc-card p-5 space-y-4">
           <div>
-            <div class="text-xs uppercase tracking-wide tc-muted">H&#224;nh &#273;&#7897;ng nhanh</div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Hành động nhanh</div>
             <div class="mt-2 flex flex-col gap-2">
-              <button id="btnQuickSyncNow" data-action="sync-now" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">&#272;&#7891;ng b&#7897; ngay</button>
-              <button id="btnQuickSyncToggle" data-action="sync-toggle-quick" class="tc-btn tc-chip px-4 py-2 text-sm font-semibold">T&#7855;t &#273;&#7891;ng b&#7897;</button>
-              <button id="btnQuickRetry" data-action="sync-retry" class="tc-btn tc-chip px-4 py-2 text-sm font-semibold">Th&#7917; l&#7841;i k&#7871;t n&#7889;i</button>
+              <button id="btnQuickSyncNow" data-action="sync-now" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Đồng bộ ngay</button>
+              <button id="btnQuickSyncToggle" data-action="sync-toggle-quick" class="tc-btn tc-chip px-4 py-2 text-sm font-semibold">Tắt đồng bộ</button>
+              <button id="btnQuickRetry" data-action="sync-retry" class="tc-btn tc-chip px-4 py-2 text-sm font-semibold">Thử lại kết nối</button>
             </div>
           </div>
           <div class="tc-card p-4">
-            <div class="text-sm tc-muted">Tr&#7841;ng th&#225;i</div>
-            <div class="mt-2 text-sm font-semibold">2/8 Th&#7871; gi&#7899;i s&#7855;n s&#224;ng</div>
-            <div class="mt-1 text-sm tc-muted">S&#7855;c th&#225;i &#273;ang d&#249;ng: Origami</div>
-            <div class="mt-1 text-sm tc-muted">&#272;&#7891;ng b&#7897;: &#272;ang b&#7853;t</div>
+            <div class="text-sm tc-muted">Trạng thái</div>
+            <div class="mt-2 text-sm font-semibold">2/8 Thế giới sắn sàng</div>
+            <div class="mt-1 text-sm tc-muted">Sắc thái đang dùng: Origami</div>
+            <div class="mt-1 text-sm tc-muted">Đồng bộ: Đang bật</div>
           </div>
         </div>
       </aside>
@@ -946,24 +855,24 @@
 
   <div id="confirmModal" data-role="confirm-modal" class="fixed inset-0 z-[4500] hidden items-center justify-center bg-black/30 p-4">
     <div class="tc-card w-full max-w-md p-6">
-      <div class="text-xs uppercase tracking-wide tc-muted">X&#225;c nh&#7853;n</div>
-      <div id="confirmTitle" data-role="confirm-title" class="text-lg font-semibold mt-2">X&#225;c nh&#7853;n thao t&#225;c</div>
-      <div id="confirmMessage" data-role="confirm-message" class="tc-muted text-sm mt-2">B&#7841;n c&#243; ch&#7855;c mu&#7889;n ti&#7871;p t&#7909;c?</div>
+      <div class="text-xs uppercase tracking-wide tc-muted">Xác nhận</div>
+      <div id="confirmTitle" data-role="confirm-title" class="text-lg font-semibold mt-2">Xác nhận thao tác</div>
+      <div id="confirmMessage" data-role="confirm-message" class="tc-muted text-sm mt-2">Bạn có chắc muốn tiếp tục?</div>
       <div class="mt-4 flex flex-wrap justify-end gap-2">
-        <button id="btnConfirmCancel" data-action="confirm-cancel" class="tc-btn tc-chip px-4 py-2 text-sm font-semibold">Hu&#7927;</button>
-        <button id="btnConfirmOk" data-action="confirm-ok" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">X&#225;c nh&#7853;n</button>
+        <button id="btnConfirmCancel" data-action="confirm-cancel" class="tc-btn tc-chip px-4 py-2 text-sm font-semibold">Huỷ</button>
+        <button id="btnConfirmOk" data-action="confirm-ok" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Xác nhận</button>
       </div>
     </div>
   </div>
 
   <div id="shortcutsModal" data-role="shortcuts-modal" class="fixed inset-0 z-[4600] hidden items-center justify-center bg-black/40 p-4">
     <div class="tc-card w-full max-w-lg p-6">
-      <div class="text-xs uppercase tracking-wide tc-muted">Ph&#237;m t&#7855;t</div>
-      <div class="text-lg font-semibold mt-2">Danh s&#225;ch ph&#237;m t&#7855;t</div>
-      <div class="tc-muted text-sm mt-1">Danh s&#225;ch n&#224;y &#273;&#432;&#7907;c tr&#237;ch t&#7915; m&#227; hi&#7879;n t&#7841;i.</div>
+      <div class="text-xs uppercase tracking-wide tc-muted">Phím tắt</div>
+      <div class="text-lg font-semibold mt-2">Danh sách phím tắt</div>
+      <div class="tc-muted text-sm mt-1">Danh sách này được trích từ mã hiện tại.</div>
       <div id="shortcutsList" class="mt-4 space-y-3"></div>
       <div class="mt-5 flex justify-end">
-        <button id="btnShortcutsClose" data-action="shortcuts-close" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">&#272;&#243;ng</button>
+        <button id="btnShortcutsClose" data-action="shortcuts-close" class="tc-btn tc-btn-primary px-4 py-2 text-sm font-semibold">Đóng</button>
       </div>
     </div>
   </div>
@@ -971,110 +880,8 @@
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
   <script type="module" src="./account.js"></script>
-  <script>
-    (() => {
-      const portalSwitcher = document.getElementById("portalSwitcher");
-      const portalBtn = document.getElementById("portalBtn");
-      const portalMenu = document.getElementById("portalMenu");
-      if (portalSwitcher && portalBtn && portalMenu) {
-        const setOpen = (open) => {
-          portalMenu.dataset.open = open ? "1" : "0";
-          portalMenu.hidden = !open;
-          portalBtn.setAttribute("aria-expanded", open ? "true" : "false");
-        };
-        setOpen(portalMenu.dataset.open === "1");
-        portalBtn.addEventListener("click", (event) => {
-          event.stopPropagation();
-          setOpen(portalMenu.dataset.open !== "1");
-        });
-        portalMenu.addEventListener("click", (event) => {
-          const item = event.target.closest(".tc-menu-item");
-          if (!item || !portalMenu.contains(item)) return;
-          setOpen(false);
-        });
-        document.addEventListener("click", (event) => {
-          if (!portalMenu.contains(event.target) && !portalBtn.contains(event.target)) {
-            setOpen(false);
-          }
-        });
-        document.addEventListener("keydown", (event) => {
-          if (event.key === "Escape") setOpen(false);
-        });
-      }
-    })();
-  </script>
-  <script>
-    (() => {
-      const worldBtn = document.getElementById("worldBtn");
-      const worldMenu = document.getElementById("worldMenu");
-      const switcher = document.getElementById("worldSwitcher");
-      if (!worldBtn || !worldMenu || !switcher) return;
-      const worlds = ["nebula","ocean","ink","origami","arcade","dunes","chrome","circuit"];
-      const labels = {
-        nebula: "Tinh v\u00e2n",
-        ocean: "\u0110\u1ea1i d\u01b0\u01a1ng",
-        ink: "M\u1ef1c t\u00e0u",
-        origami: "Origami",
-        arcade: "Arcade",
-        dunes: "\u0110\u1ed3i c\u00e1t",
-        chrome: "Chrome",
-        circuit: "M\u1ea1ch \u0111i\u1ec7n"
-      };
-      const storageKey = "tc_world";
-      const defaultWorld = "origami";
-      const labelEl = document.getElementById("worldLabel");
-      const prefLabelEl = document.getElementById("prefWorldLabel");
-      const setPrefWorldLabel = (key) => {
-        if (!prefLabelEl) return;
-        prefLabelEl.textContent = labels[key] || "Origami";
-      };
-      const setMenuOpen = (open) => {
-        worldMenu.dataset.open = open ? "1" : "0";
-        worldMenu.hidden = !open;
-        worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-      const applyWorld = (nextKey) => {
-        const next = worlds.includes(nextKey) ? nextKey : defaultWorld;
-        document.documentElement.setAttribute("data-world", next);
-        try { localStorage.setItem(storageKey, next); } catch (e) {}
-        if (labelEl) labelEl.textContent = labels[next] || "Origami";
-        setPrefWorldLabel(next);
-        window.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world: next } }));
-      };
-      const getWorld = () => {
-        const stored = localStorage.getItem(storageKey);
-        return worlds.includes(stored) ? stored : (document.documentElement.dataset.world || defaultWorld);
-      };
-      window.tcTheme = { applyWorld, getWorld, worlds, labels };
-      try {
-        const stored = localStorage.getItem(storageKey);
-        applyWorld(stored || document.documentElement.dataset.world || defaultWorld);
-      } catch (e) {
-        applyWorld(document.documentElement.dataset.world || defaultWorld);
-      }
-      setMenuOpen(false);
-      worldBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        setMenuOpen(worldMenu.dataset.open !== "1");
-      });
-      worldMenu.addEventListener("click", (event) => {
-        const item = event.target.closest(".tc-world-item");
-        if (!item || !worldMenu.contains(item)) return;
-        applyWorld(item.getAttribute("data-world"));
-        setMenuOpen(false);
-        worldBtn.focus();
-      });
-      document.addEventListener("click", (event) => {
-        if (!switcher.contains(event.target)) setMenuOpen(false);
-      });
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          setMenuOpen(false);
-          worldBtn.focus();
-        }
-      });
-    })();
-  </script>
+  
+  
   <script>
     (() => {
       const prefWorldBtn = document.getElementById("btnPrefWorld");
@@ -1376,6 +1183,7 @@
       sections.forEach(section => observer.observe(section));
     })();
   </script>
+  <script src="./scripts/topbar_behavior.js" defer></script>
 </body>
 </html>
 
