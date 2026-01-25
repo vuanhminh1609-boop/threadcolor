@@ -30,7 +30,7 @@
 |---|---|---|
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
-| Tone/S?c th?i | S?c th?i | B? theme giao di?n: n?n/m?u nh?n/ch?? kh?ng ph?i ?Th? gi?i? ch?c n?ng. |
+| Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
@@ -142,6 +142,7 @@
 | Latency | Độ trễ | Thời gian chờ phản hồi. |
 | FAB | Nút nổi cố định (FAB) | Nút nổi cố định ở góc màn hình để mở nhanh tác vụ chính. |
 | Bottom Sheet | Tấm trượt đáy | Tấm trượt từ dưới lên trên trên mobile để hiển thị tác vụ nhanh. |
+| FOUC | Nháy nội dung không đồng bộ | Hiện tượng nội dung/kiểu chữ nháy sai trong tích tắc khi JS/CSS/i18n chưa kịp áp dụng. |
 | CDN | CDN | Mạng phân phối nội dung để phân phối tài nguyên tĩnh nhanh và ổn định. |
 | PostCSS | PostCSS | Công cụ xử lý CSS trong pipeline build (thêm prefix, tối ưu). |
 | Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |

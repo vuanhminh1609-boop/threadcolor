@@ -637,8 +637,8 @@
   </style></head>
 <body class="font-sans">
     <header class="tc-topbar relative">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
-      <div class="flex items-center gap-3">
+    <div class="max-w-6xl mx-auto px-4 py-3 grid grid-cols-2 items-center gap-3 sm:flex sm:items-center sm:gap-4">
+      <div class="flex items-center gap-3 min-w-0 order-1 col-span-1 sm:order-none">
         <a href="../index.html" class="flex items-center gap-3 min-w-0">
           <span class="h-11 w-11 md:h-12 md:w-12 rounded-xl shrink-0 flex items-center justify-center bg-white/5 ring-1 ring-white/10">
             <picture>
@@ -654,33 +654,33 @@
             </picture>
           </span>
           <span class="min-w-0 flex flex-col justify-center leading-tight">
-            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors ? 8Portal</span>
-            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">M?t ch?m m? kh?ng gian m?u v? h?n</span>
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors · 8Portal</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">Một chạm mở không gian màu vô hạn</span>
           </span>
         </a>
       </div>
 
-      <div class="flex-1 flex items-center justify-center">
+      <div class="order-3 col-span-1 flex items-center justify-center justify-self-end sm:order-none sm:flex-1 sm:justify-center">
         <div class="relative" id="portalSwitcher">
           <button id="portalBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
             aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
-            Ch?n Th? gi?i
+            Chọn Thế giới
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Th? gi?i m?u th?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Th? gi?i D?i chuy?n m?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Th? gi?i B?ng ph?i m?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Th? gi?i M?u in (CMYK)</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Th? gi?i Th? vi?n T?i s?n M?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Th? gi?i m?u S?n&V?i</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Th? gi?i M?u t? ?nh</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Th? gi?i Chia s? + Remix</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Thế giới màu thêu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Thế giới Dải chuyển màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Thế giới Bảng phối màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Thế giới Màu in (CMYK)</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Thế giới Thư viện Tài sản Màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Thế giới màu Sơn&Vải</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Thế giới Màu từ Ảnh</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Thế giới Chia sẻ + Remix</a>
           </div>
         </div>
       </div>
-      <div class="flex items-center justify-end gap-3 min-w-[210px]">
-        <div class="relative" id="worldSwitcher">
+      <div class="contents sm:flex sm:items-center sm:justify-end sm:gap-3 sm:min-w-[210px]">
+        <div class="relative order-4 col-span-1 justify-self-start sm:order-none sm:justify-self-auto" id="worldSwitcher">
           <button id="worldBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
             aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu" data-i18n-attr="aria-label:topbar.tones.label">
@@ -701,7 +701,7 @@
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">M?ch ?i?n</button>
           </div>
         </div>
-        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px] order-2 col-span-1 justify-self-end sm:order-none"></div>
       </div>
     </div>
   </header>

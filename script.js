@@ -2565,7 +2565,7 @@ if (contributeSubmit) {
       closeContributeModal();
     } catch (err) {
       console.error(err);
-      showToast(err?.message || "G?i th?t b?i");
+      showToast(err?.message || "Gửi thất bại");
     }
   });
 }

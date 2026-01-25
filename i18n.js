@@ -18,7 +18,7 @@
             spaces: "Không gian"
           },
           tones: {
-            label: "S?c th?i"
+            label: "Sắc thái"
           },
                     portal: {
             placeholder: "Chọn Thế giới",

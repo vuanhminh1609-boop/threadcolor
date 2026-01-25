@@ -146,7 +146,7 @@
 <body class="font-sans">
   <header class="tc-topbar relative">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3 min-w-0">
+      <div class="flex items-center gap-3 min-w-0 order-1 col-span-1 sm:order-none">
         <a href="./index.html" class="flex items-center gap-3 min-w-0">
           <span class="h-11 w-11 md:h-12 md:w-12 rounded-xl shrink-0 flex items-center justify-center bg-white/5 ring-1 ring-white/10">
             <picture>
@@ -169,7 +169,7 @@
           </span>
         </a>
       </div>
-      <div class="flex-1 flex items-center justify-center">
+      <div class="order-3 col-span-1 flex items-center justify-center justify-self-end sm:order-none sm:flex-1 sm:justify-center">
         <div class="relative" id="portalSwitcher">
           <button id="portalBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
@@ -188,8 +188,8 @@
           </div>
         </div>
       </div>
-      <div class="flex items-center justify-end gap-3 min-w-[210px]">
-        <div class="relative" id="worldSwitcher">
+      <div class="contents sm:flex sm:items-center sm:justify-end sm:gap-3 sm:min-w-[210px]">
+        <div class="relative order-4 col-span-1 justify-self-start sm:order-none sm:justify-self-auto" id="worldSwitcher">
           <button id="worldBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
             aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu">
@@ -210,7 +210,7 @@
             <button class="tc-world-item tc-menu-item w-full text-left rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
           </div>
         </div>
-        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px] order-2 col-span-1 justify-self-end sm:order-none"></div>
       </div>
     </div>
   </header>
