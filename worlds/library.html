@@ -77,6 +77,31 @@
       padding: 0.55rem 0.75rem;
       color: var(--text);
     }
+    .hex-toolbar{
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      padding: 12px;
+      backdrop-filter: blur(12px);
+    }
+    .hex-toolbar__row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .hex-toolbar__row > *{
+      flex: 1 1 auto;
+    }
+    .hex-toolbar__row .tc-input{
+      width: 100%;
+    }
+    .hex-grid.is-compact .tc-card{
+      padding: 8px;
+    }
     .tc-swatch{
       width: 28px;
       height: 28px;
@@ -337,16 +362,31 @@
       </div>
 
       <div id="hexTabPanel" class="mt-6 hidden">
-        <div class="flex flex-wrap gap-3 items-center">
-          <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo HEX/brand/mã...">
-          <select id="hexPageSize" class="tc-input w-full md:w-[160px]">
-            <option value="36">36 màu/trang</option>
-            <option value="60" selected>60 màu/trang</option>
-            <option value="96">96 màu/trang</option>
-          </select>
-          <div id="hexStats" class="text-xs tc-muted">Đang nạp dữ liệu...</div>
+        <div class="hex-toolbar">
+          <div class="hex-toolbar__row">
+            <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo HEX/brand/mã...">
+            <select id="hexSort" class="tc-input w-full md:w-[220px]">
+              <option value="hex" selected>Sắp xếp: Theo HEX</option>
+              <option value="hue">Sắp xếp: Theo tông (Hue)</option>
+              <option value="lightness">Sắp xếp: Theo độ sáng</option>
+            </select>
+            <select id="hexView" class="tc-input w-full md:w-[220px]">
+              <option value="compact" selected>Hiển thị: Gọn (quét nhanh)</option>
+              <option value="detail">Hiển thị: Thẻ (đầy đủ)</option>
+            </select>
+            <select id="hexLoadMode" class="tc-input w-full md:w-[220px]">
+              <option value="infinite" selected>Chế độ tải: Cuộn tải</option>
+              <option value="paging">Chế độ tải: Phân trang</option>
+            </select>
+            <select id="hexPageSize" class="tc-input w-full md:w-[160px]">
+              <option value="36">36 màu/trang</option>
+              <option value="60" selected>60 màu/trang</option>
+              <option value="96">96 màu/trang</option>
+            </select>
+            <div id="hexStats" class="text-xs tc-muted">Đang nạp dữ liệu...</div>
+          </div>
         </div>
-        <div id="hexGrid" class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+        <div id="hexGrid" class="hex-grid mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
         <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
           <button id="hexPrev" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Trang trước</button>
           <div id="hexPageInfo" class="text-xs tc-muted">Trang 1/1</div>

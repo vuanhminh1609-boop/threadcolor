@@ -124,6 +124,12 @@
 | Nâng lớp theo trạng thái (is-open z-index) | Nâng lớp theo trạng thái (is-open z-index) | Kỹ thuật tăng z-index cho row đang mở menu. |
 | Mật độ UI | Mật độ UI | Độ thoáng giao diện (điều chỉnh khoảng cách/padding/gap). |
 | Menu thả xuống | Menu thả xuống | Bảng chọn mở ra khi bấm nút (dropdown menu). |
+| Thanh điều khiển ghim | Thanh điều khiển ghim | Thanh control bám trên đầu khi cuộn để tìm kiếm/lọc nhanh. |
+| Cuộn tải | Cuộn tải | Cơ chế nạp thêm dữ liệu khi cuộn xuống (infinite scroll). |
+| Chế độ xem gọn | Chế độ xem gọn | Cách hiển thị rút gọn để quét nhanh nhiều mục. |
+| Menu ba chấm | Menu ba chấm | Nút mở hành động phụ dạng “⋯” để tiết kiệm không gian. |
+| Sắp xếp theo tông (Hue) | Sắp xếp theo tông (Hue) | Gom màu theo dải Hue để các màu gần tông nằm cạnh nhau. |
+| content-visibility | content-visibility | Thuộc tính CSS giúp trình duyệt bỏ qua render phần chưa thấy để tối ưu hiệu năng. |
 | Chip lọc (thẻ lọc nhỏ) | Chip lọc | Thẻ lọc nhỏ dạng pill để bật/tắt tiêu chí lọc nhanh. |
 | Logo mark (biểu tượng logo) | Logo mark (biểu tượng logo) | Biểu tượng rút gọn của logo, dùng đồng hành với tên thương hiệu. |
 | Hình vector (SVG) | Hình vector (SVG) | Ảnh dạng vector, phóng to không vỡ và nhẹ cho UI. |
