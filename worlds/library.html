@@ -6,6 +6,7 @@
   <title>Thế giới Thư viện Tài sản Màu</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <link rel="stylesheet" href="../assets/tones.css">
+  <link rel="stylesheet" href="../assets/topbar_overrides.css">
   <style>
     body{
       background: var(--bg);
@@ -75,6 +76,31 @@
       border-radius: 0.75rem;
       padding: 0.55rem 0.75rem;
       color: var(--text);
+    }
+    .hex-toolbar{
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      padding: 12px;
+      backdrop-filter: blur(12px);
+    }
+    .hex-toolbar__row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .hex-toolbar__row > *{
+      flex: 1 1 auto;
+    }
+    .hex-toolbar__row .tc-input{
+      width: 100%;
+    }
+    .hex-grid.is-compact .tc-card{
+      padding: 8px;
     }
     .tc-swatch{
       width: 28px;
@@ -174,9 +200,9 @@
   </style>
 </head>
 <body class="font-sans">
-    <header class="tc-topbar relative">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
-      <div class="flex items-center gap-3">
+        <header class="tc-topbar relative">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3 sm:flex-nowrap sm:gap-4 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center">
+      <div class="flex items-center gap-3 min-w-0 flex-1 order-1 sm:order-none sm:flex-none md:justify-self-start tc-topbar__left">
         <a href="../index.html" class="flex items-center gap-3 min-w-0">
           <span class="h-11 w-11 md:h-12 md:w-12 rounded-xl shrink-0 flex items-center justify-center bg-white/5 ring-1 ring-white/10">
             <picture>
@@ -192,32 +218,29 @@
             </picture>
           </span>
           <span class="min-w-0 flex flex-col justify-center leading-tight">
-            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors ? 8Portal</span>
-            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">M?t ch?m m? kh?ng gian m?u v? h?n</span>
+            <span class="tc-brand text-base md:text-lg whitespace-nowrap" data-i18n="topbar.brand">SpaceColors</span>
+            <span class="tc-muted text-[11px] md:text-xs truncate max-w-[240px] md:max-w-[360px] hidden sm:block" data-i18n="topbar.slogan">Một chạm mở không gian màu vô hạn</span>
           </span>
         </a>
       </div>
-
-      <div class="flex-1 flex items-center justify-center">
+      <div class="order-3 w-full flex items-center justify-center gap-3 sm:order-none sm:w-auto sm:flex-1 md:justify-self-center tc-topbar__center">
         <div class="relative" id="portalSwitcher">
           <button id="portalBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
             aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
-            Ch?n Th? gi?i
+            Chọn Thế giới
           </button>
           <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Th? gi?i m?u th?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Th? gi?i D?i chuy?n m?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Th? gi?i B?ng ph?i m?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Th? gi?i M?u in (CMYK)</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Th? gi?i Th? vi?n T?i s?n M?u</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Th? gi?i m?u S?n&V?i</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Th? gi?i M?u t? ?nh</a>
-            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Th? gi?i Chia s? + Remix</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./threadcolor.html" role="menuitem">Thế giới màu thêu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./gradient.html" role="menuitem">Thế giới Dải chuyển màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./palette.html" role="menuitem">Thế giới Bảng phối màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./printcolor.html" role="menuitem">Thế giới Màu in (CMYK)</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./library.html" role="menuitem">Thế giới Thư viện Tài sản Màu</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./paintfabric.html" role="menuitem">Thế giới màu Sơn&Vải</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./imagecolor.html" role="menuitem">Thế giới Màu từ Ảnh</a>
+            <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="./community.html" role="menuitem">Thế giới Chia sẻ + Remix</a>
           </div>
         </div>
-      </div>
-      <div class="flex items-center justify-end gap-3 min-w-[210px]">
         <div class="relative" id="worldSwitcher">
           <button id="worldBtn"
             class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
@@ -226,23 +249,27 @@
               <span class="tc-dot" aria-hidden="true"></span>
               <span id="worldLabel">Origami</span>
             </span>
-            <span aria-hidden="true">?</span>
+            <span aria-hidden="true">▾</span>
           </button>
           <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh v?n</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">??i d??ng</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">M?c t?u</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">??i c?t</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
             <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">M?ch ?i?n</button>
+            <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
           </div>
         </div>
-        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end min-w-[210px]"></div>
+      </div>
+      <div class="flex items-center justify-end gap-3 order-2 ml-auto sm:order-none sm:ml-0 md:justify-self-end tc-topbar__right">
+        <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end order-2 col-span-1 justify-self-end sm:order-none"></div>
       </div>
     </div>
   </header>
+
+
 
   <main class="mx-auto max-w-6xl px-4 pt-10 pb-16">
     <section class="tc-card p-6 md:p-8">
@@ -335,16 +362,31 @@
       </div>
 
       <div id="hexTabPanel" class="mt-6 hidden">
-        <div class="flex flex-wrap gap-3 items-center">
-          <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo HEX/brand/mã...">
-          <select id="hexPageSize" class="tc-input w-full md:w-[160px]">
-            <option value="36">36 màu/trang</option>
-            <option value="60" selected>60 màu/trang</option>
-            <option value="96">96 màu/trang</option>
-          </select>
-          <div id="hexStats" class="text-xs tc-muted">Đang nạp dữ liệu...</div>
+        <div class="hex-toolbar">
+          <div class="hex-toolbar__row">
+            <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo HEX/brand/mã...">
+            <select id="hexSort" class="tc-input w-full md:w-[220px]">
+              <option value="hex" selected>Sắp xếp: Theo HEX</option>
+              <option value="hue">Sắp xếp: Theo tông (Hue)</option>
+              <option value="lightness">Sắp xếp: Theo độ sáng</option>
+            </select>
+            <select id="hexView" class="tc-input w-full md:w-[220px]">
+              <option value="compact" selected>Hiển thị: Gọn (quét nhanh)</option>
+              <option value="detail">Hiển thị: Thẻ (đầy đủ)</option>
+            </select>
+            <select id="hexLoadMode" class="tc-input w-full md:w-[220px]">
+              <option value="infinite" selected>Chế độ tải: Cuộn tải</option>
+              <option value="paging">Chế độ tải: Phân trang</option>
+            </select>
+            <select id="hexPageSize" class="tc-input w-full md:w-[160px]">
+              <option value="36">36 màu/trang</option>
+              <option value="60" selected>60 màu/trang</option>
+              <option value="96">96 màu/trang</option>
+            </select>
+            <div id="hexStats" class="text-xs tc-muted">Đang nạp dữ liệu...</div>
+          </div>
         </div>
-        <div id="hexGrid" class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+        <div id="hexGrid" class="hex-grid mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
         <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
           <button id="hexPrev" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Trang trước</button>
           <div id="hexPageInfo" class="text-xs tc-muted">Trang 1/1</div>
@@ -354,6 +396,84 @@
       </div>
     </section>
   </main>
+
+  <div id="hexProfileOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tc-card w-full max-w-3xl overflow-auto" style="max-height:85vh;">
+      <div class="flex items-center justify-between border-b border-black/5 px-4 py-3">
+        <div class="flex items-center gap-3">
+          <span id="hexProfileSwatch" class="tc-hex-swatch"></span>
+          <div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Hồ sơ HEX</div>
+            <div id="hexProfileHex" class="text-lg font-semibold">#000000</div>
+          </div>
+        </div>
+        <button id="hexProfileClose" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Đóng</button>
+      </div>
+      <div class="grid gap-4 p-4 md:grid-cols-2">
+        <div class="space-y-3">
+          <div class="tc-card p-3">
+            <div id="hexProfileContrast" class="text-sm tc-muted">Tương phản chữ:</div>
+            <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
+              <div class="tc-chip px-2 py-2">RGB: <span id="hexProfileRgb"></span></div>
+              <div class="tc-chip px-2 py-2">HSL: <span id="hexProfileHsl"></span></div>
+              <div class="tc-chip px-2 py-2">HSV: <span id="hexProfileHsv"></span></div>
+              <div class="tc-chip px-2 py-2">Lab: <span id="hexProfileLab"></span></div>
+              <div class="tc-chip px-2 py-2">LCh: <span id="hexProfileLch"></span></div>
+              <div class="tc-chip px-2 py-2">CMYK*: <span id="hexProfileCmyk"></span></div>
+            </div>
+            <div class="text-[11px] tc-muted mt-2">* CMYK ước lượng</div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="hexProfileCopy" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Sao chép HEX</button>
+            <button id="hexProfileSave" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Lưu vào Thư viện</button>
+          </div>
+          <div class="grid gap-2 text-xs">
+            <button id="hexProfileOpenThread" class="tc-btn tc-chip px-3 py-2" type="button">Mở ở Thêu</button>
+            <button id="hexProfileOpenPrint" class="tc-btn tc-chip px-3 py-2" type="button">Mở ở In</button>
+            <button id="hexProfileOpenPalette" class="tc-btn tc-chip px-3 py-2" type="button">Tạo Palette</button>
+            <button id="hexProfileOpenGradient" class="tc-btn tc-chip px-3 py-2" type="button">Tạo Gradient</button>
+            <button id="hexProfileOpenPaint" class="tc-btn tc-chip px-3 py-2" type="button">Mở ở Sơn&Vải</button>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Sáng dần hơn</div>
+            <div id="hexLightenGroup" class="mt-2 grid grid-cols-4 gap-2"></div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide tc-muted">Tối dần hơn</div>
+            <div id="hexDarkenGroup" class="mt-2 grid grid-cols-4 gap-2"></div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-xs uppercase tracking-wide tc-muted">
+              <span>Màu tương tự</span>
+              <span>Ngưỡng ΔE: <span id="hexSimilarValue">6</span></span>
+            </div>
+            <input id="hexSimilarRange" class="mt-2 w-full" type="range" min="2" max="16" step="1" value="6">
+            <div id="hexSimilarGroup" class="mt-2 grid grid-cols-4 gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="hexFullscreen" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="absolute inset-0 flex flex-col items-center justify-between p-4">
+      <div class="w-full flex items-center justify-between">
+        <button id="hexFullscreenClose" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Đóng</button>
+        <div class="flex items-center gap-2">
+          <button id="hexFullscreenPrev" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">← Trước</button>
+          <button id="hexFullscreenNext" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Sau →</button>
+        </div>
+      </div>
+      <div class="tc-card px-4 py-3 text-center">
+        <div id="hexFullscreenHex" class="text-lg font-semibold">#000000</div>
+        <div id="hexFullscreenMeta" class="text-xs tc-muted mt-1"></div>
+      </div>
+      <button id="hexFullscreenCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép HEX</button>
+    </div>
+  </div>
 
   <script type="module" src="../auth.js"></script>
   <script type="module" src="./library.js"></script>

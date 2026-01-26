@@ -20,6 +20,10 @@ const SKIP_DIRS = new Set([
 ]);
 
 const SUSPECT_PATTERN = /(?:Ã|Ä|á»|áº|â€”|â€¢|â†’|â€|\uFFFD)/;
+const SUSPECT_QMARK_WORD_PATTERN = /\p{L}\?\p{L}/gu;
+const SUSPECT_QMARK_SPACE_PATTERN = /\p{L}\?\s+\p{L}/gu;
+const QUERYSTRING_PATTERN = /^\?[a-z0-9_-]+=/i;
+const IGNORE_QMARK_PATTERN = /^(?:\?\.|\?\?|\?\[|\?\s*:\s*|\?\s*\.)/;
 
 async function walk(dir, results = []) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -56,13 +60,32 @@ async function scanFile(filePath) {
       }
       if (inFence) continue;
     }
-    const match = line.search(SUSPECT_PATTERN);
-    if (match !== -1) {
+    const matches = [];
+    const mojibakeIndex = line.search(SUSPECT_PATTERN);
+    if (mojibakeIndex !== -1) {
+      matches.push(mojibakeIndex);
+    }
+    const scanQmark = (regex) => {
+      let qMatch;
+      while ((qMatch = regex.exec(line)) !== null) {
+        const qIndex = qMatch.index + qMatch[0].indexOf("?");
+        const tail = line.slice(qIndex);
+        if (QUERYSTRING_PATTERN.test(tail)) continue;
+        if (IGNORE_QMARK_PATTERN.test(tail)) continue;
+        matches.push(qIndex);
+      }
+    };
+    scanQmark(SUSPECT_QMARK_WORD_PATTERN);
+    scanQmark(SUSPECT_QMARK_SPACE_PATTERN);
+    if (matches.length) {
       hit = true;
-      const start = Math.max(0, match - 30);
-      const end = Math.min(line.length, match + 30);
-      const snippet = line.slice(start, end);
-      console.log(`${rel}:${lineNum}: ${snippet}`);
+      const uniq = Array.from(new Set(matches)).sort((a, b) => a - b);
+      for (const match of uniq) {
+        const start = Math.max(0, match - 30);
+        const end = Math.min(line.length, match + 30);
+        const snippet = line.slice(start, end);
+        console.log(`${rel}:${lineNum}: ${snippet}`);
+      }
     }
   }
   return hit;

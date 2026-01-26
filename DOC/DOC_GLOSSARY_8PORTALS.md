@@ -30,7 +30,7 @@
 |---|---|---|
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
-| Tone/S?c th?i | S?c th?i | B? theme giao di?n: n?n/m?u nh?n/ch?? kh?ng ph?i ?Th? gi?i? ch?c n?ng. |
+| Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
@@ -58,7 +58,7 @@
 | Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
-| Single Source of Truth | Ngu?n chu?n duy nh?t | N?i ??nh ngh?a chu?n ?? m?i n?i d?ng chung, tr?nh copy-paste l?ch. |
+| Single Source of Truth | Nguồn chuẩn duy nhất | Nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
 | Schema (khung dữ liệu chuẩn) | Schema (khung dữ liệu chuẩn) | Khung định nghĩa cấu trúc dữ liệu chuẩn để kiểm tra/đồng nhất. |
@@ -72,7 +72,7 @@
 | SHA-256 | SHA-256 | Ham bam tao dau van tay noi dung |
 | Ajv | Ajv | Thu vien Node.js de kiem tra JSON Schema |
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main |
-| Feature Flag | C? t?nh n?ng | C? ch? b?t/t?t t?nh n?ng theo ?i?u ki?n nh? query param, user role? |
+| Feature Flag | Cờ tính năng | Cơ chế bật/tắt tính năng theo điều kiện như query param, user role… |
 | Quét bí mật (secret scan) | Quét bí mật (secret scan) | Quét tìm khoá/bí mật trong code và lịch sử để ngăn rò rỉ. |
 | gitleaks:allow (chú thích để Gitleaks bỏ qua một phát hiện cụ thể ở đúng dòng code) | gitleaks:allow | Comment gắn ở đúng dòng nhằm bỏ qua một phát hiện cụ thể, không ảnh hưởng phạm vi khác. |
 | Siết CI (harden CI) | Siết CI (harden CI) | Siết quy trình CI/CD để giảm rủi ro (thêm kiểm tra, chỉnh phân quyền). |
@@ -124,6 +124,12 @@
 | Nâng lớp theo trạng thái (is-open z-index) | Nâng lớp theo trạng thái (is-open z-index) | Kỹ thuật tăng z-index cho row đang mở menu. |
 | Mật độ UI | Mật độ UI | Độ thoáng giao diện (điều chỉnh khoảng cách/padding/gap). |
 | Menu thả xuống | Menu thả xuống | Bảng chọn mở ra khi bấm nút (dropdown menu). |
+| Thanh điều khiển ghim | Thanh điều khiển ghim | Thanh control bám trên đầu khi cuộn để tìm kiếm/lọc nhanh. |
+| Cuộn tải | Cuộn tải | Cơ chế nạp thêm dữ liệu khi cuộn xuống (infinite scroll). |
+| Chế độ xem gọn | Chế độ xem gọn | Cách hiển thị rút gọn để quét nhanh nhiều mục. |
+| Menu ba chấm | Menu ba chấm | Nút mở hành động phụ dạng “⋯” để tiết kiệm không gian. |
+| Sắp xếp theo tông (Hue) | Sắp xếp theo tông (Hue) | Gom màu theo dải Hue để các màu gần tông nằm cạnh nhau. |
+| content-visibility | content-visibility | Thuộc tính CSS giúp trình duyệt bỏ qua render phần chưa thấy để tối ưu hiệu năng. |
 | Chip lọc (thẻ lọc nhỏ) | Chip lọc | Thẻ lọc nhỏ dạng pill để bật/tắt tiêu chí lọc nhanh. |
 | Logo mark (biểu tượng logo) | Logo mark (biểu tượng logo) | Biểu tượng rút gọn của logo, dùng đồng hành với tên thương hiệu. |
 | Hình vector (SVG) | Hình vector (SVG) | Ảnh dạng vector, phóng to không vỡ và nhẹ cho UI. |
@@ -142,6 +148,7 @@
 | Latency | Độ trễ | Thời gian chờ phản hồi. |
 | FAB | Nút nổi cố định (FAB) | Nút nổi cố định ở góc màn hình để mở nhanh tác vụ chính. |
 | Bottom Sheet | Tấm trượt đáy | Tấm trượt từ dưới lên trên trên mobile để hiển thị tác vụ nhanh. |
+| FOUC | Nháy nội dung không đồng bộ | Hiện tượng nội dung/kiểu chữ nháy sai trong tích tắc khi JS/CSS/i18n chưa kịp áp dụng. |
 | CDN | CDN | Mạng phân phối nội dung để phân phối tài nguyên tĩnh nhanh và ổn định. |
 | PostCSS | PostCSS | Công cụ xử lý CSS trong pipeline build (thêm prefix, tối ưu). |
 | Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |
