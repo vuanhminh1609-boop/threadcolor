@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const storageKey = "tc_lang";
   const defaultLang = "vi";
   const locales = {
@@ -62,7 +62,7 @@
             empty: "Chưa có dữ liệu tồn kho.",
             modalAdd: "Thêm tồn kho",
             modalEdit: "Sửa tồn kho",
-            modalSave: "Lưu",
+            modalSave: "LÆ°u",
             modalCancel: "Huỷ",
             fields: {
               brand: "Hãng",
@@ -81,10 +81,11 @@
           }
         },
       hero: {
-        title: "Không gian chuẩn hóa màu của bạn",
-        desc: "8 cổng tính năng dẫn bạn đến 8 Thế giới sắc màu — mỗi Thế giới là một công cụ riêng.\nThế giới màu chỉ: Chọn màu/HEX/ảnh → Mã chỉ đa hãng → Dùng ngay cho sản xuất.\nThế giới dải màu (sắp ra mắt): Tạo dải màu → Lưu bộ sưu tập → Xuất dữ liệu theo nhu cầu.\n6 Thế giới còn lại đang chuẩn bị. Khám phá cảm hứng và tạo không gian màu mang bản sắc của bạn.",
-        ctaPrimary: "Mở công cụ",
-        ctaSecondary: "Khám phá Thế giới"
+        title: "Không gian màu vô hạn.",
+        desc: "8 Thế giới màu đã sẵn sàng — mỗi Thế giới là một không gian màu sắc chuyên biệt — tạo, chuyển đổi, chuẩn hoá, lưu và áp dụng màu theo nhu cầu của bạn, và nhiều hơn thế nữa...\nTừ Hex/ảnh → tra mã chỉ → bảng phối (Palette) → dải chuyển (Gradient) → màu in (CMYK) → Chia sẻ + Remix\nKhám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xuống để xem sơ đồ 8 cổng — chọn 1 cổng để bước vào Thế giới bạn cần.",
+        ctaPrimary: "Bắt đầu với Thư viện màu",
+        ctaSecondary: "Mở công cụ tra mã chỉ",
+        ctaJump: "Đi đến 8 cổng ngay"
       },
       portalHub: {
         title: "8 Cổng SpaceColors",
@@ -250,7 +251,7 @@
           chosen: "Màu đã chọn",
           group: "Nhóm {index}",
           colors: "{count} màu",
-          save: "Lưu",
+          save: "LÆ°u",
           saved: "Đã lưu",
           saving: "Đang lưu...",
           noDataSave: "Không có dữ liệu để lưu.",
@@ -503,3 +504,4 @@
     apply();
   });
 })();
+

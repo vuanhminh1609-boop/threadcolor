@@ -10,6 +10,9 @@
   --a2: #d59e6d;
   --a3: #8c6d54;
 }
+.tc-brand{
+  font-weight: 700;
+}
 html[data-world="nebula"]{
   --bg:#040512;
   --text:#eef2ff;

@@ -31,6 +31,9 @@
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
 | Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
+| SVG chevron | Mũi tên SVG | Biểu tượng mũi tên dựng bằng SVG để tránh lỗi ký tự hiển thị trên nhiều môi trường. |
+| component | Thành phần giao diện | Khối UI tái sử dụng, có thể render lại ở nhiều trang nhưng giữ cùng cấu trúc. |
+| basePath | Tiền tố đường dẫn | Chuỗi tiền tố để tạo đường dẫn tương đối đúng giữa trang gốc và thư mục con. |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
