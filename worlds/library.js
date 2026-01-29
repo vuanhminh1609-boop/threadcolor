@@ -27,17 +27,26 @@ const elements = {
   panelEmpty: document.getElementById("assetPanelEmpty"),
   panelName: document.getElementById("assetPanelName"),
   panelType: document.getElementById("assetPanelType"),
-  panelTags: document.getElementById("assetPanelTags"),
-  panelSwatches: document.getElementById("assetPanelSwatches"),
-  panelNotes: document.getElementById("assetPanelNotes"),
-  save: document.getElementById("assetSave"),
-  apply: document.getElementById("assetApply"),
-  share: document.getElementById("assetShare"),
-  specText: document.getElementById("assetSpecText"),
-  specJson: document.getElementById("assetSpecJson"),
-  copyText: document.getElementById("assetCopyText"),
-  copyJson: document.getElementById("assetCopyJson"),
-  tabAssets: document.getElementById("assetTabBtn"),
+    panelTags: document.getElementById("assetPanelTags"),
+    panelSwatches: document.getElementById("assetPanelSwatches"),
+    panelNotes: document.getElementById("assetPanelNotes"),
+    save: document.getElementById("assetSave"),
+    apply: document.getElementById("assetApply"),
+    rename: document.getElementById("assetRename"),
+    remove: document.getElementById("assetDelete"),
+    share: document.getElementById("assetShare"),
+    specText: document.getElementById("assetSpecText"),
+    specJson: document.getElementById("assetSpecJson"),
+    copyText: document.getElementById("assetCopyText"),
+    copyJson: document.getElementById("assetCopyJson"),
+    nameModal: document.getElementById("assetNameModal"),
+    nameClose: document.getElementById("assetNameClose"),
+    nameCancel: document.getElementById("assetNameCancel"),
+    nameSave: document.getElementById("assetNameSave"),
+    nameInput: document.getElementById("assetNameInput"),
+    tagsInput: document.getElementById("assetTagsInput"),
+    toast: document.getElementById("assetToast"),
+    tabAssets: document.getElementById("assetTabBtn"),
   tabHex: document.getElementById("hexTabBtn"),
   tabContainer: document.getElementById("assetTabs") || document.getElementById("libraryTabs"),
   tabAssetsPanel: document.getElementById("assetTabPanel") || document.getElementById("assetsPanel"),
@@ -105,7 +114,9 @@ const state = {
   hexEntryMap: new Map(),
   hexProfileEntry: null,
   hexFullscreenIndex: 0,
-  hexSimilarCache: new Map()
+  hexSimilarCache: new Map(),
+  nameModalMode: "save",
+  nameModalAsset: null
 };
 
 const normalizeText = (value) => (value || "").toLowerCase();
@@ -126,9 +137,21 @@ const setupAutofillTrap = (input) => {
     input.removeAttribute("readonly");
     input.dataset.userTouched = "1";
   };
-  input.addEventListener("focus", unlock, { once: true });
-  input.addEventListener("pointerdown", unlock, { once: true });
+  const lock = () => {
+    if (input.dataset.userTouched === "1") return;
+    input.setAttribute("readonly", "readonly");
+  };
+  input.addEventListener(
+    "pointerdown",
+    () => {
+      if (input.hasAttribute("readonly")) input.removeAttribute("readonly");
+    },
+    true
+  );
+  input.addEventListener("focus", unlock);
+  input.addEventListener("blur", lock);
   input.addEventListener("keydown", () => {
+    if (input.hasAttribute("readonly")) input.removeAttribute("readonly");
     input.dataset.userTouched = "1";
   });
   input.addEventListener("input", () => {
@@ -143,6 +166,23 @@ const debounce = (fn, delay = 250) => {
     if (timer) window.clearTimeout(timer);
     timer = window.setTimeout(() => fn(...args), delay);
   };
+};
+
+const showToast = (message) => {
+  if (!elements.toast) return;
+  elements.toast.textContent = message;
+  elements.toast.classList.add("is-visible");
+  window.clearTimeout(showToast._timer);
+  showToast._timer = window.setTimeout(() => {
+    elements.toast.classList.remove("is-visible");
+  }, 1800);
+};
+
+const setModalOpen = (open) => {
+  if (!elements.nameModal) return;
+  elements.nameModal.classList.toggle("hidden", !open);
+  elements.nameModal.setAttribute("aria-hidden", open ? "false" : "true");
+  if (open && elements.nameInput) elements.nameInput.focus();
 };
 
 const normalizeHexView = (value) => {
@@ -538,35 +578,85 @@ const filterAssets = () => {
   });
 };
 
-const renderGrid = () => {
-  if (!elements.grid) return;
-  const items = filterAssets();
-  if (!items.length) {
-    elements.grid.innerHTML = `<div class="tc-muted text-sm">Chưa có tài sản. Hãy tạo demo.</div>`;
-    return;
-  }
-  elements.grid.innerHTML = items.map((asset) => {
-    const stops = getStopsFromAsset(asset);
-    const swatches = stops.slice(0, 5).map((hex) =>
-      `<span class="tc-swatch" style="background:${hex};"></span>`
-    ).join("");
-    const tags = (asset.tags || []).slice(0, 3).map((tag) =>
-      `<span class="tc-chip px-2 py-1 rounded-full text-xs">${tag}</span>`
-    ).join("");
-    return `
-      <button class="tc-card p-4 text-left space-y-3" data-asset-id="${asset.id}" type="button">
-        <div>
-          <p class="text-xs uppercase tracking-[0.2em] tc-muted">${asset.type}</p>
-          <h3 class="font-semibold">${asset.name}</h3>
-        </div>
-        <div class="flex flex-wrap gap-2">${swatches}</div>
-        <div class="flex flex-wrap gap-2">${tags}</div>
-      </button>
-    `;
-  }).join("");
-};
+  const renderGrid = () => {
+    if (!elements.grid) return;
+    const items = filterAssets();
+    if (!items.length) {
+      elements.grid.innerHTML = `<div class="tc-muted text-sm">Chưa có tài sản. Hãy tạo demo.</div>`;
+      return;
+    }
+    elements.grid.innerHTML = items.map((asset) => {
+      const stops = getStopsFromAsset(asset);
+      const swatches = stops.slice(0, 5).map((hex) =>
+        `<span class="tc-swatch" style="background:${hex};"></span>`
+      ).join("");
+      const tags = (asset.tags || []).slice(0, 3).map((tag) =>
+        `<span class="tc-chip px-2 py-1 rounded-full text-xs">${tag}</span>`
+      ).join("");
+      const isSelected = state.selected && state.selected.id === asset.id ? " is-selected" : "";
+      return `
+        <button class="tc-card p-4 text-left space-y-3${isSelected}" data-asset-id="${asset.id}" type="button">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em] tc-muted">${asset.type}</p>
+              <h3 class="font-semibold">${asset.name}</h3>
+            </div>
+            <div class="flex flex-wrap gap-1">${tags}</div>
+          </div>
+          <div class="flex flex-wrap gap-2">${swatches}</div>
+          <div class="flex items-center justify-end asset-kebab">
+            <details data-asset-menu class="asset-kebab">
+              <summary data-asset-menu-toggle class="asset-kebab__btn tc-btn tc-chip px-2 py-1 text-xs cursor-pointer" aria-label="Tác vụ">⋯</summary>
+              <div class="asset-kebab__panel rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="use" data-asset-id="${asset.id}" type="button">Dùng</button>
+                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="rename" data-asset-id="${asset.id}" type="button">Đổi tên</button>
+                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="delete" data-asset-id="${asset.id}" type="button">Xóa</button>
+              </div>
+            </details>
+          </div>
+        </button>
+      `;
+    }).join("");
+  };
 
-const renderPanel = (asset) => {
+  const openNameModal = (asset, mode) => {
+    state.nameModalMode = mode;
+    state.nameModalAsset = asset;
+    if (elements.nameInput) {
+      const fallback = `Tài sản màu – ${new Date().toLocaleDateString("vi-VN")}`;
+      elements.nameInput.value = asset?.name || fallback;
+    }
+    if (elements.tagsInput) {
+      elements.tagsInput.value = Array.isArray(asset?.tags) ? asset.tags.join(", ") : "";
+    }
+    setModalOpen(true);
+  };
+
+  const saveNameModal = () => {
+    if (!state.nameModalAsset) return;
+    const name = elements.nameInput ? elements.nameInput.value.trim() : "";
+    if (!name) {
+      showToast("Vui lòng nhập tên tài sản.");
+      return;
+    }
+    const tagsRaw = elements.tagsInput ? elements.tagsInput.value : "";
+    const tags = tagsRaw
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    state.nameModalAsset.name = name;
+    state.nameModalAsset.tags = tags;
+    if (state.nameModalMode === "save") {
+      state.assets.unshift(state.nameModalAsset);
+    }
+    saveAssets();
+    renderGrid();
+    renderPanel(state.selected);
+    setModalOpen(false);
+    showToast(`Đã lưu ${name}.`);
+  };
+
+  const renderPanel = (asset) => {
   if (!elements.panel || !elements.panelEmpty) return;
   if (!asset) {
     elements.panel.classList.add("hidden");
@@ -590,11 +680,23 @@ const renderPanel = (asset) => {
     ).join("");
   }
   const worldKey = resolveWorldKey(asset);
-  if (elements.save) {
-    elements.save.disabled = true;
-    elements.save.title = "Tài sản đã ở Thư viện.";
-    elements.save.classList.add("opacity-60", "cursor-not-allowed");
-  }
+    const isInLibrary = state.assets.some((item) => item.id === asset.id);
+    if (elements.save) {
+      elements.save.disabled = isInLibrary;
+      elements.save.title = isInLibrary ? "Tài sản đã ở Thư viện." : "Lưu tài sản vào Thư viện.";
+      elements.save.classList.toggle("opacity-60", isInLibrary);
+      elements.save.classList.toggle("cursor-not-allowed", isInLibrary);
+    }
+    if (elements.rename) {
+      elements.rename.disabled = !isInLibrary;
+      elements.rename.classList.toggle("opacity-60", !isInLibrary);
+      elements.rename.classList.toggle("cursor-not-allowed", !isInLibrary);
+    }
+    if (elements.remove) {
+      elements.remove.disabled = !isInLibrary;
+      elements.remove.classList.toggle("opacity-60", !isInLibrary);
+      elements.remove.classList.toggle("cursor-not-allowed", !isInLibrary);
+    }
   if (elements.apply) {
     const canApply = Boolean(worldKey);
     elements.apply.disabled = !canApply;
@@ -617,9 +719,23 @@ const renderPanel = (asset) => {
     `stops: ${getStopsFromAsset(asset).join(", ")}`,
     `version: ${asset.version}`
   ].filter(Boolean).join("\n");
-  if (elements.specText) elements.specText.textContent = specText;
-  if (elements.specJson) elements.specJson.textContent = JSON.stringify(asset, null, 2);
-};
+    if (elements.specText) elements.specText.textContent = specText;
+    if (elements.specJson) elements.specJson.textContent = JSON.stringify(asset, null, 2);
+  };
+
+  const deleteAsset = (asset) => {
+    if (!asset) return;
+    const confirmed = window.confirm(`Xóa tài sản "${asset.name}" khỏi Thư viện?`);
+    if (!confirmed) return;
+    state.assets = state.assets.filter((item) => item.id !== asset.id);
+    if (state.selected && state.selected.id === asset.id) {
+      state.selected = null;
+    }
+    saveAssets();
+    renderGrid();
+    renderPanel(state.selected);
+    showToast(`Đã xóa tài sản ${asset.name}.`);
+  };
 
 const applyAsset = (asset) => {
   if (!asset) return;
@@ -1218,7 +1334,7 @@ const bindEvents = () => {
     state.hexPage = clamp(state.hexPage + 1, 1, Number.MAX_SAFE_INTEGER);
     renderHexGrid();
   });
-  elements.hexGrid?.addEventListener("click", (event) => {
+    elements.hexGrid?.addEventListener("click", (event) => {
     const btn = event.target.closest("[data-hex-action]");
     if (btn) {
       const hex = btn.dataset.hex;
@@ -1347,18 +1463,59 @@ const bindEvents = () => {
     if (Math.abs(delta) > 50) {
       stepFullscreen(delta < 0 ? 1 : -1);
     }
-  });
-  elements.grid?.addEventListener("click", (event) => {
-    const card = event.target.closest("[data-asset-id]");
-    if (!card) return;
-    const asset = state.assets.find((item) => item.id === card.dataset.assetId);
-    state.selected = asset || null;
-    renderPanel(state.selected);
-  });
-  elements.apply?.addEventListener("click", () => applyAsset(state.selected));
-  elements.share?.addEventListener("click", () => publishToFeed(state.selected));
-  elements.copyText?.addEventListener("click", () => {
-    if (!elements.specText) return;
+    });
+    elements.grid?.addEventListener("click", (event) => {
+      const actionBtn = event.target.closest("[data-asset-action]");
+      if (actionBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        const id = actionBtn.dataset.assetId;
+        const action = actionBtn.dataset.assetAction;
+        const asset = state.assets.find((item) => item.id === id);
+        if (!asset) return;
+        if (action === "use") applyAsset(asset);
+        if (action === "rename") openNameModal(asset, "rename");
+        if (action === "delete") deleteAsset(asset);
+        const details = actionBtn.closest("details");
+        if (details) details.open = false;
+        return;
+      }
+      if (event.target.closest("[data-asset-menu]")) return;
+      const card = event.target.closest("[data-asset-id]");
+      if (!card) return;
+      const asset = state.assets.find((item) => item.id === card.dataset.assetId);
+      state.selected = asset || null;
+      renderPanel(state.selected);
+      renderGrid();
+      document.getElementById("assetPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    elements.apply?.addEventListener("click", () => applyAsset(state.selected));
+    elements.share?.addEventListener("click", () => publishToFeed(state.selected));
+    elements.save?.addEventListener("click", () => {
+      if (!state.selected) return;
+      const exists = state.assets.some((item) => item.id === state.selected.id);
+      if (exists) {
+        showToast("Tài sản đã ở Thư viện.");
+        return;
+      }
+      openNameModal(state.selected, "save");
+    });
+    elements.rename?.addEventListener("click", () => {
+      if (!state.selected) return;
+      openNameModal(state.selected, "rename");
+    });
+    elements.remove?.addEventListener("click", () => {
+      if (!state.selected) return;
+      deleteAsset(state.selected);
+    });
+    elements.nameClose?.addEventListener("click", () => setModalOpen(false));
+    elements.nameCancel?.addEventListener("click", () => setModalOpen(false));
+    elements.nameModal?.addEventListener("click", (event) => {
+      if (event.target === elements.nameModal) setModalOpen(false);
+    });
+    elements.nameSave?.addEventListener("click", saveNameModal);
+    elements.copyText?.addEventListener("click", () => {
+      if (!elements.specText) return;
     copyText(elements.specText.textContent || "");
   });
   elements.copyJson?.addEventListener("click", () => {

@@ -31,6 +31,9 @@
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
 | Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
+| SVG chevron | Mũi tên SVG | Biểu tượng mũi tên dựng bằng SVG để tránh lỗi ký tự hiển thị trên nhiều môi trường. |
+| component | Thành phần giao diện | Khối UI tái sử dụng, có thể render lại ở nhiều trang nhưng giữ cùng cấu trúc. |
+| basePath | Tiền tố đường dẫn | Chuỗi tiền tố để tạo đường dẫn tương đối đúng giữa trang gốc và thư mục con. |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
@@ -386,3 +389,20 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 - Bước 2: nếu có rồi thì cập nhật dòng cũ, không thêm dòng mới.
 - Bước 3: thêm đúng section, giữ định nghĩa 1–2 câu, không lặp.
 - Bước 4: chạy npm run check:glossary trước khi commit.
+
+
+---
+
+## 19) Thuật ngữ UI tương tác
+
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| kebab menu | Menu ba chấm (kebab) | Menu dạng dấu ba chấm dùng để gom thao tác phụ gọn hơn. |
+| toast | Thông báo nổi nhanh | Thông báo ngắn xuất hiện tạm thời để phản hồi thao tác. |
+| modal | Hộp thoại nổi | Hộp thoại bật lên để nhập thông tin hoặc xác nhận thao tác. |
+| scroll-into-view | Tự cuộn tới phần liên quan | Hành vi tự cuộn trang để đưa phần nội dung cần xem vào tầm nhìn. |
+| focus-guard | Chặn focus | Cơ chế kiểm soát focus để ngăn trình quản lý mật khẩu bật gợi ý không mong muốn. |
+| event bubble | Lan truyền sự kiện | Hiện tượng sự kiện nổi lên từ phần tử con lên phần tử cha trong DOM. |
+| stopPropagation | Chặn lan truyền sự kiện | Lệnh dừng lan truyền sự kiện để tránh click ảnh hưởng phần tử cha. |
+| dropdown menu | Trình đơn thả xuống | Menu mở ra theo chiều dọc để hiển thị các lựa chọn/tác vụ. |
+| offscreen trap inputs | Ô bẫy ngoài màn hình | Trường nhập ẩn ngoài màn hình để chặn autofill/password manager tự điền vào ô chính. |
