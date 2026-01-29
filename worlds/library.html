@@ -127,6 +127,61 @@
       color: #fff;
       border-color: transparent;
     }
+    .tc-card.is-selected{
+      border-color: rgba(255,255,255,0.45);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+      transform: translateY(-1px);
+    }
+    .asset-kebab{
+      position: relative;
+      overflow: visible;
+    }
+    .asset-kebab > summary{
+      list-style: none;
+    }
+    .asset-kebab > summary::-webkit-details-marker{
+      display: none;
+    }
+    .asset-kebab__panel{
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      min-width: 160px;
+      z-index: 40;
+      display: none;
+    }
+    .asset-kebab[open] .asset-kebab__panel{
+      display: block;
+    }
+    .tc-toast{
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 80;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      border-radius: 0.9rem;
+      padding: 0.6rem 0.9rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,.18);
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .tc-toast.is-visible{
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .tc-offscreen-trap{
+      position: absolute;
+      left: -10000px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
     #portalMenu[data-open="0"],
     #worldMenu[data-open="0"]{ display: none; }
     #portalMenu,
@@ -225,7 +280,10 @@
 
       <div id="assetTabPanel" class="mt-6">
         <div class="flex flex-wrap gap-3">
-          <input id="assetSearch" type="search" name="asset_search" autocomplete="off" inputmode="search" spellcheck="false" autocapitalize="none" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo tên/tags...">
+          <!-- Ô bẫy để Edge Password Manager không bám vào ô tìm kiếm -->
+          <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
+          <input type="password" autocomplete="current-password" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
+          <input id="assetSearch" type="search" name="world5_asset_query" autocomplete="new-password" inputmode="search" spellcheck="false" autocapitalize="none" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo tên/tags..." data-lpignore="true" data-1p-ignore="true" data-bwignore="true" readonly>
           <select id="assetFilter" class="tc-input w-full md:w-[200px]">
             <option value="all">Tất cả loại</option>
             <option value="palette">Palette</option>
@@ -266,7 +324,9 @@
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
                   <button id="assetSave" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
-                  <button id="assetApply" class="tc-btn tc-btn-primary px-4 py-2" type="button">Dùng từ Thư viện</button>
+                  <button id="assetApply" class="hidden" type="button">Dùng từ Thư viện</button>
+                  <button id="assetRename" class="hidden" type="button">Đổi tên</button>
+                  <button id="assetDelete" class="hidden" type="button">Xóa khỏi Thư viện</button>
                   <button id="assetShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
                 </div>
                 <div class="mt-4">
@@ -407,6 +467,32 @@
       <button id="hexFullscreenCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép HEX</button>
     </div>
   </div>
+
+  <div id="assetNameModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tc-card w-full max-w-md p-5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Đặt tên tài sản</h2>
+        <button id="assetNameClose" class="tc-btn tc-chip px-3 py-1 text-sm" type="button">Đóng</button>
+      </div>
+      <div class="mt-4 space-y-3 text-sm">
+        <label class="block">
+          <span class="tc-muted text-xs uppercase tracking-[0.2em]">Tên tài sản</span>
+          <input id="assetNameInput" class="tc-input w-full mt-2" type="text" placeholder="Nhập tên tài sản" required>
+        </label>
+        <label class="block">
+          <span class="tc-muted text-xs uppercase tracking-[0.2em]">Tags (tuỳ chọn)</span>
+          <input id="assetTagsInput" class="tc-input w-full mt-2" type="text" placeholder="Ví dụ: pastel, mềm, sang">
+          <div class="tc-muted text-[11px] mt-1">Ngăn cách bằng dấu phẩy.</div>
+        </label>
+      </div>
+      <div class="mt-5 flex justify-end gap-2">
+        <button id="assetNameCancel" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Hủy</button>
+        <button id="assetNameSave" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="assetToast" class="tc-toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="../auth.js"></script>
   <script type="module" src="./library.js"></script>

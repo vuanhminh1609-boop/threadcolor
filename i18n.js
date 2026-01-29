@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const storageKey = "tc_lang";
   const defaultLang = "vi";
   const locales = {
@@ -81,7 +81,7 @@
           }
         },
       hero: {
-        title: "Không gian màu vô hạn.",
+        title: "Không gian chuẩn hóa màu số.",
         desc: "8 Thế giới màu đã sẵn sàng — mỗi Thế giới là một không gian màu sắc chuyên biệt — tạo, chuyển đổi, chuẩn hoá, lưu và áp dụng màu theo nhu cầu của bạn, và nhiều hơn thế nữa...\nTừ Hex/ảnh → tra mã chỉ → bảng phối (Palette) → dải chuyển (Gradient) → màu in (CMYK) → Chia sẻ + Remix\nKhám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xuống để xem sơ đồ 8 cổng — chọn 1 cổng để bước vào Thế giới bạn cần.",
         ctaPrimary: "Bắt đầu với Thư viện màu",
         ctaSecondary: "Mở công cụ tra mã chỉ",
