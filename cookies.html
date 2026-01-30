@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi" data-world="origami">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chính sách Cookie | SpaceColors</title>
+  <link rel="stylesheet" href="./assets/dist/tailwind.css">
+  <link rel="stylesheet" href="./assets/tones.css">
+  <link rel="stylesheet" href="./assets/topbar_overrides.css">
+  <style>
+    body{
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .tc-card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1.25rem;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+    }
+    .tc-muted{ color: var(--muted); }
+  </style>
+</head>
+<body class="font-sans">
+  <div id="tcTopbarMount"></div>
+
+  <main class="max-w-6xl mx-auto px-4 py-12">
+    <section class="tc-card p-6 md:p-8">
+      <div class="space-y-2">
+        <h1 class="text-3xl md:text-4xl font-bold">Chính sách Cookie</h1>
+        <p class="tc-muted">Phiên bản: 1.0 · Cập nhật lần cuối: 2026-01-01</p>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-[260px_1fr]">
+        <nav class="tc-card p-4 text-sm">
+          <h2 class="text-sm font-semibold mb-3">Mục lục</h2>
+          <ul class="space-y-2">
+            <li><a class="hover:text-white" href="#cookie-la-gi">1. Cookie là gì?</a></li>
+            <li><a class="hover:text-white" href="#loai-cookie">2. Loại cookie sử dụng</a></li>
+            <li><a class="hover:text-white" href="#tuy-chinh">3. Tuỳ chỉnh cookie</a></li>
+            <li><a class="hover:text-white" href="#lien-he">4. Liên hệ</a></li>
+          </ul>
+        </nav>
+
+        <div class="space-y-6 text-sm leading-relaxed">
+          <section id="cookie-la-gi">
+            <h3 class="text-lg font-semibold">1. Cookie là gì?</h3>
+            <p>Cookie là tệp nhỏ lưu trên trình duyệt để ghi nhớ tuỳ chọn và cải thiện trải nghiệm.</p>
+          </section>
+          <section id="loai-cookie">
+            <h3 class="text-lg font-semibold">2. Loại cookie sử dụng</h3>
+            <p>SpaceColors dùng cookie thiết yếu để đăng nhập và lưu tuỳ chỉnh giao diện. Chúng tôi không dùng cookie quảng cáo.</p>
+          </section>
+          <section id="tuy-chinh">
+            <h3 class="text-lg font-semibold">3. Tuỳ chỉnh cookie</h3>
+            <p>Bạn có thể xoá hoặc chặn cookie trong cài đặt trình duyệt. Một số tính năng có thể bị hạn chế khi tắt cookie.</p>
+          </section>
+          <section id="lien-he">
+            <h3 class="text-lg font-semibold">4. Liên hệ</h3>
+            <p>Liên hệ hỗ trợ: spacecolor8portals@gmail.com.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./scripts/topbar_render.js" defer></script>
+  <script src="./scripts/topbar_behavior.js" defer></script>
+  <script src="./i18n.js"></script>
+  <script type="module" src="./auth.js"></script>
+</body>
+</html>

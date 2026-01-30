@@ -341,7 +341,7 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
     </section>
 
     <!-- QUICK ACTIONS -->
-    <section class="max-w-6xl mx-auto px-4 pb-12" id="portalHub">
+    <section class="max-w-6xl mx-auto px-4 pb-12" id="quickHub">
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold">Trạm thao tác nhanh</h2>
@@ -420,7 +420,7 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
     </section>
 
     <!-- ROULETTE -->
-    <section class="max-w-6xl mx-auto px-4 pb-12" id="portalHub">
+    <section class="max-w-6xl mx-auto px-4 pb-12" id="rouletteHub">
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold" data-i18n="roulette.title">Vòng quay dải màu</h2>
@@ -444,6 +444,13 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
 
     <!-- FORGE -->
     <section class="max-w-6xl mx-auto px-4 pb-16">
+      <div class="flex items-end justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold" data-i18n="roulette.title">Vòng quay dải màu</h2>
+          <p class="tc-muted text-sm mt-1" data-i18n="roulette.desc">Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.</p>
+        </div>
+      </div>
+    <section class="max-w-6xl mx-auto px-4 pb-12" id="forgeHub">
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold" data-i18n="forge.title">Lò rèn bảng màu</h2>
@@ -563,14 +570,196 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
 
   <!-- FOOTER -->
   <footer class="max-w-6xl mx-auto px-4 pb-10">
-    <div class="tc-card p-4 text-sm tc-muted flex items-center justify-between">
-      <span data-i18n="footer.left">8Portal v4 — Khung A1→A3</span>
-      <span data-i18n="footer.right">Token thế giới đã sẵn sàng</span>
+    <div class="tc-card p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
+        <div class="space-y-3">
+          <h3 class="text-sm font-semibold" data-i18n="footer.columns.tools.title">Công cụ</h3>
+          <ul class="space-y-2">
+            <li><a class="hover:text-white" href="./worlds/threadcolor.html" data-i18n="footer.columns.tools.threadcolor">Tra mã chỉ (HEX/Ảnh)</a></li>
+            <li><a class="hover:text-white" href="./worlds/threadvault.html" data-i18n="footer.columns.tools.threadvault">Kho chỉ</a></li>
+            <li><a class="hover:text-white" href="./worlds/library.html" data-i18n="footer.columns.tools.library">Thư viện màu</a></li>
+            <li><a class="hover:text-white" href="./worlds/palette.html" data-i18n="footer.columns.tools.palette">Tạo bảng phối</a></li>
+            <li><a class="hover:text-white" href="./worlds/gradient.html" data-i18n="footer.columns.tools.gradient">Tạo dải chuyển</a></li>
+            <li><a class="hover:text-white" href="./worlds/imagecolor.html" data-i18n="footer.columns.tools.imagecolor">Lấy màu từ ảnh</a></li>
+            <li><a class="hover:text-white" href="./worlds/printcolor.html" data-i18n="footer.columns.tools.printcolor">Đổi màu in CMYK</a></li>
+            <li><a class="hover:text-white" href="./worlds/paintfabric.html" data-i18n="footer.columns.tools.paintfabric">Phối màu Sơn & Vải</a></li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <h3 class="text-sm font-semibold" data-i18n="footer.columns.discover.title">Khám phá</h3>
+          <ul class="space-y-2">
+            <li><a class="hover:text-white" href="#portalHub" data-i18n="footer.columns.discover.portalHub">8 Cổng SpaceColors</a></li>
+            <li><a class="hover:text-white" href="#quickHub" data-i18n="footer.columns.discover.quickHub">Trạm thao tác nhanh</a></li>
+            <li><a class="hover:text-white" href="#rouletteHub" data-i18n="footer.columns.discover.rouletteHub">Vòng quay màu nhấn (A1→A3)</a></li>
+            <li><a class="hover:text-white" href="#forgeHub" data-i18n="footer.columns.discover.forgeHub">Lò rèn màu nhấn (A1→A3)</a></li>
+            <li><a class="hover:text-white" href="./worlds/community.html" data-i18n="footer.columns.discover.community">Cộng đồng</a></li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <h3 class="text-sm font-semibold" data-i18n="footer.columns.support.title">Hỗ trợ</h3>
+          <ul class="space-y-2">
+            <li><button class="text-left hover:text-white" data-action="open-support" data-i18n="footer.columns.support.help">Hỗ trợ giải đáp</button></li>
+            <li><button class="text-left hover:text-white" data-action="open-support-bug" data-i18n="footer.columns.support.bug">Báo lỗi</button></li>
+            <li><button class="text-left hover:text-white" data-action="open-support-feature" data-i18n="footer.columns.support.feature">Đề xuất tính năng</button></li>
+            <li><button class="text-left hover:text-white" data-action="open-support-start" data-i18n="footer.columns.support.start">Hướng dẫn bắt đầu trong 60 giây</button></li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <h3 class="text-sm font-semibold" data-i18n="footer.columns.contact.title">Liên hệ</h3>
+          <ul class="space-y-2">
+            <li>
+              <a id="footerEmailLink" class="hover:text-white" href="#">
+                <span data-i18n="footer.columns.contact.email">Email</span>: <span id="footerEmailText"></span>
+              </a>
+            </li>
+            <li>
+              <div class="flex flex-wrap gap-2">
+                <a id="footerPhoneLink" class="hover:text-white" href="#" data-i18n="footer.columns.contact.call">Gọi ngay</a>
+                <a id="footerZaloLink" class="hover:text-white" href="#" data-i18n="footer.columns.contact.zalo">Chat Zalo</a>
+              </div>
+            </li>
+            <li class="tc-muted text-xs" data-i18n="footer.columns.contact.hours">Hỗ trợ 24/7</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-6 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-sm tc-muted">
+        <span id="footerCopyright" data-i18n="footer.bottom.copyright">© 2026 SpaceColors · 8Portals</span>
+        <div class="flex flex-wrap gap-2">
+          <a class="hover:text-white" href="./terms.html" data-i18n="footer.bottom.terms">Điều khoản</a>
+          <span>·</span>
+          <a class="hover:text-white" href="./privacy.html" data-i18n="footer.bottom.privacy">Quyền riêng tư</a>
+          <span>·</span>
+          <a class="hover:text-white" href="./cookies.html" data-i18n="footer.bottom.cookies">Cookie</a>
+        </div>
+      </div>
     </div>
   </footer>
 
+  <div id="supportModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tc-card w-full max-w-3xl p-6 max-h-[86vh] overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold" data-i18n="support.title">Hỗ trợ giải đáp</h2>
+        <button id="supportClose" class="tc-btn tc-chip px-3 py-1 text-sm" type="button" data-i18n="common.close">Đóng</button>
+      </div>
+      <div class="mt-4 overflow-y-auto pr-2 space-y-6" id="supportScroll">
+        <div class="space-y-2">
+          <p class="text-sm font-semibold" data-i18n="support.toc.title">Mục lục câu hỏi</p>
+          <div class="flex flex-wrap gap-2 text-xs" id="supportToc">
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-start" data-i18n="support.toc.start">Bắt đầu trong 60 giây</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-hex" data-i18n="support.toc.hex">Tra mã chỉ từ HEX</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-image" data-i18n="support.toc.image">Tra mã chỉ từ ảnh</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-screen" data-i18n="support.toc.screen">Khác màu giữa màn hình</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-save" data-i18n="support.toc.save">Lưu vào Thư viện</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-export" data-i18n="support.toc.export">Xuất bảng phối/dải chuyển</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-storage" data-i18n="support.toc.storage">Dữ liệu lưu ở đâu</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-privacy" data-i18n="support.toc.privacy">Quyền riêng tư & telemetry</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-cmyk" data-i18n="support.toc.cmyk">Khi nào dùng CMYK</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-remix" data-i18n="support.toc.remix">Cộng đồng remix</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-pro" data-i18n="support.toc.pro">Gói Pro</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-bug" data-i18n="support.toc.bug">Báo lỗi hiệu quả</button>
+          </div>
+        </div>
+
+        <div class="space-y-5 text-sm leading-relaxed">
+          <section id="support-start">
+            <h3 class="font-semibold" data-i18n="support.q1">Bắt đầu trong 60 giây</h3>
+            <p class="tc-muted" data-i18n="support.a1">Đang cập nhật hướng dẫn nhanh theo từng công cụ.</p>
+          </section>
+          <section id="support-hex">
+            <h3 class="font-semibold" data-i18n="support.q2">Tra mã chỉ từ HEX hoạt động thế nào?</h3>
+            <p class="tc-muted" data-i18n="support.a2">Hệ thống so khớp màu gần nhất theo không gian màu để gợi ý mã chỉ.</p>
+          </section>
+          <section id="support-image">
+            <h3 class="font-semibold" data-i18n="support.q3">Tra mã chỉ từ ảnh hoạt động thế nào?</h3>
+            <p class="tc-muted" data-i18n="support.a3">Ảnh được lấy mẫu màu chính, sau đó so khớp với kho mã chỉ.</p>
+          </section>
+          <section id="support-screen">
+            <h3 class="font-semibold" data-i18n="support.q4">Vì sao kết quả khác nhau giữa các màn hình?</h3>
+            <p class="tc-muted" data-i18n="support.a4">Mỗi màn hình có profile màu khác nhau; hãy kiểm tra trên thiết bị chuẩn.</p>
+          </section>
+          <section id="support-save">
+            <h3 class="font-semibold" data-i18n="support.q5">Cách lưu vào Thư viện màu</h3>
+            <p class="tc-muted" data-i18n="support.a5">Chọn tài sản → Lưu vào Thư viện → đặt tên để lưu lại.</p>
+          </section>
+          <section id="support-export">
+            <h3 class="font-semibold" data-i18n="support.q6">Cách xuất bảng phối / dải chuyển</h3>
+            <p class="tc-muted" data-i18n="support.a6">Dùng nút Xuất trong công cụ tương ứng để lấy CSS hoặc token.</p>
+          </section>
+          <section id="support-storage">
+            <h3 class="font-semibold" data-i18n="support.q7">Dữ liệu lưu ở đâu?</h3>
+            <p class="tc-muted" data-i18n="support.a7">Mặc định lưu localStorage; có thể đồng bộ khi đăng nhập.</p>
+          </section>
+          <section id="support-privacy">
+            <h3 class="font-semibold" data-i18n="support.q8">Quyền riêng tư & telemetry</h3>
+            <p class="tc-muted" data-i18n="support.a8">Telemetry chỉ dùng để đo lường, luôn fail-silent và có thể tắt khi local.</p>
+          </section>
+          <section id="support-cmyk">
+            <h3 class="font-semibold" data-i18n="support.q9">Khi nào nên dùng CMYK</h3>
+            <p class="tc-muted" data-i18n="support.a9">Khi chuẩn bị in ấn, hãy chuyển sang CMYK để kiểm tra TAC và lệch màu.</p>
+          </section>
+          <section id="support-remix">
+            <h3 class="font-semibold" data-i18n="support.q10">Cộng đồng remix hoạt động ra sao?</h3>
+            <p class="tc-muted" data-i18n="support.a10">Chia sẻ tài sản lên feed; người khác có thể remix và lưu lại.</p>
+          </section>
+          <section id="support-pro">
+            <h3 class="font-semibold" data-i18n="support.q11">Gói Pro gồm gì. Kích hoạt thế nào.</h3>
+            <p class="tc-muted" data-i18n="support.a11">Đang cập nhật thông tin gói Pro và hướng dẫn kích hoạt.</p>
+          </section>
+          <section id="support-bug">
+            <h3 class="font-semibold" data-i18n="support.q12">Cách báo lỗi hiệu quả</h3>
+            <p class="tc-muted" data-i18n="support.a12">Đính kèm ảnh, trình duyệt, bước tái hiện và kết quả mong đợi.</p>
+          </section>
+        </div>
+
+        <div class="tc-card p-4">
+          <h3 class="text-sm font-semibold" data-i18n="support.form.title">Gửi yêu cầu hỗ trợ</h3>
+          <div class="mt-3 grid gap-3 md:grid-cols-2">
+            <label class="block text-xs">
+              <span class="tc-muted" data-i18n="support.form.type">Loại yêu cầu</span>
+              <select id="supportType" class="tc-input w-full mt-2">
+                <option value="Hỏi đáp" data-i18n="support.form.type.ask">Hỏi đáp</option>
+                <option value="Báo lỗi" data-i18n="support.form.type.bug">Báo lỗi</option>
+                <option value="Đề xuất tính năng" data-i18n="support.form.type.feature">Đề xuất tính năng</option>
+              </select>
+            </label>
+            <label class="block text-xs">
+              <span class="tc-muted" data-i18n="support.form.email">Email liên hệ (tuỳ chọn)</span>
+              <input id="supportEmail" type="email" class="tc-input w-full mt-2" placeholder="you@email.com">
+            </label>
+          </div>
+          <label class="block text-xs mt-3">
+            <span class="tc-muted" data-i18n="support.form.message">Nội dung</span>
+            <textarea id="supportMessage" class="tc-input w-full mt-2 min-h-[120px]" placeholder="Mô tả chi tiết, bước tái hiện..."></textarea>
+          </label>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <button id="supportSend" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button" data-i18n="support.form.send">Gửi yêu cầu</button>
+            <span id="supportMailHelp" class="tc-muted text-xs hidden" data-i18n="support.form.fallback">Không mở được mail, hãy sao chép nội dung và gửi tới spacecolor8portals@gmail.com.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./scripts/site_meta.js"></script>
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
+  <script src="./scripts/support_hub.js" defer></script>
+  <script>
+    (() => {
+      const meta = window.__SC_META__?.contact || {};
+      const email = meta.email || "";
+      const phone = meta.phone || "";
+      const zaloUrl = meta.zaloUrl || "";
+      const emailText = document.getElementById("footerEmailText");
+      const emailLink = document.getElementById("footerEmailLink");
+      const phoneLink = document.getElementById("footerPhoneLink");
+      const zaloLink = document.getElementById("footerZaloLink");
+      if (emailText) emailText.textContent = email;
+      if (emailLink && email) emailLink.href = `mailto:${email}`;
+      if (phoneLink && phone) phoneLink.href = `tel:${phone}`;
+      if (zaloLink && zaloUrl) zaloLink.href = zaloUrl;
+    })();
+  </script>
   
   
   

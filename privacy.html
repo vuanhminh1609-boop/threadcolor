@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi" data-world="origami">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quyền riêng tư | SpaceColors</title>
+  <link rel="stylesheet" href="./assets/dist/tailwind.css">
+  <link rel="stylesheet" href="./assets/tones.css">
+  <link rel="stylesheet" href="./assets/topbar_overrides.css">
+  <style>
+    body{
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .tc-card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1.25rem;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+    }
+    .tc-muted{ color: var(--muted); }
+  </style>
+</head>
+<body class="font-sans">
+  <div id="tcTopbarMount"></div>
+
+  <main class="max-w-6xl mx-auto px-4 py-12">
+    <section class="tc-card p-6 md:p-8">
+      <div class="space-y-2">
+        <h1 class="text-3xl md:text-4xl font-bold">Chính sách quyền riêng tư</h1>
+        <p class="tc-muted">Phiên bản: 1.0 · Cập nhật lần cuối: 2026-01-01</p>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-[260px_1fr]">
+        <nav class="tc-card p-4 text-sm">
+          <h2 class="text-sm font-semibold mb-3">Mục lục</h2>
+          <ul class="space-y-2">
+            <li><a class="hover:text-white" href="#thu-thap">1. Thu thập dữ liệu</a></li>
+            <li><a class="hover:text-white" href="#su-dung">2. Mục đích sử dụng</a></li>
+            <li><a class="hover:text-white" href="#chia-se">3. Chia sẻ dữ liệu</a></li>
+            <li><a class="hover:text-white" href="#bao-mat">4. Bảo mật</a></li>
+            <li><a class="hover:text-white" href="#lien-he">5. Liên hệ</a></li>
+          </ul>
+        </nav>
+
+        <div class="space-y-6 text-sm leading-relaxed">
+          <section id="thu-thap">
+            <h3 class="text-lg font-semibold">1. Thu thập dữ liệu</h3>
+            <p>Chúng tôi thu thập dữ liệu cần thiết để cung cấp dịch vụ: thông tin đăng nhập, dữ liệu tài sản màu và lịch sử thao tác.</p>
+          </section>
+          <section id="su-dung">
+            <h3 class="text-lg font-semibold">2. Mục đích sử dụng</h3>
+            <p>Dữ liệu được dùng để cá nhân hoá trải nghiệm, lưu tài sản và cải thiện chất lượng tra cứu.</p>
+          </section>
+          <section id="chia-se">
+            <h3 class="text-lg font-semibold">3. Chia sẻ dữ liệu</h3>
+            <p>Chúng tôi không bán dữ liệu cá nhân. Việc chia sẻ chỉ thực hiện khi có sự đồng ý của người dùng hoặc theo yêu cầu pháp lý.</p>
+          </section>
+          <section id="bao-mat">
+            <h3 class="text-lg font-semibold">4. Bảo mật</h3>
+            <p>SpaceColors áp dụng các biện pháp kỹ thuật và quy trình để bảo vệ dữ liệu khỏi truy cập trái phép.</p>
+          </section>
+          <section id="lien-he">
+            <h3 class="text-lg font-semibold">5. Liên hệ</h3>
+            <p>Mọi câu hỏi liên quan đến quyền riêng tư vui lòng gửi tới: spacecolor8portals@gmail.com.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./scripts/topbar_render.js" defer></script>
+  <script src="./scripts/topbar_behavior.js" defer></script>
+  <script src="./i18n.js"></script>
+  <script type="module" src="./auth.js"></script>
+</body>
+</html>

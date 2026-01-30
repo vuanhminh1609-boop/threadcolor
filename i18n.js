@@ -140,6 +140,105 @@
           }
         }
       },
+      footer: {
+        columns: {
+          tools: {
+            title: "Công cụ",
+            threadcolor: "Tra mã chỉ (HEX/Ảnh)",
+            threadvault: "Kho chỉ",
+            library: "Thư viện màu",
+            palette: "Tạo bảng phối",
+            gradient: "Tạo dải chuyển",
+            imagecolor: "Lấy màu từ ảnh",
+            printcolor: "Đổi màu in CMYK",
+            paintfabric: "Phối màu Sơn & Vải"
+          },
+          discover: {
+            title: "Khám phá",
+            portalHub: "8 Cổng SpaceColors",
+            quickHub: "Trạm thao tác nhanh",
+            rouletteHub: "Vòng quay màu nhấn (A1→A3)",
+            forgeHub: "Lò rèn màu nhấn (A1→A3)",
+            community: "Cộng đồng"
+          },
+          support: {
+            title: "Hỗ trợ",
+            help: "Hỗ trợ giải đáp",
+            bug: "Báo lỗi",
+            feature: "Đề xuất tính năng",
+            start: "Hướng dẫn bắt đầu trong 60 giây"
+          },
+          contact: {
+            title: "Liên hệ",
+            email: "Email",
+            phone: "Điện thoại",
+            call: "Gọi ngay",
+            zalo: "Chat Zalo",
+            hours: "Hỗ trợ 24/7"
+          }
+        },
+        bottom: {
+          copyright: "© 2026 SpaceColors · 8Portals",
+          terms: "Điều khoản",
+          privacy: "Quyền riêng tư",
+          cookies: "Cookie"
+        }
+      },
+      support: {
+        title: "Hỗ trợ giải đáp",
+        toc: {
+          title: "Mục lục câu hỏi",
+          start: "Bắt đầu trong 60 giây",
+          hex: "Tra mã chỉ từ HEX",
+          image: "Tra mã chỉ từ ảnh",
+          screen: "Khác màu giữa màn hình",
+          save: "Lưu vào Thư viện",
+          export: "Xuất bảng phối/dải chuyển",
+          storage: "Dữ liệu lưu ở đâu",
+          privacy: "Quyền riêng tư & telemetry",
+          cmyk: "Khi nào dùng CMYK",
+          remix: "Cộng đồng remix",
+          pro: "Gói Pro",
+          bug: "Báo lỗi hiệu quả"
+        },
+        q1: "Bắt đầu trong 60 giây",
+        a1: "Đang cập nhật hướng dẫn nhanh theo từng công cụ.",
+        q2: "Tra mã chỉ từ HEX hoạt động thế nào?",
+        a2: "Hệ thống so khớp màu gần nhất theo không gian màu để gợi ý mã chỉ.",
+        q3: "Tra mã chỉ từ ảnh hoạt động thế nào?",
+        a3: "Ảnh được lấy mẫu màu chính, sau đó so khớp với kho mã chỉ.",
+        q4: "Vì sao kết quả khác nhau giữa các màn hình?",
+        a4: "Mỗi màn hình có profile màu khác nhau; hãy kiểm tra trên thiết bị chuẩn.",
+        q5: "Cách lưu vào Thư viện màu",
+        a5: "Chọn tài sản → Lưu vào Thư viện → đặt tên để lưu lại.",
+        q6: "Cách xuất bảng phối / dải chuyển",
+        a6: "Dùng nút Xuất trong công cụ tương ứng để lấy CSS hoặc token.",
+        q7: "Dữ liệu lưu ở đâu?",
+        a7: "Mặc định lưu localStorage; có thể đồng bộ khi đăng nhập.",
+        q8: "Quyền riêng tư & telemetry",
+        a8: "Telemetry chỉ dùng để đo lường, luôn fail-silent và có thể tắt khi local.",
+        q9: "Khi nào nên dùng CMYK",
+        a9: "Khi chuẩn bị in ấn, hãy chuyển sang CMYK để kiểm tra TAC và lệch màu.",
+        q10: "Cộng đồng remix hoạt động ra sao?",
+        a10: "Chia sẻ tài sản lên feed; người khác có thể remix và lưu lại.",
+        q11: "Gói Pro gồm gì. Kích hoạt thế nào.",
+        a11: "Đang cập nhật thông tin gói Pro và hướng dẫn kích hoạt.",
+        q12: "Cách báo lỗi hiệu quả",
+        a12: "Đính kèm ảnh, trình duyệt, bước tái hiện và kết quả mong đợi.",
+        form: {
+          title: "Gửi yêu cầu hỗ trợ",
+          type: "Loại yêu cầu",
+          email: "Email liên hệ (tuỳ chọn)",
+          message: "Nội dung",
+          send: "Gửi yêu cầu",
+          fallback: "Không mở được mail, hãy sao chép nội dung và gửi tới spacecolor8portals@gmail.com.",
+          type: {
+            ask: "Hỏi đáp",
+            bug: "Báo lỗi",
+            feature: "Đề xuất tính năng"
+          }
+        }
+      },
       quick: {
         title: "Hành động nhanh",
         desc: "Truy cập nhanh các tác vụ chính của 8Portal.",

@@ -406,3 +406,20 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | stopPropagation | Chặn lan truyền sự kiện | Lệnh dừng lan truyền sự kiện để tránh click ảnh hưởng phần tử cha. |
 | dropdown menu | Trình đơn thả xuống | Menu mở ra theo chiều dọc để hiển thị các lựa chọn/tác vụ. |
 | offscreen trap inputs | Ô bẫy ngoài màn hình | Trường nhập ẩn ngoài màn hình để chặn autofill/password manager tự điền vào ô chính. |
+| TOC | Mục lục | Danh sách câu hỏi/mục nội dung giúp nhảy nhanh trong modal. |
+| Focus | Focus | Đưa con trỏ nhập liệu vào đúng ô để người dùng thao tác nhanh. |
+
+
+---
+
+## 20) Thuật ngữ cấu trúc trang
+
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| Footer đa cột | Footer đa cột | Chân trang gồm nhiều cột liên kết để điều hướng nhanh và chuyên nghiệp. |
+| Sitemap | Sitemap | Bản đồ liên kết tổng quan giúp người dùng định vị trang cần tìm. |
+
+| Mailto | Mailto | Liên kết mở email soạn sẵn trong ứng dụng mail mặc định. |
+| Neo cuộn (anchor) | Neo cuộn | Liên kết cuộn đến một vị trí trong trang. |
+| Hộp thoại | Hộp thoại | Vùng nổi hiển thị nội dung hoặc câu hỏi cần xác nhận. |
+| Liên kết pháp lý | Liên kết pháp lý | Các liên kết điều khoản, quyền riêng tư, cookie và thông tin tuân thủ. |
