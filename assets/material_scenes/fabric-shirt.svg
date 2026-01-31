@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Shirt">
+  <defs>
+    <filter id="pfNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="2" seed="9"/>
+    </filter>
+    <mask id="pfMask">
+      <path d="M220 90l-70 40 35 60 35-18v155h160V172l35 18 35-60-70-40-30 40h-100z" fill="white"/>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="600" height="400" fill="#f6f4f1"/>
+  <rect data-pf-fill="1" x="0" y="0" width="600" height="400" fill="#c27b4b" mask="url(#pfMask)"/>
+  <rect data-pf-texture="1" x="0" y="0" width="600" height="400" fill="#ffffff" opacity="0.2" filter="url(#pfNoise)" mask="url(#pfMask)"/>
+  <path d="M220 90l-70 40 35 60 35-18v155h160V172l35 18 35-60-70-40-30 40h-100z" fill="none" stroke="#d9d4cc" stroke-width="6"/>
+</svg>
+
+

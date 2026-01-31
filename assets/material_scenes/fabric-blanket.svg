@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Blanket">
+  <defs>
+    <filter id="pfNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="2" seed="14"/>
+    </filter>
+    <mask id="pfMask">
+      <path d="M120 150c80-60 160-60 240 0 40 30 80 60 120 40v140H120z" fill="white"/>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="600" height="400" fill="#f7f4f0"/>
+  <rect data-pf-fill="1" x="0" y="0" width="600" height="400" fill="#c27b4b" mask="url(#pfMask)"/>
+  <rect data-pf-texture="1" x="0" y="0" width="600" height="400" fill="#ffffff" opacity="0.22" filter="url(#pfNoise)" mask="url(#pfMask)"/>
+  <path d="M120 150c80-60 160-60 240 0 40 30 80 60 120 40" fill="none" stroke="#d9d4cc" stroke-width="6"/>
+</svg>
+
+

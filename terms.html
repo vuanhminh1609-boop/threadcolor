@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi" data-world="origami">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Điều khoản sử dụng | SpaceColors</title>
+  <link rel="stylesheet" href="./assets/dist/tailwind.css">
+  <link rel="stylesheet" href="./assets/tones.css">
+  <link rel="stylesheet" href="./assets/topbar_overrides.css">
+  <style>
+    body{
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .tc-card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1.25rem;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+    }
+    .tc-muted{ color: var(--muted); }
+  </style>
+</head>
+<body class="font-sans">
+  <div id="tcTopbarMount"></div>
+
+  <main class="max-w-6xl mx-auto px-4 py-12">
+    <section class="tc-card p-6 md:p-8">
+      <div class="space-y-2">
+        <h1 class="text-3xl md:text-4xl font-bold">Điều khoản sử dụng</h1>
+        <p class="tc-muted">Phiên bản: 1.0 · Cập nhật lần cuối: 2026-01-01</p>
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-[260px_1fr]">
+        <nav class="tc-card p-4 text-sm">
+          <h2 class="text-sm font-semibold mb-3">Mục lục</h2>
+          <ul class="space-y-2">
+            <li><a class="hover:text-white" href="#dinh-nghia">1. Định nghĩa</a></li>
+            <li><a class="hover:text-white" href="#tai-khoan">2. Tài khoản & truy cập</a></li>
+            <li><a class="hover:text-white" href="#noi-dung">3. Nội dung & dữ liệu</a></li>
+            <li><a class="hover:text-white" href="#trach-nhiem">4. Trách nhiệm</a></li>
+            <li><a class="hover:text-white" href="#lien-he">5. Liên hệ</a></li>
+          </ul>
+        </nav>
+
+        <div class="space-y-6 text-sm leading-relaxed">
+          <section id="dinh-nghia">
+            <h3 class="text-lg font-semibold">1. Định nghĩa</h3>
+            <p>SpaceColors là nền tảng hỗ trợ tra cứu, tạo và quản lý tài sản màu. Các thuật ngữ “người dùng”, “tài sản màu”, “thư viện” được hiểu theo ngữ cảnh sử dụng trong sản phẩm.</p>
+          </section>
+          <section id="tai-khoan">
+            <h3 class="text-lg font-semibold">2. Tài khoản & truy cập</h3>
+            <p>Người dùng chịu trách nhiệm bảo mật thông tin đăng nhập. Không chia sẻ tài khoản hoặc sử dụng sai mục đích.</p>
+          </section>
+          <section id="noi-dung">
+            <h3 class="text-lg font-semibold">3. Nội dung & dữ liệu</h3>
+            <p>Dữ liệu màu và tài sản do người dùng tạo thuộc quyền quản lý của người dùng. SpaceColors có thể cập nhật dữ liệu tham chiếu để cải thiện chất lượng tra cứu.</p>
+          </section>
+          <section id="trach-nhiem">
+            <h3 class="text-lg font-semibold">4. Trách nhiệm</h3>
+            <p>SpaceColors cung cấp công cụ hỗ trợ quyết định màu sắc, người dùng cần kiểm tra thực tế trước khi áp dụng sản xuất.</p>
+          </section>
+          <section id="lien-he">
+            <h3 class="text-lg font-semibold">5. Liên hệ</h3>
+            <p>Mọi góp ý và hỗ trợ vui lòng liên hệ qua email: spacecolor8portals@gmail.com.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./scripts/topbar_render.js" defer></script>
+  <script src="./scripts/topbar_behavior.js" defer></script>
+  <script src="./i18n.js"></script>
+  <script type="module" src="./auth.js"></script>
+</body>
+</html>

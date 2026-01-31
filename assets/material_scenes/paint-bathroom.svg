@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Bathroom">
+  <defs>
+    <filter id="pfNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7"/>
+    </filter>
+    <mask id="pfMask">
+      <rect x="0" y="0" width="600" height="230" fill="white"/>
+      <rect x="70" y="70" width="160" height="100" rx="8" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="600" height="400" fill="#f7f4ef"/>
+  <rect x="0" y="230" width="600" height="170" fill="#e0dbd1"/>
+  <rect x="260" y="240" width="180" height="90" rx="16" fill="#e9e2da"/>
+  <rect x="260" y="220" width="100" height="30" rx="10" fill="#f2ede7"/>
+  <rect data-pf-fill="1" x="0" y="0" width="600" height="230" fill="#c27b4b" mask="url(#pfMask)"/>
+  <rect data-pf-texture="1" x="0" y="0" width="600" height="230" fill="#ffffff" opacity="0.22" filter="url(#pfNoise)" mask="url(#pfMask)"/>
+</svg>
+
+

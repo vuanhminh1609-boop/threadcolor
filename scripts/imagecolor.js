@@ -1,4 +1,4 @@
-import { createSpec } from "./spec.js";
+﻿import { createSpec } from "./spec.js";
 import { composeHandoff } from "./handoff.js";
 
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
@@ -8,6 +8,8 @@ const HANDOFF_FROM = "imagecolor";
 
 const elements = {
   input: document.getElementById("imgInput"),
+  dropzone: document.getElementById("dropzone"),
+  btnChooseFile: document.getElementById("btnChooseFile"),
   preview: document.getElementById("imagePreview"),
   canvas: document.getElementById("sampleCanvas"),
   swatchGrid: document.getElementById("swatchGrid"),
@@ -25,7 +27,8 @@ const elements = {
 const state = {
   image: null,
   imageName: "",
-  palette: []
+  palette: [],
+  lockedHex: null
 };
 
 const setStatus = (message) => {
@@ -33,17 +36,38 @@ const setStatus = (message) => {
   elements.status.textContent = message || "";
 };
 
-const showToast = (message) => {
+const setActionButtonsEnabled = (enabled) => {
+  const buttons = [elements.btnToPalette, elements.btnToGradient, elements.btnSave, elements.btnShare];
+  buttons.forEach((btn) => {
+    if (!btn) return;
+    btn.disabled = !enabled;
+    btn.classList.toggle("is-disabled", !enabled);
+  });
+};
+
+const showToast = (message, options = {}) => {
   if (!elements.toast) return;
+  const { onClick, duration = 1600 } = options;
   elements.toast.textContent = "";
+  elements.toast.onclick = null;
+  elements.toast.classList.remove("is-action");
+  elements.toast.removeAttribute("role");
   window.clearTimeout(showToast._t);
   const raf = window.requestAnimationFrame || ((fn) => setTimeout(fn, 0));
   raf(() => {
     elements.toast.textContent = message;
+    if (typeof onClick === "function") {
+      elements.toast.classList.add("is-action");
+      elements.toast.setAttribute("role", "button");
+      elements.toast.onclick = () => {
+        elements.toast.classList.remove("is-visible");
+        onClick();
+      };
+    }
     elements.toast.classList.add("is-visible");
     showToast._t = window.setTimeout(() => {
       elements.toast.classList.remove("is-visible");
-    }, 1400);
+    }, duration);
   });
 };
 
@@ -77,7 +101,11 @@ const publishToFeed = (asset) => {
       createdAt: new Date().toISOString()
     });
     localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
-    showToast("Đã chia sẻ lên feed.");
+    showToast("Đã đăng lên Cộng đồng. Bấm để xem.", {
+      onClick: () => {
+        window.location.href = "../worlds/community.html#feed";
+      }
+    });
     return true;
   } catch (_err) {
     showToast("Không thể chia sẻ.");
@@ -163,28 +191,58 @@ const pickPalette = (pixels, count) => {
   return palette.map(([r, g, b]) => rgbToHex(r, g, b));
 };
 
-const sampleImage = () => {
-  if (!state.image || !elements.canvas) return;
-  const ctx = elements.canvas.getContext("2d");
-  if (!ctx) return;
-  const size = 64;
-  elements.canvas.width = size;
-  elements.canvas.height = size;
-  ctx.clearRect(0, 0, size, size);
-  ctx.drawImage(state.image, 0, 0, size, size);
-  const data = ctx.getImageData(0, 0, size, size).data;
-  const pixels = [];
-  for (let i = 0; i < data.length; i += 16) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const a = data[i + 3];
-    if (a < 50) continue;
-    pixels.push([r, g, b]);
+const setSampleLoading = (isLoading) => {
+  if (!elements.btnSample) return;
+  if (isLoading) {
+    elements.btnSample.dataset.label ||= elements.btnSample.textContent;
+    elements.btnSample.textContent = "Đang lấy mẫu…";
+    elements.btnSample.disabled = true;
+    return;
   }
-  const count = Number(elements.paletteSize?.value || 8);
-  state.palette = pickPalette(pixels, count).map(normalizeHex).filter(Boolean);
-  renderPalette();
+  elements.btnSample.textContent = elements.btnSample.dataset.label || "Lấy mẫu màu";
+  elements.btnSample.disabled = false;
+};
+
+const sampleImage = () => {
+  if (!state.image) {
+    showToast("Hãy tải ảnh trước khi lấy mẫu.");
+    return;
+  }
+  if (!elements.canvas) return;
+  setSampleLoading(true);
+  try {
+    const count = Number(elements.paletteSize?.value || 8);
+    if (state.lockedHex) {
+      state.palette = buildSeedPalette(state.lockedHex, count);
+      renderPalette();
+      showToast("Đã tạo palette theo màu đang giữ.");
+      return;
+    }
+    const ctx = elements.canvas.getContext("2d");
+    if (!ctx) throw new Error("no-canvas");
+    const size = 64;
+    elements.canvas.width = size;
+    elements.canvas.height = size;
+    ctx.clearRect(0, 0, size, size);
+    ctx.drawImage(state.image, 0, 0, size, size);
+    const data = ctx.getImageData(0, 0, size, size).data;
+    const pixels = [];
+    for (let i = 0; i < data.length; i += 16) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const a = data[i + 3];
+      if (a < 50) continue;
+      pixels.push([r, g, b]);
+    }
+    state.palette = pickPalette(pixels, count).map(normalizeHex).filter(Boolean);
+    renderPalette();
+    showToast(`Đã lấy ${state.palette.length} màu từ ảnh.`);
+  } catch (_err) {
+    showToast("Có lỗi khi lấy mẫu màu.");
+  } finally {
+    setSampleLoading(false);
+  }
 };
 
 const renderPalette = () => {
@@ -192,16 +250,44 @@ const renderPalette = () => {
   elements.swatchGrid.innerHTML = "";
   if (!state.palette.length) {
     setStatus("Chưa có bảng phối màu. Hãy tải ảnh và bấm Lấy mẫu màu.");
+    setActionButtonsEnabled(false);
     return;
   }
   state.palette.forEach((hex) => {
+    const card = document.createElement("div");
+    card.className = "tc-swatch-card";
+
     const swatch = document.createElement("div");
     swatch.className = "tc-swatch";
     swatch.style.background = hex;
     swatch.textContent = hex;
-    elements.swatchGrid.appendChild(swatch);
+
+    const actions = document.createElement("div");
+    actions.className = "tc-swatch-actions";
+
+    const copyBtn = document.createElement("button");
+    copyBtn.type = "button";
+    copyBtn.className = "tc-swatch-btn";
+    copyBtn.dataset.hex = hex;
+    copyBtn.dataset.hexAction = "copy";
+    copyBtn.textContent = "Copy HEX";
+
+    const lockBtn = document.createElement("button");
+    lockBtn.type = "button";
+    lockBtn.className = "tc-swatch-btn tc-swatch-lock";
+    lockBtn.dataset.hex = hex;
+    lockBtn.dataset.hexAction = "lock";
+    lockBtn.textContent = state.lockedHex === hex ? "Đang giữ" : "Giữ màu";
+    if (state.lockedHex === hex) lockBtn.classList.add("is-active");
+
+    actions.appendChild(copyBtn);
+    actions.appendChild(lockBtn);
+    card.appendChild(swatch);
+    card.appendChild(actions);
+    elements.swatchGrid.appendChild(card);
   });
   setStatus(`Đã lấy ${state.palette.length} màu từ ảnh.`);
+  setActionButtonsEnabled(true);
 };
 
 const setPreview = (src) => {
@@ -229,15 +315,23 @@ const readImageFile = (file) => {
 
 const handleFile = async (file) => {
   if (!file) return;
-  state.imageName = file.name || "Ảnh";
-  const dataUrl = await readImageFile(file);
-  const img = new Image();
-  img.onload = () => {
-    state.image = img;
-    setPreview(dataUrl);
-    sampleImage();
-  };
-  img.src = dataUrl;
+  try {
+    state.imageName = file.name || "Ảnh";
+    state.lockedHex = null;
+    const dataUrl = await readImageFile(file);
+    const img = new Image();
+    img.onload = () => {
+      state.image = img;
+      setPreview(dataUrl);
+      sampleImage();
+    };
+    img.onerror = () => {
+      showToast("Không thể tải ảnh để xử lý.");
+    };
+    img.src = dataUrl;
+  } catch (_err) {
+    showToast("Không thể đọc ảnh. Vui lòng thử lại.");
+  }
 };
 
 const buildAssetSpec = () => {
@@ -247,7 +341,7 @@ const buildAssetSpec = () => {
   const project = getCurrentProject();
   return createSpec({
     type: "palette",
-    name: `Bảng phối màu từ ảnh`,
+    name: "Bảng phối màu từ ảnh",
     tags: ["ảnh", "palette"],
     core: { colors: state.palette },
     payload: { colors: state.palette },
@@ -294,6 +388,27 @@ const bindEvents = () => {
     const file = event.target.files?.[0];
     handleFile(file);
   });
+  elements.btnChooseFile?.addEventListener("click", () => {
+    elements.input?.click();
+  });
+  if (elements.dropzone) {
+    ["dragenter", "dragover"].forEach((name) => {
+      elements.dropzone.addEventListener(name, (event) => {
+        event.preventDefault();
+        elements.dropzone.classList.add("is-dragover");
+      });
+    });
+    ["dragleave", "drop"].forEach((name) => {
+      elements.dropzone.addEventListener(name, (event) => {
+        event.preventDefault();
+        elements.dropzone.classList.remove("is-dragover");
+      });
+    });
+    elements.dropzone.addEventListener("drop", (event) => {
+      const file = event.dataTransfer?.files?.[0];
+      handleFile(file);
+    });
+  }
   elements.btnSample?.addEventListener("click", sampleImage);
   elements.btnToPalette?.addEventListener("click", toPaletteWorld);
   elements.btnToGradient?.addEventListener("click", toGradientWorld);
@@ -314,7 +429,30 @@ const bindEvents = () => {
     }
     publishToFeed(spec);
   });
-  elements.paletteSize?.addEventListener("change", sampleImage);
+  elements.paletteSize?.addEventListener("change", () => {
+    if (state.image) sampleImage();
+  });
+  elements.swatchGrid?.addEventListener("click", async (event) => {
+    const target = event.target.closest("[data-hex-action]");
+    if (!target) return;
+    const hex = target.dataset.hex;
+    const action = target.dataset.hexAction;
+    if (!hex || !action) return;
+    if (action === "copy") {
+      try {
+        await navigator.clipboard.writeText(hex);
+        showToast(`Đã sao chép ${hex}.`);
+      } catch (_err) {
+        showToast("Không thể sao chép. Hãy thử lại.");
+      }
+      return;
+    }
+    if (action === "lock") {
+      state.lockedHex = state.lockedHex === hex ? null : hex;
+      renderPalette();
+      showToast(state.lockedHex ? `Đã giữ màu ${hex}.` : "Đã bỏ giữ màu.");
+    }
+  });
 };
 
 const applyHexesFromHub = (detail) => {
