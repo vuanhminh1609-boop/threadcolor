@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
@@ -115,6 +115,59 @@
       z-index: 5000;
     }
     .tc-toast.is-visible{ opacity: 1; transform: translateY(0); }
+    .tc-toast.is-action{ cursor: pointer; }
+    .tc-dropzone{
+      border: 1px dashed var(--stroke);
+      transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .tc-dropzone.is-dragover{
+      border-color: var(--a2);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.7);
+    }
+    .tc-swatch-card{
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+    .tc-swatch-actions{
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tc-swatch-btn{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tc-swatch-lock.is-active{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border-color: transparent;
+    }
+    .tc-btn[disabled],
+    .tc-btn.is-disabled{
+      opacity: .5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .sr-only{
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
     #portalMenu[data-open="0"],
     #worldMenu[data-open="0"]{ display: none; }
     #portalMenu,
@@ -132,7 +185,7 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World7 Â· ImageColor</p>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted">WORLD7 · IMAGECOLOR</p>
           <h1 class="text-3xl md:text-4xl font-bold">Thế giới Màu từ Ảnh</h1>
           <p class="mt-2 tc-muted">Tải ảnh lên, lấy mẫu màu nhanh và chuyển sang Bảng/Dải chỉ với 1 chạm.</p>
         </div>
@@ -144,11 +197,17 @@
 
       <div class="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div class="space-y-4">
-          <label class="tc-card p-4 flex flex-col gap-2 cursor-pointer">
-            <span class="text-sm font-semibold">Tải ảnh</span>
-            <span class="tc-muted text-xs">Hỗ trợ JPG/PNG, tối đa vừa đủ để xử lý mượt.</span>
-            <input id="imgInput" type="file" accept="image/*" class="mt-2">
-          </label>
+          <div id="dropzone" class="tc-card p-4 tc-dropzone">
+            <div class="flex flex-col gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-sm font-semibold">Kéo thả ảnh vào đây</span>
+                <span class="tc-muted text-xs">hoặc</span>
+                <button id="btnChooseFile" type="button" class="tc-btn tc-chip px-3 py-2 text-xs">Chọn tệp ảnh</button>
+              </div>
+              <span class="tc-muted text-xs">Hỗ trợ JPG/PNG, tối đa vừa đủ để xử lý mượt.</span>
+            </div>
+            <input id="imgInput" type="file" accept="image/*" class="sr-only">
+          </div>
           <div class="flex items-center gap-3 flex-wrap">
             <div class="flex items-center gap-2">
               <label class="text-sm font-semibold">Số màu</label>

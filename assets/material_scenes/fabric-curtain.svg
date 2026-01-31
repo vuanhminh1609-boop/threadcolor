@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Curtain">
+  <defs>
+    <filter id="pfNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="10"/>
+    </filter>
+    <mask id="pfMask">
+      <rect x="120" y="60" width="360" height="280" rx="18" fill="white"/>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="600" height="400" fill="#f4f2ef"/>
+  <rect x="140" y="90" width="320" height="220" rx="14" fill="#e0ddd6"/>
+  <rect data-pf-fill="1" x="0" y="0" width="600" height="400" fill="#c27b4b" mask="url(#pfMask)"/>
+  <rect data-pf-texture="1" x="0" y="0" width="600" height="400" fill="#ffffff" opacity="0.18" filter="url(#pfNoise)" mask="url(#pfMask)"/>
+  <rect x="120" y="60" width="360" height="280" rx="18" fill="none" stroke="#d6d1c7" stroke-width="6"/>
+</svg>
+
+

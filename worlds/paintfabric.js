@@ -1,21 +1,28 @@
-import { composeHandoff } from "../scripts/handoff.js";
+﻿import { composeHandoff } from "../scripts/handoff.js";
 
 const STORAGE_KEY = "tc_paintfabric_assets";
 const ASSET_LIBRARY_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "paintfabric";
+const TEMPLATE_BASE = "../assets/material_scenes";
+const PAINT_CALC_KEY = "tc_paint_calc_v1";
 
 const elements = {
   tabs: document.getElementById("pfTabs"),
   hex: document.getElementById("pfHex"),
+  scene: document.getElementById("pfScene"),
   finish: document.getElementById("pfFinish"),
   lighting: document.getElementById("pfLighting"),
   surface: document.getElementById("pfSurface"),
+  object: document.getElementById("pfObject"),
   fabricType: document.getElementById("pfFabricType"),
   finishFabric: document.getElementById("pfFinishFabric"),
   lightingFabric: document.getElementById("pfLightingFabric"),
   texture: document.getElementById("pfTexture"),
+  textureScale: document.getElementById("pfTextureScale"),
+  compare: document.getElementById("pfCompare"),
+  compareLabel: document.getElementById("pfCompareLabel"),
   paintPanel: document.getElementById("pfPaintPanel"),
   fabricPanel: document.getElementById("pfFabricPanel"),
   preview: document.getElementById("pfPreview"),
@@ -26,9 +33,18 @@ const elements = {
   seed: document.getElementById("pfSeed"),
   savedSelect: document.getElementById("pfSavedSelect"),
   spec: document.getElementById("pfSpec"),
-  status: document.getElementById("pfStatus")
+  status: document.getElementById("pfStatus"),
+  paintArea: document.getElementById("pfPaintArea"),
+  paintCoats: document.getElementById("pfPaintCoats"),
+  paintCoverage: document.getElementById("pfPaintCoverage"),
+  paintWaste: document.getElementById("pfPaintWaste"),
+  paintPrice: document.getElementById("pfPaintPrice"),
+  paintLiters: document.getElementById("pfPaintLiters"),
+  paintCombos: document.getElementById("pfPaintCombos"),
+  paintCalcError: document.getElementById("pfPaintCalcError")
 };
 
+const svgCache = new Map();
 const defaultHex = "#C27B4B";
 
 const typeLabels = {
@@ -47,22 +63,69 @@ const lightingLabels = {
   tu_nhien: "Tự nhiên"
 };
 
-const surfaceAreas = {
-  tuong: "Phòng khách",
-  xi_mang: "Sảnh",
-  go: "Studio"
+const sceneLabels = {
+  living: "Phòng khách",
+  bedroom: "Phòng ngủ",
+  facade: "Mặt tiền",
+  bathroom: "Phòng tắm"
 };
 
-const fabricApplications = {
-  lua: "Trang phục",
-  cotton: "Nội thất",
-  len: "Mùa lạnh"
+const surfaceLabels = {
+  tuong: "Tường",
+  xi_mang: "Xi măng",
+  gach: "Gạch",
+  go: "Gỗ"
+};
+
+const objectLabels = {
+  shirt: "Áo",
+  curtain: "Rèm",
+  sofa: "Sofa",
+  blanket: "Chăn"
 };
 
 const fabricLabels = {
-  lua: "Lụa",
   cotton: "Cotton",
-  len: "Len"
+  linen: "Linen",
+  denim: "Denim",
+  silk: "Lụa",
+  wool: "Len"
+};
+
+const surfaceAreas = {
+  tuong: "Phòng khách",
+  xi_mang: "Sảnh",
+  gach: "Mặt tiền",
+  go: "Studio"
+};
+
+const paintPresets = {
+  tuong: { coverage: 10, waste: 8 },
+  xi_mang: { coverage: 8, waste: 12 },
+  go: { coverage: 12, waste: 6 }
+};
+
+const fabricApplications = {
+  cotton: "Áo mặc hằng ngày",
+  linen: "Rèm phòng",
+  denim: "Trang phục street",
+  silk: "Trang phục tiệc",
+  wool: "Chăn ấm"
+};
+
+const templates = {
+  paint: {
+    living: "paint-living.svg",
+    bedroom: "paint-bedroom.svg",
+    facade: "paint-facade.svg",
+    bathroom: "paint-bathroom.svg"
+  },
+  fabric: {
+    shirt: "fabric-shirt.svg",
+    curtain: "fabric-curtain.svg",
+    sofa: "fabric-sofa.svg",
+    blanket: "fabric-blanket.svg"
+  }
 };
 
 const getFeeling = (lighting, finish) => {
@@ -71,26 +134,26 @@ const getFeeling = (lighting, finish) => {
   return finish === "bong" ? "Sáng" : "Tĩnh";
 };
 
-const buildSuggestedName = (type, { lighting, finish, surface, fabricType }) => {
+const buildSuggestedName = (type, { lighting, finish, surface, fabricType, scene, object }) => {
   const lightingLabel = lightingLabels[lighting] || "Trắng";
   const finishLabel = finishLabels[finish] || "Mờ";
   const feeling = getFeeling(lighting, finish);
   if (type === "paint_profile") {
-    const area = surfaceAreas[surface] || "Khu vực chính";
+    const area = sceneLabels[scene] || surfaceAreas[surface] || "Khu vực chính";
     return `Tường ${area} — Sơn&Vải — ${lightingLabel} · ${finishLabel} · ${feeling} — v01`;
   }
-  const application = fabricApplications[fabricType] || "Ứng dụng đa năng";
+  const application = objectLabels[object] || fabricApplications[fabricType] || "Ứng dụng đa năng";
   const fabricLabel = fabricLabels[fabricType] || "Vải";
   return `${application} — Sơn&Vải — ${lightingLabel} · ${fabricLabel} · ${feeling} — v01`;
 };
 
 const quickSeeds = [
-  { type: "paint_profile", colorHex: "#C27B4B", finish: "bong", lighting: "am", surface: "go" },
-  { type: "paint_profile", colorHex: "#1FB6FF", finish: "mo", lighting: "trang", surface: "tuong" },
-  { type: "paint_profile", colorHex: "#2D2A27", finish: "mo", lighting: "tu_nhien", surface: "xi_mang" },
-  { type: "fabric_profile", colorHex: "#F2C4D8", finish: "bong", lighting: "am", fabricType: "lua", textureLevel: "min" },
-  { type: "fabric_profile", colorHex: "#3A5A40", finish: "mo", lighting: "tu_nhien", fabricType: "cotton", textureLevel: "tho" },
-  { type: "fabric_profile", colorHex: "#0B1020", finish: "bong", lighting: "trang", fabricType: "len", textureLevel: "tho" }
+  { type: "paint_profile", colorHex: "#C27B4B", finish: "bong", lighting: "am", surface: "go", scene: "living" },
+  { type: "paint_profile", colorHex: "#1FB6FF", finish: "mo", lighting: "trang", surface: "tuong", scene: "bedroom" },
+  { type: "paint_profile", colorHex: "#2D2A27", finish: "mo", lighting: "tu_nhien", surface: "xi_mang", scene: "facade" },
+  { type: "fabric_profile", colorHex: "#F2C4D8", finish: "bong", lighting: "am", fabricType: "silk", textureLevel: "min", object: "shirt" },
+  { type: "fabric_profile", colorHex: "#3A5A40", finish: "mo", lighting: "tu_nhien", fabricType: "linen", textureLevel: "tho", object: "curtain" },
+  { type: "fabric_profile", colorHex: "#0B1020", finish: "bong", lighting: "trang", fabricType: "wool", textureLevel: "tho", object: "blanket" }
 ];
 
 const normalizeHex = (value) => {
@@ -132,6 +195,143 @@ const adjust = (hex, amount) => {
 const setStatus = (message) => {
   if (!elements.status) return;
   elements.status.textContent = message || "";
+};
+
+const setPaintCalcError = (message) => {
+  if (!elements.paintCalcError) return;
+  elements.paintCalcError.textContent = message || "";
+};
+
+const loadPaintCalc = () => {
+  try {
+    const raw = localStorage.getItem(PAINT_CALC_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch (_err) {
+    return null;
+  }
+};
+
+const savePaintCalc = (calc) => {
+  try {
+    localStorage.setItem(PAINT_CALC_KEY, JSON.stringify(calc));
+  } catch (_err) {}
+};
+
+const readNumber = (value) => {
+  const num = Number.parseFloat(value);
+  return Number.isFinite(num) ? num : null;
+};
+
+const formatLiters = (value) => {
+  if (!Number.isFinite(value)) return "--";
+  return `${value.toFixed(2)} L`;
+};
+
+const buildComboOptions = (litersNeeded) => {
+  if (!Number.isFinite(litersNeeded) || litersNeeded <= 0) return [];
+  const max18 = Math.max(0, Math.ceil(litersNeeded / 18) + 2);
+  const max5 = Math.max(0, Math.ceil(litersNeeded / 5) + 3);
+  const options = [];
+  for (let a = 0; a <= max18; a += 1) {
+    for (let b = 0; b <= max5; b += 1) {
+      const base = 18 * a + 5 * b;
+      const remaining = Math.max(0, litersNeeded - base);
+      const c = Math.ceil(remaining);
+      const total = base + c;
+      if (total <= 0) continue;
+      options.push({
+        a,
+        b,
+        c,
+        total,
+        waste: total - litersNeeded
+      });
+    }
+  }
+  options.sort((left, right) => {
+    if (left.waste !== right.waste) return left.waste - right.waste;
+    if (left.total !== right.total) return left.total - right.total;
+    return (left.a + left.b + left.c) - (right.a + right.b + right.c);
+  });
+  return options.slice(0, 3);
+};
+
+const renderCombos = (combos, pricePerLiter) => {
+  if (!elements.paintCombos) return;
+  if (!combos.length) {
+    elements.paintCombos.textContent = "Chưa đủ dữ liệu để gợi ý.";
+    return;
+  }
+  elements.paintCombos.innerHTML = "";
+  combos.forEach((combo, index) => {
+    const line = document.createElement("div");
+    const parts = [];
+    if (combo.a) parts.push(`${combo.a} x 18L`);
+    if (combo.b) parts.push(`${combo.b} x 5L`);
+    if (combo.c) parts.push(`${combo.c} x 1L`);
+    const waste = combo.waste.toFixed(2);
+    const label = parts.join(" + ") || "1 x 1L";
+    const cost = Number.isFinite(pricePerLiter) && pricePerLiter > 0
+      ? ` · Ước tính ${(combo.total * pricePerLiter).toLocaleString("vi-VN")}đ`
+      : "";
+    line.textContent = `${index + 1}. ${label} = ${combo.total}L (dư ${waste}L)${cost}`;
+    elements.paintCombos.appendChild(line);
+  });
+};
+
+const updatePaintCalc = () => {
+  if (!elements.paintPanel || elements.paintPanel.classList.contains("hidden")) return;
+  const area = readNumber(elements.paintArea?.value);
+  const coats = readNumber(elements.paintCoats?.value);
+  const coverage = readNumber(elements.paintCoverage?.value);
+  const waste = readNumber(elements.paintWaste?.value);
+  const price = readNumber(elements.paintPrice?.value);
+
+  if (!area || area <= 0) {
+    setPaintCalcError("Vui lòng nhập diện tích hợp lệ.");
+    if (elements.paintLiters) elements.paintLiters.textContent = "--";
+    renderCombos([], price);
+    return;
+  }
+  if (!coats || coats <= 0) {
+    setPaintCalcError("Vui lòng nhập số lớp hợp lệ.");
+    if (elements.paintLiters) elements.paintLiters.textContent = "--";
+    renderCombos([], price);
+    return;
+  }
+  if (!coverage || coverage <= 0) {
+    setPaintCalcError("Vui lòng nhập độ phủ hợp lệ.");
+    if (elements.paintLiters) elements.paintLiters.textContent = "--";
+    renderCombos([], price);
+    return;
+  }
+  if (waste == null || waste < 0) {
+    setPaintCalcError("Vui lòng nhập hao hụt hợp lệ.");
+    if (elements.paintLiters) elements.paintLiters.textContent = "--";
+    renderCombos([], price);
+    return;
+  }
+
+  setPaintCalcError("");
+  const litersNeeded = (area / coverage) * coats * (1 + waste / 100);
+  if (elements.paintLiters) elements.paintLiters.textContent = formatLiters(litersNeeded);
+  const combos = buildComboOptions(litersNeeded);
+  renderCombos(combos, price);
+  savePaintCalc({
+    area,
+    coats,
+    coverage,
+    waste,
+    price: Number.isFinite(price) ? price : null
+  });
+};
+
+const applyPaintPreset = () => {
+  const surface = elements.surface?.value || "tuong";
+  const preset = paintPresets[surface] || paintPresets.tuong;
+  if (elements.paintCoverage) elements.paintCoverage.value = preset.coverage;
+  if (elements.paintWaste) elements.paintWaste.value = preset.waste;
 };
 
 const getAssets = () => {
@@ -177,8 +377,11 @@ const buildLibraryAsset = (spec) => {
         finish: spec.finish,
         lighting: spec.lighting,
         surface: spec.surface,
+        scene: spec.scene,
+        object: spec.object,
         fabricType: spec.fabricType,
-        textureLevel: spec.textureLevel
+        textureLevel: spec.textureLevel,
+        textureScale: spec.textureScale
       }
     },
     notes: "Sơn&Vải",
@@ -229,13 +432,22 @@ const buildSpec = () => {
   const hex = normalizeHex(elements.hex?.value) || defaultHex;
   const activeTab = elements.paintPanel?.classList.contains("hidden") ? "fabric" : "paint";
   const createdAt = new Date().toISOString();
+  const paintCalc = activeTab === "paint" ? {
+    area: readNumber(elements.paintArea?.value),
+    coats: readNumber(elements.paintCoats?.value),
+    coverage: readNumber(elements.paintCoverage?.value),
+    waste: readNumber(elements.paintWaste?.value),
+    price: readNumber(elements.paintPrice?.value)
+  } : null;
   const base = {
     id: `pf_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`,
     name: buildSuggestedName(activeTab === "paint" ? "paint_profile" : "fabric_profile", {
       lighting: activeTab === "paint" ? elements.lighting?.value : elements.lightingFabric?.value,
       finish: activeTab === "paint" ? elements.finish?.value : elements.finishFabric?.value,
       surface: elements.surface?.value,
-      fabricType: elements.fabricType?.value
+      fabricType: elements.fabricType?.value,
+      scene: elements.scene?.value,
+      object: elements.object?.value
     }),
     colorHex: hex,
     finish: activeTab === "paint" ? elements.finish?.value : elements.finishFabric?.value,
@@ -247,22 +459,29 @@ const buildSpec = () => {
     return {
       ...base,
       type: "paint_profile",
-      surface: elements.surface?.value || "tuong"
+      surface: elements.surface?.value || "tuong",
+      scene: elements.scene?.value || "living",
+      paintCalc: paintCalc
     };
   }
   return {
     ...base,
     type: "fabric_profile",
-    fabricType: elements.fabricType?.value || "lua",
-    textureLevel: elements.texture?.value || "min"
+    fabricType: elements.fabricType?.value || "cotton",
+    textureLevel: elements.texture?.value || "min",
+    textureScale: Number(elements.textureScale?.value || 5),
+    object: elements.object?.value || "shirt"
   };
 };
 
 const renderSpec = (spec) => {
   if (!elements.spec) return;
   const typeLabel = typeLabels[spec.type] || spec.type;
-  const surfaceLabel = spec.surface ? `Bề mặt: ${spec.surface}` : `Loại vải: ${spec.fabricType}`;
+  const surfaceLabel = spec.surface ? `Bề mặt: ${surfaceLabels[spec.surface] || spec.surface}` : `Loại vải: ${fabricLabels[spec.fabricType] || spec.fabricType}`;
   const textureLabel = spec.textureLevel ? `Độ vân: ${spec.textureLevel}` : "";
+  const textureScale = spec.textureScale ? `Tỷ lệ texture: ${spec.textureScale}` : "";
+  const sceneLabel = spec.scene ? `Bối cảnh: ${sceneLabels[spec.scene] || spec.scene}` : "";
+  const objectLabel = spec.object ? `Vật thể: ${objectLabels[spec.object] || spec.object}` : "";
   const lines = [
     `Tên: ${spec.name}`,
     `Loại: ${typeLabel}`,
@@ -270,7 +489,10 @@ const renderSpec = (spec) => {
     `Độ bóng: ${spec.finish}`,
     `Ánh sáng: ${spec.lighting}`,
     surfaceLabel,
+    sceneLabel,
+    objectLabel,
     textureLabel,
+    textureScale,
     `Tạo lúc: ${spec.createdAt}`,
     "",
     "JSON:",
@@ -279,55 +501,100 @@ const renderSpec = (spec) => {
   elements.spec.textContent = lines.join("\n");
 };
 
-const updatePreview = () => {
+const loadSvgTemplate = async (type, key) => {
+  const file = templates[type]?.[key];
+  if (!file) return null;
+  const path = `${TEMPLATE_BASE}/${file}`;
+  if (svgCache.has(path)) return svgCache.get(path);
+  const response = await fetch(path, { cache: "force-cache" });
+  if (!response.ok) return null;
+  const text = await response.text();
+  svgCache.set(path, text);
+  return text;
+};
+
+const buildSvgLayer = (svgText, options) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(svgText, "image/svg+xml");
+  const svg = doc.documentElement;
+  const fill = svg.querySelector("[data-pf-fill]");
+  if (fill) fill.setAttribute("fill", options.color);
+  const texture = svg.querySelector("[data-pf-texture]");
+  if (texture) texture.setAttribute("opacity", String(options.textureOpacity));
+  const noise = svg.querySelector("#pfNoise feTurbulence");
+  if (noise) noise.setAttribute("baseFrequency", String(options.noiseFrequency));
+  return svg.outerHTML;
+};
+
+const getTextureSettings = (type, surface, textureLevel, textureScale, finish) => {
+  const levelFactor = textureLevel === "tho" ? 1.2 : 0.8;
+  const scale = Math.max(1, Math.min(10, textureScale || 5));
+  const scaleFactor = 0.7 + scale * 0.05;
+  let surfaceFactor = 1;
+  if (surface === "xi_mang") surfaceFactor = 1.25;
+  if (surface === "gach") surfaceFactor = 1.35;
+  if (surface === "go") surfaceFactor = 1.15;
+  const glossFactor = finish === "bong" ? 0.7 : 1;
+  const textureOpacity = Math.min(0.35, 0.12 * levelFactor * surfaceFactor * glossFactor);
+  const noiseFrequency = (type === "fabric" ? 0.9 : 0.75) * scaleFactor;
+  return { textureOpacity: Number(textureOpacity.toFixed(2)), noiseFrequency: Number(noiseFrequency.toFixed(2)) };
+};
+
+const updatePreview = async () => {
   if (!elements.preview) return;
   const hex = normalizeHex(elements.hex?.value) || defaultHex;
   const activeTab = elements.paintPanel?.classList.contains("hidden") ? "fabric" : "paint";
-  if (activeTab === "paint") {
-    const finish = elements.finish?.value || "mo";
-    const lighting = elements.lighting?.value || "trang";
-    const surface = elements.surface?.value || "tuong";
-    const base = applyLighting(hex, lighting);
-    const shade = finish === "bong" ? adjust(base, 30) : adjust(base, 10);
-    const dark = finish === "bong" ? adjust(base, -35) : adjust(base, -20);
-    const texture = surface === "xi_mang"
-      ? "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.12), transparent 55%), radial-gradient(circle at 80% 30%, rgba(0,0,0,0.08), transparent 60%)"
-      : surface === "go"
-        ? "linear-gradient(90deg, rgba(0,0,0,0.08) 0 6px, rgba(255,255,255,0.05) 6px 12px)"
-        : "linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0))";
-    const sheen = finish === "bong"
-      ? "linear-gradient(120deg, rgba(255,255,255,0.45), rgba(255,255,255,0))"
-      : "linear-gradient(120deg, rgba(255,255,255,0.28), rgba(255,255,255,0))";
-    elements.preview.style.backgroundImage = `${texture}, ${sheen}, linear-gradient(180deg, ${shade}, ${dark})`;
-    elements.preview.style.backgroundColor = base;
-    elements.preview.style.backgroundBlendMode = "overlay";
-    return;
+  const finish = activeTab === "paint" ? elements.finish?.value || "mo" : elements.finishFabric?.value || "mo";
+  const lighting = activeTab === "paint" ? elements.lighting?.value || "trang" : elements.lightingFabric?.value || "trang";
+  const surface = elements.surface?.value || "tuong";
+  const scene = elements.scene?.value || "living";
+  const object = elements.object?.value || "shirt";
+  const textureLevel = activeTab === "paint" ? "min" : elements.texture?.value || "min";
+  const textureScale = Number(elements.textureScale?.value || 5);
+  const compare = Number(elements.compare?.value || 60);
+  const compareValue = `${compare}%`;
+  if (elements.compareLabel) {
+    elements.compareLabel.textContent = `Sau: ${compare}%`;
   }
 
-  const finish = elements.finishFabric?.value || "mo";
-  const lighting = elements.lightingFabric?.value || "trang";
-  const fabricType = elements.fabricType?.value || "lua";
-  const textureLevel = elements.texture?.value || "min";
-  const base = applyLighting(hex, lighting);
-  const weaveOpacity = textureLevel === "tho" ? 0.18 : 0.1;
-  const weaveSize = textureLevel === "tho" ? "8px 8px" : "5px 5px";
-  const sheen = finish === "bong" ? 0.22 : 0.12;
-  const fabricTint = fabricType === "len" ? adjust(base, -8) : fabricType === "cotton" ? adjust(base, 4) : base;
-  elements.preview.style.backgroundImage = [
-    `repeating-linear-gradient(45deg, rgba(255,255,255,${weaveOpacity}) 0 2px, rgba(0,0,0,${weaveOpacity / 1.6}) 2px 4px)`,
-    `repeating-linear-gradient(-45deg, rgba(255,255,255,${weaveOpacity}) 0 2px, rgba(0,0,0,${weaveOpacity / 1.6}) 2px 4px)`,
-    `linear-gradient(120deg, rgba(255,255,255,${sheen}), rgba(255,255,255,0))`,
-    `linear-gradient(180deg, ${adjust(fabricTint, 24)}, ${adjust(fabricTint, -24)})`
-  ].join(", ");
-  elements.preview.style.backgroundSize = `${weaveSize}, ${weaveSize}, 100% 100%, 100% 100%`;
-  elements.preview.style.backgroundColor = fabricTint;
-  elements.preview.style.backgroundBlendMode = "soft-light, multiply, screen, normal";
+  const svgText = await loadSvgTemplate(activeTab, activeTab === "paint" ? scene : object);
+  if (!svgText) return;
+
+  const neutralBase = activeTab === "paint" ? "#E8E1D6" : "#EFEDEA";
+  const adjusted = applyLighting(hex, lighting);
+  const adjustedNeutral = applyLighting(neutralBase, lighting);
+  const textureSettings = getTextureSettings(
+    activeTab,
+    surface,
+    textureLevel,
+    textureScale,
+    finish
+  );
+
+  const beforeLayer = buildSvgLayer(svgText, {
+    color: adjustedNeutral,
+    textureOpacity: textureSettings.textureOpacity * 0.7,
+    noiseFrequency: textureSettings.noiseFrequency
+  });
+  const afterLayer = buildSvgLayer(svgText, {
+    color: adjusted,
+    textureOpacity: textureSettings.textureOpacity,
+    noiseFrequency: textureSettings.noiseFrequency
+  });
+
+  elements.preview.innerHTML = `
+    <div class="pf-compare" style="--pf-compare:${compareValue};">
+      <div class="pf-layer pf-before">${beforeLayer}</div>
+      <div class="pf-layer pf-after">${afterLayer}</div>
+    </div>
+  `;
 };
 
 const syncUI = () => {
   const spec = buildSpec();
   renderSpec(spec);
-  updatePreview();
+  updatePreview().catch(() => {});
+  updatePaintCalc();
 };
 
 const updateTabs = (target) => {
@@ -344,7 +611,7 @@ const updateTabs = (target) => {
 const populateSavedSelect = (assets) => {
   if (!elements.savedSelect) return;
   const current = elements.savedSelect.value;
-  elements.savedSelect.innerHTML = '<option value="">-- Chọn asset --</option>';
+  elements.savedSelect.innerHTML = '<option value="">-- Chọn tài sản --</option>';
   assets.forEach((asset) => {
     const option = document.createElement("option");
     option.value = asset.id;
@@ -369,12 +636,15 @@ const loadAsset = (asset) => {
     elements.finish.value = asset.finish || "mo";
     elements.lighting.value = asset.lighting || "trang";
     elements.surface.value = asset.surface || "tuong";
+    if (elements.scene) elements.scene.value = asset.scene || "living";
   } else {
     updateTabs("fabric");
     elements.finishFabric.value = asset.finish || "mo";
     elements.lightingFabric.value = asset.lighting || "trang";
-    elements.fabricType.value = asset.fabricType || "lua";
+    elements.fabricType.value = asset.fabricType || "cotton";
     elements.texture.value = asset.textureLevel || "min";
+    if (elements.textureScale) elements.textureScale.value = asset.textureScale || 5;
+    if (elements.object) elements.object.value = asset.object || "shirt";
   }
   syncUI();
 };
@@ -409,7 +679,7 @@ const handleExport = async () => {
   const spec = buildSpec();
   renderSpec(spec);
   const ok = await copyToClipboard(elements.spec?.textContent || "");
-  setStatus(ok ? "Đã sao chép bản thông số." : "Không thể sao chép bản thông số.");
+  setStatus(ok ? "Đã sao chép Bản thông số." : "Không thể sao chép Bản thông số.");
 };
 
 const handleSeed = () => {
@@ -425,8 +695,11 @@ const handleSeed = () => {
       finish: seed.finish,
       lighting: seed.lighting,
       surface: seed.surface,
+      scene: seed.scene,
       fabricType: seed.fabricType,
       textureLevel: seed.textureLevel,
+      textureScale: seed.textureScale || 5,
+      object: seed.object,
       createdAt: now
     });
   });
@@ -453,16 +726,36 @@ const bindEvents = () => {
 
   [
     elements.hex,
+    elements.scene,
     elements.finish,
     elements.lighting,
     elements.surface,
+    elements.object,
     elements.fabricType,
     elements.finishFabric,
     elements.lightingFabric,
-    elements.texture
+    elements.texture,
+    elements.textureScale,
+    elements.compare
   ].forEach((input) => {
     input?.addEventListener("input", syncUI);
     input?.addEventListener("change", syncUI);
+  });
+
+  [
+    elements.paintArea,
+    elements.paintCoats,
+    elements.paintCoverage,
+    elements.paintWaste,
+    elements.paintPrice
+  ].forEach((input) => {
+    input?.addEventListener("input", updatePaintCalc);
+    input?.addEventListener("change", updatePaintCalc);
+  });
+
+  elements.surface?.addEventListener("change", () => {
+    applyPaintPreset();
+    updatePaintCalc();
   });
 
   elements.save?.addEventListener("click", handleSave);
@@ -491,6 +784,16 @@ const bindEvents = () => {
 const init = () => {
   if (elements.hex && !elements.hex.value) {
     elements.hex.value = defaultHex;
+  }
+  const savedCalc = loadPaintCalc();
+  if (savedCalc) {
+    if (elements.paintArea && savedCalc.area != null) elements.paintArea.value = savedCalc.area;
+    if (elements.paintCoats && savedCalc.coats != null) elements.paintCoats.value = savedCalc.coats;
+    if (elements.paintCoverage && savedCalc.coverage != null) elements.paintCoverage.value = savedCalc.coverage;
+    if (elements.paintWaste && savedCalc.waste != null) elements.paintWaste.value = savedCalc.waste;
+    if (elements.paintPrice && savedCalc.price != null) elements.paintPrice.value = savedCalc.price;
+  } else {
+    applyPaintPreset();
   }
   populateSavedSelect(getAssets());
   bindEvents();

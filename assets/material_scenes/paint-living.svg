@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Living room">
+  <defs>
+    <filter id="pfNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2"/>
+    </filter>
+    <mask id="pfMask">
+      <rect x="0" y="0" width="600" height="250" fill="white"/>
+      <rect x="90" y="60" width="140" height="90" rx="8" fill="black"/>
+      <rect x="260" y="70" width="70" height="70" rx="6" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="600" height="400" fill="#f4f1ea"/>
+  <rect x="0" y="250" width="600" height="150" fill="#e6dfd4"/>
+  <rect x="55" y="250" width="220" height="70" rx="14" fill="#d2c9bc"/>
+  <rect x="95" y="220" width="140" height="45" rx="12" fill="#e2dbd1"/>
+  <rect x="360" y="255" width="180" height="60" rx="12" fill="#d9d2c7"/>
+  <rect data-pf-fill="1" x="0" y="0" width="600" height="250" fill="#c27b4b" mask="url(#pfMask)"/>
+  <rect data-pf-texture="1" x="0" y="0" width="600" height="250" fill="#ffffff" opacity="0.18" filter="url(#pfNoise)" mask="url(#pfMask)"/>
+</svg>
+
+

@@ -103,6 +103,11 @@
 | Material profile (hồ sơ chất liệu) | Hồ sơ chất liệu | Nhóm thuộc tính mô tả bề mặt/vật liệu (loại chất liệu, độ bóng, ánh sáng, vân bề mặt). |
 | Finish (độ bóng) | Độ bóng | Mức phản xạ bề mặt (mờ/bóng) ảnh hưởng cảm giác màu và ánh sáng. |
 | Texture (vân bề mặt) | Vân bề mặt | Mô tả độ vân/mịn của bề mặt để giả lập chất liệu. |
+| Tính lượng sơn | Tính lượng sơn | Ước tính số lít sơn cần dùng dựa trên diện tích, độ phủ, số lớp và hao hụt. |
+| Độ phủ (m²/lít) | Độ phủ | Số mét vuông có thể sơn được với 1 lít sơn trong điều kiện chuẩn. |
+| Hao hụt | Hao hụt | Tỷ lệ thất thoát do bề mặt hút sơn, rơi vãi hoặc thi công không đều. |
+| Số lớp sơn | Số lớp sơn | Số lần sơn phủ lên bề mặt để đạt độ che phủ và màu chuẩn. |
+| Combo thùng | Combo thùng | Tổ hợp thùng sơn 18L/5L/1L để đạt đủ lượng với dư ít nhất. |
 | Adapter (lớp chuyển đổi dữ liệu) | Adapter | Bộ chuyển đổi dữ liệu chung sang logic riêng giữa các hệ/format khác nhau. |
 | Payload (gói dữ liệu) | Payload | Gói dữ liệu mang thông tin chính để xử lý/áp dụng. |
 | Handoff (hợp đồng chuyển giao) | Hợp đồng chuyển giao | Quy ước truyền tham số giữa các World (assetId, projectId, from, intent, shade). |
@@ -114,6 +119,8 @@
 | eol=lf (chuẩn xuống dòng LF để ổn định checksum trên CI) | eol=lf | Quy ước xuống dòng LF để tránh lệch checksum do khác hệ điều hành. |
 | BOM | BOM | Dấu thứ tự byte ở đầu tệp; dễ gây lỗi/hiển thị sai nếu xử lý mã hoá không chuẩn. |
 | HTML Entity | Thực thể HTML | Dạng mã thay thế ký tự đặc biệt; dễ làm diff bẩn và khó đọc nếu lạm dụng. |
+| Thuộc tính trần (attribute không có giá trị) | Thuộc tính trần | Thuộc tính HTML/SVG được khai báo nhưng thiếu giá trị, dễ gây lỗi parse XML. |
+| Cache-bust (ép tải bản mới) | Cache-bust | Thêm tham số phiên bản vào URL để trình duyệt tải lại tài nguyên mới, tránh dùng cache cũ. |
 
 ---
 

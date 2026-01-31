@@ -1,4 +1,4 @@
-import { composeHandoff } from "./handoff.js";
+﻿import { composeHandoff } from "./handoff.js";
 
 const FEED_STORAGE_KEY = "tc_community_feed";
 const LIBRARY_STORAGE_KEY = "tc_asset_library_v1";
@@ -135,6 +135,16 @@ const handleRemix = (postId) => {
   window.location.href = resolveWorldLink(remixAsset);
 };
 
+const scrollToFeedIfNeeded = () => {
+  if (window.location.hash !== "#feed") return;
+  const target = document.getElementById("feed") || elements.feed;
+  if (!target) return;
+  const raf = window.requestAnimationFrame || ((fn) => setTimeout(fn, 0));
+  raf(() => {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+};
+
 const renderFeed = () => {
   if (!elements.feed || !elements.empty) return;
   const items = loadFeed().sort((a, b) => {
@@ -145,6 +155,7 @@ const renderFeed = () => {
   if (!items.length) {
     elements.empty.classList.remove("hidden");
     elements.feed.innerHTML = "";
+    scrollToFeedIfNeeded();
     return;
   }
   elements.empty.classList.add("hidden");
@@ -173,6 +184,7 @@ const renderFeed = () => {
       </div>
     `;
   }).join("");
+  scrollToFeedIfNeeded();
 };
 
 const bindEvents = () => {

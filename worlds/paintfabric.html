@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
@@ -88,6 +88,26 @@
       border-radius: 1.1rem;
       border: 1px solid var(--stroke);
       min-height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pf-compare{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      --pf-compare: 60%;
+    }
+    .pf-layer{
+      position: absolute;
+      inset: 0;
+    }
+    .pf-layer svg{
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .pf-layer.pf-after{
+      clip-path: inset(0 calc(100% - var(--pf-compare)) 0 0);
     }
     .tc-menu-item{
       color: var(--text);
@@ -170,18 +190,18 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World6 · Sơn&Vải</p>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted">WORLD6 · SƠN&VẢI</p>
           <h1 class="text-3xl md:text-4xl font-bold">Thế giới màu Sơn&Vải</h1>
-          <p class="mt-2 tc-muted">Chọn màu, chất liệu, độ bóng và ánh sáng để preview nhanh.</p>
+          <p class="mt-2 tc-muted">Chọn màu, chất liệu, độ bóng và ánh sáng để xem trước nhanh.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
-          <span>Material-first Â· LÆ°u nhanh</span>
+          <span data-i18n="paintfabric.hero.tagline">Ưu tiên chất liệu · Lưu nhanh</span>
         </div>
       </div>
 
       <div class="mt-6 flex gap-2 overflow-x-auto pb-2" id="pfTabs">
-        <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="paint" aria-selected="true">SÆ¡n</button>
+        <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="paint" aria-selected="true">Sơn</button>
         <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="fabric" aria-selected="false">Vải</button>
       </div>
 
@@ -203,6 +223,15 @@
             <div id="pfPaintPanel">
               <div class="grid gap-3 sm:grid-cols-2">
                 <div>
+                  <label class="text-sm font-semibold" data-i18n="paintfabric.labels.scene">Bối cảnh</label>
+                  <select id="pfScene" class="tc-input">
+                    <option value="living">Phòng khách</option>
+                    <option value="bedroom">Phòng ngủ</option>
+                    <option value="facade">Mặt tiền</option>
+                    <option value="bathroom">Phòng tắm</option>
+                  </select>
+                </div>
+                <div>
                   <label class="text-sm font-semibold">Độ bóng</label>
                   <select id="pfFinish" class="tc-input">
                     <option value="mo">Mờ</option>
@@ -223,19 +252,69 @@
                 <select id="pfSurface" class="tc-input">
                   <option value="tuong">Tường</option>
                   <option value="xi_mang">Xi măng</option>
-                  <option value="go">Gỗ sơn</option>
+                  <option value="gach">Gạch</option>
+                  <option value="go">Gỗ</option>
                 </select>
+              </div>
+
+              <div id="pfPaintCalc" class="mt-4 tc-card p-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-semibold">Tính lượng sơn</h3>
+                  <span class="text-xs tc-muted">Ước tính nhanh</span>
+                </div>
+                <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label class="text-xs tc-muted">Diện tích (m²)</label>
+                    <input id="pfPaintArea" class="tc-input" type="number" min="0" step="0.1" placeholder="24">
+                  </div>
+                  <div>
+                    <label class="text-xs tc-muted">Số lớp</label>
+                    <input id="pfPaintCoats" class="tc-input" type="number" min="1" step="1" value="2">
+                  </div>
+                  <div>
+                    <label class="text-xs tc-muted">Độ phủ (m²/lít)</label>
+                    <input id="pfPaintCoverage" class="tc-input" type="number" min="0" step="0.1" placeholder="10">
+                  </div>
+                  <div>
+                    <label class="text-xs tc-muted">Hao hụt (%)</label>
+                    <input id="pfPaintWaste" class="tc-input" type="number" min="0" step="0.1" placeholder="8">
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label class="text-xs tc-muted">Giá/lít (tuỳ chọn)</label>
+                    <input id="pfPaintPrice" class="tc-input" type="number" min="0" step="1000" placeholder="120000">
+                  </div>
+                </div>
+                <p id="pfPaintCalcError" class="mt-2 text-xs text-rose-200"></p>
+                <div class="mt-3 flex items-center justify-between">
+                  <span class="text-xs tc-muted">Lít cần</span>
+                  <strong id="pfPaintLiters" class="text-sm">--</strong>
+                </div>
+                <div class="mt-2 text-xs tc-muted">
+                  <div class="font-semibold text-[0.7rem] uppercase tracking-[0.2em]">Combo thùng gợi ý</div>
+                  <div id="pfPaintCombos" class="mt-2 space-y-1"></div>
+                </div>
               </div>
             </div>
 
             <div id="pfFabricPanel" class="hidden">
               <div class="grid gap-3 sm:grid-cols-2">
                 <div>
+                  <label class="text-sm font-semibold" data-i18n="paintfabric.labels.object">Vật thể</label>
+                  <select id="pfObject" class="tc-input">
+                    <option value="shirt">Áo</option>
+                    <option value="curtain">Rèm</option>
+                    <option value="sofa">Sofa</option>
+                    <option value="blanket">Chăn</option>
+                  </select>
+                </div>
+                <div>
                   <label class="text-sm font-semibold">Loại vải</label>
                   <select id="pfFabricType" class="tc-input">
-                    <option value="lua">Lụa</option>
                     <option value="cotton">Cotton</option>
-                    <option value="len">Len</option>
+                    <option value="linen">Linen</option>
+                    <option value="denim">Denim</option>
+                    <option value="silk">Lụa</option>
+                    <option value="wool">Len</option>
                   </select>
                 </div>
                 <div>
@@ -263,20 +342,24 @@
                   </select>
                 </div>
               </div>
+              <div class="mt-3">
+                <label class="text-sm font-semibold" data-i18n="paintfabric.labels.textureScale">Tỷ lệ texture</label>
+                <input id="pfTextureScale" class="tc-input" type="range" min="1" max="10" value="5">
+              </div>
             </div>
 
             <div class="flex flex-wrap gap-2">
               <button id="pfSave" class="tc-btn tc-btn-primary px-4 py-2">Lưu vào Thư viện</button>
               <button id="pfUseLibrary" class="tc-btn tc-chip px-4 py-2">Dùng từ Thư viện</button>
               <button id="pfShare" class="tc-btn tc-chip px-4 py-2">Chia sẻ</button>
-              <button id="pfExport" class="tc-btn tc-chip px-4 py-2">Xuất bản thông số</button>
+              <button id="pfExport" class="tc-btn tc-chip px-4 py-2">Xuất Bản thông số</button>
               <button id="pfSeed" class="tc-btn tc-chip px-4 py-2">Tạo nhanh 6 mẫu</button>
             </div>
 
             <div>
-              <label class="text-sm font-semibold">Chọn lại asset đã lưu</label>
+              <label class="text-sm font-semibold">Chọn lại tài sản đã lưu</label>
               <select id="pfSavedSelect" class="tc-input">
-                <option value="">-- Chọn asset --</option>
+                <option value="">-- Chọn tài sản --</option>
               </select>
             </div>
 
@@ -286,6 +369,11 @@
         </div>
 
         <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-semibold" data-i18n="paintfabric.labels.compare">So sánh trước/sau</label>
+            <span id="pfCompareLabel" class="text-xs tc-muted">Sau: 60%</span>
+          </div>
+          <input id="pfCompare" class="tc-input" type="range" min="0" max="100" value="60">
           <div id="pfPreview" class="tc-preview"></div>
         </div>
       </div>
@@ -312,4 +400,3 @@
   <script src="../scripts/topbar_behavior.js" defer></script>
 </body>
 </html>
-

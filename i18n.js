@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const storageKey = "tc_lang";
   const defaultLang = "vi";
   const locales = {
@@ -62,7 +62,7 @@
             empty: "Chưa có dữ liệu tồn kho.",
             modalAdd: "Thêm tồn kho",
             modalEdit: "Sửa tồn kho",
-            modalSave: "LÆ°u",
+            modalSave: "Lưu",
             modalCancel: "Huỷ",
             fields: {
               brand: "Hãng",
@@ -80,6 +80,17 @@
             confirmDelete: "Xoá mục này?"
           }
         },
+      paintfabric: {
+        hero: {
+          tagline: "Ưu tiên chất liệu · Lưu nhanh"
+        },
+        labels: {
+          scene: "Bối cảnh",
+          object: "Vật thể",
+          textureScale: "Tỷ lệ texture",
+          compare: "So sánh trước/sau"
+        }
+      },
       hero: {
         title: "Không gian chuẩn hóa màu số.",
         desc: "8 Thế giới màu đã sẵn sàng — mỗi Thế giới là một không gian màu sắc chuyên biệt — tạo, chuyển đổi, chuẩn hoá, lưu và áp dụng màu theo nhu cầu của bạn, và nhiều hơn thế nữa...\nTừ Hex/ảnh → tra mã chỉ → bảng phối (Palette) → dải chuyển (Gradient) → màu in (CMYK) → Chia sẻ + Remix\nKhám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xuống để xem sơ đồ 8 cổng — chọn 1 cổng để bước vào Thế giới bạn cần.",
@@ -350,7 +361,7 @@
           chosen: "Màu đã chọn",
           group: "Nhóm {index}",
           colors: "{count} màu",
-          save: "LÆ°u",
+          save: "Lưu",
           saved: "Đã lưu",
           saving: "Đang lưu...",
           noDataSave: "Không có dữ liệu để lưu.",
@@ -603,4 +614,6 @@
     apply();
   });
 })();
+
+
 
