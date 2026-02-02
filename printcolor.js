@@ -3,7 +3,9 @@ import { composeHandoff } from "./scripts/handoff.js";
 const PROFILE_PRESETS = {
   "300": { name: "Couche 300%", tac: 300 },
   "280": { name: "Thường 280%", tac: 280 },
-  "240": { name: "Báo 240%", tac: 240 }
+  "240": { name: "Báo 240%", tac: 240 },
+  "screen_process": { name: "In l\u01b0\u1edbi \u2013 Process CMYK (tham chi\u1ebfu)", tac: 260, note: "CMYK/TAC ch\u1ec9 mang t\u00ednh tham chi\u1ebfu cho in l\u01b0\u1edbi; \u0111\u1ed9 d\u00e0y m\u1ef1c c\u1ea7n ki\u1ec3m so\u00e1t th\u1ef1c t\u1ebf.", screen: true },
+  "screen_spot": { name: "In l\u01b0\u1edbi \u2013 Spot (tham chi\u1ebfu)", tac: 220, note: "CMYK/TAC ch\u1ec9 mang t\u00ednh tham chi\u1ebfu cho in l\u01b0\u1edbi; \u0111\u1ed9 d\u00e0y m\u1ef1c c\u1ea7n ki\u1ec3m so\u00e1t th\u1ef1c t\u1ebf.", screen: true }
 };
 
 const INTENT_LABELS = {
@@ -23,22 +25,49 @@ const RICH_BLACK_PRESETS = {
 const elements = {
   input: document.getElementById("hexInput"),
   apply: document.getElementById("hexApply"),
+  paste: document.getElementById("hexPaste"),
   clear: document.getElementById("hexClear"),
   tableBody: document.getElementById("printTableBody"),
   tableWrap: document.getElementById("printTableWrap"),
   empty: document.getElementById("printEmpty"),
   toast: document.getElementById("printToast"),
   profilePreset: document.getElementById("profilePreset"),
+  profileNote: document.getElementById("profileNote"),
+  darkFabric: document.getElementById("darkFabric"),
   tacRange: document.getElementById("tacRange"),
   tacValue: document.getElementById("tacValue"),
   tacBadge: document.getElementById("tacBadge"),
   reduceAll: document.getElementById("reduceAll"),
   exportFormat: document.getElementById("exportFormat"),
   exportCopy: document.getElementById("exportCopy"),
+  qcExportType: document.getElementById("qcExportType"),
+  qcExport: document.getElementById("qcExport"),
   exportWrap: document.getElementById("exportCopy")?.parentElement || null,
   saveLibrary: document.getElementById("printSaveLibrary"),
   useLibrary: document.getElementById("printUseLibrary"),
   share: document.getElementById("printShare"),
+  printModeCmyk: document.getElementById("printModeCmyk"),
+  printModeScreen: document.getElementById("printModeScreen"),
+  cmykMode: document.getElementById("cmykMode"),
+  screenMode: document.getElementById("screenMode"),
+  screenSpotFromHex: document.getElementById("screenSpotFromHex"),
+  screenSpotList: document.getElementById("screenSpotList"),
+  screenSpotEmpty: document.getElementById("screenSpotEmpty"),
+  screenFabricTone: document.getElementById("screenFabricTone"),
+  screenUnderbase: document.getElementById("screenUnderbase"),
+  screenUnderbaseType: document.getElementById("screenUnderbaseType"),
+  screenCoverage: document.getElementById("screenCoverage"),
+  screenNote: document.getElementById("screenNote"),
+  screenHalftoneMode: document.getElementById("screenHalftoneMode"),
+  screenHalftoneLpi: document.getElementById("screenHalftoneLpi"),
+  screenAngleHint: document.getElementById("screenAngleHint"),
+  screenDotGain: document.getElementById("screenDotGain"),
+  screenDotGainLabel: document.getElementById("screenDotGainLabel"),
+  screenMeshHint: document.getElementById("screenMeshHint"),
+  screenExportType: document.getElementById("screenExportType"),
+  screenExport: document.getElementById("screenExport"),
+  screenReportView: document.getElementById("screenReportView"),
+  screenReportPages: document.getElementById("screenReportPages"),
   iccInput: document.getElementById("iccInput"),
   iccProfile: document.getElementById("iccProfile"),
   iccStatus: document.getElementById("iccStatus"),
@@ -63,8 +92,15 @@ const elements = {
   qcInput: document.getElementById("qcInput"),
   qcThreshold: document.getElementById("qcThreshold"),
   qcParse: document.getElementById("qcParse"),
-  qcStatus: document.getElementById("qcStatus"),
-  qcTableBody: document.getElementById("qcTableBody")
+  qcStatus: document.getElementById("qcStatus"),  qcTableBody: document.getElementById("qcTableBody"),
+  reportView: document.getElementById("qcReportView"),
+  reportId: document.getElementById("qcReportId"),
+  reportTime: document.getElementById("qcReportTime"),
+  reportTotal: document.getElementById("qcReportTotal"),
+  reportOverTac: document.getElementById("qcReportOverTac"),
+  reportGamut: document.getElementById("qcReportGamut"),  reportTableBody: document.getElementById("qcReportTableBody"),
+  reportRecommendations: document.getElementById("qcReportRecommendations"),
+  reportPages: document.getElementById("qcReportPages")
 };
 
 const state = {
@@ -78,17 +114,31 @@ const state = {
   gamutThreshold: 5,
   gamutOverlay: false,
   richBlackPreset: "text",
+  darkFabric: false,
   iccEngine: null,
   iccReady: false,
   iccLoading: false,
   qcEntries: [],
-  qcErrors: 0
+  qcErrors: 0,
+  printMode: "cmyk",
+  spotItems: [],
+  screenFabricTone: "light",
+  screenUnderbase: false,
+  screenUnderbaseType: "full",
+  screenCoverage: 100,
+  screenHalftoneMode: "spot",
+  screenHalftoneLpi: 55,
+  screenDotGain: 35,
+  screenPresets: null
 };
 
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "printcolor";
+const REPORT_STORAGE_KEY = "tc_printcolor_qc_report_v1";
+const SCREEN_REPORT_STORAGE_KEY = "tc_screenprint_report_v1";
+const ROWS_PER_PAGE = 12;
 
 const normalizeHex = (value) => {
   if (!value) return null;
@@ -106,6 +156,17 @@ const parseHexList = (value) => {
     .split(/[\s,;|]+/)
     .map(normalizeHex)
     .filter(Boolean);
+};
+
+const buildNormalizedList = (value) => {
+  const tokens = String(value || "")
+    .split(/[\s,;|]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const normalized = tokens.map(normalizeHex);
+  const valid = normalized.filter(Boolean);
+  const invalid = tokens.length - valid.length;
+  return { tokens, valid, invalid };
 };
 
 const hexToRgb = (hex) => {
@@ -591,8 +652,11 @@ const renderTable = () => {
     const deltaLabel = getDeltaLabel(item.delta);
     const isGamut = item.delta > state.gamutThreshold;
     const gamutBadge = isGamut ? '<span class="tc-badge tc-warn">Vượt gamut</span>' : "";
+    const needsUnderbase = state.darkFabric && isLightHex(item.hex);
+    const underbaseBadge = needsUnderbase ? '<span class="tc-badge tc-warn">C\u1ea7n underbase tr\u1eafng</span>' : "";
     const disabled = tac <= state.tacLimit ? "disabled" : "";
     const rowClass = isGamut && state.gamutOverlay ? "tc-row-gamut" : "";
+    const cmykText = `C ${item.cmyk.c}% \u00c2\u00b7 M ${item.cmyk.m}% \u00c2\u00b7 Y ${item.cmyk.y}% \u00c2\u00b7 K ${item.cmyk.k}%`;
     return `
       <tr data-row="${index}" class="${rowClass}">
         <td>
@@ -602,14 +666,22 @@ const renderTable = () => {
           </div>
         </td>
         <td class="font-semibold">${item.hex}</td>
-        <td>C ${item.cmyk.c}% · M ${item.cmyk.m}% · Y ${item.cmyk.y}% · K ${item.cmyk.k}%</td>
+        <td>${cmykText}</td>
         <td>${tac}%</td>
-        <td class="${warnClass}">${warn} ${gamutBadge}</td>
+        <td class="${warnClass}">${warn} ${gamutBadge} ${underbaseBadge}</td>
         <td>${deltaLabel} · ${deltaTag} ${item.delta.toFixed(1)}</td>
         <td>
-          <button class="tc-btn tc-chip px-3 py-1 text-xs" data-action="reduce" data-index="${index}" ${disabled}>
-            Giảm TAC
-          </button>
+          <div class="flex flex-wrap gap-1">
+            <button class="tc-btn tc-chip px-2 py-1 text-xs" data-action="copy-cmyk" data-index="${index}">
+              Sao ch\u00e9p CMYK
+            </button>
+            <button class="tc-btn tc-chip px-2 py-1 text-xs" data-action="copy-tac" data-index="${index}">
+              Sao ch\u00e9p TAC
+            </button>
+            <button class="tc-btn tc-chip px-2 py-1 text-xs" data-action="reduce" data-index="${index}" ${disabled}>
+              Gi\u1ea3m TAC
+            </button>
+          </div>
         </td>
       </tr>`;
   }).join("");
@@ -736,6 +808,155 @@ const updateTacDisplay = () => {
   if (elements.tacBadge) elements.tacBadge.textContent = label;
 };
 
+const setPrintMode = (mode) => {
+  state.printMode = mode === "screen" ? "screen" : "cmyk";
+  if (elements.cmykMode) elements.cmykMode.classList.toggle("hidden", state.printMode !== "cmyk");
+  if (elements.screenMode) elements.screenMode.classList.toggle("hidden", state.printMode !== "screen");
+  if (elements.printModeCmyk) {
+    elements.printModeCmyk.classList.toggle("tc-btn-primary", state.printMode === "cmyk");
+    elements.printModeCmyk.classList.toggle("tc-chip", state.printMode !== "cmyk");
+  }
+  if (elements.printModeScreen) {
+    elements.printModeScreen.classList.toggle("tc-btn-primary", state.printMode === "screen");
+    elements.printModeScreen.classList.toggle("tc-chip", state.printMode !== "screen");
+  }
+};
+
+const renderSpotList = () => {
+  if (!elements.screenSpotList || !elements.screenSpotEmpty) return;
+  elements.screenSpotList.innerHTML = "";
+  const items = state.spotItems || [];
+  elements.screenSpotEmpty.classList.toggle("hidden", items.length > 0);
+  items.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "flex flex-wrap items-center gap-2 tc-chip px-3 py-2";
+    row.dataset.spotId = item.id;
+
+    const swatch = document.createElement("span");
+    swatch.className = "tc-swatch";
+    swatch.style.background = item.hex;
+    row.appendChild(swatch);
+
+    const hex = document.createElement("span");
+    hex.className = "text-xs font-semibold";
+    hex.textContent = item.hex;
+    row.appendChild(hex);
+
+    const name = document.createElement("input");
+    name.type = "text";
+    name.className = "tc-input !min-h-0 !py-2 !px-2 w-[120px]";
+    name.value = item.name || "";
+    name.dataset.spotField = "name";
+    row.appendChild(name);
+
+    const passes = document.createElement("input");
+    passes.type = "number";
+    passes.min = "1";
+    passes.max = "10";
+    passes.className = "tc-input !min-h-0 !py-2 !px-2 w-[72px]";
+    passes.value = String(item.passes || 1);
+    passes.dataset.spotField = "passes";
+    row.appendChild(passes);
+
+    const note = document.createElement("input");
+    note.type = "text";
+    note.className = "tc-input !min-h-0 !py-2 !px-2 flex-1 min-w-[160px]";
+    note.value = item.note || "";
+    note.placeholder = "Ghi ch\u00fa";
+    note.dataset.spotField = "note";
+    row.appendChild(note);
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "tc-btn tc-chip px-2 py-2 text-xs";
+    remove.textContent = "X\u00f3a";
+    remove.dataset.spotAction = "delete";
+    row.appendChild(remove);
+
+    elements.screenSpotList.appendChild(row);
+  });
+};
+
+const buildSpotItemsFromHex = () => {
+  const source = elements.input ? elements.input.value : "";
+  const list = parseHexList(source);
+  if (!list.length) {
+    showToast("Ch\u01b0a c\u00f3 m\u00e0u spot \u0111\u1ec3 xu\u1ea5t.");
+    return;
+  }
+  state.spotItems = list.map((hex, idx) => ({
+    id: `${Date.now()}_${idx}`,
+    hex,
+    name: `M\u00e0u ${idx + 1}`,
+    passes: 1,
+    note: ""
+  }));
+  renderSpotList();
+};
+
+const updateSpotField = (target) => {
+  const row = target.closest("[data-spot-id]");
+  if (!row) return;
+  const id = row.dataset.spotId;
+  const field = target.dataset.spotField;
+  const item = state.spotItems.find((spot) => spot.id === id);
+  if (!item || !field) return;
+  if (field === "passes") {
+    const next = Number(target.value || 1);
+    item.passes = Number.isNaN(next) ? 1 : Math.max(1, next);
+    target.value = String(item.passes);
+    return;
+  }
+  item[field] = target.value;
+};
+const getDotGainLabel = (value, presets) => {
+  const list = presets?.dotGainLabels || [];
+  for (const item of list) {
+    if (value <= item.max) return item.label;
+  }
+  return value <= 30 ? "Th\u1ea5p" : value <= 60 ? "Trung b\u00ecnh" : "Cao";
+};
+
+const applyScreenPreset = (lpi) => {
+  const presets = state.screenPresets?.presets || [];
+  const current = presets.find((item) => Number(item.lpi) === Number(lpi));
+  if (elements.screenAngleHint) elements.screenAngleHint.textContent = current?.angleHint || "\u2014";
+  if (elements.screenMeshHint) elements.screenMeshHint.textContent = current?.meshHint || "\u2014";
+};
+
+const updateDotGainUI = () => {
+  if (!elements.screenDotGain) return;
+  const value = Number(elements.screenDotGain.value || state.screenDotGain || 0);
+  state.screenDotGain = Number.isNaN(value) ? 0 : value;
+  if (elements.screenDotGainLabel) {
+    elements.screenDotGainLabel.textContent = getDotGainLabel(state.screenDotGain, state.screenPresets);
+  }
+};
+
+const loadScreenPresets = async () => {
+  try {
+    const res = await fetch("../assets/knowledge/screenprint_presets_vi.json");
+    if (!res.ok) throw new Error("bad_status");
+    state.screenPresets = await res.json();
+  } catch (err) {
+    console.warn("Kh\u00f4ng th\u1ec3 t\u1ea3i preset in l\u01b0\u1edbi:", err);
+    state.screenPresets = null;
+  }
+  applyScreenPreset(state.screenHalftoneLpi);
+  updateDotGainUI();
+};
+const updateProfileNote = (presetKey) => {
+  if (!elements.profileNote) return;
+  const preset = PROFILE_PRESETS[presetKey];
+  if (preset && preset.note) {
+    elements.profileNote.textContent = preset.note;
+    elements.profileNote.classList.remove("hidden");
+  } else {
+    elements.profileNote.textContent = "";
+    elements.profileNote.classList.add("hidden");
+  }
+};
+
 const updateIccStatus = (override) => {
   if (!elements.iccStatus) return;
   if (override) {
@@ -774,6 +995,26 @@ const applyFromInput = () => {
     showToast("Chưa có mã màu hợp lệ.");
   }
 };
+
+const pasteFromClipboard = async () => {
+  if (!elements.input) return;
+  if (!navigator.clipboard?.readText) {
+    showToast("\u004b\u0068\u00f4\u006e\u0067\u0020\u0074\u0068\u1ec3\u0020\u0111\u1ecd\u0063\u0020\u0063\u006c\u0069\u0070\u0062\u006f\u0061\u0072\u0064\u002e");
+    return;
+  }
+  try {
+    const text = await navigator.clipboard.readText();
+    const { valid, invalid } = buildNormalizedList(text);
+    elements.input.value = valid.join("\n");
+    state.items = buildItems(valid);
+    renderTable();
+    setHashColors(valid);
+    showToast("\u0110\u00e3\u0020\u0064\u00e1\u006e\u0020" + valid.length + "\u0020\u006d\u00e0\u0075\u0020\u0068\u1ee3\u0070\u0020\u006c\u1ec7\u002c\u0020" + invalid + "\u0020\u006c\u1ed7\u0069\u002e");
+  } catch (_err) {
+    showToast("\u004b\u0068\u00f4\u006e\u0067\u0020\u0074\u0068\u1ec3\u0020\u0111\u1ecd\u0063\u0020\u0063\u006c\u0069\u0070\u0062\u006f\u0061\u0072\u0064\u002e");
+  }
+};
+
 
 const applyFromHash = () => {
   const list = extractHashColors();
@@ -840,6 +1081,723 @@ const buildExportCsv = () => {
   });
   return [header, ...rows].join("\n");
 };
+
+const buildQcReport = () => {
+  const createdAt = new Date().toISOString();
+  const createdBy = window.tcAuth?.currentUser?.email || "";
+  const profile = getSelectedProfile();
+  const iccName = profile?.name || "sRGB";
+  const inputHexes = state.items.map((item) => item.hex);
+  const rows = state.items.map((item) => {
+    const tac = getTac(item.cmyk);
+    const overTac = tac > state.tacLimit;
+    const gamutWarn = item.delta > state.gamutThreshold;
+    return {
+      hex: item.hex,
+      c: item.cmyk.c,
+      m: item.cmyk.m,
+      y: item.cmyk.y,
+      k: item.cmyk.k,
+      tac,
+      overTac,
+      gamutWarn,
+      note: overTac ? "TAC v\u01b0\u1ee3t ng\u01b0\u1ee1ng" : (gamutWarn ? "V\u01b0\u1ee3t gamut" : "")
+    };
+  });
+  const summary = {
+    total: rows.length,
+    overTacCount: rows.filter((row) => row.overTac).length,
+    gamutWarnCount: rows.filter((row) => row.gamutWarn).length
+  };
+  const warnings = [];
+  if (summary.overTacCount > 0) warnings.push("C\u00f3 m\u00e0u v\u01b0\u1ee3t TAC.");
+  if (summary.gamutWarnCount > 0) warnings.push("C\u00f3 m\u00e0u ngo\u00e0i gamut.");
+  if (!summary.total) warnings.push("Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u ki\u1ec3m tra.");
+  const recommendations = [];
+  if (summary.overTacCount > 0) recommendations.push("G\u1ee3i \u00fd: gi\u1ea3m TAC cho m\u00e0u v\u01b0\u1ee3t ng\u01b0\u1ee1ng.");
+  if (summary.gamutWarnCount > 0) recommendations.push("G\u1ee3i \u00fd: c\u00e2n nh\u1eafc \u0111\u1ed5i ICC/intent ho\u1eb7c gi\u1ea3m ng\u01b0\u1ee1ng \u0394E.");
+  if (!summary.total) recommendations.push("Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u \u0111\u1ec3 ki\u1ec3m tra.");
+  const reportId = buildReportId({
+    inputHexes,
+    tacLimit: state.tacLimit,
+    presetTAC: state.tacLimit,
+    iccName,
+    intent: state.iccIntent,
+    bpc: state.iccBpc,
+    createdAt
+  });
+  return {
+    createdAt,
+    createdBy,
+    presetTAC: state.tacLimit,
+    tacLimit: state.tacLimit,
+    iccName,
+    intent: state.iccIntent,
+    bpc: state.iccBpc,
+    inputHexes,
+    rows,
+    summary,
+    warnings,
+    recommendations,
+    reportId
+  };
+};
+
+const storeQcReport = (report) => {
+  try {
+    localStorage.setItem(REPORT_STORAGE_KEY, JSON.stringify(report));
+  } catch (err) {
+    console.warn("Kh\u00f4ng th\u1ec3 l\u01b0u b\u00e1o c\u00e1o QC:", err);
+  }
+};
+
+const loadQcReport = (reportId) => {
+  try {
+    const raw = localStorage.getItem(REPORT_STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (reportId && data?.reportId && data.reportId !== reportId) return data;
+    return data;
+  } catch (err) {
+    console.warn("Kh\u00f4ng th\u1ec3 \u0111\u1ecdc b\u00e1o c\u00e1o QC:", err);
+    return null;
+  }
+};
+
+const isReportMode = () => {
+  const params = new URLSearchParams(window.location.search);
+  return Boolean(params.get("report"));
+};
+
+const renderQcReportView = (report) => {
+  if (!elements.reportView || !elements.reportPages) return;
+  elements.reportView.hidden = false;
+  const data = report || {
+    rows: [],
+    summary: { total: 0, overTacCount: 0, gamutWarnCount: 0 },
+    recommendations: [],
+    reportId: "",
+    createdAt: ""
+  };
+  const rows = Array.isArray(data.rows) ? data.rows : [];
+  const reportId = data.reportId || "\u2014";
+  const reportTime = data.createdAt ? new Date(data.createdAt).toLocaleString() : "\u2014";
+  const totalPages = Math.max(1, Math.ceil(rows.length / ROWS_PER_PAGE));
+  const recommendations = Array.isArray(data.recommendations) && data.recommendations.length
+    ? data.recommendations
+    : ["Kh\u00f4ng c\u00f3 khuy\u1ebfn ngh\u1ecb b\u1ed5 sung."];
+
+  elements.reportPages.innerHTML = "";
+
+  const buildHeader = (compact) => {
+    const header = document.createElement("header");
+    header.className = compact ? "qc-report-header qc-report-header--compact" : "qc-report-header";
+    const left = document.createElement("div");
+    if (!compact) {
+      const eyebrow = document.createElement("p");
+      eyebrow.className = "qc-report-eyebrow";
+      eyebrow.textContent = "SpaceColors";
+      left.appendChild(eyebrow);
+    }
+    const title = document.createElement("h1");
+    title.className = "qc-report-title";
+    title.textContent = "B\u00e1o c\u00e1o QC m\u00e0u in (CMYK)";
+    left.appendChild(title);
+    const sub = document.createElement("p");
+    sub.className = "qc-report-sub";
+    sub.textContent = compact ? "B\u1ea3n r\u00fat g\u1ecdn" : "B\u00e1o c\u00e1o ki\u1ec3m tra nhanh cho nh\u00e0 in.";
+    left.appendChild(sub);
+    header.appendChild(left);
+
+    const meta = document.createElement("div");
+    meta.className = "qc-report-meta";
+    const metaId = document.createElement("div");
+    metaId.innerHTML = `<span class="qc-report-meta-label">Report ID</span> ${reportId}`;
+    const metaTime = document.createElement("div");
+    metaTime.innerHTML = `<span class="qc-report-meta-label">Th\u1eddi gian</span> ${reportTime}`;
+    meta.appendChild(metaId);
+    meta.appendChild(metaTime);
+    header.appendChild(meta);
+    return header;
+  };
+
+  const buildSummary = () => {
+    const summary = document.createElement("section");
+    summary.className = "qc-report-summary";
+    const total = document.createElement("div");
+    total.className = "qc-report-chip";
+    total.textContent = `T\u1ed5ng m\u00e0u ${data.summary?.total ?? 0}`;
+    const tac = document.createElement("div");
+    tac.className = "qc-report-chip";
+    tac.textContent = `V\u01b0\u1ee3t TAC ${data.summary?.overTacCount ?? 0}`;
+    const gamut = document.createElement("div");
+    gamut.className = "qc-report-chip";
+    gamut.textContent = `Ngo\u00e0i gamut ${data.summary?.gamutWarnCount ?? 0}`;
+    summary.appendChild(total);
+    summary.appendChild(tac);
+    summary.appendChild(gamut);
+    return summary;
+  };
+
+  const buildTopWarnings = () => {
+    if (rows.length <= 60) return null;
+    const container = document.createElement("div");
+    container.className = "qc-report-top";
+    const title = document.createElement("strong");
+    title.textContent = "Top c\u1ea3nh b\u00e1o";
+    container.appendChild(title);
+    const list = document.createElement("div");
+    const sorted = rows.slice().sort((a, b) => {
+      const aScore = (a.overTac ? 2 : 0) + (a.gamutWarn ? 1 : 0);
+      const bScore = (b.overTac ? 2 : 0) + (b.gamutWarn ? 1 : 0);
+      return bScore - aScore;
+    });
+    const top = sorted.filter((row) => row.overTac || row.gamutWarn).slice(0, 20);
+    if (!top.length) {
+      const line = document.createElement("div");
+      line.textContent = "Kh\u00f4ng c\u00f3 c\u1ea3nh b\u00e1o n\u1ed5i b\u1eadt.";
+      list.appendChild(line);
+    } else {
+      top.forEach((row) => {
+        const line = document.createElement("div");
+        const tags = [];
+        if (row.overTac) tags.push("V\u01b0\u1ee3t TAC");
+        if (row.gamutWarn) tags.push("Ngo\u00e0i gamut");
+        line.textContent = `${row.hex} \u00b7 ${tags.join(" \u00b7 ")}`;
+        list.appendChild(line);
+      });
+    }
+    container.appendChild(list);
+    const note = document.createElement("div");
+    note.textContent = "Danh s\u00e1ch d\u00e0i, vui l\u00f2ng xem CSV \u0111\u1ec3 x\u1eed l\u00fd chi ti\u1ebft.";
+    container.appendChild(note);
+    return container;
+  };
+
+  const buildTable = (pageRows) => {
+    const section = document.createElement("section");
+    section.className = "qc-report-table";
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    ["M\u00e0u", "HEX", "CMYK", "TAC", "Tr\u1ea1ng th\u00e1i", "Ghi ch\u00fa"].forEach((label) => {
+      const th = document.createElement("th");
+      th.textContent = label;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    if (!pageRows.length) {
+      const tr = document.createElement("tr");
+      tr.className = "qc-report-row";
+      const td = document.createElement("td");
+      td.colSpan = 6;
+      td.textContent = "Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u b\u00e1o c\u00e1o.";
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    } else {
+      pageRows.forEach((row) => {
+        const tr = document.createElement("tr");
+        tr.className = "qc-report-row";
+        const swatch = document.createElement("span");
+        swatch.className = "qc-report-swatch";
+        swatch.style.background = row.hex;
+        const colorCell = document.createElement("td");
+        colorCell.appendChild(swatch);
+
+        const hexCell = document.createElement("td");
+        hexCell.textContent = row.hex;
+
+        const cmykCell = document.createElement("td");
+        cmykCell.textContent = `C ${row.c}% \u00b7 M ${row.m}% \u00b7 Y ${row.y}% \u00b7 K ${row.k}%`;
+
+        const tacCell = document.createElement("td");
+        tacCell.textContent = `${Math.round(row.tac)}%`;
+
+        const statusCell = document.createElement("td");
+        statusCell.textContent = row.overTac ? "V\u01b0\u1ee3t TAC" : (row.gamutWarn ? "Ngo\u00e0i gamut" : "OK");
+
+        const noteCell = document.createElement("td");
+        noteCell.textContent = row.note || "";
+
+        tr.appendChild(colorCell);
+        tr.appendChild(hexCell);
+        tr.appendChild(cmykCell);
+        tr.appendChild(tacCell);
+        tr.appendChild(statusCell);
+        tr.appendChild(noteCell);
+        tbody.appendChild(tr);
+      });
+    }
+    table.appendChild(tbody);
+    section.appendChild(table);
+    return section;
+  };
+
+  const buildNotes = () => {
+    const notes = document.createElement("section");
+    notes.className = "qc-report-notes";
+    const wrap = document.createElement("div");
+    const title = document.createElement("h2");
+    title.textContent = "Khuy\u1ebfn ngh\u1ecb";
+    wrap.appendChild(title);
+    const list = document.createElement("ul");
+    recommendations.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      list.appendChild(li);
+    });
+    wrap.appendChild(list);
+    notes.appendChild(wrap);
+    const disclaimer = document.createElement("p");
+    disclaimer.className = "qc-report-disclaimer";
+    disclaimer.textContent = "Ghi ch\u00fa: B\u00e1o c\u00e1o n\u00e0y d\u00f9ng chuy\u1ec3n \u0111\u1ed5i CMYK x\u1ea5p x\u1ec9, ch\u01b0a \u00e1p d\u1ee5ng ICC chuy\u00ean s\u00e2u.";
+    notes.appendChild(disclaimer);
+    return notes;
+  };
+
+  for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+    const page = document.createElement("div");
+    page.className = "qc-report-page qc-report-card";
+    const compact = pageIndex > 0;
+    page.appendChild(buildHeader(compact));
+    if (!compact) {
+      page.appendChild(buildSummary());
+      const topWarnings = buildTopWarnings();
+      if (topWarnings) page.appendChild(topWarnings);
+    }
+
+    const pageRows = rows.slice(pageIndex * ROWS_PER_PAGE, (pageIndex + 1) * ROWS_PER_PAGE);
+    page.appendChild(buildTable(pageRows));
+
+    if (!compact) {
+      page.appendChild(buildNotes());
+    }
+
+    const footer = document.createElement("div");
+    footer.className = "qc-report-footer";
+    footer.textContent = `Trang ${pageIndex + 1}/${totalPages} \u00b7 Report ID: ${reportId} \u00b7 ${reportTime}`;
+    page.appendChild(footer);
+    elements.reportPages.appendChild(page);
+  }
+};
+
+const renderScreenReportView = (report) => {
+  if (!elements.screenReportView || !elements.screenReportPages) return;
+  elements.screenReportView.hidden = false;
+  const data = report || { rows: [], jobInfo: {}, screenInfo: {}, processInfo: {}, reportId: "", createdAt: "" };
+  const rows = Array.isArray(data.rows) ? data.rows : [];
+  const reportId = data.reportId || "\u2014";
+  const reportTime = data.createdAt ? new Date(data.createdAt).toLocaleString() : "\u2014";
+  const totalPages = Math.max(1, Math.ceil(rows.length / ROWS_PER_PAGE));
+  const recommendations = Array.isArray(data.recommendations) && data.recommendations.length
+    ? data.recommendations
+    : ["Kh\u00f4ng c\u00f3 khuy\u1ebfn ngh\u1ecb b\u1ed5 sung."];
+
+  elements.screenReportPages.innerHTML = "";
+
+  const buildHeader = (compact) => {
+    const header = document.createElement("header");
+    header.className = compact ? "qc-report-header qc-report-header--compact" : "qc-report-header";
+    const left = document.createElement("div");
+    if (!compact) {
+      const eyebrow = document.createElement("p");
+      eyebrow.className = "qc-report-eyebrow";
+      eyebrow.textContent = "SpaceColors";
+      left.appendChild(eyebrow);
+    }
+    const title = document.createElement("h1");
+    title.className = "qc-report-title";
+    title.textContent = "Phi\u1ebfu k\u1ef9 thu\u1eadt in l\u01b0\u1edbi";
+    left.appendChild(title);
+    const sub = document.createElement("p");
+    sub.className = "qc-report-sub";
+    sub.textContent = compact ? "B\u1ea3n r\u00fat g\u1ecdn" : "D\u00f9ng \u0111\u1ec3 giao ti\u1ebfp v\u1edbi x\u01b0\u1edfng in.";
+    left.appendChild(sub);
+    header.appendChild(left);
+
+    const meta = document.createElement("div");
+    meta.className = "qc-report-meta";
+    const metaId = document.createElement("div");
+    metaId.innerHTML = `<span class="qc-report-meta-label">Report ID</span> ${reportId}`;
+    const metaTime = document.createElement("div");
+    metaTime.innerHTML = `<span class="qc-report-meta-label">Th\u1eddi gian</span> ${reportTime}`;
+    meta.appendChild(metaId);
+    meta.appendChild(metaTime);
+    header.appendChild(meta);
+    return header;
+  };
+
+  const buildJobInfo = () => {
+    const section = document.createElement("section");
+    section.className = "qc-report-top";
+    const lines = [
+      `T\u00ean Job: ${data.jobInfo?.jobName || "\u2014"}`,
+      `Kh\u00e1ch h\u00e0ng: ${data.jobInfo?.client || "\u2014"}`,
+      `M\u00e1y in: ${data.jobInfo?.machine || "\u2014"}`,
+      `Gi\u1ea5y/V\u1eadt li\u1ec7u: ${data.jobInfo?.material || "\u2014"}`,
+      `C\u00f4ng ngh\u1ec7: ${data.jobInfo?.tech || "\u2014"}`,
+      `Ghi ch\u00fa: ${data.jobInfo?.note || "\u2014"}`
+    ];
+    const title = document.createElement("strong");
+    title.textContent = "Job info";
+    section.appendChild(title);
+    lines.forEach((line) => {
+      const div = document.createElement("div");
+      div.textContent = line;
+      section.appendChild(div);
+    });
+    return section;
+  };
+
+  const buildScreenInfo = () => {
+    const section = document.createElement("section");
+    section.className = "qc-report-top";
+    const toneLabel = data.screenInfo?.fabricTone === "dark" ? "T\u1ed1i" : data.screenInfo?.fabricTone === "mid" ? "Trung t\u00ednh" : "Tr\u1eafng/S\u00e1ng";
+    const underbaseLabel = data.screenInfo?.underbase ? "B\u1eadt" : "T\u1eaft";
+    const lines = [
+      `N\u1ec1n \u00e1o: ${toneLabel}`,
+      `Underbase: ${underbaseLabel}`,
+      `Ki\u1ec3u underbase: ${data.screenInfo?.underbaseType || "\u2014"}`,
+      `M\u1ee9c ph\u1ee7: ${data.screenInfo?.coverage ?? "\u2014"}%`
+    ];
+    const title = document.createElement("strong");
+    title.textContent = "N\u1ec1n \u00e1o & Underbase";
+    section.appendChild(title);
+    lines.forEach((line) => {
+      const div = document.createElement("div");
+      div.textContent = line;
+      section.appendChild(div);
+    });
+    return section;
+  };
+
+  const buildProcessInfo = () => {
+    const section = document.createElement("section");
+    section.className = "qc-report-top";
+    const lines = [
+      `Mode: ${data.processInfo?.mode || "\u2014"}`,
+      `LPI: ${data.processInfo?.lpi || "\u2014"}`,
+      `G\u00f3c tram: ${data.processInfo?.angleHint || "\u2014"}`,
+      `Mesh g\u1ee3i \u00fd: ${data.processInfo?.meshHint || "\u2014"}`,
+      `T\u0103ng tram: ${data.processInfo?.dotGain ?? "\u2014"}%`
+    ];
+    const title = document.createElement("strong");
+    title.textContent = "Thi\u1ebft l\u1eadp tram";
+    section.appendChild(title);
+    lines.forEach((line) => {
+      const div = document.createElement("div");
+      div.textContent = line;
+      section.appendChild(div);
+    });
+    return section;
+  };
+
+  const buildTopWarnings = () => {
+    if (rows.length <= 60) return null;
+    const container = document.createElement("div");
+    container.className = "qc-report-top";
+    const title = document.createElement("strong");
+    title.textContent = "Top c\u1ea3nh b\u00e1o";
+    container.appendChild(title);
+    const list = document.createElement("div");
+    const sorted = rows.slice().sort((a, b) => (b.passes || 1) - (a.passes || 1));
+    const top = sorted.slice(0, 20);
+    top.forEach((row) => {
+      const line = document.createElement("div");
+      line.textContent = `${row.hex} \u00b7 ${row.name || ""} \u00b7 ${row.passes || 1} l\u1ea7n`;
+      list.appendChild(line);
+    });
+    container.appendChild(list);
+    const note = document.createElement("div");
+    note.textContent = "Danh s\u00e1ch d\u00e0i, vui l\u00f2ng xem CSV \u0111\u1ec3 x\u1eed l\u00fd chi ti\u1ebft.";
+    container.appendChild(note);
+    return container;
+  };
+
+  const buildTable = (pageRows) => {
+    const section = document.createElement("section");
+    section.className = "qc-report-table";
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    ["Th\u1ee9 t\u1ef1", "M\u00e0u", "T\u00ean", "L\u01b0\u1ee3t in", "Ghi ch\u00fa"].forEach((label) => {
+      const th = document.createElement("th");
+      th.textContent = label;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+    const tbody = document.createElement("tbody");
+    if (!pageRows.length) {
+      const tr = document.createElement("tr");
+      tr.className = "qc-report-row";
+      const td = document.createElement("td");
+      td.colSpan = 5;
+      td.textContent = "Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u.";
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    } else {
+      pageRows.forEach((row) => {
+        const tr = document.createElement("tr");
+        tr.className = "qc-report-row";
+        const orderCell = document.createElement("td");
+        orderCell.textContent = row.order;
+        const colorCell = document.createElement("td");
+        const swatch = document.createElement("span");
+        swatch.className = "qc-report-swatch";
+        swatch.style.background = row.hex;
+        colorCell.appendChild(swatch);
+        const hexSpan = document.createElement("span");
+        hexSpan.textContent = row.hex;
+        colorCell.appendChild(hexSpan);
+        const nameCell = document.createElement("td");
+        nameCell.textContent = row.name || "";
+        const passCell = document.createElement("td");
+        passCell.textContent = row.passes || 1;
+        const noteCell = document.createElement("td");
+        noteCell.textContent = row.note || "";
+        tr.appendChild(orderCell);
+        tr.appendChild(colorCell);
+        tr.appendChild(nameCell);
+        tr.appendChild(passCell);
+        tr.appendChild(noteCell);
+        tbody.appendChild(tr);
+      });
+    }
+    table.appendChild(tbody);
+    section.appendChild(table);
+    return section;
+  };
+
+  const buildNotes = () => {
+    const notes = document.createElement("section");
+    notes.className = "qc-report-notes";
+    const wrap = document.createElement("div");
+    const title = document.createElement("h2");
+    title.textContent = "Khuy\u1ebfn ngh\u1ecb";
+    wrap.appendChild(title);
+    const list = document.createElement("ul");
+    recommendations.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      list.appendChild(li);
+    });
+    wrap.appendChild(list);
+    notes.appendChild(wrap);
+    return notes;
+  };
+
+  for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+    const page = document.createElement("div");
+    page.className = "qc-report-page qc-report-card";
+    const compact = pageIndex > 0;
+    page.appendChild(buildHeader(compact));
+    if (!compact) {
+      page.appendChild(buildJobInfo());
+      page.appendChild(buildScreenInfo());
+      page.appendChild(buildProcessInfo());
+      const topWarnings = buildTopWarnings();
+      if (topWarnings) page.appendChild(topWarnings);
+    }
+    const pageRows = rows.slice(pageIndex * ROWS_PER_PAGE, (pageIndex + 1) * ROWS_PER_PAGE);
+    page.appendChild(buildTable(pageRows));
+    if (!compact) {
+      page.appendChild(buildNotes());
+    }
+    const footer = document.createElement("div");
+    footer.className = "qc-report-footer";
+    footer.textContent = `Trang ${pageIndex + 1}/${totalPages} \u00b7 Report ID: ${reportId}`;
+    page.appendChild(footer);
+    elements.screenReportPages.appendChild(page);
+  }
+};
+const openReportView = (report) => {
+  storeQcReport(report);
+  const url = new URL(window.location.href);
+  url.searchParams.set("report", "1");
+  if (report?.reportId) url.searchParams.set("reportId", report.reportId);
+  const popup = window.open(url.toString(), "_blank", "noopener");
+  if (!popup) window.location.href = url.toString();
+};
+
+const initReportView = () => {
+  if (!isReportMode()) return false;
+  document.body?.setAttribute("data-report", "1");
+  const params = new URLSearchParams(window.location.search);
+  const reportId = params.get("reportId");
+  if (params.get("report") === "screenprint") {
+    const report = loadScreenReport(reportId);
+    renderScreenReportView(report);
+    return true;
+  }
+  const report = loadQcReport(reportId);
+  renderQcReportView(report);
+  return true;
+};
+
+const storeScreenReport = (report) => {
+  try {
+    localStorage.setItem(SCREEN_REPORT_STORAGE_KEY, JSON.stringify(report));
+  } catch (err) {
+    console.warn("Kh\u00f4ng th\u1ec3 l\u01b0u phi\u1ebfu in l\u01b0\u1edbi:", err);
+  }
+};
+
+const loadScreenReport = (reportId) => {
+  try {
+    const raw = localStorage.getItem(SCREEN_REPORT_STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (reportId && data?.reportId && data.reportId !== reportId) return data;
+    return data;
+  } catch (err) {
+    console.warn("Kh\u00f4ng th\u1ec3 \u0111\u1ecdc phi\u1ebfu in l\u01b0\u1edbi:", err);
+    return null;
+  }
+};
+
+const buildScreenReport = () => {
+  const createdAt = new Date().toISOString();
+  const createdBy = window.tcAuth?.currentUser?.email || "";
+  const rows = (state.spotItems || []).map((item, idx) => ({
+    order: idx + 1,
+    hex: item.hex,
+    name: item.name || "",
+    passes: item.passes || 1,
+    note: item.note || ""
+  }));
+  const jobInfo = {
+    jobName: elements.pressJobName?.value.trim() || "\u2014",
+    client: elements.pressClient?.value.trim() || "\u2014",
+    machine: elements.pressMachine?.value.trim() || "\u2014",
+    material: elements.pressMaterial?.value.trim() || "\u2014",
+    tech: elements.pressTech?.value || "\u2014",
+    note: elements.pressNote?.value.trim() || "\u2014"
+  };
+  const screenInfo = {
+    fabricTone: state.screenFabricTone,
+    underbase: state.screenUnderbase,
+    underbaseType: state.screenUnderbaseType,
+    coverage: state.screenCoverage
+  };
+  const processInfo = {
+    mode: state.screenHalftoneMode,
+    lpi: state.screenHalftoneLpi,
+    angleHint: elements.screenAngleHint?.textContent || "\u2014",
+    meshHint: elements.screenMeshHint?.textContent || "\u2014",
+    dotGain: state.screenDotGain
+  };
+  const warnings = [];
+  if (!rows.length) warnings.push("Ch\u01b0a c\u00f3 m\u00e0u spot.");
+  if (screenInfo.fabricTone === "dark" && !screenInfo.underbase) {
+    warnings.push("N\u1ec1n v\u1ea3i t\u1ed1i ch\u01b0a b\u1eadt underbase.");
+  }
+  const recommendations = [];
+  if (screenInfo.fabricTone === "dark" && !screenInfo.underbase) {
+    recommendations.push("G\u1ee3i \u00fd: b\u1eadt underbase tr\u1eafng \u0111\u1ec3 gi\u1eef t\u00f4ng m\u00e0u.");
+  }
+  if (rows.length > 12) recommendations.push("B\u00e1o c\u00e1o s\u1ebd t\u1ef1 chia trang theo 12 m\u00e0u.");
+  const reportId = buildReportId({
+    type: "screenprint",
+    createdAt,
+    rows,
+    screenInfo,
+    processInfo
+  });
+  return {
+    createdAt,
+    createdBy,
+    reportId,
+    jobInfo,
+    screenInfo,
+    processInfo,
+    rows,
+    warnings,
+    recommendations
+  };
+};
+
+const openScreenReportView = (report) => {
+  storeScreenReport(report);
+  const url = new URL(window.location.href);
+  url.searchParams.set("report", "screenprint");
+  if (report?.reportId) url.searchParams.set("reportId", report.reportId);
+  const popup = window.open(url.toString(), "_blank", "noopener");
+  if (!popup) window.location.href = url.toString();
+};
+const buildReportId = (payload) => {
+  const text = JSON.stringify(payload);
+  let hash = 2166136261;
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+  }
+  return (hash >>> 0).toString(16);
+};
+
+const formatQcFilename = () => {
+  const now = new Date();
+  const pad = (v) => String(v).padStart(2, "0");
+  const stamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+  return `QC_CMYK_${stamp}`;
+};
+
+const formatScreenFilename = () => {
+  const now = new Date();
+  const pad = (v) => String(v).padStart(2, "0");
+  const stamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+  return `SCREENPRINT_${stamp}`;
+};
+
+const exportScreenCsv = (report) => {
+  const header = "order,hex,name,passes,note";
+  const rows = report.rows.map((row) => [
+    row.order,
+    row.hex,
+    row.name || "",
+    row.passes || 1,
+    row.note || ""
+  ].map((value) => {
+    const text = String(value).replace(/"/g, '""');
+    return `"${text}"`;
+  }).join(","));
+  return [header, ...rows].join("\n");
+};
+
+const exportScreenJson = (report) => JSON.stringify(report, null, 2);
+
+const downloadText = (filename, content, type) => {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+
+const exportQcCsv = (report) => {
+  const header = "hex,c,m,y,k,tac,overTac,gamutWarn,note";
+  const rows = report.rows.map((row) => [
+    row.hex,
+    row.c,
+    row.m,
+    row.y,
+    row.k,
+    row.tac,
+    row.overTac,
+    row.gamutWarn,
+    row.note || ""
+  ].join(","));
+  return [header, ...rows].join("\n");
+};
+
+const exportQcJson = (report) => JSON.stringify(report, null, 2);
 
 const buildExportJson = () => {
   const tokens = {};
@@ -1006,6 +1964,7 @@ const handleIccUpload = async (file) => {
 
 const bindEvents = () => {
   if (elements.apply) elements.apply.addEventListener("click", applyFromInput);
+  if (elements.paste) elements.paste.addEventListener("click", pasteFromClipboard);
   if (elements.clear) {
     elements.clear.addEventListener("click", () => {
       if (elements.input) elements.input.value = "";
@@ -1022,6 +1981,13 @@ const bindEvents = () => {
       state.tacLimit = next;
       if (elements.tacRange) elements.tacRange.value = String(next);
       updateTacDisplay();
+      updateProfileNote(elements.profilePreset.value);
+      renderTable();
+    });
+  }
+  if (elements.darkFabric) {
+    elements.darkFabric.addEventListener("change", () => {
+      state.darkFabric = elements.darkFabric.checked;
       renderTable();
     });
   }
@@ -1038,18 +2004,80 @@ const bindEvents = () => {
   }
   if (elements.tableBody) {
     elements.tableBody.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-action='reduce']");
+      const button = event.target.closest("[data-action]");
       if (!button) return;
+      const action = button.getAttribute("data-action");
       const index = Number(button.getAttribute("data-index"));
       if (Number.isNaN(index)) return;
-      handleReduce(index);
+      const item = state.items[index];
+      if (!item) return;
+      if (action === "reduce") {
+        handleReduce(index);
+        return;
+      }
+      if (action === "copy-cmyk") {
+        const text = `C ${item.cmyk.c}% \u00b7 M ${item.cmyk.m}% \u00b7 Y ${item.cmyk.y}% \u00b7 K ${item.cmyk.k}%`;
+        copyToClipboard(text).then(() => showToast("\u0110\u00e3 sao ch\u00e9p CMYK."));
+        return;
+      }
+      if (action === "copy-tac") {
+        const text = `${getTac(item.cmyk)}%`;
+        copyToClipboard(text).then(() => showToast("\u0110\u00e3 sao ch\u00e9p TAC."));
+      }
     });
   }
   if (elements.exportCopy) {
     elements.exportCopy.textContent = "Xuất Bản thông số";
     elements.exportCopy.addEventListener("click", exportData);
   }
-  elements.saveLibrary?.addEventListener("click", () => {
+  if (elements.qcExport) {
+    elements.qcExport.addEventListener("click", () => {
+      if (!state.items.length) {
+        showToast("Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u \u0111\u1ec3 xu\u1ea5t b\u00e1o c\u00e1o QC.");
+        return;
+      }
+      const report = buildQcReport();
+      const base = formatQcFilename();
+      const type = elements.qcExportType?.value || "csv";
+      if (type === "pdf") {
+        openReportView(report);
+        showToast("\u0110\u00e3 m\u1edf b\u00e1o c\u00e1o \u0111\u1ec3 in.");
+        return;
+      }
+      if (type === "json") {
+        downloadText(base + ".json", exportQcJson(report), "application/json");
+        showToast("\u0110\u00e3 xu\u1ea5t b\u00e1o c\u00e1o QC (JSON).");
+        return;
+      }
+      downloadText(base + ".csv", exportQcCsv(report), "text/csv");
+      showToast("\u0110\u00e3 xu\u1ea5t b\u00e1o c\u00e1o QC (CSV).");
+    });
+  }
+  
+  if (elements.screenExport) {
+    elements.screenExport.addEventListener("click", () => {
+      if (!state.spotItems.length) {
+        showToast("Ch\u01b0a c\u00f3 m\u00e0u spot \u0111\u1ec3 xu\u1ea5t.");
+        return;
+      }
+      const report = buildScreenReport();
+      const base = formatScreenFilename();
+      const type = elements.screenExportType?.value || "csv";
+      if (type === "pdf") {
+        openScreenReportView(report);
+        showToast("\u0110\u00e3 m\u1edf phi\u1ebfu k\u1ef9 thu\u1eadt \u0111\u1ec3 in.");
+        return;
+      }
+      if (type === "json") {
+        downloadText(base + ".json", exportScreenJson(report), "application/json");
+        showToast("\u0110\u00e3 xu\u1ea5t phi\u1ebfu k\u1ef9 thu\u1eadt (JSON).");
+        return;
+      }
+      downloadText(base + ".csv", exportScreenCsv(report), "text/csv");
+      showToast("\u0110\u00e3 xu\u1ea5t phi\u1ebfu k\u1ef9 thu\u1eadt (CSV).");
+    });
+  }
+elements.saveLibrary?.addEventListener("click", () => {
     if (!state.items.length) {
       showToast("Chưa có dữ liệu để lưu.");
       return;
@@ -1153,30 +2181,50 @@ const applyHexesFromHub = (detail) => {
   elements.apply?.click();
 };
 
-updateTacDisplay();
-if (elements.iccBpc) {
-  elements.iccBpc.checked = state.iccBpc;
-}
-if (elements.deltaMethod) {
-  elements.deltaMethod.value = state.deltaMethod;
-}
-if (elements.gamutThreshold) {
-  elements.gamutThreshold.value = String(state.gamutThreshold);
-}
-if (elements.gamutOverlay) {
-  elements.gamutOverlay.checked = state.gamutOverlay;
-}
-if (elements.richBlackPreset) {
-  elements.richBlackPreset.value = state.richBlackPreset;
-}
-initProfiles();
-bindEvents();
-applyFromHash();
-
-window.addEventListener("hashchange", () => {
+if (!initReportView()) {
+  updateTacDisplay();
+  if (elements.iccBpc) {
+    elements.iccBpc.checked = state.iccBpc;
+  }
+  if (elements.deltaMethod) {
+    elements.deltaMethod.value = state.deltaMethod;
+  }
+  if (elements.gamutThreshold) {
+    elements.gamutThreshold.value = String(state.gamutThreshold);
+  }
+  if (elements.gamutOverlay) {
+    elements.gamutOverlay.checked = state.gamutOverlay;
+  }
+  if (elements.richBlackPreset) {
+    elements.richBlackPreset.value = state.richBlackPreset;
+  }
+  if (elements.profilePreset) {
+    updateProfileNote(elements.profilePreset.value);
+  }
+  if (elements.darkFabric) {
+    elements.darkFabric.checked = state.darkFabric;
+  }
+  initProfiles();
+  bindEvents();
+  setPrintMode(state.printMode);
+  renderSpotList();
+  if (elements.screenHalftoneMode) {
+    elements.screenHalftoneMode.value = state.screenHalftoneMode;
+  }
+  if (elements.screenHalftoneLpi) {
+    elements.screenHalftoneLpi.value = String(state.screenHalftoneLpi);
+  }
+  if (elements.screenDotGain) {
+    elements.screenDotGain.value = String(state.screenDotGain);
+  }
+  loadScreenPresets();
   applyFromHash();
-});
 
-window.addEventListener("tc:hex-apply", (event) => {
-  applyHexesFromHub(event?.detail);
-});
+  window.addEventListener("hashchange", () => {
+    applyFromHash();
+  });
+
+  window.addEventListener("tc:hex-apply", (event) => {
+    applyHexesFromHub(event?.detail);
+  });
+}

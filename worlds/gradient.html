@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi" data-world="origami">
 <head>
   <meta charset="utf-8">
@@ -192,7 +192,6 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World2 Â· Gradient</p>
           <h1 class="text-3xl md:text-4xl font-bold">Thế giới Dải chuyển màu</h1>
           <p class="mt-2 tc-muted">Tạo dải chuyển màu, tinh chỉnh góc và xuất CSS/tokens.</p>
         </div>
@@ -218,6 +217,14 @@
               <input id="gradientAngleInput" class="tc-input w-24" type="number" min="0" max="360" value="90">
               <button id="gradientResetAngle" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Đặt lại</button>
             </div>
+            <div class="flex items-center justify-between">
+              <label class="text-sm font-semibold">Kiểu dải</label>
+              <select id="gradientType" class="tc-input text-sm">
+                <option value="linear">Dải thẳng</option>
+                <option value="radial">Dải tròn</option>
+                <option value="conic">Dải nón</option>
+              </select>
+            </div>
           </div>
           <div class="tc-card p-4">
             <div class="flex items-center justify-between">
@@ -241,6 +248,16 @@
               <button id="gradientSaveLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
               <button id="gradientUseLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Dùng từ Thư viện</button>
               <button id="gradientShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
+              <button id="gradientExportToken" class="tc-btn tc-chip px-4 py-2" type="button">Token có %</button>
+              <button id="gradientExportSvg" class="tc-btn tc-chip px-4 py-2" type="button">Xuất SVG</button>
+            </div>
+            <div class="mt-4">
+              <label class="text-sm font-semibold">Nhập từ CSS gradient</label>
+              <textarea id="gradientImportInput" class="tc-input mt-2 w-full h-20 text-sm" placeholder="linear-gradient(90deg, #ff6b6b 0%, #ffd93d 50%, #6ee7b7 100%)"></textarea>
+              <div class="mt-2 flex items-center gap-2">
+                <button id="gradientImportBtn" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Nhập</button>
+                <span class="tc-muted text-xs">Hỗ trợ linear-gradient với %.</span>
+              </div>
             </div>
           </div>
 

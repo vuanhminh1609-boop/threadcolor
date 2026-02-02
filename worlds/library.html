@@ -102,6 +102,92 @@
     .hex-grid.is-compact .tc-card{
       padding: 8px;
     }
+    .hex-grid.is-tiles{
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      gap: 10px;
+    }
+    .hex-tile{
+      position: relative;
+      border-radius: 0.85rem;
+      border: 1px solid var(--stroke);
+      overflow: hidden;
+      min-height: 64px;
+      cursor: pointer;
+    }
+    .hex-tile__swatch{
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .hex-tile__menu-btn{
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .hex-tile.is-copied{
+      outline: 2px solid var(--a2);
+      outline-offset: 2px;
+    }
+    .hex-tile__label{
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+      pointer-events: none;
+    }
+    .hex-popover{
+      position: fixed;
+      z-index: 9999;
+      width: 180px;
+    }
+    .hex-popover__inner{
+      border-radius: 0.85rem;
+      border: 1px solid var(--stroke);
+      background: #0c1118;
+      padding: 8px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.4);
+      display: grid;
+      gap: 6px;
+    }
+    .hex-tile.is-selected{
+      outline: 2px solid var(--a1);
+      outline-offset: 2px;
+    }
+    .hex-actionbar{
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 1rem;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(12px);
+    }
+    .hex-actionbar__left{
+      font-size: 12px;
+      font-weight: 600;
+    }
     .tc-swatch{
       width: 28px;
       height: 28px;
@@ -263,7 +349,6 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World5 · Thư viện</p>
           <h1 class="text-3xl md:text-4xl font-bold">Thư viện Tài sản Màu</h1>
           <p class="mt-2 tc-muted">Lưu, tìm, áp dụng nhanh các tài sản màu đã chuẩn hoá.</p>
         </div>
@@ -324,9 +409,6 @@
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
                   <button id="assetSave" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
-                  <button id="assetApply" class="hidden" type="button">Dùng từ Thư viện</button>
-                  <button id="assetRename" class="hidden" type="button">Đổi tên</button>
-                  <button id="assetDelete" class="hidden" type="button">Xóa khỏi Thư viện</button>
                   <button id="assetShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
                 </div>
                 <div class="mt-4">
@@ -358,24 +440,35 @@
         <div class="hex-toolbar">
           <div class="hex-toolbar__row">
             <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo HEX/brand/mã...">
-            <select id="hexSort" class="tc-input w-full md:w-[220px]">
+            <details class="tc-card px-3 py-2" style="border-radius:0.85rem;">
+              <summary class="text-xs font-semibold">Bộ lọc &amp; Sắp xếp</summary>
+              <div class="mt-2 grid gap-2 sm:grid-cols-2">
+            <select id="hexSort" class="tc-input w-full">
               <option value="hex" selected>Sắp xếp: Theo HEX</option>
               <option value="hue">Sắp xếp: Theo tông (Hue)</option>
+              <option value="color_dark_light">Sắp xếp: Theo màu (tối → sáng)</option>
               <option value="lightness">Sắp xếp: Theo độ sáng</option>
             </select>
-            <select id="hexView" class="tc-input w-full md:w-[220px]">
-              <option value="compact" selected>Hiển thị: Gọn (quét nhanh)</option>
-              <option value="detail">Hiển thị: Thẻ (đầy đủ)</option>
-            </select>
-            <select id="hexLoadMode" class="tc-input w-full md:w-[220px]">
-              <option value="infinite" selected>Chế độ tải: Cuộn tải</option>
-              <option value="paging">Chế độ tải: Phân trang</option>
-            </select>
-            <select id="hexPageSize" class="tc-input w-full md:w-[160px]">
-              <option value="36">36 màu/trang</option>
-              <option value="60" selected>60 màu/trang</option>
-              <option value="96">96 màu/trang</option>
-            </select>
+                <select id="hexView" class="tc-input w-full">
+                  <option value="tiles" selected>Hiển thị: Lưới ô màu</option>
+                  <option value="compact">Hiển thị: Gọn (quét nhanh)</option>
+                  <option value="detail">Hiển thị: Thẻ (đầy đủ)</option>
+                </select>
+                <select id="hexLoadMode" class="tc-input w-full">
+                  <option value="infinite" selected>Chế độ tải: Cuộn tải</option>
+                  <option value="paging">Chế độ tải: Phân trang</option>
+                </select>
+                <select id="hexPageSize" class="tc-input w-full">
+                  <option value="36">36 màu/trang</option>
+                  <option value="60" selected>60 màu/trang</option>
+                  <option value="96">96 màu/trang</option>
+                </select>
+              </div>
+            </details>
+            <label class="flex items-center gap-2 text-xs font-semibold">
+              <input id="hexMultiSelect" type="checkbox" class="h-4 w-4">
+              Chọn nhiều
+            </label>
             <div id="hexStats" class="text-xs tc-muted">Đang nạp dữ liệu...</div>
           </div>
         </div>
@@ -386,9 +479,30 @@
           <button id="hexNext" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Trang sau</button>
         </div>
         <div id="hexStatus" class="mt-2 text-xs tc-muted"></div>
+        <div id="hexActionBar" class="hex-actionbar mt-3 hidden">
+          <div class="hex-actionbar__left">Đã chọn: <span id="hexSelectedCount">0</span></div>
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <button id="hexCopySelected" class="tc-btn tc-btn-primary px-4 py-2 text-xs" type="button">Copy HEX</button>
+            <button id="hexSaveSelected" class="tc-btn tc-chip px-4 py-2 text-xs" type="button">Lưu hàng loạt</button>
+            <button id="hexCreatePalette" class="tc-btn tc-chip px-4 py-2 text-xs" type="button">Tạo Palette</button>
+            <button id="hexCreateGradient" class="tc-btn tc-chip px-4 py-2 text-xs" type="button">Tạo Gradient</button>
+            <details class="tc-card px-2 py-1" style="border-radius:0.85rem;">
+              <summary class="text-xs font-semibold">⋯</summary>
+              <div class="mt-2 grid gap-2">
+                <button id="hexOpenThread" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Mở ở Thêu</button>
+                <button id="hexOpenPrint" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Mở ở In</button>
+              </div>
+            </details>
+            <button id="hexClearSelected" class="tc-btn tc-chip px-4 py-2 text-xs" type="button">Bỏ chọn</button>
+          </div>
+        </div>
       </div>
     </section>
   </main>
+
+  <div id="hexMenuPopover" class="hex-popover" hidden>
+    <div id="hexMenuList" class="hex-popover__inner" role="menu"></div>
+  </div>
 
   <div id="hexProfileOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="tc-card w-full max-w-3xl overflow-auto" style="max-height:85vh;">

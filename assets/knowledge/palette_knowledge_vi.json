@@ -1,0 +1,428 @@
+{
+  "goals": {
+    "ui": {
+      "keywords": [
+        "website",
+        "ui",
+        "web",
+        "giao diện",
+        "giao dien"
+      ],
+      "hint": "Ưu tiên tương phản chữ/nền rõ ràng"
+    },
+    "brand": {
+      "keywords": [
+        "brand",
+        "thương hiệu",
+        "thuong hieu",
+        "nhận diện",
+        "nhan dien"
+      ],
+      "hint": "Giữ màu chủ đạo và hệ bậc rõ"
+    },
+    "embroidery": {
+      "keywords": [
+        "thêu",
+        "theu",
+        "chỉ",
+        "chi"
+      ],
+      "hint": "Ưu tiên màu dễ map sang mã chỉ"
+    },
+    "print": {
+      "keywords": [
+        "in",
+        "cmyk",
+        "print"
+      ],
+      "hint": "Tránh quá rực; CMYK xấp xỉ"
+    }
+  },
+  "moods": [
+    {
+      "key": "sang",
+      "label": "Sang",
+      "keywords": [
+        "sang",
+        "cao cấp",
+        "cao cap",
+        "tinh tế",
+        "tinh te"
+      ],
+      "h": 210,
+      "s": 28,
+      "l": 48
+    },
+    {
+      "key": "tre",
+      "label": "Trẻ",
+      "keywords": [
+        "trẻ",
+        "tre",
+        "năng động",
+        "nang dong",
+        "tươi",
+        "tuoi"
+      ],
+      "h": 20,
+      "s": 75,
+      "l": 55
+    },
+    {
+      "key": "am",
+      "label": "Ấm",
+      "keywords": [
+        "ấm",
+        "am",
+        "ấm áp",
+        "am ap"
+      ],
+      "h": 25,
+      "s": 55,
+      "l": 52
+    },
+    {
+      "key": "lanh",
+      "label": "Lạnh",
+      "keywords": [
+        "lạnh",
+        "lanh",
+        "mát",
+        "mat"
+      ],
+      "h": 205,
+      "s": 50,
+      "l": 50
+    },
+    {
+      "key": "tu_nhien",
+      "label": "Tự nhiên",
+      "keywords": [
+        "tự nhiên",
+        "tu nhien",
+        "xanh lá",
+        "xanh la",
+        "organic"
+      ],
+      "h": 120,
+      "s": 40,
+      "l": 45
+    },
+    {
+      "key": "toi_gian",
+      "label": "Tối giản",
+      "keywords": [
+        "tối giản",
+        "toi gian",
+        "nhẹ",
+        "nhe"
+      ],
+      "h": 220,
+      "s": 12,
+      "l": 65
+    }
+  ],
+  "defaultIndustryIds": [
+    "spa_clinic",
+    "nail",
+    "coffee",
+    "uniform",
+    "label_packaging",
+    "embroidery"
+  ],
+  "briefTemplates": [
+    {
+      "id": "spa_clinic",
+      "industryLabel": "Spa/Clinic",
+      "goal": "brand",
+      "toneTags": [
+        "sang",
+        "lanh"
+      ],
+      "defaults": {
+        "boldness": 30,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "ưu tiên sạch",
+        "tương phản chữ rõ"
+      ],
+      "briefs": [
+        "Thương hiệu spa cao cấp, cảm giác sạch và lạnh, ít rực.",
+        "Clinic da liễu hiện đại, tông xanh lạnh, tinh tế và tin cậy.",
+        "Spa thư giãn, màu nền nhẹ, điểm nhấn dịu, tối giản.",
+        "Thẩm mỹ viện, màu sang, mát, không quá chói.",
+        "Clinic trẻ trung, sạch sẽ, nền sáng, chữ rõ.",
+        "Spa thiên nhiên, xanh nhẹ, cảm giác thanh lọc."
+      ]
+    },
+    {
+      "id": "nail",
+      "industryLabel": "Nail",
+      "goal": "brand",
+      "toneTags": [
+        "tre",
+        "am"
+      ],
+      "defaults": {
+        "boldness": 55,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "giữ màu chủ đạo"
+      ],
+      "briefs": [
+        "Tiệm nail trẻ trung, tông ấm, điểm nhấn nổi bật.",
+        "Nail studio nữ tính, pastel nhẹ, sạch và sang.",
+        "Nail cao cấp, nền sáng, điểm nhấn rượu vang.",
+        "Nail năng động, màu tươi, vẫn dễ đọc chữ.",
+        "Nail tối giản, tông nude, accent nhẹ.",
+        "Nail nghệ thuật, màu táo bạo, vẫn cân bằng."
+      ]
+    },
+    {
+      "id": "coffee",
+      "industryLabel": "Cà phê",
+      "goal": "brand",
+      "toneTags": [
+        "am",
+        "tu_nhien"
+      ],
+      "defaults": {
+        "boldness": 40,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "ấm áp",
+        "gợi mùi cà phê"
+      ],
+      "briefs": [
+        "Cà phê thủ công, tông ấm, gợi mùi rang.",
+        "Quán cà phê tối giản, nền be, điểm nhấn nâu.",
+        "Cà phê phong cách retro, màu nâu đỏ trầm.",
+        "Cà phê hiện đại, ấm và sạch, chữ rõ.",
+        "Cà phê xanh bền vững, tông tự nhiên.",
+        "Cà phê takeaway, tươi nhẹ, thân thiện."
+      ]
+    },
+    {
+      "id": "restaurant",
+      "industryLabel": "Nhà hàng",
+      "goal": "brand",
+      "toneTags": [
+        "am"
+      ],
+      "defaults": {
+        "boldness": 45,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "không quá rực"
+      ],
+      "briefs": [
+        "Nhà hàng Á, ấm và sang, gợi vị cay nhẹ.",
+        "Nhà hàng Âu, nền sáng, điểm nhấn rượu vang.",
+        "Nhà hàng gia đình, ấm áp, thân thiện.",
+        "Nhà hàng fine dining, tối giản, cao cấp.",
+        "Nhà hàng hải sản, tông xanh mát.",
+        "Nhà hàng BBQ, màu trầm, chắc."
+      ]
+    },
+    {
+      "id": "uniform",
+      "industryLabel": "Đồng phục",
+      "goal": "brand",
+      "toneTags": [
+        "sang",
+        "lanh"
+      ],
+      "defaults": {
+        "boldness": 35,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "dễ nhận diện",
+        "ít rực"
+      ],
+      "briefs": [
+        "Đồng phục công sở, tông lạnh, sạch và tin cậy.",
+        "Đồng phục kỹ thuật, màu chắc, dễ nhận diện.",
+        "Đồng phục dịch vụ, thân thiện, sáng và rõ.",
+        "Đồng phục khách sạn, sang, nhã.",
+        "Đồng phục y tế, sạch, dịu.",
+        "Đồng phục vận hành, tương phản tốt."
+      ]
+    },
+    {
+      "id": "label_packaging",
+      "industryLabel": "Nhãn mác/Bao bì",
+      "goal": "print",
+      "toneTags": [
+        "brand",
+        "print"
+      ],
+      "defaults": {
+        "boldness": 50,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "CMYK xấp xỉ",
+        "tránh quá rực"
+      ],
+      "briefs": [
+        "Bao bì thực phẩm sạch, nền sáng, điểm nhấn rõ.",
+        "Nhãn mỹ phẩm, tông sang, ít rực.",
+        "Bao bì cà phê, ấm và trầm.",
+        "Nhãn hàng tiêu dùng, rõ chữ, tương phản cao.",
+        "Bao bì organic, tông tự nhiên.",
+        "Nhãn cao cấp, màu trầm, tinh tế."
+      ]
+    },
+    {
+      "id": "fashion",
+      "industryLabel": "Thời trang",
+      "goal": "brand",
+      "toneTags": [
+        "sang"
+      ],
+      "defaults": {
+        "boldness": 55,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "giữ màu chủ đạo"
+      ],
+      "briefs": [
+        "Thời trang cao cấp, tối giản, tương phản rõ.",
+        "Streetwear trẻ, nổi bật nhưng cân bằng.",
+        "Thời trang nữ, mềm và sang.",
+        "Thời trang nam, trầm và chắc.",
+        "Resort wear, sáng và tự nhiên.",
+        "Local brand, màu chủ đạo rõ."
+      ]
+    },
+    {
+      "id": "real_estate",
+      "industryLabel": "BĐS/Nội thất",
+      "goal": "brand",
+      "toneTags": [
+        "sang"
+      ],
+      "defaults": {
+        "boldness": 30,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "sang",
+        "ít rực"
+      ],
+      "briefs": [
+        "Bất động sản cao cấp, tông lạnh, sang.",
+        "Nội thất tối giản, nền sáng, accent nhẹ.",
+        "Không gian sống xanh, tông tự nhiên.",
+        "BĐS nghỉ dưỡng, nhẹ và tinh tế.",
+        "Nội thất công sở, sạch và chắc.",
+        "Căn hộ gia đình, ấm và sáng."
+      ]
+    },
+    {
+      "id": "education",
+      "industryLabel": "Giáo dục",
+      "goal": "brand",
+      "toneTags": [
+        "tre"
+      ],
+      "defaults": {
+        "boldness": 45,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "dễ đọc"
+      ],
+      "briefs": [
+        "Trung tâm giáo dục trẻ, tươi và rõ.",
+        "Trường học hiện đại, xanh sạch.",
+        "Khóa học online, tương phản tốt.",
+        "Đào tạo doanh nghiệp, tin cậy.",
+        "Thiếu nhi, vui nhưng không chói.",
+        "Giáo dục STEAM, hiện đại, trẻ."
+      ]
+    },
+    {
+      "id": "logistics",
+      "industryLabel": "Logistics/Xây dựng/Cơ khí",
+      "goal": "brand",
+      "toneTags": [
+        "lanh"
+      ],
+      "defaults": {
+        "boldness": 40,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "chắc",
+        "dễ nhận diện"
+      ],
+      "briefs": [
+        "Logistics tin cậy, tông lạnh, chắc.",
+        "Cơ khí công nghiệp, màu mạnh, dễ đọc.",
+        "Xây dựng, chắc và rõ, ít rực.",
+        "Vận tải, xanh lạnh, chuyên nghiệp.",
+        "Kho bãi, nền sáng, chữ rõ.",
+        "Công nghiệp, trầm và bền."
+      ]
+    },
+    {
+      "id": "event_wedding",
+      "industryLabel": "Sự kiện/Wedding",
+      "goal": "brand",
+      "toneTags": [
+        "sang",
+        "am"
+      ],
+      "defaults": {
+        "boldness": 50,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "sang"
+      ],
+      "briefs": [
+        "Wedding cao cấp, pastel nhẹ, sang.",
+        "Sự kiện doanh nghiệp, nền sáng, accent rõ.",
+        "Tiệc tối, màu trầm, ánh kim nhẹ.",
+        "Event trẻ, tươi vừa, dễ đọc.",
+        "Wedding tối giản, nền sạch, điểm nhấn mờ.",
+        "Sự kiện nghệ thuật, tinh tế."
+      ]
+    },
+    {
+      "id": "embroidery",
+      "industryLabel": "Ngành thêu",
+      "goal": "embroidery",
+      "toneTags": [
+        "tu_nhien"
+      ],
+      "defaults": {
+        "boldness": 30,
+        "colorsCount": 5
+      },
+      "constraints": [
+        "dễ map mã chỉ"
+      ],
+      "briefs": [
+        "Bảng màu thêu tự nhiên, ít rực.",
+        "Thêu logo, tương phản rõ, dễ map.",
+        "Thêu áo đồng phục, màu chắc, gọn.",
+        "Thêu phụ kiện, mềm và tinh tế.",
+        "Thêu họa tiết cổ điển, trầm.",
+        "Thêu hiện đại, sạch và dễ đọc."
+      ]
+    }
+  ],
+  "defaults": {
+    "h": 210,
+    "s": 35,
+    "l": 50
+  }
+}

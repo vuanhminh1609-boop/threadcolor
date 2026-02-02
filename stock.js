@@ -20,7 +20,8 @@ const state = {
   filtered: [],
   activeTab: "saved",
   editingId: null,
-  isLoading: false
+  isLoading: false,
+  authResolved: false
 };
 
 const els = {
@@ -80,16 +81,40 @@ const normalizeHex = (hex) => {
 const getApi = () => window.firebaseAuth || window.firebaseAuthApi || null;
 const getDb = () => getApi()?.db || null;
 
+const setCtaText = (titleText, descText, hideButton) => {
+  const title = els.cta?.querySelector('[data-i18n="vault.stock.ctaTitle"]');
+  const desc = els.cta?.querySelector('[data-i18n="vault.stock.ctaDesc"]');
+  if (title && titleText) title.textContent = titleText;
+  if (desc && descText) desc.textContent = descText;
+  if (els.ctaBtn) els.ctaBtn.classList.toggle("hidden", !!hideButton);
+};
+
 const setVisibility = (loggedIn) => {
+  if (state.activeTab !== "stock") {
+    if (els.cta) els.cta.classList.add("hidden");
+    if (els.panel) els.panel.classList.add("hidden");
+    return;
+  }
+  if (!state.authResolved) {
+    if (els.cta) els.cta.classList.remove("hidden");
+    if (els.panel) els.panel.classList.add("hidden");
+    setCtaText("Đang kiểm tra đăng nhập…", "Vui lòng đợi trong giây lát.", true);
+    return;
+  }
   if (els.cta) els.cta.classList.toggle("hidden", loggedIn);
   if (els.panel) els.panel.classList.toggle("hidden", !loggedIn);
+  if (!loggedIn) {
+    setCtaText(
+      t("vault.stock.ctaTitle", "Đăng nhập để dùng Tồn kho"),
+      t("vault.stock.ctaDesc", "Quản lý tồn kho cá nhân theo tài khoản."),
+      false
+    );
+  }
 };
 
 const setActiveTab = (tab) => {
   state.activeTab = tab;
-  if (tab === "stock") {
-    refresh();
-  }
+  refresh();
 };
 
 const refresh = () => {
@@ -383,11 +408,58 @@ const bindEvents = () => {
 
 const onAuthChanged = (user) => {
   state.user = user || null;
+  state.authResolved = true;
   refresh();
 };
 
+let tabsBound = false;
+const bindTabs = () => {
+  if (tabsBound) return;
+  tabsBound = true;
+  const tabButtons = Array.from(document.querySelectorAll('button[data-tab]'));
+  const panels = Array.from(document.querySelectorAll('section[data-tab-panel]'));
+  if (!tabButtons.length || !panels.length) return;
+
+  const updateUrl = (tab) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("tab", tab);
+    const next = `${window.location.pathname}?${params.toString()}${window.location.hash || ""}`;
+    window.history.replaceState(null, "", next);
+  };
+
+  const applyTab = (tab, opts = {}) => {
+    const { emit = true, pushUrl = true } = opts;
+    tabButtons.forEach((btn) => {
+      const active = btn.dataset.tab === tab;
+      btn.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    panels.forEach((panel) => {
+      panel.classList.toggle("hidden", panel.dataset.tabPanel !== tab);
+    });
+    if (pushUrl) updateUrl(tab);
+    setActiveTab(tab);
+    if (emit) {
+      document.dispatchEvent(new CustomEvent("tc-vault-tab-changed", { detail: { tab } }));
+    }
+  };
+
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab || "saved";
+      applyTab(tab);
+    });
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const initial = params.get("tab");
+  const target = initial === "stock" || initial === "saved" ? initial : state.activeTab;
+  applyTab(target, { emit: false, pushUrl: false });
+};
+
 const boot = () => {
+  setVisibility(false);
   bindEvents();
+  bindTabs();
   document.addEventListener("tc-vault-tab-changed", (event) => {
     const tab = event?.detail?.tab || "saved";
     setActiveTab(tab);

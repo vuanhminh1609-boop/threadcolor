@@ -7,6 +7,7 @@ const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "paintfabric";
 const TEMPLATE_BASE = "../assets/material_scenes";
 const PAINT_CALC_KEY = "tc_paint_calc_v1";
+const TRIPTYCH_KEY = "tc_paintfabric_triptych_v1";
 
 const elements = {
   tabs: document.getElementById("pfTabs"),
@@ -41,11 +42,18 @@ const elements = {
   paintPrice: document.getElementById("pfPaintPrice"),
   paintLiters: document.getElementById("pfPaintLiters"),
   paintCombos: document.getElementById("pfPaintCombos"),
-  paintCalcError: document.getElementById("pfPaintCalcError")
+  paintCalcError: document.getElementById("pfPaintCalcError"),
+  presets: document.getElementById("pfPresets"),
+  triptych: document.getElementById("pfTriptych"),
+  copyHex: document.getElementById("pfCopyHex"),
+  copySummary: document.getElementById("pfCopySummary"),
+  copyJson: document.getElementById("pfCopyJson")
 };
 
 const svgCache = new Map();
 const defaultHex = "#C27B4B";
+let previewRenderSeq = 0;
+let rafScheduled = false;
 
 const typeLabels = {
   paint_profile: "Sơn",
@@ -112,6 +120,24 @@ const fabricApplications = {
   silk: "Trang phục tiệc",
   wool: "Chăn ấm"
 };
+
+const paintPresetButtons = [
+  { label: "Ấm mềm", lighting: "am", finish: "mo" },
+  { label: "Ấm bóng", lighting: "am", finish: "bong" },
+  { label: "Trắng tĩnh", lighting: "trang", finish: "mo" },
+  { label: "Trắng sáng", lighting: "trang", finish: "bong" },
+  { label: "Tự nhiên", lighting: "tu_nhien", finish: "mo" },
+  { label: "Studio", lighting: "tu_nhien", finish: "bong" }
+];
+
+const fabricPresetButtons = [
+  { label: "Lụa bóng", lighting: "am", finish: "bong", texture: "min" },
+  { label: "Cotton êm", lighting: "tu_nhien", finish: "mo", texture: "min" },
+  { label: "Linen thô", lighting: "tu_nhien", finish: "mo", texture: "tho" },
+  { label: "Denim lạnh", lighting: "trang", finish: "mo", texture: "tho" },
+  { label: "Len ấm", lighting: "am", finish: "mo", texture: "tho" },
+  { label: "Sáng sang", lighting: "trang", finish: "bong", texture: "min" }
+];
 
 const templates = {
   paint: {
@@ -474,6 +500,35 @@ const buildSpec = () => {
   };
 };
 
+const buildOneLineSummary = (spec) => {
+  const hex = spec.colorHex || defaultHex;
+  if (spec.type === "paint_profile") {
+    const finishLabel = finishLabels[spec.finish] || spec.finish;
+    const lightingLabel = lightingLabels[spec.lighting] || spec.lighting;
+    const surfaceLabel = surfaceLabels[spec.surface] || spec.surface;
+    const sceneLabel = sceneLabels[spec.scene] || spec.scene;
+    const coats = spec.paintCalc?.coats ? `${spec.paintCalc.coats} lớp` : "-- lớp";
+    const liters = (() => {
+      const area = spec.paintCalc?.area;
+      const coverage = spec.paintCalc?.coverage;
+      const waste = spec.paintCalc?.waste ?? 0;
+      const coatsVal = spec.paintCalc?.coats;
+      if (!area || !coverage || !coatsVal) return null;
+      const needed = (area / coverage) * coatsVal * (1 + waste / 100);
+      return `${needed.toFixed(2)}L`;
+    })();
+    const litersLabel = liters ? `~${liters}` : "--";
+    return `${hex} • Sơn • ${finishLabel} • ${lightingLabel} • ${surfaceLabel} • ${sceneLabel} • ${coats} • ${litersLabel}`;
+  }
+  const finishLabel = finishLabels[spec.finish] || spec.finish;
+  const lightingLabel = lightingLabels[spec.lighting] || spec.lighting;
+  const fabricLabel = fabricLabels[spec.fabricType] || spec.fabricType;
+  const objectLabel = objectLabels[spec.object] || spec.object;
+  const textureLabel = spec.textureLevel === "tho" ? "Thô" : "Mịn";
+  const textureScale = spec.textureScale ? `Tỷ lệ ${spec.textureScale}` : "Tỷ lệ --";
+  return `${hex} • Vải • ${finishLabel} • ${lightingLabel} • ${fabricLabel} • ${objectLabel} • ${textureLabel} • ${textureScale}`;
+};
+
 const renderSpec = (spec) => {
   if (!elements.spec) return;
   const typeLabel = typeLabels[spec.type] || spec.type;
@@ -513,9 +568,38 @@ const loadSvgTemplate = async (type, key) => {
   return text;
 };
 
-const buildSvgLayer = (svgText, options) => {
+const sanitizeSvgMarkup = (svgText) => {
+  return svgText.replace(
+    /\b(data-pf-[a-z0-9_-]+)(?!\s*=\s*)(?=\s|\/?>)/gi,
+    '$1="1"'
+  );
+};
+
+const buildSvgFallback = (label) => {
+  const safeLabel = label || "Preview đang lỗi template";
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Preview lỗi">
+      <rect width="600" height="400" fill="#f2f2f2"/>
+      <rect x="24" y="24" width="552" height="352" rx="18" fill="#ffffff" stroke="#d6d6d6"/>
+      <text x="300" y="210" text-anchor="middle" fill="#444" font-size="18" font-family="system-ui, -apple-system, Segoe UI, sans-serif">${safeLabel}</text>
+    </svg>
+  `;
+};
+
+const buildSvgLayer = (svgText, options, meta) => {
+  const previewLabel = "Preview đang lỗi template";
+  if (!svgText || svgText.slice(0, 200).indexOf("<svg") === -1) {
+    console.warn("[paintfabric] SVG template không hợp lệ.", meta);
+    return buildSvgFallback(previewLabel);
+  }
+  const cleanedSvg = sanitizeSvgMarkup(svgText);
   const parser = new DOMParser();
-  const doc = parser.parseFromString(svgText, "image/svg+xml");
+  const doc = parser.parseFromString(cleanedSvg, "image/svg+xml");
+  const parserError = doc.querySelector("parsererror");
+  if (parserError) {
+    console.warn("[paintfabric] Parsererror khi parse SVG.", meta);
+    return buildSvgFallback(previewLabel);
+  }
   const svg = doc.documentElement;
   const fill = svg.querySelector("[data-pf-fill]");
   if (fill) fill.setAttribute("fill", options.color);
@@ -524,6 +608,126 @@ const buildSvgLayer = (svgText, options) => {
   const noise = svg.querySelector("#pfNoise feTurbulence");
   if (noise) noise.setAttribute("baseFrequency", String(options.noiseFrequency));
   return svg.outerHTML;
+};
+
+const getTriptych = () => {
+  try {
+    const raw = localStorage.getItem(TRIPTYCH_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) ? parsed : [null, null, null];
+  } catch (_err) {
+    return [null, null, null];
+  }
+};
+
+const saveTriptych = (slots) => {
+  try {
+    localStorage.setItem(TRIPTYCH_KEY, JSON.stringify(slots));
+  } catch (_err) {}
+};
+
+const applyPreset = (preset) => {
+  if (!preset) return;
+  if (!elements.paintPanel?.classList.contains("hidden")) {
+    if (preset.lighting && elements.lighting) elements.lighting.value = preset.lighting;
+    if (preset.finish && elements.finish) elements.finish.value = preset.finish;
+  } else {
+    if (preset.lighting && elements.lightingFabric) elements.lightingFabric.value = preset.lighting;
+    if (preset.finish && elements.finishFabric) elements.finishFabric.value = preset.finish;
+    if (preset.texture && elements.texture) elements.texture.value = preset.texture;
+  }
+  scheduleSyncUI();
+};
+
+const renderPresets = () => {
+  if (!elements.presets) return;
+  const isPaint = !elements.paintPanel?.classList.contains("hidden");
+  const presets = isPaint ? paintPresetButtons : fabricPresetButtons;
+  elements.presets.innerHTML = "";
+  presets.forEach((preset) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tc-btn tc-chip px-3 py-2 text-xs";
+    btn.textContent = preset.label;
+    btn.addEventListener("click", () => applyPreset(preset));
+    elements.presets.appendChild(btn);
+  });
+};
+
+const renderTriptych = () => {
+  if (!elements.triptych) return;
+  const slots = getTriptych();
+  elements.triptych.innerHTML = "";
+  ["A", "B", "C"].forEach((label, index) => {
+    const card = document.createElement("div");
+    card.className = "tc-card p-3 flex flex-col gap-2";
+    const heading = document.createElement("div");
+    heading.className = "text-xs font-semibold";
+    heading.textContent = `Phương án ${label}`;
+    const summary = document.createElement("div");
+    summary.className = "text-xs tc-muted";
+    summary.textContent = slots[index] ? buildOneLineSummary(slots[index]) : "Chưa ghim";
+    const actions = document.createElement("div");
+    actions.className = "flex flex-wrap gap-2";
+    const pinBtn = document.createElement("button");
+    pinBtn.type = "button";
+    pinBtn.className = "tc-btn tc-chip px-2 py-1 text-xs";
+    pinBtn.textContent = "Ghim";
+    pinBtn.addEventListener("click", () => {
+      const next = getTriptych();
+      next[index] = buildSpec();
+      saveTriptych(next);
+      renderTriptych();
+      setStatus(`Đã ghim phương án ${label}.`);
+    });
+    const useBtn = document.createElement("button");
+    useBtn.type = "button";
+    useBtn.className = "tc-btn tc-chip px-2 py-1 text-xs";
+    useBtn.textContent = "Chọn";
+    useBtn.addEventListener("click", () => {
+      const current = getTriptych()[index];
+      if (!current) return;
+      elements.hex.value = current.colorHex || defaultHex;
+      if (current.type === "paint_profile") {
+        updateTabs("paint");
+        elements.finish.value = current.finish || "mo";
+        elements.lighting.value = current.lighting || "trang";
+        elements.surface.value = current.surface || "tuong";
+        if (elements.scene) elements.scene.value = current.scene || "living";
+        if (current.paintCalc) {
+          if (elements.paintArea && current.paintCalc.area != null) elements.paintArea.value = current.paintCalc.area;
+          if (elements.paintCoats && current.paintCalc.coats != null) elements.paintCoats.value = current.paintCalc.coats;
+          if (elements.paintCoverage && current.paintCalc.coverage != null) elements.paintCoverage.value = current.paintCalc.coverage;
+          if (elements.paintWaste && current.paintCalc.waste != null) elements.paintWaste.value = current.paintCalc.waste;
+          if (elements.paintPrice && current.paintCalc.price != null) elements.paintPrice.value = current.paintCalc.price;
+        }
+      } else {
+        updateTabs("fabric");
+        elements.finishFabric.value = current.finish || "mo";
+        elements.lightingFabric.value = current.lighting || "trang";
+        elements.fabricType.value = current.fabricType || "cotton";
+        elements.texture.value = current.textureLevel || "min";
+        if (elements.textureScale) elements.textureScale.value = current.textureScale || 5;
+        if (elements.object) elements.object.value = current.object || "shirt";
+      }
+      scheduleSyncUI();
+      setStatus(`Đã chọn phương án ${label}.`);
+    });
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.className = "tc-btn tc-chip px-2 py-1 text-xs";
+    clearBtn.textContent = "Xoá";
+    clearBtn.addEventListener("click", () => {
+      const next = getTriptych();
+      next[index] = null;
+      saveTriptych(next);
+      renderTriptych();
+      setStatus(`Đã xoá phương án ${label}.`);
+    });
+    actions.append(pinBtn, useBtn, clearBtn);
+    card.append(heading, summary, actions);
+    elements.triptych.appendChild(card);
+  });
 };
 
 const getTextureSettings = (type, surface, textureLevel, textureScale, finish) => {
@@ -540,8 +744,29 @@ const getTextureSettings = (type, surface, textureLevel, textureScale, finish) =
   return { textureOpacity: Number(textureOpacity.toFixed(2)), noiseFrequency: Number(noiseFrequency.toFixed(2)) };
 };
 
+const updateCompareUI = () => {
+  const compareValue = Number(elements.compare?.value || 60);
+  if (elements.compareLabel) {
+    elements.compareLabel.textContent = `Sau: ${compareValue}%`;
+  }
+  const compareNode = elements.preview?.querySelector(".pf-compare");
+  if (compareNode) {
+    compareNode.style.setProperty("--pf-compare", `${compareValue}%`);
+  }
+};
+
+const scheduleSyncUI = () => {
+  if (rafScheduled) return;
+  rafScheduled = true;
+  requestAnimationFrame(() => {
+    rafScheduled = false;
+    syncUI();
+  });
+};
+
 const updatePreview = async () => {
   if (!elements.preview) return;
+  const renderToken = ++previewRenderSeq;
   const hex = normalizeHex(elements.hex?.value) || defaultHex;
   const activeTab = elements.paintPanel?.classList.contains("hidden") ? "fabric" : "paint";
   const finish = activeTab === "paint" ? elements.finish?.value || "mo" : elements.finishFabric?.value || "mo";
@@ -551,14 +776,11 @@ const updatePreview = async () => {
   const object = elements.object?.value || "shirt";
   const textureLevel = activeTab === "paint" ? "min" : elements.texture?.value || "min";
   const textureScale = Number(elements.textureScale?.value || 5);
-  const compare = Number(elements.compare?.value || 60);
-  const compareValue = `${compare}%`;
-  if (elements.compareLabel) {
-    elements.compareLabel.textContent = `Sau: ${compare}%`;
-  }
+  const compareValue = `${Number(elements.compare?.value || 60)}%`;
 
   const svgText = await loadSvgTemplate(activeTab, activeTab === "paint" ? scene : object);
   if (!svgText) return;
+  if (renderToken !== previewRenderSeq) return;
 
   const neutralBase = activeTab === "paint" ? "#E8E1D6" : "#EFEDEA";
   const adjusted = applyLighting(hex, lighting);
@@ -575,19 +797,21 @@ const updatePreview = async () => {
     color: adjustedNeutral,
     textureOpacity: textureSettings.textureOpacity * 0.7,
     noiseFrequency: textureSettings.noiseFrequency
-  });
+  }, { type: activeTab, key: activeTab === "paint" ? scene : object });
   const afterLayer = buildSvgLayer(svgText, {
     color: adjusted,
     textureOpacity: textureSettings.textureOpacity,
     noiseFrequency: textureSettings.noiseFrequency
-  });
+  }, { type: activeTab, key: activeTab === "paint" ? scene : object });
 
+  if (renderToken !== previewRenderSeq) return;
   elements.preview.innerHTML = `
     <div class="pf-compare" style="--pf-compare:${compareValue};">
       <div class="pf-layer pf-before">${beforeLayer}</div>
       <div class="pf-layer pf-after">${afterLayer}</div>
     </div>
   `;
+  updateCompareUI();
 };
 
 const syncUI = () => {
@@ -595,6 +819,8 @@ const syncUI = () => {
   renderSpec(spec);
   updatePreview().catch(() => {});
   updatePaintCalc();
+  renderPresets();
+  renderTriptych();
 };
 
 const updateTabs = (target) => {
@@ -738,8 +964,9 @@ const bindEvents = () => {
     elements.textureScale,
     elements.compare
   ].forEach((input) => {
-    input?.addEventListener("input", syncUI);
-    input?.addEventListener("change", syncUI);
+    if (input === elements.compare) return;
+    input?.addEventListener("input", scheduleSyncUI);
+    input?.addEventListener("change", scheduleSyncUI);
   });
 
   [
@@ -756,7 +983,10 @@ const bindEvents = () => {
   elements.surface?.addEventListener("change", () => {
     applyPaintPreset();
     updatePaintCalc();
+    scheduleSyncUI();
   });
+  elements.compare?.addEventListener("input", updateCompareUI);
+  elements.compare?.addEventListener("change", updateCompareUI);
 
   elements.save?.addEventListener("click", handleSave);
   elements.useLibrary?.addEventListener("click", () => {
@@ -773,6 +1003,21 @@ const bindEvents = () => {
   });
   elements.export?.addEventListener("click", handleExport);
   elements.seed?.addEventListener("click", handleSeed);
+  elements.copyHex?.addEventListener("click", async () => {
+    const hex = normalizeHex(elements.hex?.value) || defaultHex;
+    const ok = await copyToClipboard(hex);
+    setStatus(ok ? `Đã sao chép ${hex}.` : "Không thể sao chép HEX.");
+  });
+  elements.copySummary?.addEventListener("click", async () => {
+    const summary = buildOneLineSummary(buildSpec());
+    const ok = await copyToClipboard(summary);
+    setStatus(ok ? "Đã sao chép tóm tắt." : "Không thể sao chép tóm tắt.");
+  });
+  elements.copyJson?.addEventListener("click", async () => {
+    const jsonText = JSON.stringify(buildSpec(), null, 2);
+    const ok = await copyToClipboard(jsonText);
+    setStatus(ok ? "Đã sao chép JSON." : "Không thể sao chép JSON.");
+  });
 
   elements.savedSelect?.addEventListener("change", () => {
     const assets = getAssets();

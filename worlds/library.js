@@ -6,6 +6,7 @@ const PROJECT_RECENT_KEY = "tc_projects_recent";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "library";
 const HEX_VIEW_STORAGE_KEY = "tc_hex_view_mode";
+const HEX_MENU_TIP_KEY = "tc_hex_menu_tip_v1";
 const WORLD_PATHS = {
   threadcolor: "./threadcolor.html",
   gradient: "./gradient.html",
@@ -62,6 +63,16 @@ const elements = {
   hexNext: document.getElementById("hexNext"),
   hexPageInfo: document.getElementById("hexPageInfo"),
   hexStatus: document.getElementById("hexStatus"),
+  hexMultiSelect: document.getElementById("hexMultiSelect"),
+  hexActionBar: document.getElementById("hexActionBar"),
+  hexSelectedCount: document.getElementById("hexSelectedCount"),
+  hexCopySelected: document.getElementById("hexCopySelected"),
+  hexSaveSelected: document.getElementById("hexSaveSelected"),
+  hexCreatePalette: document.getElementById("hexCreatePalette"),
+  hexCreateGradient: document.getElementById("hexCreateGradient"),
+  hexOpenThread: document.getElementById("hexOpenThread"),
+  hexOpenPrint: document.getElementById("hexOpenPrint"),
+  hexClearSelected: document.getElementById("hexClearSelected"),
   hexProfileOverlay: document.getElementById("hexProfileOverlay"),
   hexProfileClose: document.getElementById("hexProfileClose"),
   hexProfileSwatch: document.getElementById("hexProfileSwatch"),
@@ -91,7 +102,9 @@ const elements = {
   hexFullscreenNext: document.getElementById("hexFullscreenNext"),
   hexFullscreenHex: document.getElementById("hexFullscreenHex"),
   hexFullscreenMeta: document.getElementById("hexFullscreenMeta"),
-  hexFullscreenCopy: document.getElementById("hexFullscreenCopy")
+  hexFullscreenCopy: document.getElementById("hexFullscreenCopy"),
+  hexMenuPopover: document.getElementById("hexMenuPopover"),
+  hexMenuList: document.getElementById("hexMenuList")
 };
 
 const state = {
@@ -107,11 +120,17 @@ const state = {
   hexPageSize: 60,
   hexLoaded: false,
   hexSort: "hue",
-  hexView: "compact",
+  hexView: "tiles",
   hexLoadMode: "infinite",
   hexVisibleCount: 0,
   hexActiveList: [],
   hexEntryMap: new Map(),
+  hexBaseCount: 0,
+  hexSpectrumCount: 0,
+  hexMultiSelect: false,
+  hexSelected: new Set(),
+  hexRenderedList: [],
+  hexLastSelectedIndex: null,
   hexProfileEntry: null,
   hexFullscreenIndex: 0,
   hexSimilarCache: new Map(),
@@ -186,9 +205,10 @@ const setModalOpen = (open) => {
 };
 
 const normalizeHexView = (value) => {
+  if (value === "tiles") return "tiles";
   if (value === "card" || value === "detail") return "card";
   if (value === "compact") return "compact";
-  return "compact";
+  return "tiles";
 };
 
 const loadHexViewPreference = () => {
@@ -202,6 +222,150 @@ const updateHexControls = () => {
   if (elements.hexSort) elements.hexSort.value = state.hexSort;
   if (elements.hexView) elements.hexView.value = state.hexView;
   if (elements.hexLoadMode) elements.hexLoadMode.value = state.hexLoadMode;
+};
+
+const showHexMenuTip = () => {
+  if (!elements.hexStatus) return;
+  try {
+    if (localStorage.getItem(HEX_MENU_TIP_KEY)) return;
+    elements.hexStatus.textContent = "Menu ⋯ ở góc phải ô màu chứa các tác vụ.";
+    localStorage.setItem(HEX_MENU_TIP_KEY, "1");
+    window.setTimeout(() => {
+      if (elements.hexStatus.textContent.includes("Menu ⋯")) {
+        elements.hexStatus.textContent = "";
+      }
+    }, 3500);
+  } catch (_err) {}
+};
+
+const updateHexSelectionUI = () => {
+  const count = state.hexSelected.size;
+  if (elements.hexSelectedCount) elements.hexSelectedCount.textContent = String(count);
+  if (elements.hexActionBar) {
+    elements.hexActionBar.classList.toggle("hidden", count === 0);
+  }
+  if (elements.hexCreateGradient) elements.hexCreateGradient.disabled = count < 2;
+};
+
+const toggleHexSelection = (hex, card) => {
+  if (!hex) return;
+  if (state.hexSelected.has(hex)) {
+    state.hexSelected.delete(hex);
+    card?.classList.remove("is-selected");
+  } else {
+    state.hexSelected.add(hex);
+    card?.classList.add("is-selected");
+  }
+  updateHexSelectionUI();
+};
+
+const selectHexRange = (startIndex, endIndex) => {
+  const list = state.hexRenderedList || [];
+  if (!list.length) return;
+  const from = Math.max(0, Math.min(startIndex, endIndex));
+  const to = Math.min(list.length - 1, Math.max(startIndex, endIndex));
+  // Only select within the currently rendered list (infinite/paged slice).
+  for (let i = from; i <= to; i += 1) {
+    const hex = list[i];
+    if (!hex) continue;
+    state.hexSelected.add(hex);
+    const card = elements.hexGrid?.querySelector(`[data-hex-card="${hex}"]`);
+    card?.classList.add("is-selected");
+  }
+  updateHexSelectionUI();
+};
+
+const getSelectedHexList = () => Array.from(state.hexSelected);
+
+const copyHexList = (list) => {
+  if (!list.length) return Promise.resolve(false);
+  return copyText(list.join("\n")).then(() => true);
+};
+
+const saveHexBatch = async (list) => {
+  if (!list.length) return 0;
+  let saved = 0;
+  for (const hex of list) {
+    const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+    if (entry) {
+      saveHexToLibrary(entry);
+      saved += 1;
+    }
+    await new Promise((resolve) => window.requestAnimationFrame(resolve));
+  }
+  return saved;
+};
+
+const closeHexMenu = () => {
+  if (!elements.hexMenuPopover) return;
+  elements.hexMenuPopover.setAttribute("hidden", "true");
+  if (elements.hexMenuList) elements.hexMenuList.innerHTML = "";
+};
+
+const openHexMenu = (anchor, entry) => {
+  if (!elements.hexMenuPopover || !elements.hexMenuList || !entry) return;
+  const actions = [
+    { id: "save", label: "Lưu" },
+    { id: "detail", label: "Chi tiết" },
+    { id: "fullscreen", label: "Toàn màn hình" },
+    { id: "threadcolor", label: "Mở ở Thêu" },
+    { id: "printcolor", label: "Mở ở In" },
+    { id: "palette", label: "Tạo Palette" },
+    { id: "gradient", label: "Tạo Gradient" }
+  ];
+  elements.hexMenuList.innerHTML = actions.map((action) =>
+    `<button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-hex-action="${action.id}" data-hex="${entry.hex}" type="button">${action.label}</button>`
+  ).join("");
+
+  const rect = anchor.getBoundingClientRect();
+  const popover = elements.hexMenuPopover;
+  popover.removeAttribute("hidden");
+  const popRect = popover.getBoundingClientRect();
+  const padding = 8;
+  let left = rect.right - popRect.width;
+  let top = rect.bottom + 6;
+  if (left < padding) left = padding;
+  if (left + popRect.width > window.innerWidth - padding) {
+    left = window.innerWidth - popRect.width - padding;
+  }
+  if (top + popRect.height > window.innerHeight - padding) {
+    top = rect.top - popRect.height - 6;
+  }
+  if (top < padding) top = padding;
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+};
+
+const handleHexAction = (action, hex) => {
+  const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
+  if (!hex || !action) return;
+  if (action === "detail") {
+    if (entry) renderHexProfile(entry);
+    return;
+  }
+  if (action === "threadcolor") {
+    window.location.href = `../worlds/threadcolor.html?color=${hex}`;
+    return;
+  }
+  if (action === "printcolor") {
+    window.location.href = `../worlds/printcolor.html#c=${hex}`;
+    return;
+  }
+  if (action === "palette") {
+    window.location.href = `../worlds/palette.html#p=${hex}`;
+    return;
+  }
+  if (action === "gradient") {
+    window.location.href = `../worlds/gradient.html#g=${hex}`;
+    return;
+  }
+  if (action === "save") {
+    saveHexToLibrary(entry);
+    return;
+  }
+  if (action === "fullscreen") {
+    openHexFullscreen(entry);
+  }
 };
 
 const sanitizeHex = (value) => {
@@ -387,6 +551,11 @@ const pickContrastText = (rgb) => {
   const white = (1.0 + 0.05) / (bg + 0.05);
   const black = (bg + 0.05) / 0.05;
   return white >= black ? { label: "Trắng", ratio: white } : { label: "Đen", ratio: black };
+};
+
+const getContrastTextColor = (rgb) => {
+  const pick = pickContrastText(rgb);
+  return pick.label === "Trắng" ? "#ffffff" : "#0b0b0b";
 };
 
 const deltaE2000 = (lab1, lab2) => {
@@ -890,10 +1059,69 @@ const ensureEntryMetrics = (entry) => {
   return entry;
 };
 
+const buildSpectrumItems = () => {
+  const items = [];
+  const step = 17;
+  let index = 1;
+  for (let r = 0; r <= 255; r += step) {
+    for (let g = 0; g <= 255; g += step) {
+      for (let b = 0; b <= 255; b += step) {
+        const hex = rgbToHex({ r, g, b });
+        items.push({
+          brand: "Phổ màu",
+          code: `GEN-${String(index).padStart(4, "0")}`,
+          name: "Phổ màu chuẩn",
+          hex,
+          rgb: { r, g, b }
+        });
+        index += 1;
+      }
+    }
+  }
+  for (let i = 0; i <= 255; i += 1) {
+    const hex = rgbToHex({ r: i, g: i, b: i });
+    items.push({
+      brand: "Phổ màu",
+      code: `GEN-${String(index).padStart(4, "0")}`,
+      name: "Phổ màu chuẩn",
+      hex,
+      rgb: { r: i, g: i, b: i }
+    });
+    index += 1;
+  }
+  return items;
+};
+
 const sortHexList = (list) => {
   const items = list.slice();
   if (state.hexSort === "hex") {
     return items.sort((a, b) => a.hex.localeCompare(b.hex));
+  }
+  if (state.hexSort === "color_dark_light") {
+    const groupIndex = (entry) => {
+      const hsl = ensureEntryMetrics(entry)?.hsl || [0, 0, 0];
+      const hue = hsl[0];
+      const sat = hsl[1];
+      if (sat < 0.12) return 8;
+      if (hue < 20 || hue >= 345) return 0;
+      if (hue < 45) return 1;
+      if (hue < 70) return 2;
+      if (hue < 170) return 3;
+      if (hue < 200) return 4;
+      if (hue < 250) return 5;
+      if (hue < 295) return 6;
+      return 7;
+    };
+    return items.sort((a, b) => {
+      const ahsl = ensureEntryMetrics(a)?.hsl || [0, 0, 0];
+      const bhsl = ensureEntryMetrics(b)?.hsl || [0, 0, 0];
+      const ag = groupIndex(a);
+      const bg = groupIndex(b);
+      if (ag !== bg) return ag - bg;
+      if (ahsl[0] !== bhsl[0]) return ahsl[0] - bhsl[0];
+      if (ahsl[2] !== bhsl[2]) return ahsl[2] - bhsl[2];
+      return a.hex.localeCompare(b.hex);
+    });
   }
   if (state.hexSort === "lightness") {
     return items.sort((a, b) => {
@@ -1150,9 +1378,11 @@ const renderHexGrid = () => {
     const start = (state.hexPage - 1) * pageSize;
     pageItems = sorted.slice(start, start + pageSize);
   }
+  state.hexRenderedList = pageItems.map((entry) => entry.hex);
   elements.hexGrid.dataset.view = state.hexView;
-  elements.hexGrid.classList.toggle("is-compact", state.hexView == "compact");
-  elements.hexGrid.classList.toggle("is-card", state.hexView != "compact");
+  elements.hexGrid.classList.toggle("is-tiles", state.hexView === "tiles");
+  elements.hexGrid.classList.toggle("is-compact", state.hexView === "compact");
+  elements.hexGrid.classList.toggle("is-card", state.hexView === "card");
   if (!pageItems.length) {
     elements.hexGrid.innerHTML = `<div class="tc-muted text-sm">Không tìm thấy màu phù hợp.</div>`;
   } else {
@@ -1160,18 +1390,20 @@ const renderHexGrid = () => {
       const refsPreview = entry.refs.slice(0, 2).map((ref) => `${ref.brand} ${ref.code}`.trim()).join(" · ");
       const refsSuffix = entry.refs.length > 2 ? ` +${entry.refs.length - 2}` : "";
       const actionMenu = `
-        <details class="relative" data-hex-ignore="true">
-          <summary class="tc-btn tc-chip px-2 py-2 text-xs" aria-label="Mở menu">...</summary>
-          <div class="absolute right-0 mt-2 w-40 rounded-xl border border-white/10 bg-[#0c1118] p-2 shadow-xl text-xs space-y-1 z-10">
-            <button class="tc-btn tc-chip w-full justify-start px-3 py-2" data-hex-action="detail" data-hex="${entry.hex}" type="button">Chi tiết</button>
-            <button class="tc-btn tc-chip w-full justify-start px-3 py-2" data-hex-action="threadcolor" data-hex="${entry.hex}" type="button">Mở ở Thêu</button>
-            <button class="tc-btn tc-chip w-full justify-start px-3 py-2" data-hex-action="printcolor" data-hex="${entry.hex}" type="button">Mở ở In</button>
-            <button class="tc-btn tc-chip w-full justify-start px-3 py-2" data-hex-action="palette" data-hex="${entry.hex}" type="button">Tạo Palette</button>
-            <button class="tc-btn tc-chip w-full justify-start px-3 py-2" data-hex-action="gradient" data-hex="${entry.hex}" type="button">Tạo Gradient</button>
-            <button class="tc-btn tc-chip w-full justify-start px-3 py-2" data-hex-action="fullscreen" data-hex="${entry.hex}" type="button">Toàn màn hình</button>
-          </div>
-        </details>
+        <button class="hex-tile__menu-btn" data-hex-menu="true" data-hex="${entry.hex}" data-hex-ignore="true" type="button" aria-label="Mở menu">...</button>
       `;
+      if (state.hexView === "tiles") {
+        const active = ensureEntryMetrics(entry);
+        const textColor = active?.rgb ? getContrastTextColor(active.rgb) : "#ffffff";
+        const selected = state.hexSelected.has(entry.hex) ? " is-selected" : "";
+        return `
+          <div class="hex-tile${selected}" data-hex-card="${entry.hex}">
+            <span class="hex-tile__swatch" style="background:${entry.hex};"></span>
+            ${actionMenu}
+            <span class="hex-tile__label" style="color:${textColor};">${entry.hex}</span>
+          </div>
+        `;
+      }
       if (state.hexView === "compact") {
         return `
           <div class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 p-2" data-hex-card="${entry.hex}">
@@ -1181,8 +1413,6 @@ const renderHexGrid = () => {
               <div class="text-[10px] tc-muted">${entry.refs.length} mã</div>
             </div>
             <div class="flex items-center gap-1" data-hex-ignore="true">
-              <button class="tc-btn tc-chip px-2 py-2 text-[10px]" data-hex-action="copy" data-hex="${entry.hex}" type="button">Copy</button>
-              <button class="tc-btn tc-btn-primary px-2 py-2 text-[10px]" data-hex-action="save" data-hex="${entry.hex}" type="button">Lưu</button>
               ${actionMenu}
             </div>
           </div>
@@ -1197,8 +1427,6 @@ const renderHexGrid = () => {
               <div class="text-xs tc-muted">${entry.refs.length} mã · ${refsPreview}${refsSuffix}</div>
             </div>
             <div class="flex items-center gap-2" data-hex-ignore="true">
-              <button class="tc-btn tc-chip px-3 py-2 text-xs" data-hex-action="copy" data-hex="${entry.hex}" type="button">Sao chép</button>
-              <button class="tc-btn tc-btn-primary px-3 py-2 text-xs" data-hex-action="save" data-hex="${entry.hex}" type="button">Lưu</button>
               ${actionMenu}
             </div>
           </div>
@@ -1211,8 +1439,11 @@ const renderHexGrid = () => {
     elements.hexGrid.innerHTML = cardHtml + sentinel;
   }
   if (elements.hexStats) {
-    elements.hexStats.textContent = `Tổng ${sorted.length} màu · ${state.hexEntries.length} màu trong kho`;
+    const baseCount = state.hexBaseCount || 0;
+    const spectrumCount = state.hexSpectrumCount || 0;
+    elements.hexStats.textContent = `Tổng ${sorted.length} màu · ${baseCount} màu có mã · ${spectrumCount} màu phổ màu`;
   }
+  updateHexSelectionUI();
   if (elements.hexPageInfo) {
     if (state.hexLoadMode === "infinite") {
       elements.hexPageInfo.textContent = `Hiển thị ${pageItems.length}/${sorted.length}`;
@@ -1228,6 +1459,7 @@ const renderHexGrid = () => {
   if (elements.hexPrev) elements.hexPrev.disabled = state.hexPage <= 1;
   if (elements.hexNext) elements.hexNext.disabled = state.hexPage >= totalPages;
   attachHexObserver();
+  showHexMenuTip();
 };
 const loadHexLibrary = async () => {
   if (state.hexLoaded) return;
@@ -1236,7 +1468,23 @@ const loadHexLibrary = async () => {
   try {
     const response = await fetch("../threads.json", { cache: "no-store" });
     const data = await response.json();
-    state.hexEntries = buildHexIndex(Array.isArray(data) ? data : []);
+    const threadItems = Array.isArray(data) ? data : [];
+    const baseMap = new Map();
+    threadItems.forEach((item) => {
+      const hex = sanitizeHex(item.hex);
+      if (!hex) return;
+      baseMap.set(hex, true);
+    });
+    const spectrumItems = buildSpectrumItems();
+    let spectrumCount = 0;
+    spectrumItems.forEach((item) => {
+      const hex = sanitizeHex(item.hex);
+      if (!hex) return;
+      if (!baseMap.has(hex)) spectrumCount += 1;
+    });
+    state.hexBaseCount = baseMap.size;
+    state.hexSpectrumCount = spectrumCount;
+    state.hexEntries = buildHexIndex([...threadItems, ...spectrumItems]);
     state.hexEntryMap = new Map(state.hexEntries.map((entry) => [entry.hex, entry]));
     renderHexGrid();
   } catch (_err) {
@@ -1300,6 +1548,59 @@ const bindEvents = () => {
     event.preventDefault();
     jumpToHex(hex);
   });
+  elements.hexMultiSelect?.addEventListener("change", () => {
+    state.hexMultiSelect = elements.hexMultiSelect.checked;
+    if (!state.hexMultiSelect) {
+      state.hexSelected.clear();
+      state.hexLastSelectedIndex = null;
+      renderHexGrid();
+      return;
+    }
+    updateHexSelectionUI();
+  });
+  elements.hexCopySelected?.addEventListener("click", () => {
+    const list = getSelectedHexList();
+    if (!list.length) return;
+    copyHexList(list).then((ok) => {
+      if (ok) showToast(`Đã sao chép ${list.length} mã HEX.`);
+    });
+  });
+  elements.hexSaveSelected?.addEventListener("click", async () => {
+    const list = getSelectedHexList();
+    if (!list.length) return;
+    const saved = await saveHexBatch(list);
+    showToast(`Đã lưu ${saved} màu.`);
+  });
+  elements.hexCreatePalette?.addEventListener("click", () => {
+    const list = getSelectedHexList();
+    if (!list.length) return;
+    window.location.href = `../worlds/palette.html#p=${list.join(",")}`;
+  });
+  elements.hexCreateGradient?.addEventListener("click", () => {
+    const list = getSelectedHexList();
+    if (list.length < 2) return;
+    const trimmed = list.slice(0, 7);
+    if (list.length > 7) {
+      showToast("Gradient tối đa 7 màu, đã lấy 7 màu đầu.");
+    }
+    window.location.href = `../worlds/gradient.html#g=${trimmed.join(",")}`;
+  });
+  elements.hexOpenThread?.addEventListener("click", () => {
+    const list = getSelectedHexList();
+    if (!list.length) return;
+    copyHexList(list);
+    window.location.href = `../worlds/threadcolor.html?color=${list[0]}`;
+  });
+  elements.hexOpenPrint?.addEventListener("click", () => {
+    const list = getSelectedHexList();
+    if (!list.length) return;
+    copyHexList(list);
+    window.location.href = `../worlds/printcolor.html#c=${list[0]}`;
+  });
+  elements.hexClearSelected?.addEventListener("click", () => {
+    state.hexSelected.clear();
+    renderHexGrid();
+  });
   elements.hexSort?.addEventListener("change", () => {
     state.hexSort = elements.hexSort.value || "hex";
     resetHexList();
@@ -1334,53 +1635,81 @@ const bindEvents = () => {
     state.hexPage = clamp(state.hexPage + 1, 1, Number.MAX_SAFE_INTEGER);
     renderHexGrid();
   });
-    elements.hexGrid?.addEventListener("click", (event) => {
+  elements.hexGrid?.addEventListener("click", (event) => {
     const btn = event.target.closest("[data-hex-action]");
     if (btn) {
-      const hex = btn.dataset.hex;
-      const action = btn.dataset.hexAction;
+      handleHexAction(btn.dataset.hexAction, btn.dataset.hex);
+      closeHexMenu();
+      return;
+    }
+    const menuBtn = event.target.closest("[data-hex-menu=\"true\"]");
+    if (menuBtn) {
+      const hex = menuBtn.dataset.hex;
       const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
-      if (!hex || !action) return;
-      if (action === "detail") {
-        if (entry) renderHexProfile(entry);
-        return;
-      }
-      if (action === "copy") {
-        copyText(hex);
-        setHexStatus(`Đã sao chép ${hex}.`);
-        return;
-      }
-      if (action === "threadcolor") {
-        window.location.href = `../worlds/threadcolor.html?color=${hex}`;
-        return;
-      }
-      if (action === "printcolor") {
-        window.location.href = `../worlds/printcolor.html#c=${hex}`;
-        return;
-      }
-      if (action === "palette") {
-        window.location.href = `../worlds/palette.html#p=${hex}`;
-        return;
-      }
-      if (action === "gradient") {
-        window.location.href = `../worlds/gradient.html#g=${hex}`;
-        return;
-      }
-      if (action === "save") {
-        saveHexToLibrary(entry);
-        return;
-      }
-      if (action === "fullscreen") {
-        openHexFullscreen(entry);
-      }
+      openHexMenu(menuBtn, entry);
       return;
     }
     if (event.target.closest("[data-hex-ignore]")) return;
     const card = event.target.closest("[data-hex-card]");
     if (!card) return;
     const hex = card.dataset.hexCard;
-    const entry = state.hexEntryMap.get(hex) || state.hexEntries.find((item) => item.hex === hex);
-    if (entry) renderHexProfile(entry);
+    if (!hex) return;
+    if (state.hexMultiSelect) {
+      const index = state.hexRenderedList.indexOf(hex);
+      if (event.shiftKey && state.hexLastSelectedIndex != null && index !== -1) {
+        selectHexRange(state.hexLastSelectedIndex, index);
+      } else {
+        toggleHexSelection(hex, card);
+      }
+      if (index !== -1) state.hexLastSelectedIndex = index;
+      return;
+    }
+    const targetCard = card;
+    copyText(hex).then(() => {
+      showToast(`Đã sao chép ${hex}.`);
+      setHexStatus(`Đã sao chép ${hex}.`);
+      targetCard.classList.add("is-copied");
+      window.setTimeout(() => targetCard.classList.remove("is-copied"), 300);
+    });
+  });
+  elements.hexMenuList?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-hex-action]");
+    if (!btn) return;
+    handleHexAction(btn.dataset.hexAction, btn.dataset.hex);
+    closeHexMenu();
+  });
+  let hexLongPressTimer = null;
+  const clearHexLongPress = () => {
+    if (!hexLongPressTimer) return;
+    window.clearTimeout(hexLongPressTimer);
+    hexLongPressTimer = null;
+  };
+  elements.hexGrid?.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch") return;
+    const card = event.target.closest("[data-hex-card]");
+    if (!card) return;
+    clearHexLongPress();
+    hexLongPressTimer = window.setTimeout(() => {
+      if (!state.hexMultiSelect) {
+        state.hexMultiSelect = true;
+        if (elements.hexMultiSelect) elements.hexMultiSelect.checked = true;
+      }
+      const hex = card.dataset.hexCard;
+      if (hex) toggleHexSelection(hex, card);
+    }, 350);
+  });
+  elements.hexGrid?.addEventListener("pointerup", clearHexLongPress);
+  elements.hexGrid?.addEventListener("pointerleave", clearHexLongPress);
+  elements.hexGrid?.addEventListener("pointercancel", clearHexLongPress);
+  document.addEventListener("click", (event) => {
+    if (!elements.hexMenuPopover || elements.hexMenuPopover.hasAttribute("hidden")) return;
+    if (event.target.closest("#hexMenuPopover")) return;
+    if (event.target.closest("[data-hex-menu=\"true\"]")) return;
+    closeHexMenu();
+  }, true);
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    closeHexMenu();
   });
   elements.hexProfileClose?.addEventListener("click", closeHexProfile);
   elements.hexProfileOverlay?.addEventListener("click", (event) => {
