@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const mount = document.getElementById("tcTopbarMount");
   if (!mount) return;
 
@@ -35,7 +35,7 @@
           <div class="relative" id="portalSwitcher">
             <button id="portalBtn"
               class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
-              aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu">
+              aria-expanded="false" aria-haspopup="menu" aria-controls="portalMenu" data-i18n="topbar.portal.placeholder">
               Chọn Thế giới
             </button>
             <div id="portalMenu" data-open="0" role="menu" class="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
@@ -55,7 +55,7 @@
               aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu" data-i18n-attr="aria-label:topbar.tones.label">
               <span class="flex items-center gap-2">
                 <span class="tc-dot" aria-hidden="true"></span>
-                <span id="worldLabel">Origami</span>
+                <span id="worldLabel" data-prefix="Sắc thái: ">Sắc thái: Origami</span>
               </span>
               <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true" style="opacity:.7">
                 <path d="M5.25 7.5l4.75 5 4.75-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -80,3 +80,5 @@
     </header>
   `;
 })();
+
+
