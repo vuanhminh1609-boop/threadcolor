@@ -116,7 +116,10 @@
         document.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world: next } }));
       }
       const label = getLabelMap().get(next);
-      if (worldLabel && label) worldLabel.textContent = label;
+      if (worldLabel && label) {
+        const prefix = worldLabel.dataset?.prefix || "";
+        worldLabel.textContent = prefix ? `${prefix}${label}` : label;
+      }
     };
 
     const setMenuOpen = (open) => {

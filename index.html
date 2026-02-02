@@ -6,97 +6,9 @@
   <title>8Portal v4</title>
   <link rel="stylesheet" href="assets/dist/tailwind.css">
   <link rel="stylesheet" href="./assets/tones.css">
+  <link rel="stylesheet" href="./assets/site_base.css">
   <link rel="stylesheet" href="./assets/topbar_overrides.css">
   <style>
-    body {
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    .tc-topbar {
-      background: var(--glass);
-      border-bottom: 1px solid var(--stroke);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-      position: sticky;
-      top: 0;
-      z-index: var(--z-topbar, 2000) !important;
-      overflow: visible;
-    }
-    .tc-topbar::after{
-      content:"";
-      position:absolute; left:0; right:0; bottom:-1px; height:1px;
-      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
-      opacity: .35;
-    }
-    #portalMenu,
-    #worldMenu{
-      z-index: var(--z-topbar-menu, 4000) !important;
-    }
-    .tc-brand {
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      color: var(--text);
-      text-shadow: 0 1px 0 rgba(255,255,255,.15);
-    }
-    .tc-chip{
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      color: var(--text);
-    }
-    .tc-chip:hover{ filter: brightness(1.03); }
-    .tc-btn{
-      border-radius: 0.75rem;
-      border: 1px solid var(--stroke);
-      background: var(--glass);
-      color: var(--text);
-      font-weight: 650;
-      letter-spacing: -0.005em;
-      line-height: 1;
-      transition: filter .15s ease, transform .05s ease, box-shadow .15s ease;
-    }
-    .tc-btn:hover{ filter: brightness(1.03); }
-    .tc-btn:active{ transform: translateY(1px); }
-    .tc-btn:focus-visible{
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
-    }
-    .tc-btn-primary{
-      background: linear-gradient(135deg, var(--a1), var(--a2));
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.18);
-    }
-    .tc-btn-primary:hover{ filter: brightness(1.06); }
-    .tc-dot{
-      width: 10px; height: 10px; border-radius: 999px;
-      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
-      box-shadow: 0 0 0 2px rgba(255,255,255,.5);
-    }
-    .tc-muted{ color: var(--muted); }
-    .tc-card{
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      border-radius: 1rem;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
-    }
-    .tc-input{
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      border-radius: 0.75rem;
-      padding: 0.55rem 0.75rem;
-      color: var(--text);
-    }
-    .tc-color-input{
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      border-radius: 0.75rem;
-      width: 3rem;
-      height: 2.25rem;
-      padding: 0.15rem;
-    }
     .tc-preview-swatch{
       width: 3rem;
       height: 3rem;
@@ -109,26 +21,6 @@
       border: 1px solid var(--stroke);
       background: linear-gradient(135deg, var(--a1), var(--a2), var(--a3));
       height: 70px;
-    }
-    .tc-toast{
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 80;
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      color: var(--text);
-      border-radius: 0.9rem;
-      padding: 0.6rem 0.9rem;
-      box-shadow: 0 16px 40px rgba(0,0,0,.18);
-      opacity: 0;
-      transform: translateY(6px);
-      pointer-events: none;
-      transition: opacity .18s ease, transform .18s ease;
-    }
-    .tc-toast.is-visible{
-      opacity: 1;
-      transform: translateY(0);
     }
     [data-world-card="1"]{
       cursor: pointer;
@@ -264,6 +156,7 @@
         <p class="mt-4 tc-muted max-w-2xl whitespace-pre-line" data-i18n="hero.desc">8 Thế giới màu đã sẵn sàng — mỗi Thế giới là một không gian màu sắc chuyên biệt — tạo, chuyển đổi, chuẩn hoá, lưu và áp dụng màu theo nhu cầu của bạn, và nhiều hơn thế nữa...
 Từ Hex/ảnh → tra mã chỉ → bảng phối (Palette) → dải chuyển (Gradient) → màu in (CMYK) → Chia sẻ + Remix
 Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xuống để xem sơ đồ 8 cổng — chọn 1 cổng để bước vào Thế giới bạn cần.</p>
+        <p class="mt-4 text-sm tc-muted" data-i18n="hero.journey">Hành trình 1–2–3: Chọn Thế giới → Tạo/Chuẩn hoá → Lưu & Áp dụng.</p>
         <a class="mt-3 inline-flex items-center gap-2 text-sm font-semibold tc-muted hover:text-white" href="#portalHub" data-i18n="hero.ctaJump">Đi đến 8 cổng ngay</a>
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
@@ -933,4 +826,5 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
   <script src="./scripts/topbar_behavior.js" defer></script>
 </body>
 </html>
+
 

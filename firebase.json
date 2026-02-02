@@ -59,16 +59,6 @@
           }
         ]
       }
-    ],
-    "rewrites": [
-      {
-        "source": "/admin/**",
-        "function": "adminApi"
-      },
-      {
-        "source": "/telemetry/ingest",
-        "function": "telemetryIngest"
-      }
     ]
   },
   "emulators": {

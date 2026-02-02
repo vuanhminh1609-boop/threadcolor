@@ -271,21 +271,22 @@ let verifiedThreads = [];
 let pendingSubmissions = [];
 
 const telemetry = (() => {
-  const endpoint = window.TC_TELEMETRY_ENDPOINT
-    || "https://us-central1-thread-colors-for-community.cloudfunctions.net/telemetryIngest";
+  const endpoint = typeof window.TC_TELEMETRY_ENDPOINT === "string"
+    ? window.TC_TELEMETRY_ENDPOINT.trim()
+    : "";
   const sessionKey = "tc_session_id";
   const now = () => Date.now();
-  const isLocalhost = () => {
-    const host = window.location?.hostname || "";
-    return host === "localhost" || host === "127.0.0.1";
-  };
-  const isTelemetryEnabled = () => {
-    if (!isLocalhost()) return true;
+  const isEndpointValid = () => {
+    if (!endpoint) return false;
     try {
-      return new URLSearchParams(window.location.search).get("telemetry") === "1";
+      const url = new URL(endpoint, window.location.origin);
+      return url.protocol === "http:" || url.protocol === "https:";
     } catch (_err) {
       return false;
     }
+  };
+  const isTelemetryEnabled = () => {
+    return window.TC_TELEMETRY_ENABLED === true && isEndpointValid();
   };
   const getSessionId = () => {
     try {
@@ -370,6 +371,7 @@ const HANDOFF_FROM = "threadcolor";
   };
 
   const track = (type) => {
+    if (!isTelemetryEnabled()) return;
     if (!counts[type]) counts[type] = 0;
     counts[type] += 1;
     if (now() - lastFlushAt > 15000) {
