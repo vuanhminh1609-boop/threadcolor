@@ -161,6 +161,7 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
           <a class="tc-btn tc-chip px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaSecondary">Mở công cụ tra mã chỉ</a>
+          <a class="tc-btn tc-chip px-5 py-3" href="./worlds/library.html#tab=hex" data-i18n="hero.ctaHex">Kho HEX</a>
         </div>
       </div>
     </section>
@@ -176,7 +177,7 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold">Thế giới màu thêu (Embroidery)</h3>
+            <h3 class="font-semibold">Thế giới màu thêu (Thêu)</h3>
             <p class="tc-muted text-sm mt-2">Tra mã chỉ từ ảnh/HEX, so màu gần nhất, quản lý kho chỉ và đặt mua.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/threadcolor.html">Mở</a>
@@ -288,13 +289,15 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
           </div>
 
           <div data-panel="thread" role="tabpanel" class="hidden">
+            <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
+            <input type="password" autocomplete="current-password" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
             <label class="text-sm font-semibold" for="qaThreadHex">Nhập HEX</label>
             <div class="mt-2 flex flex-wrap gap-2 items-center">
-              <input id="qaThreadHex" class="tc-input w-[180px]" placeholder="#FFAA00">
+              <input id="qaThreadHex" class="tc-input w-[180px]" type="search" name="quick_thread_query" autocomplete="new-password" inputmode="search" spellcheck="false" autocapitalize="none" placeholder="#FFAA00">
               <button id="qaThreadSearch" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Tra ngay</button>
             </div>
             <ul id="qaThreadList" class="mt-4 space-y-2 text-sm"></ul>
-            <a id="qaThreadOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Embroidery)</a>
+            <a id="qaThreadOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Thêu)</a>
           </div>
 
           <div data-panel="image" role="tabpanel" class="hidden">
@@ -306,7 +309,7 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
             </div>
             <div id="qaImageSwatches" class="mt-4 flex flex-wrap gap-2"></div>
             <ul id="qaImageThreads" class="mt-4 space-y-2 text-sm"></ul>
-            <a id="qaImageOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Embroidery)</a>
+            <a id="qaImageOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Thêu)</a>
           </div>
         </div>
       </div>
@@ -336,13 +339,6 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
     </section>
 
     <!-- FORGE -->
-    <section class="max-w-6xl mx-auto px-4 pb-16">
-      <div class="flex items-end justify-between mb-6">
-        <div>
-          <h2 class="text-2xl font-semibold" data-i18n="roulette.title">Vòng quay dải màu</h2>
-          <p class="tc-muted text-sm mt-1" data-i18n="roulette.desc">Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.</p>
-        </div>
-      </div>
     <section class="max-w-6xl mx-auto px-4 pb-12" id="forgeHub">
       <div class="flex items-end justify-between mb-6">
         <div>
@@ -499,21 +495,32 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
         </div>
         <div class="space-y-3">
           <h3 class="text-sm font-semibold" data-i18n="footer.columns.contact.title">Liên hệ</h3>
-          <ul class="space-y-2">
-            <li>
-              <a id="footerEmailLink" class="hover:text-white" href="#">
-                <span data-i18n="footer.columns.contact.email">Email</span>: <span id="footerEmailText"></span>
-              </a>
-            </li>
-            <li>
-              <div class="flex flex-wrap gap-2">
-                <a id="footerPhoneLink" class="hover:text-white" href="#" data-i18n="footer.columns.contact.call">Gọi ngay</a>
-                <a id="footerZaloLink" class="hover:text-white" href="#" data-i18n="footer.columns.contact.zalo">Chat Zalo</a>
-              </div>
-            </li>
-            <li class="tc-muted text-xs" data-i18n="footer.columns.contact.hours">Hỗ trợ 24/7</li>
-          </ul>
-        </div>
+            <ul class="space-y-2">
+              <li>
+                <a id="footerEmailLink" class="hover:text-white" href="#">
+                  <span class="inline-flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm0 2 8 5 8-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="sr-only" data-i18n="footer.columns.contact.email">Email</span>
+                    <span id="footerEmailText"></span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <div class="flex flex-wrap items-center gap-3">
+                  <a id="footerPhoneLink" class="hover:text-white inline-flex items-center gap-2" href="#">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M6.5 3h3l1 4-2.2 1.1a12.8 12.8 0 0 0 6.6 6.6L16 12.5l4 1v3c0 .8-.6 1.5-1.4 1.6-8.6 1-15.7-6.1-14.7-14.7C4 3.6 4.7 3 5.5 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span data-i18n="footer.columns.contact.call">Gọi ngay</span>
+                    <span id="footerPhoneText">0928541111</span>
+                  </a>
+                  <a id="footerZaloLink" class="hover:text-white inline-flex items-center gap-2" href="#" data-i18n="footer.columns.contact.zalo">Hỗ trợ trực tuyến 24/7</a>
+                </div>
+              </li>
+            </ul>
+          </div>
       </div>
       <div class="mt-6 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-sm tc-muted">
         <span id="footerCopyright" data-i18n="footer.bottom.copyright">© 2026 SpaceColors · 8Portals</span>
@@ -534,7 +541,7 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
         <h2 class="text-lg font-semibold" data-i18n="support.title">Hỗ trợ giải đáp</h2>
         <button id="supportClose" class="tc-btn tc-chip px-3 py-1 text-sm" type="button" data-i18n="common.close">Đóng</button>
       </div>
-      <div class="mt-4 overflow-y-auto pr-2 space-y-6" id="supportScroll">
+      <div class="mt-4 flex-1 min-h-0 overflow-y-auto pr-2 space-y-6 pb-6" id="supportScroll">
         <div class="space-y-2">
           <p class="text-sm font-semibold" data-i18n="support.toc.title">Mục lục câu hỏi</p>
           <div class="flex flex-wrap gap-2 text-xs" id="supportToc">
@@ -646,9 +653,11 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
       const emailText = document.getElementById("footerEmailText");
       const emailLink = document.getElementById("footerEmailLink");
       const phoneLink = document.getElementById("footerPhoneLink");
+      const phoneText = document.getElementById("footerPhoneText");
       const zaloLink = document.getElementById("footerZaloLink");
       if (emailText) emailText.textContent = email;
       if (emailLink && email) emailLink.href = `mailto:${email}`;
+      if (phoneText && phone) phoneText.textContent = phone;
       if (phoneLink && phone) phoneLink.href = `tel:${phone}`;
       if (zaloLink && zaloUrl) zaloLink.href = zaloUrl;
     })();
@@ -821,7 +830,6 @@ Khám phá 8 Thế giới ở thanh “Chọn Thế giới” hoặc lướt xu�
   <script src="./quick_actions.js"></script>
   <span class="sr-only" data-i18n="toast.copied">Đã sao chép!</span>
 
-<script type="module" src="./scripts/hex_hub.js"></script>
   <script src="./scripts/topbar_render.js" defer></script>
   <script src="./scripts/topbar_behavior.js" defer></script>
 </body>

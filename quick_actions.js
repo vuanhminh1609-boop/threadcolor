@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const tabs = Array.from(document.querySelectorAll("[data-tab]"));
   const panels = Array.from(document.querySelectorAll("[data-panel]"));
   const tabState = { active: "paste", imageInit: false };
@@ -230,21 +230,25 @@
       return;
     }
     threadList.innerHTML = "<li class=\"tc-muted\">Đang tra...</li>";
-    const results = await findNearestThreads(hex, 5);
-    threadList.innerHTML = results.map((item) => `
-      <li class="flex items-center gap-2">
-        ${swatchHtml(item.hex)}
-        <span class="font-semibold">${item.brand} ${item.code}</span>
-        <span class="tc-muted text-xs">${item.name || ""}</span>
-        <span class="tc-muted text-xs">${item.hex}</span>
-      </li>
-    `).join("");
-    setOpenLink(threadOpen, `./worlds/threadcolor.html#${buildHash([hex], "c")}`);
+    try {
+      const results = await findNearestThreads(hex, 5);
+      threadList.innerHTML = results.map((item) => `
+        <li class="flex items-center gap-2">
+          ${swatchHtml(item.hex)}
+          <span class="font-semibold">${item.brand} ${item.code}</span>
+          <span class="tc-muted text-xs">${item.name || ""}</span>
+          <span class="tc-muted text-xs">${item.hex}</span>
+        </li>
+      `).join("");
+      setOpenLink(threadOpen, `./worlds/threadcolor.html#${buildHash([hex], "c")}`);
+    } catch (_err) {
+      threadList.innerHTML = "<li class=\"tc-muted\">Có lỗi khi tải dữ liệu, vui lòng thử lại.</li>";
+      hideOpenLink(threadOpen);
+    }
   });
 
   const initImageTab = () => {
     const imageInput = document.getElementById("qaImageInput");
-    const imageLabel = document.querySelector("label[for='qaImageInput']");
     const imageAnalyze = document.getElementById("qaImageAnalyze");
     const imageSwatches = document.getElementById("qaImageSwatches");
     const imageThreads = document.getElementById("qaImageThreads");
@@ -301,6 +305,5 @@
     });
   };
 })();
-    imageLabel?.addEventListener("click", () => {
-      if (imageInput) imageInput.click();
-    });
+
+

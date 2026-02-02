@@ -143,6 +143,16 @@ body {
   transform: translateY(0);
 }
 
+.tc-offscreen-trap {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 @media (max-width: 520px) {
   .tc-topbar > .max-w-6xl {
     flex-wrap: wrap;

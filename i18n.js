@@ -97,6 +97,7 @@
         journey: "Hành trình 1–2–3: Chọn Thế giới → Tạo/Chuẩn hoá → Lưu & Áp dụng.",
         ctaPrimary: "Bắt đầu với Thư viện màu",
         ctaSecondary: "Mở công cụ tra mã chỉ",
+        ctaHex: "Kho HEX",
         ctaJump: "Đi đến 8 cổng ngay"
       },
       portalHub: {
@@ -180,14 +181,14 @@
             feature: "Đề xuất tính năng",
             start: "Hướng dẫn bắt đầu trong 60 giây"
           },
-          contact: {
-            title: "Liên hệ",
-            email: "Email",
-            phone: "Điện thoại",
-            call: "Gọi ngay",
-            zalo: "Chat Zalo",
-            hours: "Hỗ trợ 24/7"
-          }
+            contact: {
+              title: "Liên hệ",
+              email: "Email",
+              phone: "Điện thoại",
+              call: "Gọi ngay",
+              zalo: "Hỗ trợ trực tuyến 24/7",
+              hours: "Hỗ trợ 24/7"
+            }
         },
         bottom: {
           copyright: "© 2026 SpaceColors · 8Portals",

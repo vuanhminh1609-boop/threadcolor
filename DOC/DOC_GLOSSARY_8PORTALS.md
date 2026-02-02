@@ -214,6 +214,9 @@
 | Virtual list | Danh sách ảo | Chỉ render phần đang nhìn thấy để khỏi lag. |
 | Latency | Độ trễ | Thời gian chờ phản hồi. |
 | FAB | Nút nổi cố định (FAB) | Nút nổi cố định ở góc màn hình để mở nhanh tác vụ chính. |
+| Ô bẫy Password Manager | Ô bẫy Password Manager | Cặp ô nhập ẩn để trình quản lý mật khẩu bám vào, tránh bật popup trên ô tìm kiếm thật. |
+| Hash routing | Điều hướng bằng hash | Dùng phần sau dấu # trong URL để chuyển tab/trạng thái mà không tải lại trang. |
+| Vùng cuộn trong flex (min-h-0) | Vùng cuộn trong flex (min-h-0) | Thiết lập min-height: 0 cho phần tử flex để vùng cuộn hoạt động đúng và không bị đẩy ra ngoài. |
 | Bottom Sheet | Tấm trượt đáy | Tấm trượt từ dưới lên trên trên mobile để hiển thị tác vụ nhanh. |
 | FOUC | Nháy nội dung không đồng bộ | Hiện tượng nội dung/kiểu chữ nháy sai trong tích tắc khi JS/CSS/i18n chưa kịp áp dụng. |
 | CDN | CDN | Mạng phân phối nội dung để phân phối tài nguyên tĩnh nhanh và ổn định. |
