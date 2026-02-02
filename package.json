@@ -5,6 +5,7 @@
     "validate:data": "node data/scripts/validate_contract.mjs",
     "check:encoding": "node scripts/check-encoding.mjs",
     "check:glossary": "node scripts/check-glossary.mjs",
+    "check:syntax": "node --check --experimental-default-type=module script.js library.js auth.js account.js guide.js",
     "build:css": "tailwindcss -c tailwind.config.js -i ./src/tailwind.css -o ./assets/dist/tailwind.css",
     "watch:css": "tailwindcss -c tailwind.config.js -i ./src/tailwind.css -o ./assets/dist/tailwind.css --watch"
   },

@@ -4,8 +4,8 @@ const OVERLAY_ID = "tc-hexhub-overlay";
 const SHEET_ID = "tc-hexhub-sheet";
 const CACHE_KEY = "tc_hex_hub_cache";
 const VERSION_KEY = "tc_hex_hub_version";
-const CACHE_VERSION = "1";
-const DATA_URL = new URL("../data/hex_library.generated.json", import.meta.url);
+const CACHE_VERSION = "2";
+const DATA_URL = new URL("../threads.json", import.meta.url);
 
 let memoryCache = null;
 let memoryLoaded = false;
@@ -15,6 +15,17 @@ const normalizeHex = (value) => {
   const raw = String(value).trim().replace(/^#/, "");
   if (!/^[0-9a-fA-F]{6}$/.test(raw)) return "";
   return `#${raw.toUpperCase()}`;
+};
+
+const buildHexList = (list) => {
+  const hexes = list
+    .map((item) => {
+      if (typeof item === "string") return normalizeHex(item);
+      if (item && typeof item.hex === "string") return normalizeHex(item.hex);
+      return "";
+    })
+    .filter(Boolean);
+  return Array.from(new Set(hexes));
 };
 
 const loadHexes = async () => {
@@ -36,14 +47,7 @@ const loadHexes = async () => {
     const response = await fetch(DATA_URL.toString(), { cache: "no-store" });
     const data = await response.json();
     const list = Array.isArray(data) ? data : [];
-    const hexes = list
-      .map((item) => {
-        if (typeof item === "string") return normalizeHex(item);
-        if (item && typeof item.hex === "string") return normalizeHex(item.hex);
-        return "";
-      })
-      .filter(Boolean);
-    memoryCache = Array.from(new Set(hexes));
+    memoryCache = buildHexList(list);
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify(memoryCache));
       localStorage.setItem(VERSION_KEY, CACHE_VERSION);
@@ -265,6 +269,12 @@ const initHexHub = async () => {
   };
 
   fab.addEventListener("click", openHexHub);
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-hexhub-open]");
+    if (!trigger) return;
+    event.preventDefault();
+    openHexHub();
+  });
   overlay.addEventListener("click", (event) => {
     if (event.target === overlay) closeHexHub();
   });

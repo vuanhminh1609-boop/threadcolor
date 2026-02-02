@@ -668,7 +668,7 @@ function renderVerifyList() {
       <div class="border border-gray-200 rounded-xl p-3 shadow-sm">
         <div class="flex items-start gap-3 justify-between">
           <div class="space-y-1">
-            <div class="font-semibold">${item.brand || ""} ${item.code || ""}</div>
+            <div class="font-semibold truncate">${item.brand || ""} ${item.code || ""}</div>
             <div class="text-gray-600 text-sm">${item.name || ""}</div>
             <div class="flex items-center gap-2 text-sm">
               <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border bg-gray-50">
@@ -1335,11 +1335,11 @@ function renderColorCard(item, chosenHex) {
   return `
     <div class="result-item rounded-xl shadow-md bg-white p-3 hover:scale-[1.02] transition border border-transparent data-[selected=true]:border-indigo-400 data-[selected=true]:shadow-lg cursor-pointer"
          data-hex="${item.hex}" data-brand="${item.brand || ""}" data-code="${item.code || ""}" data-name="${item.name || ""}" data-delta="${deltaText}" data-lab="${labAttr}">
-      <div class="flex gap-3 items-center">
+      <div class="flex gap-3 items-center min-w-0">
         <div class="w-12 h-12 rounded-lg border" style="background:${item.hex}"></div>
-        <div class="flex-1 text-sm">
-          <div class="font-semibold">${item.brand || ""} ${item.code || ""}</div>
-          <div class="text-gray-600">${item.name || ""}</div>
+        <div class="flex-1 text-sm result-meta min-w-0">
+          <div class="font-semibold truncate">${item.brand || ""} ${item.code || ""}</div>
+          <div class="text-gray-600 truncate">${item.name || ""}</div>
 
           <div class="text-xs text-gray-500">ΔE ${deltaText}</div>
 
@@ -1350,20 +1350,20 @@ function renderColorCard(item, chosenHex) {
         <span>so với</span>
         <div class="w-4 h-4 rounded border" style="background:${item.hex}"></div>
       </div>
-      <div class="mt-3 flex justify-end">
+      <div class="mt-3 result-actions flex flex-wrap justify-end gap-2">
         <button class="btn-save px-3 py-1 text-xs rounded-lg border text-indigo-700 border-indigo-200 hover:bg-indigo-50"
                 data-action="save-search" data-save-hex="${item.hex}">
           ${saveLabel}
         </button>
-        <button class="btn-pin ml-2 px-3 py-1 text-xs rounded-lg border"
+        <button class="btn-pin px-3 py-1 text-xs rounded-lg border"
                 data-action="pin-toggle" data-hex="${item.hex}" data-pinned="${pinned ? "1" : "0"}">
           ${pinLabel}
         </button>
-        <button class="btn-copy-code ml-2 px-3 py-1 text-xs rounded-lg border"
+        <button class="btn-copy-code px-3 py-1 text-xs rounded-lg border"
                 data-action="copy-code">
           ${copyCodeLabel}
         </button>
-        <button class="btn-copy-full ml-2 px-3 py-1 text-xs rounded-lg border"
+        <button class="btn-copy-full px-3 py-1 text-xs rounded-lg border"
                 data-action="copy-full">
           ${copyFullLabel}
         </button>
@@ -1517,7 +1517,7 @@ function publishToFeed(asset) {
   }
 }
 
-function copyToClipboard(text, label) {
+function copyToClipboard(text, label, customMessage) {
   if (!text) return;
   telemetry.track("copy");
   const message = label
@@ -2766,100 +2766,52 @@ canvas?.addEventListener("click", e => {
   const y = Math.floor((e.clientY - rect.top) * scaleY);
   const pixel = ctx.getImageData(x, y, 1, 1).data;
   const hex = `#${[pixel[0], pixel[1], pixel[2]].map(v => v.toString(16).padStart(2, "0")).join("")}`;
-  runSearch(hex);
-});
-
-// Find by code
-btnFindByCode?.addEventListener("click", () => {
-  if (!isDataReady) {
-    showToast(t("tc.status.loading", "Đang chuẩn bị dữ liệu..."));
-    return;
-  }
-  telemetry.track("search_start");
-  const rawQuery = codeInput.value.trim();
-  if (!rawQuery) {
-    showToast(t("tc.code.empty", "Vui lòng nhập mã."));
-    return;
-  }
-  const parsed = parseCodeQuery(rawQuery);
-  if (!parsed) {
-    showToast(t("tc.code.invalid", "Mã không hợp lệ."));
-    return;
-  }
-
-  const selectedBrands = getSelectedBrands();
-  const requireVerified = useVerifiedOnly;
-  let results = [];
-
-  if (parsed.mode === "brand") {
-    if (selectedBrands.length && !selectedBrands.includes(parsed.brand)) {
-      showToast(t("tc.code.brandNotSelected", "Hãng này chưa được chọn."));
-      renderCodeLookupResults(rawQuery, []);
-      return;
-    }
-    const list = threadsByBrand.get(parsed.brand) || [];
-    results = list.filter(t => normalizeCodeKey(t.code) === parsed.codeKey)
-      .filter(t => !requireVerified || isVerifiedThread(t));
-  } else {
-    const list = threadsByCode.get(parsed.codeKey) || [];
-    results = list.filter(t => selectedBrands.includes(t.brand))
-      .filter(t => !requireVerified || isVerifiedThread(t));
-  }
-
-  if (!results.length) {
-    showToast(t("tc.code.notFoundToast", "Không tìm thấy mã này."));
-    renderCodeLookupResults(rawQuery, []);
-    return;
-  }
-  if (results.length === 1) {
-    const item = results[0];
-    openInspector({
-      hex: item.hex,
-      brand: item.brand || "",
-      code: item.code || "",
-      name: item.name || "",
-      delta: "",
-      lab: ensureLab(item)
-    }, null);
-    runSearch(item.hex);
-    return;
-  }
-  results.sort((a, b) => a.brand.localeCompare(b.brand) || String(a.code).localeCompare(String(b.code)));
-  renderCodeLookupResults(rawQuery, results);
-});
-
-if (btnPickScreen) {
-  btnPickScreen.addEventListener("click", () => {
-    startEyeDropper();
-  });
-} 
-
-if (fallbackColorPicker) {
-  fallbackColorPicker.addEventListener("input", () => {
-    const hex = normalizeHex(fallbackColorPicker.value);
-    if (!hex) return;
-    if (colorPicker) colorPicker.value = hex;
-    copyToClipboard(hex, hex);
-  });
-}
-
-const applyHexesFromHub = (detail) => {
-  const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
-  const hex = normalizeHex(rawList[0] || "");
-  if (!hex) return;
+  const normalized = normalizeHex(hex);
+  if (!normalized) return;
+  const applied = normalized.toUpperCase();
   if (colorPicker) {
-    colorPicker.value = hex;
+    colorPicker.value = applied;
     colorPicker.dispatchEvent(new Event("input", { bubbles: true }));
     colorPicker.dispatchEvent(new Event("change", { bubbles: true }));
   }
-  lastChosenHex = hex;
-  runSearch(hex);
+  lastChosenHex = normalized;
+  scheduleSearch(normalized);
   updateHandoffLinks();
-};
+  copyToClipboard(applied, null, `Đã áp dụng màu ${applied} (đã sao chép).`);
+});
 
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
 });
+
+const initVaultTabs = () => {
+  const savedPanel = document.getElementById("vaultTabSaved");
+  const stockPanel = document.getElementById("vaultTabStock");
+  if (!savedPanel || !stockPanel) return;
+  const tabButtons = Array.from(document.querySelectorAll('[data-tab][data-i18n^="vault.tab"]'));
+  if (!tabButtons.length) return;
+  const panels = Array.from(document.querySelectorAll('[data-tab-panel]'));
+  const setActive = (tab) => {
+    tabButtons.forEach((btn) => {
+      const active = btn.dataset.tab === tab;
+      btn.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    panels.forEach((panel) => {
+      panel.classList.toggle("hidden", panel.dataset.tabPanel !== tab);
+    });
+  };
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => setActive(btn.dataset.tab));
+  });
+  let initial = "saved";
+  try {
+    const param = new URLSearchParams(window.location.search).get("tab");
+    if (param === "stock" || param === "saved") initial = param;
+  } catch (_err) {}
+  setActive(initial);
+};
+
+initVaultTabs();
   
 
 

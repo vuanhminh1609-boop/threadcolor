@@ -54,6 +54,25 @@
       backdrop-filter: blur(16px);
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
     }
+    .result-item {
+      min-width: 0;
+    }
+    .result-item .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .result-item .result-actions button {
+      white-space: nowrap;
+    }
+    .result-item .result-meta {
+      min-width: 0;
+    }
+    .result-item .result-meta .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     #worldMenu[data-open="0"] {
       display: none;
     }
@@ -664,7 +683,7 @@
         <h1 class="text-3xl font-bold tc-gradient-text text-center md:text-left" data-i18n="tc.title">Tra mã chỉ thêu theo màu</h1>
       </div>
 
-      <section class="mb-6">
+      <section id="sectionBrand" class="mb-6">
         <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.brand.title">Chọn hãng chỉ</h3>
         <div id="brandFilters" class="flex flex-wrap gap-3"></div>
         <label class="mt-3 inline-flex items-center gap-2 text-sm tc-muted">
@@ -674,14 +693,32 @@
         <p class="mt-2 text-xs tc-muted">Chạm biểu tượng “i” để xem thông tin hãng.</p>
       </section>
 
-      <details class="mb-6 tc-card p-4">
-        <summary class="cursor-pointer font-semibold">Hướng dẫn nhanh cho người mới</summary>
-        <div class="mt-3 text-sm tc-muted space-y-2 leading-relaxed">
-          <div>1) Chọn hãng chỉ → chọn màu (hoặc nhập HEX/ảnh) → xem mã gần nhất.</div>
-          <div>2) ΔE càng nhỏ càng giống. ΔE76 phù hợp kiểm nhanh; CIEDE2000 chính xác hơn khi so màu gần.</div>
-          <div>3) Khi kết quả ổn, bấm “Lưu” để lưu vào Kho chỉ theo tài khoản.</div>
-        </div>
-      </details>
+        <section class="mb-6 tc-card p-4">
+          <div class="flex items-center justify-between">
+            <div class="text-sm font-semibold">Bắt đầu trong 60 giây</div>
+            <span class="text-xs tc-muted">3 bước ngắn</span>
+          </div>
+          <ol class="mt-3 text-sm tc-muted space-y-2 leading-relaxed">
+            <li>1) Chọn 1–3 hãng chỉ để so sánh nhanh.</li>
+            <li>2) Chọn màu (HEX/ảnh) để hệ thống tự tìm mã chỉ gần nhất.</li>
+            <li>3) Xem kết quả, ghim hoặc lưu vào Kho chỉ theo tài khoản.</li>
+          </ol>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <a class="tc-btn tc-chip px-3 py-2 text-sm" href="#sectionBrand">Chọn hãng</a>
+            <a class="tc-btn tc-chip px-3 py-2 text-sm" href="#sectionPick">Chọn màu</a>
+            <a class="tc-btn tc-chip px-3 py-2 text-sm" href="#sectionImage">Chọn từ ảnh</a>
+          </div>
+        </section>
+        <details class="mb-6 tc-card p-4">
+          <summary class="cursor-pointer font-semibold">Hướng dẫn rõ ràng cho người mới</summary>
+          <div class="mt-3 text-sm tc-muted space-y-2 leading-relaxed">
+            <div><strong>Bước 1:</strong> Chọn hãng chỉ bạn thường dùng để kết quả sát nhu cầu.</div>
+            <div><strong>Bước 2:</strong> Chọn màu bằng HEX, mắt hút màu hoặc ảnh để lấy màu chuẩn.</div>
+            <div><strong>Bước 3:</strong> Điều chỉnh ngưỡng ΔE nếu muốn kết quả gần hơn hoặc đa dạng hơn.</div>
+            <div><strong>Bước 4:</strong> Ghim/lưu kết quả vào Kho chỉ để quản lý theo Dự án.</div>
+            <div><strong>Bước 5:</strong> Dùng liên thông nhanh để tạo bảng phối hoặc dải màu.</div>
+          </div>
+        </details>
       <section class="mb-6">
         <h3 class="text-lg font-semibold mb-2">
           <span data-i18n="tc.section.delta.title">Độ tương đồng màu (ΔE)</span>
@@ -711,18 +748,21 @@
         </div>
       </section>
 
-      <section class="mb-6">
+      <section id="sectionPick" class="mb-6">
         <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.pick.title">Chọn màu trực tiếp</h3>
-        <div class="flex items-center gap-4">
-          <input type="color" id="colorPicker" class="tc-color">
-          <button id="btnFindNearest" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.pick.nearest">
-            Tìm mã chỉ gần nhất
-          </button>
-          <button id="btnPickScreen" class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md">
-            <span>o</span>
-            <span data-i18n="tc.section.pick.pick">Chọn màu</span>
-          </button>
-        </div>
+          <div class="flex items-center gap-4">
+            <input type="color" id="colorPicker" class="tc-color">
+            <button id="btnFindNearest" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.pick.nearest">
+              Tìm mã chỉ gần nhất
+            </button>
+            <button id="btnPickScreen" class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md">
+              <span>o</span>
+              <span data-i18n="tc.section.pick.pick">Chọn màu</span>
+            </button>
+            <button class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md" type="button" data-hexhub-open>
+              Mở Kho HEX
+            </button>
+          </div>
         <div class="mt-2 text-xs tc-muted hidden" id="eyedropperHint" data-i18n="tc.section.pick.hint">Bấm vào bất kỳ đâu để chọn màu (Esc để hủy)</div>
         <div class="mt-2 text-sm text-amber-700 hidden" id="eyedropperFallback">
           <span data-i18n="tc.section.pick.fallback">Trình duyệt chưa hỗ trợ chọn màu toàn màn hình. Dùng input màu bên dưới.</span>
@@ -730,7 +770,7 @@
         <input type="color" id="fallbackColorPicker" class="mt-2 hidden tc-field p-1 w-16 h-10">
       </section>
 
-      <section class="mb-6">
+      <section id="sectionImage" class="mb-6">
         <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.image.title">Chọn màu từ ảnh</h3>
         <div class="mb-2 flex flex-wrap items-center gap-3">
           <input type="file" id="imgInput" accept="image/*" class="hidden">

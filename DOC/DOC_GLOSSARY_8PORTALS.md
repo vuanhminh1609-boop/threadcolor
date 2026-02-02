@@ -37,18 +37,57 @@
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
+| Dải thẳng (linear gradient) | Dải thẳng | Dải chuyển màu theo một hướng thẳng, thường dùng góc để xác định hướng. |
+| Dải tròn (radial gradient) | Dải tròn | Dải chuyển màu loang tròn từ tâm ra ngoài theo bán kính. |
+| Dải nón (conic gradient) | Dải nón | Dải chuyển màu theo vòng xoay quanh tâm, giống mặt đồng hồ. |
+| Nội suy (interpolation) | Nội suy | Cách pha trộn màu giữa các điểm neo để tạo chuyển màu mượt. |
+| Tỷ lệ tương phản (contrast ratio) | Tỷ lệ tương phản | Mức chênh lệch sáng tối giữa chữ và nền; càng cao càng dễ đọc. |
+| Quy tắc hài hoà màu (harmony rules) | Quy tắc hài hoà màu | Nguyên tắc phối màu trên vòng màu để tạo cảm giác cân bằng, dễ chịu. |
+| Sắc độ (tint/shade) | Sắc độ | Biến thể sáng hơn (tint) hoặc tối hơn (shade) của một màu gốc. |
+| Tiêu chuẩn WCAG | Tiêu chuẩn WCAG | Chuẩn khả năng tiếp cận web, có khuyến nghị về tương phản màu. |
+| Vai trò màu (color roles) | Vai trò màu | Cách phân vai màu trong palette: nền/bề mặt/chữ/primary/accent để dùng nhất quán. |
+| Chấm điểm (scoring) | Chấm điểm | Cách đánh giá điểm số để xếp hạng gợi ý palette theo tiêu chí. |
+| Thuật toán kinh nghiệm (heuristic) | Thuật toán kinh nghiệm | Thuật toán dựa trên quy tắc kinh nghiệm để đưa ra gợi ý nhanh, không cần AI. |
+| Brief 1 dòng | Brief 1 dòng | Mô tả ngắn một câu về mục tiêu, cảm xúc và bối cảnh dùng màu. |
+| Kho tri thức | Kho tri thức | Bộ dữ liệu quy tắc/keywords dùng để suy luận nhanh theo mục tiêu và cảm xúc. |
+| Chốt chặn chất lượng | Chốt chặn chất lượng | Bước kiểm tra tối thiểu (ví dụ tương phản) để bảo đảm đầu ra đạt chuẩn. |
+| Sửa tự động | Sửa tự động | Cơ chế tự điều chỉnh màu để đạt tiêu chí tối thiểu khi đầu vào chưa đạt. |
+| Mẫu gợi ý | Mẫu gợi ý | Bộ câu brief mẫu để chọn nhanh theo ngành hoặc mục tiêu. |
+| Ngăn kéo dưới | Ngăn kéo dưới | Hộp trượt từ cạnh dưới màn hình để chọn nội dung trên mobile. |
+| Độ chói tương đối (relative luminance) | Độ chói tương đối | Thước đo độ sáng chuẩn hoá của màu để tính tương phản theo WCAG. |
 | Kho HEX | Kho HEX | Kho tra cứu tập trung cho mọi mã màu dạng #RRGGBB trong hệ sinh thái. |
 | Hồ sơ màu | Hồ sơ màu | Màn hiển thị chi tiết một màu: mã, chuyển đổi, gợi ý sử dụng và hành động liên quan. |
 | Hex swatch | Hex swatch | Một mẫu màu dạng ô màu dùng để chọn/copy nhanh mã #RRGGBB. |
+| Báo cáo QC | Báo cáo QC | Báo cáo kiểm soát chất lượng, tổng hợp kết quả CMYK/TAC/gamut để gửi nhà in. |
+| Mã báo cáo | Mã báo cáo | Mã băm đối chiếu (reportId) để nhận diện duy nhất một báo cáo QC. |
+| Xuất CSV | Xuất CSV | Xuất dữ liệu dạng bảng CSV để dùng trong Excel hoặc hệ thống nhà in. |
+| Xuất JSON | Xuất JSON | Xuất dữ liệu JSON cho workflow nội bộ hoặc tích hợp hệ thống. |
+| Chế độ in | Chế độ in | Cách hiển thị báo cáo tối ưu cho in ấn/PDF, loại bỏ UI không cần thiết. |
+| Lưu PDF từ trình duyệt | Lưu PDF từ trình duyệt | Dùng chức năng Print/Save as PDF của trình duyệt để xuất báo cáo. |
 | Hồ sơ HEX | Hồ sơ HEX | Màn chi tiết 1 mã HEX, hiển thị chuyển đổi màu, gợi ý và thao tác nhanh. |
 | LCh | LCh | Biểu diễn Lab theo L* (độ sáng), C (độ rực), h (góc màu) để dễ so sánh trực quan. |
 | Contrast | Độ tương phản chữ/nền | Mức chênh sáng giữa chữ và nền; giúp chọn màu chữ dễ đọc. |
 | Carousel | Dải lướt ngang | Danh sách cuộn ngang để duyệt nhanh các gợi ý màu. |
+| Độ sai khác màu ΔE (delta E) | Độ sai khác màu ΔE | Thước đo mức khác biệt giữa hai màu trong không gian Lab; càng nhỏ càng giống. |
 | CMYK | CMYK | Hệ màu in 4 kênh: Cyan, Magenta, Yellow, Key (đen). |
+| In lưới (in lụa) | In lưới (in lụa) | Phương pháp in xuyên lưới, dùng khuôn và lớp mực dày; màu cần kiểm soát thủ công. |
+| Màu spot | Màu spot | Màu pha riêng theo mã mực chuẩn, không pha từ CMYK, dùng cho in lưới/offset. |
+| Lớp trắng lót (underbase) | Lớp trắng lót (underbase) | Lớp mực trắng in trước trên nền vải tối để màu nổi và đúng tông. |
+| Thu lớp lót (choke) | Thu lớp lót (choke) | Giảm nhẹ kích thước lớp underbase để tránh viền trắng lộ ra. |
+| Tram (halftone) | Tram (halftone) | Kỹ thuật in ảnh bằng chấm mực, tạo độ chuyển sắc từ nhiều chấm nhỏ. |
+| LPI | LPI | Lines Per Inch – mật độ đường tram trên mỗi inch, ảnh hưởng độ mịn. |
+| Góc tram | Góc tram | Góc xoay của chấm/đường tram cho từng kênh CMYK để giảm moiré. |
+| Tăng tram (dot gain) | Tăng tram (dot gain) | Hiện tượng chấm mực nở to khi in, làm tối/đậm hơn bản gốc. |
+| Mật độ lưới (mesh count) | Mật độ lưới (mesh count) | Số sợi lưới trên một inch, quyết định độ mịn và lượng mực đi qua. |
+| Chuyển đổi CMYK xấp xỉ | Chuyển đổi CMYK xấp xỉ | Quy đổi RGB/HEX sang CMYK theo công thức gần đúng, chưa hiệu chỉnh ICC. |
 | ICC profile | Hồ sơ ICC | Hồ sơ màu mô tả thiết bị in/hiển thị để chuyển đổi màu chính xác. |
 | TAC | Tổng lượng mực (TAC) | Tổng % mực C+M+Y+K; vượt ngưỡng gây lem/đậm. |
-| Gamut | Dải màu tái tạo (gamut) | Tập màu thiết bị có thể tái tạo; ngoài gamut sẽ bị lệch. |
+| Dải màu (gamut) | Dải màu | Phạm vi màu thiết bị in có thể tái tạo; ngoài gamut sẽ bị lệch. |
+| Ý đồ chuyển đổi (intent) | Ý đồ chuyển đổi | Cách ưu tiên giữ màu/độ tương phản khi chuyển đổi giữa các profile màu. |
 | Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
+| Thanh trên dính | Thanh trên dính | Topbar bám trên cùng khi cuộn để truy cập nhanh chức năng chính. |
+| Thu gọn theo cuộn | Thu gọn theo cuộn | Cơ chế giảm chiều cao/đệm của topbar khi người dùng cuộn xuống. |
+| Thanh trên thông minh | Thanh trên thông minh | Topbar tự ẩn khi cuộn xuống và hiện lại khi cuộn lên để tiết kiệm không gian. |
 | Slot đăng nhập | Vị trí Đăng nhập | Khu vực “neo” hiển thị đăng nhập/đăng xuất ở top-right (không được đổi tuỳ tiện). |
 | Microcopy | Vi mô ngôn từ | Câu chữ ngắn trong UI (nhãn nút, mô tả) — phải “đắt và sạch”. |
 | Trạng thái rỗng | Màn hình rỗng | UI khi chưa có dữ liệu (phải sang, không xin lỗi). |
@@ -121,6 +160,14 @@
 | HTML Entity | Thực thể HTML | Dạng mã thay thế ký tự đặc biệt; dễ làm diff bẩn và khó đọc nếu lạm dụng. |
 | Thuộc tính trần (attribute không có giá trị) | Thuộc tính trần | Thuộc tính HTML/SVG được khai báo nhưng thiếu giá trị, dễ gây lỗi parse XML. |
 | Cache-bust (ép tải bản mới) | Cache-bust | Thêm tham số phiên bản vào URL để trình duyệt tải lại tài nguyên mới, tránh dùng cache cũ. |
+| Bộ làm sạch SVG | Bộ làm sạch SVG | Quy trình xử lý và sửa markup SVG để tránh lỗi parse khi render. |
+| Parsererror | Lỗi parsererror | Lỗi do trình phân tích XML trả về khi SVG sai chuẩn. |
+| Bộ lập lịch khung hình | Bộ lập lịch khung hình | Cơ chế dùng requestAnimationFrame để gom nhiều thay đổi UI vào cùng một khung hình. |
+| Chốt phương án A/B/C | Chốt phương án A/B/C | Cơ chế ghim – chọn lại – xoá để so sánh nhanh nhiều phương án. |
+| Ngăn kéo | Ngăn kéo | Khu vực trượt ra/vào để hiển thị thông tin hoặc tuỳ chọn bổ sung. |
+| Nút nổi | Nút nổi | Nút hành động nổi trên giao diện, thường cố định ở góc để dễ truy cập. |
+| Bộ chống dội | Bộ chống dội | Kỹ thuật debounce để trì hoãn xử lý cho đến khi người dùng dừng thao tác. |
+| Hướng dẫn theo tầng | Hướng dẫn theo tầng | Cách tổ chức hướng dẫn 2 cấp: nhanh ở tầng 1 và chi tiết ở tầng 2. |
 
 ---
 
@@ -138,6 +185,16 @@
 | Cuộn tải | Cuộn tải | Cơ chế nạp thêm dữ liệu khi cuộn xuống (infinite scroll). |
 | Chế độ xem gọn | Chế độ xem gọn | Cách hiển thị rút gọn để quét nhanh nhiều mục. |
 | Menu ba chấm | Menu ba chấm | Nút mở hành động phụ dạng “⋯” để tiết kiệm không gian. |
+| Lưới ô màu | Lưới ô màu | Cách hiển thị màu dạng các ô vuông xếp lưới để quét nhanh. |
+| Menu tác vụ gọn | Menu tác vụ gọn | Gom nhiều chức năng vào một nút nhỏ để tiết kiệm diện tích. |
+| Menu ngữ cảnh | Menu ngữ cảnh | Menu thao tác gắn với từng mục để thao tác đúng ngữ cảnh. |
+| Bảng nổi (popover) | Bảng nổi (popover) | Menu nổi neo theo nút để thao tác nhanh mà không rời mục. |
+| Độ chồng lớp (z-index) | Độ chồng lớp (z-index) | Thứ tự lớp hiển thị của phần tử, lớp cao sẽ nổi lên trên. |
+| Nhóm màu | Nhóm màu | Gom theo tông màu để dễ quét và tìm nhanh trong lưới màu. |
+| Độ chói (luminance) | Độ chói (luminance) | Độ sáng cảm nhận của màu để chọn màu chữ tương phản. |
+| Phổ màu chuẩn | Phổ màu chuẩn | Tập màu sinh tự động theo phổ RGB để tham khảo nhanh. |
+| Chọn nhiều | Chọn nhiều | Chế độ chọn nhiều mục để thao tác hàng loạt. |
+| Thanh hành động | Thanh hành động | Thanh thao tác xuất hiện khi có chọn để làm nhanh các lệnh chung. |
 | Sắp xếp theo tông (Hue) | Sắp xếp theo tông (Hue) | Gom màu theo dải Hue để các màu gần tông nằm cạnh nhau. |
 | content-visibility | content-visibility | Thuộc tính CSS giúp trình duyệt bỏ qua render phần chưa thấy để tối ưu hiệu năng. |
 | Chip lọc (thẻ lọc nhỏ) | Chip lọc | Thẻ lọc nhỏ dạng pill để bật/tắt tiêu chí lọc nhanh. |

@@ -327,9 +327,47 @@
     bindQuickAction(verifyBtn);
   };
 
+  const bindScrollBehavior = () => {
+    const bar = document.querySelector(".tc-topbar");
+    if (!bar) return;
+
+    let behavior = "shrink";
+    try {
+      behavior = localStorage.getItem("tc_topbar_behavior") || behavior;
+    } catch (_err) {}
+    behavior = (document.documentElement.getAttribute("data-topbar-behavior") || behavior).toLowerCase();
+
+    let lastY = window.scrollY || 0;
+    let ticking = false;
+
+    const apply = () => {
+      const y = window.scrollY || 0;
+      bar.classList.toggle("is-scrolled", y > 8);
+      if (behavior === "auto-hide") {
+        const shouldHide = y > lastY && y > 72;
+        bar.classList.toggle("is-hidden", shouldHide);
+      } else {
+        bar.classList.remove("is-hidden");
+      }
+      lastY = y;
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(apply);
+    };
+
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  };
+
   bindAdminLink();
   bindPortalMenu();
   bindToneSwitcher();
   bindCommunityMenus();
   bindQuickActions();
+  bindScrollBehavior();
 })();

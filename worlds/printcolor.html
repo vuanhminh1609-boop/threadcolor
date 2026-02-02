@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <link rel="stylesheet" href="../assets/tones.css">
   <link rel="stylesheet" href="../assets/topbar_overrides.css">
+  <link rel="stylesheet" href="../printcolor_report.css">
   <style>
     body{
       background: var(--bg);
@@ -239,24 +240,30 @@
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">World4 Â· CMYK</p>
           <h1 class="text-3xl md:text-4xl font-bold">Thế giới Màu in (CMYK)</h1>
           <p class="mt-2 tc-muted">Chuyển HEX sang CMYK xấp xỉ, xem TAC và cảnh báo quá ngưỡng.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
-          <span>Local-first Â· CMYK nhanh</span>
+          <span>Local-first - CMYK nhanh</span>
         </div>
       </div>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
-        <div class="space-y-4">
+      <div class="mt-5 inline-flex flex-wrap gap-2 tc-chip px-2 py-2 rounded-full text-xs">
+        <button id="printModeCmyk" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">CMYK (Giấy)</button>
+        <button id="printModeScreen" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">In lưới (Đồng phục)</button>
+      </div>
+
+      <div id="cmykMode">
+        <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+          <div class="space-y-4">
           <div class="tc-card p-4">
             <label class="text-sm font-semibold" for="hexInput">Danh sách mã màu (HEX)</label>
             <textarea id="hexInput" class="tc-input mt-2" placeholder="#FFAA00, #123456
 #0F766E"></textarea>
             <div class="mt-3 flex flex-wrap gap-2">
               <button id="hexApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Áp dụng</button>
+              <button id="hexPaste" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Dán</button>
               <button id="hexClear" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Xóa</button>
             </div>
             <p class="tc-muted text-xs mt-3">Hỗ trợ hash <strong>#c=</strong>, <strong>#p=</strong>, <strong>#g=</strong> (VD: <code>#c=ffcc00,0033aa</code>).</p>
@@ -270,7 +277,14 @@
                 <option value="300">Couche 300%</option>
                 <option value="280">Thường 280%</option>
                 <option value="240">Báo 240%</option>
+                <option value="screen_process">In lưới – Process CMYK (tham chiếu)</option>
+                <option value="screen_spot">In lưới – Spot (tham chiếu)</option>
               </select>
+              <p id="profileNote" class="tc-muted text-xs hidden"></p>
+              <label class="text-sm font-semibold flex items-center gap-2">
+                <input id="darkFabric" type="checkbox" class="accent-black">
+                Nền vải tối (áo đen)
+              </label>
               <div class="flex items-center justify-between text-xs tc-muted">
                 <span>Ngưỡng TAC</span>
                 <span id="tacValue">300%</span>
@@ -363,24 +377,183 @@
               <option value="report">Báo cáo in</option>
             </select>
             <button id="exportCopy" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Sao chép</button>
+            <select id="qcExportType" class="tc-input w-[160px]">
+              <option value="csv">QC CSV</option>
+              <option value="json">QC JSON</option>
+              <option value="pdf">PDF (In ra)</option>
+            </select>
+            <button id="qcExport" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Xuất báo cáo QC</button>
             <button id="printSaveLibrary" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Lưu vào Thư viện</button>
             <button id="printUseLibrary" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Dùng từ Thư viện</button>
             <button id="printShare" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chia sẻ</button>
           </div>
+          </div>
         </div>
-      </div>
 
-      <section class="mt-6 tc-card p-4">
-        <h2 class="text-sm font-semibold">Liên thông nhanh</h2>
+        <details class="mt-6 tc-card p-4">
+          <summary class="cursor-pointer font-semibold">Hướng dẫn rõ ràng cho người mới</summary>
+        <div class="mt-3 space-y-4 text-sm tc-muted leading-relaxed">
+          <div>
+            <p class="font-semibold text-[13px] text-white">Thao tác nhanh</p>
+            <ol class="mt-2 space-y-2">
+              <li>1) Dán danh sách HEX vào ô nhập hoặc dùng mẫu có sẵn.</li>
+              <li>2) Chọn preset TAC phù hợp chất liệu, tinh chỉnh ngưỡng nếu cần.</li>
+              <li>3) Xem CMYK + TAC, giảm TAC khi vượt ngưỡng, rồi sao chép/xuất/lưu.</li>
+            </ol>
+          </div>
+          <div class="mt-3 grid gap-2 sm:grid-cols-4 text-xs">
+            <div class="tc-chip px-3 py-2 rounded-full">Tổng màu: <span id="summaryTotal">0</span></div>
+            <div class="tc-chip px-3 py-2 rounded-full">Vượt TAC: <span id="summaryTac">0</span></div>
+            <div class="tc-chip px-3 py-2 rounded-full">Ngoài gamut: <span id="summaryGamut">0</span></div>
+            <div class="tc-chip px-3 py-2 rounded-full">ΔE lớn nhất: <span id="summaryDelta">0</span></div>
+          </div>
+          <p id="summaryHint" class="tc-muted text-xs mt-2"></p>
+          <div>
+            <p class="font-semibold text-[13px] text-white">Định nghĩa nhanh</p>
+            <ul class="mt-2 space-y-2">
+              <li><strong>CMYK</strong>: hệ mực in 4 kênh (Cyan, Magenta, Yellow, Key/Đen).</li>
+              <li><strong>Tổng lượng mực (TAC)</strong>: tổng % C+M+Y+K; vượt ngưỡng dễ lem/đậm.</li>
+              <li><strong>Hồ sơ ICC</strong>: hồ sơ màu của thiết bị in để chuyển đổi chính xác.</li>
+              <li><strong>Ý đồ chuyển đổi (intent)</strong>: cách ưu tiên bảo toàn màu/độ tương phản khi map gamut.</li>
+              <li><strong>Bù điểm đen (BPC)</strong>: bù vùng tối để giữ chi tiết khi chuyển profile.</li>
+              <li><strong>Dải màu (gamut)</strong>: phạm vi màu thiết bị có thể tái tạo.</li>
+            </ul>
+          </div>
+          <div>
+            <p class="font-semibold text-[13px] text-white">Quy trình chuẩn (6 bước)</p>
+            <ol class="mt-2 space-y-2">
+              <li>1) Dán HEX → 2) Chọn preset TAC → 3) Áp dụng chuyển đổi.</li>
+              <li>4) (Tuỳ chọn) Nạp ICC + chọn intent/BPC.</li>
+              <li>5) Giảm TAC nếu vượt ngưỡng.</li>
+              <li>6) Sao chép / xuất / lưu vào thư viện.</li>
+            </ol>
+          </div>
+          <div>
+            <p class="font-semibold text-[13px] text-white">Lỗi thường gặp</p>
+            <ul class="mt-2 space-y-2">
+              <li>Dùng TAC quá cao làm bản in bị bệt, mất chi tiết vùng tối.</li>
+              <li>Không có ICC nên màu in lệch so với màn hình.</li>
+              <li>Chọn intent không phù hợp khiến màu nhấn bị xỉn.</li>
+              <li>Bỏ qua cảnh báo gamut dẫn đến lệch màu đáng kể.</li>
+            </ul>
+          </div>
+        </div>
+        </details>
+
+        <section class="mt-6 tc-card p-4">
+          <h2 class="text-sm font-semibold">Liên thông nhanh</h2>
         <p class="tc-muted text-xs mt-1">Chuyển màu sang World khác theo chuẩn ?color / #p / #g / #c.</p>
         <div class="mt-3 flex flex-wrap gap-2">
           <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./palette.html#p=%23F472B6,%230EA5A8,%23F59E0B">Tạo Palette</a>
           <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./gradient.html#g=%23F472B6,%230EA5A8,%23F59E0B">Tạo Gradient</a>
           <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./threadcolor.html?color=%23F472B6">Mở ở Thêu</a>
         </div>
-      </section>
+        </section>
+      </div>
+
+      <div id="screenMode" class="hidden mt-6 space-y-4">
+        <div class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <div class="tc-card p-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h2 class="text-sm font-semibold">Danh sách màu spot</h2>
+                <p class="tc-muted text-xs mt-1">Tạo từ HEX list hoặc Kho HEX, chỉnh tên và số lượt in.</p>
+              </div>
+              <button id="screenSpotFromHex" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Tạo từ HEX</button>
+            </div>
+            <div id="screenSpotList" class="mt-3 space-y-2"></div>
+            <p id="screenSpotEmpty" class="tc-muted text-xs mt-3">Chưa có màu spot. Dán HEX rồi bấm “Tạo từ HEX”.</p>
+          </div>
+          <div class="tc-card p-4 space-y-3">
+            <h2 class="text-sm font-semibold">Nền áo &amp; Underbase</h2>
+            <label class="text-sm font-semibold" for="screenFabricTone">Nền áo</label>
+            <select id="screenFabricTone" class="tc-input">
+              <option value="light">Trắng / Sáng</option>
+              <option value="mid">Trung tính</option>
+              <option value="dark">Tối</option>
+            </select>
+            <label class="text-sm font-semibold flex items-center gap-2">
+              <input id="screenUnderbase" type="checkbox" class="accent-black">
+              Bật underbase trắng
+            </label>
+            <label class="text-sm font-semibold" for="screenUnderbaseType">Kiểu underbase</label>
+            <select id="screenUnderbaseType" class="tc-input">
+              <option value="full">Full</option>
+              <option value="choke">Choke (thu lớp lót)</option>
+              <option value="spot">Spot</option>
+            </select>
+            <label class="text-sm font-semibold" for="screenCoverage">Mức phủ (%)</label>
+            <input id="screenCoverage" class="tc-input" type="number" min="10" max="200" step="5" value="100">
+            <p id="screenNote" class="tc-muted text-xs">CMYK/TAC ở chế độ in lưới chỉ mang tính tham chiếu để giao tiếp màu.</p>
+          </div>
+        </div>
+
+        <details class="tc-card p-4">
+          <summary class="cursor-pointer font-semibold">Tram (Process CMYK cho in ảnh)</summary>
+          <div class="mt-3 space-y-3 text-sm">
+            <div>
+              <label class="text-sm font-semibold" for="screenHalftoneMode">Mode</label>
+              <select id="screenHalftoneMode" class="tc-input">
+                <option value="spot">Spot</option>
+                <option value="process">Process CMYK</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-semibold" for="screenHalftoneLpi">Preset LPI</label>
+              <select id="screenHalftoneLpi" class="tc-input">
+                <option value="45">45 LPI</option>
+                <option value="55">55 LPI</option>
+                <option value="65">65 LPI</option>
+              </select>
+            </div>
+            <div class="tc-muted text-xs">
+              Góc tram gợi ý: <span id="screenAngleHint">—</span>
+            </div>
+            <div>
+              <label class="text-sm font-semibold" for="screenDotGain">Tăng tram (dot gain)</label>
+              <input id="screenDotGain" class="tc-range" type="range" min="0" max="100" step="5" value="35">
+              <div class="tc-muted text-xs mt-1">Mức: <span id="screenDotGainLabel">Trung bình</span></div>
+            </div>
+            <div class="tc-muted text-xs">Gợi ý mesh: <span id="screenMeshHint">—</span></div>
+          </div>
+        </details>
+
+        <div class="tc-card p-4">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-semibold">Xuất phiếu kỹ thuật in lưới</h2>
+              <p class="tc-muted text-xs mt-1">PDF/CSV/JSON để giao tiếp với xưởng in.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="screenExportType" class="tc-input w-[160px]">
+                <option value="pdf">PDF (In ra)</option>
+                <option value="csv">CSV</option>
+                <option value="json">JSON</option>
+              </select>
+              <button id="screenExport" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Xuất phiếu</button>
+            </div>
+          </div>
+        </div>
+
+        <details class="tc-card p-4">
+          <summary class="cursor-pointer font-semibold">Hướng dẫn rõ ràng cho người mới</summary>
+          <div class="mt-3 space-y-3 text-sm tc-muted leading-relaxed">
+            <p>1) Dán danh sách HEX hoặc lấy từ Kho HEX để tạo danh sách màu spot.</p>
+            <p>2) Đổi tên màu theo mã mực thực tế, ghi số lượt in dự kiến và ghi chú.</p>
+            <p>3) Chọn nền áo, bật underbase nếu nền tối, chọn kiểu Full/Choke/Spot và mức phủ.</p>
+            <p>4) CMYK/TAC ở đây chỉ là tham chiếu để giao tiếp màu, không thay thế kiểm soát độ dày mực in lưới.</p>
+          </div>
+        </details>
+      </div>
     </section>
   </main>
+
+  <section id="qcReportView" class="qc-report-view" hidden>
+    <div id="qcReportPages"></div>
+  </section>
+  <section id="screenReportView" class="qc-report-view" hidden>
+    <div id="screenReportPages"></div>
+  </section>
 
   <div id="printToast" class="tc-toast" role="status" aria-live="polite"></div>
 

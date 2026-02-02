@@ -32,3 +32,29 @@
     white-space: nowrap;
   }
 }
+
+.tc-topbar {
+  position: sticky;
+  top: 0;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  will-change: transform;
+}
+
+.tc-topbar.is-scrolled {
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+}
+
+.tc-topbar.is-scrolled > .max-w-6xl {
+  padding-top: 0.45rem !important;
+  padding-bottom: 0.45rem !important;
+}
+
+.tc-topbar.is-hidden {
+  transform: translateY(-110%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-topbar {
+    transition: none;
+  }
+}
