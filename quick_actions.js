@@ -21,6 +21,52 @@
       .filter(Boolean);
   };
 
+  const pickTopHexes = (hexes, max = 3) => {
+    const output = [];
+    const seen = new Set();
+    (Array.isArray(hexes) ? hexes : []).forEach((hex) => {
+      const normalized = normalizeHex(hex);
+      if (!normalized || seen.has(normalized)) return;
+      seen.add(normalized);
+      output.push(normalized);
+    });
+    return output.slice(0, max);
+  };
+
+  const rgbCssToHex = (cssColor) => {
+    if (!cssColor) return null;
+    const raw = String(cssColor).trim();
+    if (raw.startsWith("#")) return normalizeHex(raw);
+    const match = raw.match(/rgba?\(([^)]+)\)/i);
+    if (!match) return null;
+    const parts = match[1].split(/[,\s/]+/).filter(Boolean).map((item) => Number.parseFloat(item));
+    if (parts.length < 3 || parts.slice(0, 3).some((item) => !Number.isFinite(item))) return null;
+    const toHex = (value) => Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, "0");
+    return `#${toHex(parts[0])}${toHex(parts[1])}${toHex(parts[2])}`.toUpperCase();
+  };
+
+  const syncHeroAurora = (hexes = null) => {
+    const swatches = [
+      document.getElementById("qaAuroraSw1"),
+      document.getElementById("qaAuroraSw2"),
+      document.getElementById("qaAuroraSw3")
+    ];
+    const hexRow = document.getElementById("qaAuroraHexRow");
+    if (!swatches.every(Boolean) || !hexRow) return;
+    const palette = pickTopHexes(hexes, 3);
+    if (palette.length) {
+      swatches.forEach((swatch, idx) => {
+        if (palette[idx]) setBg(swatch, palette[idx]);
+      });
+    }
+    const current = swatches
+      .map((swatch) => rgbCssToHex(getComputedStyle(swatch).backgroundColor))
+      .filter(Boolean);
+    if (current.length === 3) {
+      setText(hexRow, current.join(" · "));
+    }
+  };
+
   const hexToRgb = (hex) => {
     const clean = hex.replace("#", "");
     return {
@@ -28,6 +74,435 @@
       g: parseInt(clean.slice(2, 4), 16),
       b: parseInt(clean.slice(4, 6), 16)
     };
+  };
+
+  const relativeLuminance = ({ r, g, b }) => {
+    const transform = (value) => {
+      const s = value / 255;
+      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    };
+    const rLin = transform(r);
+    const gLin = transform(g);
+    const bLin = transform(b);
+    return 0.2126 * rLin + 0.7152 * gLin + 0.0722 * bLin;
+  };
+
+  const rgbToHue = ({ r, g, b }) => {
+    const rNorm = r / 255;
+    const gNorm = g / 255;
+    const bNorm = b / 255;
+    const max = Math.max(rNorm, gNorm, bNorm);
+    const min = Math.min(rNorm, gNorm, bNorm);
+    const delta = max - min;
+    if (delta === 0) return 0;
+    let hue;
+    if (max === rNorm) hue = ((gNorm - bNorm) / delta) % 6;
+    else if (max === gNorm) hue = (bNorm - rNorm) / delta + 2;
+    else hue = (rNorm - gNorm) / delta + 4;
+    hue = Math.round(hue * 60);
+    return hue < 0 ? hue + 360 : hue;
+  };
+
+  const rgbToHsl = ({ r, g, b }) => {
+    const rNorm = r / 255;
+    const gNorm = g / 255;
+    const bNorm = b / 255;
+    const max = Math.max(rNorm, gNorm, bNorm);
+    const min = Math.min(rNorm, gNorm, bNorm);
+    const delta = max - min;
+    let h = 0;
+    let s = 0;
+    const l = (max + min) / 2;
+    if (delta !== 0) {
+      s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+      switch (max) {
+        case rNorm:
+          h = (gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0);
+          break;
+        case gNorm:
+          h = (bNorm - rNorm) / delta + 2;
+          break;
+        default:
+          h = (rNorm - gNorm) / delta + 4;
+      }
+      h *= 60;
+    }
+    return { h, s, l };
+  };
+
+  const hslToRgb = ({ h, s, l }) => {
+    if (s === 0) {
+      const value = Math.round(l * 255);
+      return { r: value, g: value, b: value };
+    }
+    const hue = ((h % 360) + 360) % 360 / 360;
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    const hueToRgb = (t) => {
+      let temp = t;
+      if (temp < 0) temp += 1;
+      if (temp > 1) temp -= 1;
+      if (temp < 1 / 6) return p + (q - p) * 6 * temp;
+      if (temp < 1 / 2) return q;
+      if (temp < 2 / 3) return p + (q - p) * (2 / 3 - temp) * 6;
+      return p;
+    };
+    return {
+      r: Math.round(hueToRgb(hue + 1 / 3) * 255),
+      g: Math.round(hueToRgb(hue) * 255),
+      b: Math.round(hueToRgb(hue - 1 / 3) * 255)
+    };
+  };
+
+  const rgbToHex = ({ r, g, b }) => {
+    const toHex = (value) => Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, "0");
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+  };
+
+  const contrastRatio = (l1, l2) => {
+    const bright = Math.max(l1, l2);
+    const dark = Math.min(l1, l2);
+    return (bright + 0.05) / (dark + 0.05);
+  };
+
+  const classifyHex = (hex) => {
+    const rgb = hexToRgb(hex);
+    const lum = relativeLuminance(rgb);
+    const hue = rgbToHue(rgb);
+    const isWarm = hue <= 60 || hue >= 320;
+    const isCool = hue >= 160 && hue <= 260;
+    if (lum >= 0.75) {
+      if (isWarm) return "Ấm & sáng";
+      if (isCool) return "Mát & trong";
+      return "Sáng & sạch";
+    }
+    if (lum <= 0.35) return "Đậm & sâu";
+    if (isWarm) return "Ấm & sáng";
+    if (isCool) return "Mát & trong";
+    return "Sáng & sạch";
+  };
+
+  const setText = (el, txt) => {
+    if (!el) return;
+    el.textContent = txt || "";
+  };
+
+  const setBg = (el, hex) => {
+    if (!el || !hex) return;
+    el.style.setProperty("--swatch-color", hex);
+    el.style.background = hex;
+  };
+
+  const clearBg = (el) => {
+    if (!el) return;
+    el.style.removeProperty("--swatch-color");
+    el.style.background = "";
+  };
+
+  const hexToRgbString = (hex) => {
+    const rgb = hexToRgb(hex);
+    return `${rgb.r} ${rgb.g} ${rgb.b}`;
+  };
+
+  const getCssVarHex = (name) => {
+    const root = document.documentElement;
+    if (!root) return null;
+    const value = getComputedStyle(root).getPropertyValue(name).trim();
+    if (!value) return null;
+    return rgbCssToHex(value);
+  };
+
+  let lastAuroraKey = "";
+  let lastAuroraMode = "paste";
+  let lastTokenKey = "";
+  let lastTokenContext = null;
+
+  const clampValue = (value, min, max) => Math.min(max, Math.max(min, value));
+
+  const representativeHue = (hexes) => {
+    const palette = pickTopHexes(hexes, 3);
+    if (!palette.length) {
+      return { h: 0, s: 0.6, l: 0.5 };
+    }
+    const hslList = palette.map((hex) => rgbToHsl(hexToRgb(hex)));
+    if (hslList.length === 1) {
+      const solo = hslList[0];
+      return {
+        h: solo.h,
+        s: clampValue(solo.s, 0.35, 0.92),
+        l: clampValue(solo.l, 0.18, 0.88)
+      };
+    }
+    const vector = hslList.reduce((acc, item) => {
+      const rad = (item.h * Math.PI) / 180;
+      acc.x += Math.cos(rad);
+      acc.y += Math.sin(rad);
+      acc.s += item.s;
+      acc.l += item.l;
+      return acc;
+    }, { x: 0, y: 0, s: 0, l: 0 });
+    const count = hslList.length;
+    const avgX = vector.x / count;
+    const avgY = vector.y / count;
+    let hue = Math.atan2(avgY, avgX) * (180 / Math.PI);
+    if (hue < 0) hue += 360;
+    return {
+      h: hue,
+      s: clampValue(vector.s / count, 0.35, 0.92),
+      l: clampValue(vector.l / count, 0.18, 0.88)
+    };
+  };
+
+  const generateHarmonySuggestions = (hexes) => {
+    const palette = pickTopHexes(hexes, 3);
+    const baseHex = palette[0];
+    if (!baseHex) return [];
+
+    const rep = representativeHue(palette);
+    const baseHsl = rgbToHsl(hexToRgb(baseHex));
+    const clampS = (value) => clampValue(value, 0.35, 0.92);
+    const clampL = (value) => clampValue(value, 0.18, 0.88);
+
+    const compHex = rgbToHex(hslToRgb({
+      h: (rep.h + 180) % 360,
+      s: clampS(rep.s),
+      l: clampL(rep.l)
+    }));
+
+    const leftHex = rgbToHex(hslToRgb({
+      h: (rep.h - 30 + 360) % 360,
+      s: clampS(rep.s),
+      l: clampL(rep.l)
+    }));
+    const rightHex = rgbToHex(hslToRgb({
+      h: (rep.h + 30) % 360,
+      s: clampS(rep.s),
+      l: clampL(rep.l)
+    }));
+
+    const baseLum = relativeLuminance(hexToRgb(baseHex));
+    const direction = baseLum < 0.35 ? 1 : -1;
+    const steps = 10;
+    let bestAccent = null;
+    let bestRatio = 0;
+    for (let i = 1; i <= steps; i += 1) {
+      const t = i / steps;
+      const shift = direction === 1 ? (0.88 - baseHsl.l) : (baseHsl.l - 0.18);
+      const l = clampL(baseHsl.l + direction * t * shift);
+      const accentRgb = hslToRgb({ h: baseHsl.h, s: clampS(baseHsl.s), l });
+      const accentLum = relativeLuminance(accentRgb);
+      const ratio = contrastRatio(baseLum, accentLum);
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        bestAccent = rgbToHex(accentRgb);
+      }
+      if (ratio >= 4.5) break;
+    }
+    const accentHex = bestAccent || baseHex;
+
+    return [
+      {
+        kind: "complementary",
+        title: "Bù 180°",
+        sub: "Dùng làm điểm nhấn mạnh (CTA/nhãn).",
+        colors: [baseHex, compHex]
+      },
+      {
+        kind: "analogous",
+        title: "Tương tự ±30°",
+        sub: "Mượt, hài hoà (nền/khối phụ).",
+        colors: [leftHex, rightHex]
+      },
+      {
+        kind: "accent",
+        title: "Nhấn tương phản",
+        sub: "Tăng độ rõ cho chữ/viền/biểu tượng.",
+        colors: [baseHex, accentHex]
+      }
+    ];
+  };
+
+  const buildCssTokensFromSuggestion = (baseHex, suggestion, fallbackHexes = []) => {
+    const fallback = pickTopHexes(fallbackHexes, 3);
+    const colors = (suggestion?.colors || []).map(normalizeHex).filter(Boolean);
+    let a1 = normalizeHex(baseHex) || fallback[0] || colors[0];
+    if (!a1) return "";
+    let a2 = a1;
+    let a3 = a1;
+    const kind = suggestion?.kind || "";
+    if (kind === "analogous") {
+      a2 = colors[0] || fallback[1] || a1;
+      a3 = colors[1] || fallback[2] || a1;
+    } else if (kind === "complementary") {
+      const comp = colors[1] || colors[0] || fallback[1] || a1;
+      a2 = comp;
+      a3 = fallback[1] && fallback[1] !== comp ? fallback[1] : a1;
+    } else if (kind === "accent") {
+      const accent = colors[1] || colors[0] || fallback[1] || a1;
+      a2 = accent;
+      a3 = fallback[1] || a1;
+    } else {
+      a2 = colors[1] || colors[0] || fallback[1] || a1;
+      a3 = fallback[2] || a1;
+    }
+    const css = [
+      ":root{",
+      `  --a1: ${a1};`,
+      `  --a2: ${a2};`,
+      `  --a3: ${a3};`,
+      `  --a1-rgb: ${hexToRgbString(a1)};`,
+      `  --a2-rgb: ${hexToRgbString(a2)};`,
+      `  --a3-rgb: ${hexToRgbString(a3)};`,
+      "}"
+    ];
+    return css.join("\n");
+  };
+
+  const renderAuroraTokenPanel = (context = {}) => {
+    const presetEl = document.getElementById("qaAuroraTokenPreset");
+    const codeEl = document.getElementById("qaAuroraTokenCss");
+    if (!presetEl || !codeEl) return;
+
+    let hexes = pickTopHexes(context.hexes, 3);
+    if (!hexes.length) {
+      const swatches = [
+        document.getElementById("qaAuroraSw1"),
+        document.getElementById("qaAuroraSw2"),
+        document.getElementById("qaAuroraSw3")
+      ].filter(Boolean);
+      hexes = swatches
+        .map((swatch) => rgbCssToHex(getComputedStyle(swatch).backgroundColor))
+        .filter(Boolean)
+        .slice(0, 3);
+    }
+    const rawSuggestions = Array.isArray(context.suggestions) && context.suggestions.length
+      ? context.suggestions
+      : generateHarmonySuggestions(hexes);
+    const tokenSuggestions = rawSuggestions.some((item) => Array.isArray(item.colors) && item.colors.length)
+      ? rawSuggestions
+      : generateHarmonySuggestions(hexes);
+
+    lastTokenContext = { hexes, suggestions: tokenSuggestions };
+
+    const byKind = tokenSuggestions.reduce((acc, item) => {
+      if (item.kind) acc[item.kind] = item;
+      return acc;
+    }, {});
+
+    const preset = presetEl.value || "auto";
+    const baseHex = hexes[0] || tokenSuggestions[0]?.colors?.[0];
+    let picked = byKind.analogous || tokenSuggestions[1] || tokenSuggestions[0];
+    if (preset === "complementary") {
+      picked = byKind.complementary || tokenSuggestions[0];
+    } else if (preset === "analogous") {
+      picked = byKind.analogous || tokenSuggestions[1] || tokenSuggestions[0];
+    } else if (preset === "accent") {
+      picked = byKind.accent || tokenSuggestions[2] || tokenSuggestions[0];
+    } else if (preset === "auto") {
+      const bgHex = getCssVarHex("--bg");
+      if (baseHex && bgHex) {
+        const ratio = contrastRatio(relativeLuminance(hexToRgb(baseHex)), relativeLuminance(hexToRgb(bgHex)));
+        picked = ratio < 4.5
+          ? (byKind.accent || tokenSuggestions[2] || picked)
+          : (byKind.analogous || tokenSuggestions[1] || picked);
+      }
+    }
+
+    const css = buildCssTokensFromSuggestion(baseHex, picked, hexes);
+    const key = `${preset}|${hexes.join(",")}|${picked?.title || ""}|${picked?.colors?.join(",") || ""}`;
+    if (key && key === lastTokenKey) return;
+    lastTokenKey = key;
+    codeEl.textContent = css;
+  };
+
+  const buildThreadSuggestions = (items) => {
+    return (Array.isArray(items) ? items : []).slice(0, 3).map((item) => {
+      const title = `${item.brand || ""} ${item.code || ""}`.trim() || "Gợi ý mã chỉ";
+      const parts = [];
+      if (item.name) parts.push(item.name);
+      if (item.hex) parts.push(item.hex);
+      return {
+        title,
+        sub: parts.join(" · ") || "Màu gần nhất"
+      };
+    });
+  };
+
+  const updateAuroraPreview = (payload = {}) => {
+    const sw1 = document.getElementById("qaAuroraSw1");
+    const sw2 = document.getElementById("qaAuroraSw2");
+    const sw3 = document.getElementById("qaAuroraSw3");
+    const hexRow = document.getElementById("qaAuroraHexRow");
+    const sug1Title = document.getElementById("qaAuroraSug1Title");
+    const sug1Sub = document.getElementById("qaAuroraSug1Sub");
+    const sug2Title = document.getElementById("qaAuroraSug2Title");
+    const sug2Sub = document.getElementById("qaAuroraSug2Sub");
+    const sug3Title = document.getElementById("qaAuroraSug3Title");
+    const sug3Sub = document.getElementById("qaAuroraSug3Sub");
+    const sug1Dot1 = document.getElementById("qaAuroraSug1Dot1");
+    const sug1Dot2 = document.getElementById("qaAuroraSug1Dot2");
+    const sug2Dot1 = document.getElementById("qaAuroraSug2Dot1");
+    const sug2Dot2 = document.getElementById("qaAuroraSug2Dot2");
+    const sug3Dot1 = document.getElementById("qaAuroraSug3Dot1");
+    const sug3Dot2 = document.getElementById("qaAuroraSug3Dot2");
+
+    const required = [sw1, sw2, sw3, hexRow, sug1Title, sug1Sub, sug2Title, sug2Sub, sug3Title, sug3Sub];
+    if (required.some((el) => !el)) return;
+
+    const hexes = pickTopHexes(payload.hexes, 3);
+    const autoKey = `${payload.mode || ""}::${hexes.join(",")}::auto`;
+    if ((!payload.suggestions || payload.suggestions.length === 0) && autoKey === lastAuroraKey) {
+      return;
+    }
+    const suggestions = Array.isArray(payload.suggestions) && payload.suggestions.length
+      ? payload.suggestions
+      : generateHarmonySuggestions(hexes);
+    const tokenSuggestions = suggestions.some((item) => Array.isArray(item.colors) && item.colors.length)
+      ? suggestions
+      : generateHarmonySuggestions(hexes);
+
+    const key = [
+      payload.mode || "",
+      hexes.join(","),
+      suggestions.map((item) => `${item.title || ""}|${item.sub || ""}`).join(";")
+    ].join("::") || autoKey;
+    if (key && key === lastAuroraKey) return;
+    if (key) lastAuroraKey = key;
+    if (payload.mode) lastAuroraMode = payload.mode;
+
+    if (hexes.length) {
+      setBg(sw1, hexes[0]);
+      setBg(sw2, hexes[1] || hexes[0]);
+      setBg(sw3, hexes[2] || hexes[1] || hexes[0]);
+    }
+    syncHeroAurora(hexes);
+
+    const joinHexes = hexes.length ? hexes.join(" · ") : "";
+    if (joinHexes) setText(hexRow, joinHexes);
+
+    const s1 = suggestions[0];
+    const s2 = suggestions[1];
+    const s3 = suggestions[2];
+    if (s1) {
+      setText(sug1Title, s1.title || "Gợi ý #1");
+      setText(sug1Sub, s1.sub || "");
+      if (s1.colors?.[0]) setBg(sug1Dot1, s1.colors[0]); else clearBg(sug1Dot1);
+      if (s1.colors?.[1]) setBg(sug1Dot2, s1.colors[1]); else clearBg(sug1Dot2);
+    }
+    if (s2) {
+      setText(sug2Title, s2.title || "Gợi ý #2");
+      setText(sug2Sub, s2.sub || "");
+      if (s2.colors?.[0]) setBg(sug2Dot1, s2.colors[0]); else clearBg(sug2Dot1);
+      if (s2.colors?.[1]) setBg(sug2Dot2, s2.colors[1]); else clearBg(sug2Dot2);
+    }
+    if (s3) {
+      setText(sug3Title, s3.title || "Gợi ý #3");
+      setText(sug3Sub, s3.sub || "");
+      if (s3.colors?.[0]) setBg(sug3Dot1, s3.colors[0]); else clearBg(sug3Dot1);
+      if (s3.colors?.[1]) setBg(sug3Dot2, s3.colors[1]); else clearBg(sug3Dot2);
+    }
+
+    renderAuroraTokenPanel({ hexes, suggestions: tokenSuggestions });
   };
 
   const rgbToCmyk = ({ r, g, b }) => {
@@ -72,6 +547,239 @@
     });
   };
 
+  const tokenPresetEl = document.getElementById("qaAuroraTokenPreset");
+  const tokenCssEl = document.getElementById("qaAuroraTokenCss");
+  const tokenCopyBtn = document.getElementById("qaAuroraCopyCss");
+  const tokenToast = document.getElementById("qaAuroraCopyToast");
+  const previewBtn = document.getElementById("qaAuroraPreviewTheme");
+  const resetBtn = document.getElementById("qaAuroraResetTheme");
+  const previewBadge = document.getElementById("qaAuroraPreviewBadge");
+  const toneNameInput = document.getElementById("qaAuroraToneName");
+  const saveToneBtn = document.getElementById("qaAuroraSaveTone");
+
+  const showTokenToast = (message) => {
+    if (!tokenToast) return;
+    tokenToast.textContent = message;
+    tokenToast.classList.add("is-visible");
+    window.clearTimeout(showTokenToast._t);
+    showTokenToast._t = window.setTimeout(() => {
+      tokenToast.classList.remove("is-visible");
+    }, 1200);
+  };
+
+  tokenPresetEl?.addEventListener("change", () => {
+    if (lastTokenContext) renderAuroraTokenPanel(lastTokenContext);
+  });
+
+  tokenCopyBtn?.addEventListener("click", () => {
+    const txt = tokenCssEl?.textContent || "";
+    if (!txt.trim()) return;
+    copyToClipboard(txt.trim()).then(() => showTokenToast("Đã sao chép token CSS"));
+  });
+
+  const CUSTOM_TONE_KEY = "tc_custom_tones_v1";
+
+  const loadCustomTones = () => {
+    try {
+      if (typeof localStorage === "undefined") return [];
+      const raw = localStorage.getItem(CUSTOM_TONE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_err) {
+      showTokenToast("Không thể đọc Thư viện.");
+      return [];
+    }
+  };
+
+  const saveCustomTones = (list) => {
+    try {
+      if (typeof localStorage === "undefined") return false;
+      localStorage.setItem(CUSTOM_TONE_KEY, JSON.stringify(list));
+      return true;
+    } catch (_err) {
+      showTokenToast("Không thể lưu vào Thư viện.");
+      return false;
+    }
+  };
+
+  const upsertCustomTone = (tone) => {
+    const list = loadCustomTones();
+    const index = list.findIndex((item) => item.id === tone.id);
+    if (index >= 0) list[index] = tone;
+    else list.unshift(tone);
+    return saveCustomTones(list);
+  };
+
+  const deleteCustomTone = (id) => {
+    const list = loadCustomTones().filter((item) => item.id !== id);
+    return saveCustomTones(list);
+  };
+
+  const getTokenColorsFromPanel = () => {
+    const vars = parseTokenCssVars(tokenCssEl?.textContent || "");
+    if (!vars) return null;
+    return {
+      a1: vars["--a1"],
+      a2: vars["--a2"],
+      a3: vars["--a3"],
+      a1rgb: vars["--a1-rgb"],
+      a2rgb: vars["--a2-rgb"],
+      a3rgb: vars["--a3-rgb"]
+    };
+  };
+
+  saveToneBtn?.addEventListener("click", () => {
+    const colors = getTokenColorsFromPanel();
+    if (!colors?.a1) {
+      showTokenToast("Chưa có token để lưu.");
+      return;
+    }
+    const list = loadCustomTones();
+    const index = list.length + 1;
+    const rawName = (toneNameInput?.value || "").trim();
+    const name = rawName || `Sắc thái tuỳ chỉnh #${index}`;
+    const tone = {
+      id: `ct_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      name,
+      colors,
+      createdAt: new Date().toISOString(),
+      source: "aurora"
+    };
+    if (upsertCustomTone(tone)) {
+      showTokenToast("Đã lưu vào Thư viện.");
+      if (toneNameInput) toneNameInput.value = "";
+    }
+  });
+
+  const previewVars = ["--a1", "--a2", "--a3", "--a1-rgb", "--a2-rgb", "--a3-rgb"];
+  let previewActive = false;
+  let previewSnapshot = null;
+
+  const snapshotThemeVars = (vars) => {
+    const root = document.documentElement;
+    const computed = getComputedStyle(root);
+    return vars.reduce((acc, name) => {
+      acc[name] = {
+        inline: root.style.getPropertyValue(name),
+        computed: computed.getPropertyValue(name).trim()
+      };
+      return acc;
+    }, {});
+  };
+
+  const applyThemeVars = (map) => {
+    if (!map) return;
+    const root = document.documentElement;
+    Object.entries(map).forEach(([name, value]) => {
+      if (!value) return;
+      root.style.setProperty(name, value);
+    });
+  };
+
+  const restoreThemeVars = (snapshot, vars) => {
+    const root = document.documentElement;
+    vars.forEach((name) => {
+      const entry = snapshot?.[name];
+      if (entry && entry.inline) {
+        root.style.setProperty(name, entry.inline.trim());
+      } else {
+        root.style.removeProperty(name);
+      }
+    });
+  };
+
+  const parseRgbValue = (value) => {
+    if (!value) return null;
+    const nums = value.match(/[\d.]+/g);
+    if (!nums || nums.length < 3) return null;
+    const parts = nums.slice(0, 3).map((n) => Math.round(parseFloat(n)));
+    if (parts.some((n) => Number.isNaN(n))) return null;
+    return `${parts[0]} ${parts[1]} ${parts[2]}`;
+  };
+
+  const parseTokenCssVars = (text) => {
+    if (!text) return null;
+    const grab = (name) => {
+      const match = text.match(new RegExp(`${name}\\s*:\\s*([^;]+);`, "i"));
+      return match ? match[1].trim() : "";
+    };
+    const a1 = (() => {
+      const raw = grab("--a1");
+      return raw ? (normalizeHex(raw) || rgbCssToHex(raw)) : null;
+    })();
+    const a2 = (() => {
+      const raw = grab("--a2");
+      return raw ? (normalizeHex(raw) || rgbCssToHex(raw)) : null;
+    })();
+    const a3 = (() => {
+      const raw = grab("--a3");
+      return raw ? (normalizeHex(raw) || rgbCssToHex(raw)) : null;
+    })();
+    if (!a1 && !a2 && !a3) return null;
+    const a1rgb = parseRgbValue(grab("--a1-rgb")) || (a1 ? hexToRgbString(a1) : null);
+    const a2rgb = parseRgbValue(grab("--a2-rgb")) || (a2 ? hexToRgbString(a2) : null);
+    const a3rgb = parseRgbValue(grab("--a3-rgb")) || (a3 ? hexToRgbString(a3) : null);
+    return {
+      "--a1": a1,
+      "--a2": a2 || a1,
+      "--a3": a3 || a2 || a1,
+      "--a1-rgb": a1rgb,
+      "--a2-rgb": a2rgb || a1rgb,
+      "--a3-rgb": a3rgb || a2rgb || a1rgb
+    };
+  };
+
+  const setPreviewUi = (active) => {
+    if (active) {
+      document.body?.setAttribute("data-preview-theme", "1");
+      previewBtn?.classList.add("hidden");
+      resetBtn?.classList.remove("hidden");
+      previewBadge?.classList.remove("hidden");
+    } else {
+      document.body?.removeAttribute("data-preview-theme");
+      previewBtn?.classList.remove("hidden");
+      resetBtn?.classList.add("hidden");
+      previewBadge?.classList.add("hidden");
+    }
+  };
+
+  const resetPreview = () => {
+    if (!previewActive) return;
+    restoreThemeVars(previewSnapshot, previewVars);
+    previewSnapshot = null;
+    previewActive = false;
+    setPreviewUi(false);
+  };
+
+  const applyPreview = () => {
+    const tokenText = tokenCssEl?.textContent || "";
+    const vars = parseTokenCssVars(tokenText);
+    if (!vars) return;
+    if (!previewActive) {
+      previewSnapshot = snapshotThemeVars(previewVars);
+    }
+    applyThemeVars(vars);
+    previewActive = true;
+    setPreviewUi(true);
+  };
+
+  previewBtn?.addEventListener("click", applyPreview);
+  resetBtn?.addEventListener("click", resetPreview);
+
+  document.addEventListener("tc-world-changed", () => {
+    if (previewActive) resetPreview();
+  });
+
+  if (typeof MutationObserver !== "undefined" && document.documentElement) {
+    const observer = new MutationObserver((mutations) => {
+      if (!previewActive) return;
+      const changed = mutations.some((m) => m.type === "attributes" && m.attributeName === "data-world");
+      if (changed) resetPreview();
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-world"] });
+  }
+
   const setActiveTab = (id) => {
     tabState.active = id;
     tabs.forEach((btn) => {
@@ -93,6 +801,40 @@
     btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
   });
   setActiveTab(tabState.active);
+  syncHeroAurora();
+  renderAuroraTokenPanel({});
+
+  const chipThreadMap = document.getElementById("qaChipThreadMap");
+  const chipDeltaE = document.getElementById("qaChipDeltaE");
+  const chipBrandFilter = document.getElementById("qaChipBrandFilter");
+  const chipHint = document.getElementById("qaChipHint");
+
+  const showChipHint = (text) => {
+    if (!chipHint) return;
+    chipHint.textContent = text;
+    chipHint.classList.remove("hidden");
+    window.clearTimeout(showChipHint._t);
+    showChipHint._t = window.setTimeout(() => {
+      chipHint.classList.add("hidden");
+    }, 1400);
+  };
+
+  chipThreadMap?.addEventListener("click", () => {
+    setActiveTab("thread");
+    const input = document.getElementById("qaThreadHex");
+    input?.focus();
+    input?.select?.();
+  });
+
+  chipDeltaE?.addEventListener("click", () => {
+    chipDeltaE.classList.toggle("is-active");
+    showChipHint("ΔE sẽ hiển thị khi có dữ liệu so khớp.");
+  });
+
+  chipBrandFilter?.addEventListener("click", () => {
+    chipBrandFilter.classList.toggle("is-active");
+    showChipHint("Bộ lọc hãng sẽ ưu tiên trong danh sách tra mã.");
+  });
 
   const swatchHtml = (hex) =>
     `<span class="inline-flex w-7 h-7 rounded-lg border border-[rgba(0,0,0,.12)]" style="background:${hex};"></span>`;
@@ -138,6 +880,7 @@
   const handlePasteApply = () => {
     pasteColors = parseHexList(pasteInput?.value || "");
     renderPasteSwatches();
+    updateAuroraPreview({ mode: "paste", hexes: pasteColors });
     pasteCmykOut.textContent = "";
     pasteGradientOut.style.background = "";
     pasteExportOut.textContent = "";
@@ -232,6 +975,9 @@
     threadList.innerHTML = "<li class=\"tc-muted\">Đang tra...</li>";
     try {
       const results = await findNearestThreads(hex, 5);
+      const hexes = pickTopHexes([hex, ...results.map((item) => item.hex)], 3);
+      const suggestions = buildThreadSuggestions(results);
+      updateAuroraPreview({ mode: "thread", hexes, suggestions });
       threadList.innerHTML = results.map((item) => `
         <li class="flex items-center gap-2">
           ${swatchHtml(item.hex)}
@@ -288,8 +1034,14 @@
       const file = imageInput?.files?.[0];
       if (!file) return;
       const colors = await extractPalette(file);
+      updateAuroraPreview({ mode: "image", hexes: colors });
       imageSwatches.innerHTML = colors.map(swatchHtml).join("");
       const results = await Promise.all(colors.map((hex) => findNearestThreads(hex, 3)));
+      const flatResults = results.flat();
+      const imageSuggestions = buildThreadSuggestions(flatResults);
+      if (imageSuggestions.length) {
+        updateAuroraPreview({ mode: "image", hexes: colors, suggestions: imageSuggestions });
+      }
       imageThreads.innerHTML = results.map((list, idx) => {
         const hex = colors[idx];
         const items = list.map((item) =>
@@ -304,6 +1056,8 @@
       setOpenLink(imageOpen, `./worlds/threadcolor.html#${buildHash(colors, "c")}`);
     });
   };
+
+  document.addEventListener("tc-world-changed", () => syncHeroAurora());
 })();
 
 

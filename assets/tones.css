@@ -1,95 +1,176 @@
-:root{
+:root {
   --z-topbar: 2000;
   --z-topbar-menu: 4000;
   --bg: #f7f2ea;
   --text: #1f1a14;
   --muted: #6a5b4a;
   --glass: rgba(255, 255, 255, 0.74);
-  --stroke: rgba(31, 26, 20, 0.10);
+  --stroke: rgba(31, 26, 20, 0.1);
   --a1: #c47a45;
   --a2: #e0a86c;
   --a3: #8e6a4c;
+  --a1-rgb: 196 122 69;
+  --a2-rgb: 224 168 108;
+  --a3-rgb: 142 106 76;
+  --bgfx:
+    radial-gradient(120% 95% at 8% -12%, rgba(196, 122, 69, 0.3) 0%, rgba(196, 122, 69, 0) 62%),
+    radial-gradient(100% 90% at 100% 0%, rgba(224, 168, 108, 0.28) 0%, rgba(224, 168, 108, 0) 60%),
+    radial-gradient(95% 85% at 52% 104%, rgba(142, 106, 76, 0.2) 0%, rgba(142, 106, 76, 0) 64%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.12) 55%, rgba(196, 122, 69, 0.12));
 }
-.tc-brand{
+
+.tc-brand {
   font-weight: 700;
 }
-html[data-world="nebula"]{
-  --bg:#060716;
-  --text:#f0f3ff;
-  --muted:#b7bfe3;
-  --glass:rgba(12,16,38,0.72);
-  --stroke:rgba(255,255,255,0.14);
-  --a1:#7dd3fc;
-  --a2:#8b7bff;
-  --a3:#f5a0c5;
+
+html[data-world="nebula"] {
+  --bg: #060716;
+  --text: #f0f3ff;
+  --muted: #b7bfe3;
+  --glass: rgba(12, 16, 38, 0.72);
+  --stroke: rgba(255, 255, 255, 0.14);
+  --a1: #7dd3fc;
+  --a2: #8b7bff;
+  --a3: #f5a0c5;
+  --a1-rgb: 125 211 252;
+  --a2-rgb: 139 123 255;
+  --a3-rgb: 245 160 197;
+  --bgfx:
+    radial-gradient(118% 95% at 8% -10%, rgba(125, 211, 252, 0.34) 0%, rgba(125, 211, 252, 0) 62%),
+    radial-gradient(110% 96% at 104% 0%, rgba(139, 123, 255, 0.34) 0%, rgba(139, 123, 255, 0) 62%),
+    radial-gradient(95% 96% at 54% 105%, rgba(245, 160, 197, 0.22) 0%, rgba(245, 160, 197, 0) 66%),
+    linear-gradient(150deg, rgba(8, 11, 28, 0.76), rgba(8, 10, 24, 0.2) 52%, rgba(245, 160, 197, 0.14));
 }
-html[data-world="ocean"]{
-  --bg:#e7f7fb;
-  --text:#0b2f3b;
-  --muted:#4a7081;
-  --glass:rgba(255,255,255,0.78);
-  --stroke:rgba(11,47,59,0.12);
-  --a1:#1aa7c8;
-  --a2:#1f8fb6;
-  --a3:#58d2e0;
+
+html[data-world="ocean"] {
+  --bg: #e7f7fb;
+  --text: #0b2f3b;
+  --muted: #4a7081;
+  --glass: rgba(255, 255, 255, 0.78);
+  --stroke: rgba(11, 47, 59, 0.12);
+  --a1: #1aa7c8;
+  --a2: #1f8fb6;
+  --a3: #58d2e0;
+  --a1-rgb: 26 167 200;
+  --a2-rgb: 31 143 182;
+  --a3-rgb: 88 210 224;
+  --bgfx:
+    radial-gradient(110% 90% at 10% -12%, rgba(26, 167, 200, 0.3) 0%, rgba(26, 167, 200, 0) 60%),
+    radial-gradient(100% 95% at 104% -6%, rgba(31, 143, 182, 0.26) 0%, rgba(31, 143, 182, 0) 58%),
+    radial-gradient(96% 88% at 52% 104%, rgba(88, 210, 224, 0.2) 0%, rgba(88, 210, 224, 0) 66%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.08) 58%, rgba(26, 167, 200, 0.12));
 }
-html[data-world="ink"]{
-  --bg:#0b0d13;
-  --text:#f5f7fc;
-  --muted:#a3adbd;
-  --glass:rgba(16,18,26,0.78);
-  --stroke:rgba(255,255,255,0.12);
-  --a1:#d7dde6;
-  --a2:#8b97ab;
-  --a3:#5b6678;
+
+html[data-world="ink"] {
+  --bg: #0b0d13;
+  --text: #f5f7fc;
+  --muted: #a3adbd;
+  --glass: rgba(16, 18, 26, 0.78);
+  --stroke: rgba(255, 255, 255, 0.12);
+  --a1: #d7dde6;
+  --a2: #8b97ab;
+  --a3: #5b6678;
+  --a1-rgb: 215 221 230;
+  --a2-rgb: 139 151 171;
+  --a3-rgb: 91 102 120;
+  --bgfx:
+    radial-gradient(112% 96% at 8% -8%, rgba(215, 221, 230, 0.24) 0%, rgba(215, 221, 230, 0) 64%),
+    radial-gradient(102% 92% at 102% 0%, rgba(139, 151, 171, 0.24) 0%, rgba(139, 151, 171, 0) 60%),
+    radial-gradient(98% 92% at 50% 108%, rgba(91, 102, 120, 0.24) 0%, rgba(91, 102, 120, 0) 66%),
+    linear-gradient(145deg, rgba(14, 17, 26, 0.82), rgba(16, 19, 28, 0.24) 55%, rgba(215, 221, 230, 0.1));
 }
-html[data-world="origami"]{
-  --bg:#f6f2e9;
-  --text:#221b14;
-  --muted:#6a5b4a;
-  --glass:rgba(255,255,255,0.74);
-  --stroke:rgba(34,27,20,0.10);
-  --a1:#c07a45;
-  --a2:#dda26a;
-  --a3:#906a4b;
+
+html[data-world="origami"] {
+  --bg: #f6f2e9;
+  --text: #221b14;
+  --muted: #6a5b4a;
+  --glass: rgba(255, 255, 255, 0.74);
+  --stroke: rgba(34, 27, 20, 0.1);
+  --a1: #c07a45;
+  --a2: #dda26a;
+  --a3: #906a4b;
+  --a1-rgb: 192 122 69;
+  --a2-rgb: 221 162 106;
+  --a3-rgb: 144 106 75;
+  --bgfx:
+    radial-gradient(120% 95% at 8% -12%, rgba(192, 122, 69, 0.32) 0%, rgba(192, 122, 69, 0) 62%),
+    radial-gradient(100% 90% at 100% 0%, rgba(221, 162, 106, 0.26) 0%, rgba(221, 162, 106, 0) 60%),
+    radial-gradient(95% 86% at 50% 104%, rgba(144, 106, 75, 0.2) 0%, rgba(144, 106, 75, 0) 64%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.12) 58%, rgba(192, 122, 69, 0.12));
 }
-html[data-world="arcade"]{
-  --bg:#070512;
-  --text:#fff7ff;
-  --muted:#d7c6f0;
-  --glass:rgba(14,12,30,0.80);
-  --stroke:rgba(255,255,255,0.16);
-  --a1:#ff5ec9;
-  --a2:#7a5cff;
-  --a3:#32e6b1;
+
+html[data-world="arcade"] {
+  --bg: #070512;
+  --text: #fff7ff;
+  --muted: #d7c6f0;
+  --glass: rgba(14, 12, 30, 0.8);
+  --stroke: rgba(255, 255, 255, 0.16);
+  --a1: #ff5ec9;
+  --a2: #7a5cff;
+  --a3: #32e6b1;
+  --a1-rgb: 255 94 201;
+  --a2-rgb: 122 92 255;
+  --a3-rgb: 50 230 177;
+  --bgfx:
+    radial-gradient(110% 95% at 8% -10%, rgba(255, 94, 201, 0.34) 0%, rgba(255, 94, 201, 0) 60%),
+    radial-gradient(112% 98% at 104% -2%, rgba(122, 92, 255, 0.34) 0%, rgba(122, 92, 255, 0) 62%),
+    radial-gradient(92% 94% at 54% 108%, rgba(50, 230, 177, 0.24) 0%, rgba(50, 230, 177, 0) 66%),
+    linear-gradient(148deg, rgba(12, 9, 30, 0.84), rgba(15, 12, 36, 0.2) 56%, rgba(50, 230, 177, 0.14));
 }
-html[data-world="dunes"]{
-  --bg:#f8f1e2;
-  --text:#3a2c1a;
-  --muted:#7b6347;
-  --glass:rgba(255,255,255,0.74);
-  --stroke:rgba(58,44,26,0.12);
-  --a1:#d39a50;
-  --a2:#e4b575;
-  --a3:#b47238;
+
+html[data-world="dunes"] {
+  --bg: #f8f1e2;
+  --text: #3a2c1a;
+  --muted: #7b6347;
+  --glass: rgba(255, 255, 255, 0.74);
+  --stroke: rgba(58, 44, 26, 0.12);
+  --a1: #d39a50;
+  --a2: #e4b575;
+  --a3: #b47238;
+  --a1-rgb: 211 154 80;
+  --a2-rgb: 228 181 117;
+  --a3-rgb: 180 114 56;
+  --bgfx:
+    radial-gradient(118% 88% at 10% -10%, rgba(211, 154, 80, 0.32) 0%, rgba(211, 154, 80, 0) 60%),
+    radial-gradient(96% 90% at 102% -2%, rgba(228, 181, 117, 0.26) 0%, rgba(228, 181, 117, 0) 58%),
+    radial-gradient(96% 88% at 52% 106%, rgba(180, 114, 56, 0.2) 0%, rgba(180, 114, 56, 0) 66%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.1) 56%, rgba(211, 154, 80, 0.12));
 }
-html[data-world="chrome"]{
-  --bg:#f2f5f8;
-  --text:#1b232b;
-  --muted:#5c6a78;
-  --glass:rgba(255,255,255,0.74);
-  --stroke:rgba(27,35,43,0.12);
-  --a1:#4b8cff;
-  --a2:#9aa7ba;
-  --a3:#121927;
+
+html[data-world="chrome"] {
+  --bg: #f2f5f8;
+  --text: #1b232b;
+  --muted: #5c6a78;
+  --glass: rgba(255, 255, 255, 0.74);
+  --stroke: rgba(27, 35, 43, 0.12);
+  --a1: #4b8cff;
+  --a2: #9aa7ba;
+  --a3: #121927;
+  --a1-rgb: 75 140 255;
+  --a2-rgb: 154 167 186;
+  --a3-rgb: 18 25 39;
+  --bgfx:
+    radial-gradient(114% 92% at 8% -8%, rgba(75, 140, 255, 0.28) 0%, rgba(75, 140, 255, 0) 60%),
+    radial-gradient(102% 86% at 100% -4%, rgba(154, 167, 186, 0.24) 0%, rgba(154, 167, 186, 0) 58%),
+    radial-gradient(98% 100% at 50% 108%, rgba(18, 25, 39, 0.18) 0%, rgba(18, 25, 39, 0) 66%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.12) 54%, rgba(75, 140, 255, 0.1));
 }
-html[data-world="circuit"]{
-  --bg:#05130c;
-  --text:#eafff3;
-  --muted:#9ccfb5;
-  --glass:rgba(8,22,15,0.76);
-  --stroke:rgba(255,255,255,0.12);
-  --a1:#28c76f;
-  --a2:#1faa57;
-  --a3:#85f0b1;
+
+html[data-world="circuit"] {
+  --bg: #05130c;
+  --text: #eafff3;
+  --muted: #9ccfb5;
+  --glass: rgba(8, 22, 15, 0.76);
+  --stroke: rgba(255, 255, 255, 0.12);
+  --a1: #28c76f;
+  --a2: #1faa57;
+  --a3: #85f0b1;
+  --a1-rgb: 40 199 111;
+  --a2-rgb: 31 170 87;
+  --a3-rgb: 133 240 177;
+  --bgfx:
+    radial-gradient(112% 90% at 10% -8%, rgba(40, 199, 111, 0.3) 0%, rgba(40, 199, 111, 0) 60%),
+    radial-gradient(110% 92% at 104% -6%, rgba(31, 170, 87, 0.28) 0%, rgba(31, 170, 87, 0) 62%),
+    radial-gradient(96% 100% at 52% 108%, rgba(133, 240, 177, 0.2) 0%, rgba(133, 240, 177, 0) 66%),
+    linear-gradient(145deg, rgba(6, 18, 12, 0.84), rgba(8, 22, 15, 0.18) 56%, rgba(133, 240, 177, 0.14));
 }

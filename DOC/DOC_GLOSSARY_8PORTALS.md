@@ -1,4 +1,4 @@
-# Từ điển thuật ngữ 8Portals (Việt hoá 100%)
+﻿# Từ điển thuật ngữ 8Portals (Việt hoá 100%)
 
 > Mục tiêu: thống nhất ngôn ngữ chung trong repo 8Portals để trao đổi nhanh – rõ – “sang & sạch”.
 >
@@ -31,6 +31,8 @@
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
 | Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
+| Custom Tone (sắc thái tuỳ chỉnh do người dùng tạo) | Sắc thái tuỳ chỉnh | Sắc thái do người dùng tự lưu lại từ công cụ, có thể áp dụng/preview lại nhanh. |
+| Preset (thiết lập sẵn) | Preset | Gói thiết lập sẵn giúp chọn nhanh một cấu hình mà không phải chỉnh tay lại. |
 | SVG chevron | Mũi tên SVG | Biểu tượng mũi tên dựng bằng SVG để tránh lỗi ký tự hiển thị trên nhiều môi trường. |
 | component | Thành phần giao diện | Khối UI tái sử dụng, có thể render lại ở nhiều trang nhưng giữ cùng cấu trúc. |
 | basePath | Tiền tố đường dẫn | Chuỗi tiền tố để tạo đường dẫn tương đối đúng giữa trang gốc và thư mục con. |
@@ -41,20 +43,23 @@
 | Dải tròn (radial gradient) | Dải tròn | Dải chuyển màu loang tròn từ tâm ra ngoài theo bán kính. |
 | Dải nón (conic gradient) | Dải nón | Dải chuyển màu theo vòng xoay quanh tâm, giống mặt đồng hồ. |
 | Nội suy (interpolation) | Nội suy | Cách pha trộn màu giữa các điểm neo để tạo chuyển màu mượt. |
-| Tỷ lệ tương phản (contrast ratio) | Tỷ lệ tương phản | Mức chênh lệch sáng tối giữa chữ và nền; càng cao càng dễ đọc. |
+| Hue (tông màu: góc màu trên vòng màu 0–360) | Hue | Tông màu biểu diễn góc trên vòng màu 0–360, dùng để nhóm và so sánh màu. |
+| Tỷ lệ tương phản (contrast ratio) | Tỷ lệ tương phản | Mức chênh lệch sáng tối giữa 2 màu (chữ/nền); càng cao càng dễ đọc. |
 | Quy tắc hài hoà màu (harmony rules) | Quy tắc hài hoà màu | Nguyên tắc phối màu trên vòng màu để tạo cảm giác cân bằng, dễ chịu. |
+| Phối bù (complementary: phối lệch 180°) | Phối bù | Phối màu lệch 180° trên vòng màu để tạo tương phản mạnh. |
+| Phối tương tự (analogous: phối lệch ±30°) | Phối tương tự | Phối màu kề nhau trên vòng màu (±30°) để tạo cảm giác hài hoà. |
 | Sắc độ (tint/shade) | Sắc độ | Biến thể sáng hơn (tint) hoặc tối hơn (shade) của một màu gốc. |
 | Tiêu chuẩn WCAG | Tiêu chuẩn WCAG | Chuẩn khả năng tiếp cận web, có khuyến nghị về tương phản màu. |
 | Vai trò màu (color roles) | Vai trò màu | Cách phân vai màu trong palette: nền/bề mặt/chữ/primary/accent để dùng nhất quán. |
 | Chấm điểm (scoring) | Chấm điểm | Cách đánh giá điểm số để xếp hạng gợi ý palette theo tiêu chí. |
-| Thuật toán kinh nghiệm (heuristic) | Thuật toán kinh nghiệm | Thuật toán dựa trên quy tắc kinh nghiệm để đưa ra gợi ý nhanh, không cần AI. |
+| Thuật toán kinh nghiệm (heuristic) | Thuật toán kinh nghiệm | Phép suy đoán dựa trên quy tắc kinh nghiệm để phân loại gần đúng, không cần ML. |
 | Brief 1 dòng | Brief 1 dòng | Mô tả ngắn một câu về mục tiêu, cảm xúc và bối cảnh dùng màu. |
 | Kho tri thức | Kho tri thức | Bộ dữ liệu quy tắc/keywords dùng để suy luận nhanh theo mục tiêu và cảm xúc. |
 | Chốt chặn chất lượng | Chốt chặn chất lượng | Bước kiểm tra tối thiểu (ví dụ tương phản) để bảo đảm đầu ra đạt chuẩn. |
 | Sửa tự động | Sửa tự động | Cơ chế tự điều chỉnh màu để đạt tiêu chí tối thiểu khi đầu vào chưa đạt. |
 | Mẫu gợi ý | Mẫu gợi ý | Bộ câu brief mẫu để chọn nhanh theo ngành hoặc mục tiêu. |
 | Ngăn kéo dưới | Ngăn kéo dưới | Hộp trượt từ cạnh dưới màn hình để chọn nội dung trên mobile. |
-| Độ chói tương đối (relative luminance) | Độ chói tương đối | Thước đo độ sáng chuẩn hoá của màu để tính tương phản theo WCAG. |
+| Độ chói tương đối (relative luminance) | Độ chói tương đối | Thước đo độ sáng chuẩn hoá của màu để phân loại và tính tương phản theo WCAG. |
 | Kho HEX | Kho HEX | Kho tra cứu tập trung cho mọi mã màu dạng #RRGGBB trong hệ sinh thái. |
 | Hồ sơ màu | Hồ sơ màu | Màn hiển thị chi tiết một màu: mã, chuyển đổi, gợi ý sử dụng và hành động liên quan. |
 | Hex swatch | Hex swatch | Một mẫu màu dạng ô màu dùng để chọn/copy nhanh mã #RRGGBB. |
@@ -101,6 +106,7 @@
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
 | Single Source of Truth | Nguồn chuẩn duy nhất | Nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| LocalStorage (bộ nhớ cục bộ của trình duyệt) | LocalStorage | Bộ nhớ lưu cục bộ theo domain, giữ dữ liệu ngay cả khi tải lại trang. |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
 | Schema (khung dữ liệu chuẩn) | Schema (khung dữ liệu chuẩn) | Khung định nghĩa cấu trúc dữ liệu chuẩn để kiểm tra/đồng nhất. |
@@ -261,6 +267,7 @@
 | Dải chuyển màu (gradient: chuyển màu liên tục) | Dải chuyển màu | Dải màu chuyển liên tục giữa nhiều màu theo một hướng. |
 | Điểm neo màu (color stop: điểm màu trên dải) | Điểm neo màu | Vị trí màu cụ thể trong gradient, xác định độ chuyển và tỉ lệ. |
 | Token màu (biến màu dùng lại cho UI/thiết kế) | Token màu | Biến màu tái sử dụng trong thiết kế hoặc CSS, giúp thống nhất hệ màu. |
+| Token CSS (biến CSS dùng lại cho màu/thiết kế) | Token CSS | Biến CSS đóng gói màu/thiết kế để copy, dùng lại nhất quán trên nhiều màn hình. |
 | Remix (tạo biến thể từ mẫu có sẵn) | Tạo biến thể | Tạo biến thể màu mới bằng cách chỉnh sửa từ một dải gốc. |
 | Palette Link (chia sẻ dải màu bằng URL) | Palette Link | Đường link chứa thông tin dải màu để chia sẻ hoặc tái sử dụng nhanh. |
 | Bảng phối màu (palette: bộ phối màu gồm nhiều màu rời) | Bảng phối màu | Bộ phối màu gồm nhiều màu rời dùng để thiết kế nhất quán. |
@@ -370,7 +377,7 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Audit log (nhật ký truy vết) | Audit log | Ghi lại GENERATE/VIEW, ai làm, lúc nào. |
 | Redaction (che dữ liệu nhạy cảm) | Redaction | Che thông tin nhạy cảm trước khi lưu/hiển thị. |
 | DecisionPack (Gói quyết định) | DecisionPack | Bản ghi gói quyết định nội bộ theo ngày. |
-| Snapshot (bản chụp) | Snapshot | Bản chụp trạng thái để đối chiếu/ra quyết định. |
+| Snapshot (bản chụp) | Snapshot | Bản chụp trạng thái để đối chiếu/ra quyết định hoặc lưu tạm giá trị để hoàn tác nhanh. |
 | Idempotency (chống chạy lặp) | Idempotency | Chạy lại không tạo trùng, giữ 1 “latest”. |
 ---
 
@@ -465,7 +472,8 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | kebab menu | Menu ba chấm (kebab) | Menu dạng dấu ba chấm dùng để gom thao tác phụ gọn hơn. |
-| toast | Thông báo nổi nhanh | Thông báo ngắn xuất hiện tạm thời để phản hồi thao tác. |
+| Clipboard API (API sao chép vào bộ nhớ tạm) | Clipboard API | API trình duyệt cho phép ghi/đọc văn bản vào bộ nhớ tạm (clipboard). |
+| Toast (thông báo nhỏ tự biến mất) | Toast | Thông báo ngắn xuất hiện tạm thời rồi tự ẩn để phản hồi thao tác. |
 | modal | Hộp thoại nổi | Hộp thoại bật lên để nhập thông tin hoặc xác nhận thao tác. |
 | scroll-into-view | Tự cuộn tới phần liên quan | Hành vi tự cuộn trang để đưa phần nội dung cần xem vào tầm nhìn. |
 | focus-guard | Chặn focus | Cơ chế kiểm soát focus để ngăn trình quản lý mật khẩu bật gợi ý không mong muốn. |
@@ -475,6 +483,21 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | offscreen trap inputs | Ô bẫy ngoài màn hình | Trường nhập ẩn ngoài màn hình để chặn autofill/password manager tự điền vào ô chính. |
 | TOC | Mục lục | Danh sách câu hỏi/mục nội dung giúp nhảy nhanh trong modal. |
 | Focus | Focus | Đưa con trỏ nhập liệu vào đúng ô để người dùng thao tác nhanh. |
+| Live binding (liên kết sống: UI tự cập nhật theo dữ liệu) | Live binding | Cơ chế UI tự cập nhật theo dữ liệu mới mà không cần tải lại hay bấm làm mới. |
+| Preview theme (xem trước sắc thái: áp dụng tạm thời không lưu) | Preview theme | Cơ chế áp dụng tạm thời bộ màu lên UI để xem trước, không lưu vĩnh viễn. |
+| MutationObserver (bộ quan sát thay đổi DOM: theo dõi đổi thuộc tính) | MutationObserver | API theo dõi thay đổi DOM (thuộc tính/nút) để phản ứng khi trạng thái giao diện đổi. |
+| Phần đuôi chữ (descender) | Phần đuôi chữ | Phần nét của ký tự kéo xuống dưới baseline (như chữ g, y, p), cần đủ line-height để không bị cắt. |
+| Scope theo data-page (khoanh vùng CSS theo trang) | Scope theo data-page | Cách giới hạn CSS theo từng trang bằng thuộc tính `data-page` để tránh ảnh hưởng toàn site. |
+| Nền đa tầng (multi-layer background) | Nền đa tầng | Nền gồm nhiều lớp gradient chồng nhau để tạo chiều sâu thị giác. |
+| Chữ Neon (neon text) | Chữ Neon | Chữ dùng gradient và glow nhẹ để nổi bật nhưng vẫn giữ độ đọc rõ. |
+| Mini card (thẻ thông tin nhỏ) | Mini card | Thẻ thông tin nhỏ hiển thị gợi ý ngắn, giúp quét nhanh nội dung trong một cụm lớn. |
+| Spotlight (ánh sáng bám con trỏ khi hover) | Spotlight | Hiệu ứng vùng sáng bám điểm hover nhằm nhấn mạnh phần tử đang tương tác. |
+| user-data-dir (thư mục hồ sơ Chrome để lưu cache/history) | user-data-dir | Tham số dòng lệnh Chrome chỉ định thư mục hồ sơ riêng để lưu cache, cookie và lịch sử khi chạy tự động. |
+| dvh (đơn vị chiều cao viewport động) | dvh | Đơn vị chiều cao viewport động, phản ánh vùng hiển thị thực tế khi thanh trình duyệt co/giãn. |
+| overscroll-behavior (hành vi cuộn vượt) | overscroll-behavior | Thuộc tính CSS kiểm soát cuộn vượt và chặn lan cuộn sang vùng cha. |
+| Khối thu gọn (vùng mở/đóng để tiết kiệm chiều cao) | Khối thu gọn | Khối nội dung mặc định đóng và chỉ mở khi cần, giúp giao diện gọn hơn mà vẫn giữ đủ chức năng. |
+| Cuộn nội bộ (scroll bên trong card) | Cuộn nội bộ | Cơ chế giới hạn chiều cao phần tử và cho phép cuộn trong chính khối đó thay vì cuộn toàn trang. |
+| Scroll-margin-top (khoảng chừa khi cuộn đến mục) | Scroll-margin-top | Thuộc tính CSS đặt khoảng chừa phía trên khi cuộn tới một phần tử, giúp tránh bị topbar che. |
 
 
 ---
@@ -490,3 +513,4 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Neo cuộn (anchor) | Neo cuộn | Liên kết cuộn đến một vị trí trong trang. |
 | Hộp thoại | Hộp thoại | Vùng nổi hiển thị nội dung hoặc câu hỏi cần xác nhận. |
 | Liên kết pháp lý | Liên kết pháp lý | Các liên kết điều khoản, quyền riêng tư, cookie và thông tin tuân thủ. |
+

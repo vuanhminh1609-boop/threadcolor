@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const mount = document.getElementById("tcTopbarMount");
   if (!mount) return;
 
@@ -6,6 +6,32 @@
   const logoSvg = `${basePath}assets/spacecolors-mark.svg`;
   const logoPng1x = `${basePath}assets/spacecolors-mark-128.png`;
   const logoPng2x = `${basePath}assets/spacecolors-mark-256.png`;
+
+  const tones = [
+    { key: "nebula", label: "Tinh vân Neon", a1: "#7DD3FC", a2: "#8B7BFF", a3: "#F5A0C5" },
+    { key: "ocean", label: "Đại dương Ngọc", a1: "#1AA7C8", a2: "#1F8FB6", a3: "#58D2E0" },
+    { key: "ink", label: "Mực tàu Tối giản", a1: "#D7DDE6", a2: "#8B97AB", a3: "#5B6678" },
+    { key: "origami", label: "Origami Kem", a1: "#C07A45", a2: "#DDA26A", a3: "#906A4B" },
+    { key: "arcade", label: "Arcade Synthwave", a1: "#FF5EC9", a2: "#7A5CFF", a3: "#32E6B1" },
+    { key: "dunes", label: "Đồi cát Hoàng hôn", a1: "#D39A50", a2: "#E4B575", a3: "#B47238" },
+    { key: "chrome", label: "Chrome Sang", a1: "#4B8CFF", a2: "#9AA7BA", a3: "#121927" },
+    { key: "circuit", label: "Pha lê Hologram", a1: "#28C76F", a2: "#1FAA57", a3: "#85F0B1" }
+  ];
+
+  const toneMenu = tones.map((tone) => `
+    <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="${tone.key}" role="menuitem">${tone.label}</button>
+  `).join("");
+
+  const defaultTone = tones.find((tone) => tone.key === "origami") || tones[0];
+
+  if (window.tcI18n && typeof window.tcI18n.extendLocale === "function") {
+    const worldPatch = tones.reduce((acc, tone) => {
+      acc[tone.key] = { ...(acc[tone.key] || {}), label: tone.label };
+      return acc;
+    }, {});
+    window.tcI18n.extendLocale("vi", { worlds: worldPatch });
+    window.tcI18n.extendLocale("en", { worlds: worldPatch });
+  }
 
   mount.innerHTML = `
     <header class="tc-topbar relative">
@@ -31,7 +57,7 @@
             </span>
           </a>
         </div>
-        <div class="order-3 w-full flex items-center justify-center gap-3 sm:order-none sm:w-auto sm:flex-1 md:justify-self-center tc-topbar__center">
+        <div class="order-3 w-full flex flex-wrap items-center justify-center gap-3 sm:order-none sm:w-auto sm:flex-1 sm:flex-nowrap md:justify-self-center tc-topbar__center">
           <div class="relative" id="portalSwitcher">
             <button id="portalBtn"
               class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[210px] justify-between"
@@ -51,25 +77,18 @@
           </div>
           <div class="relative" id="worldSwitcher">
             <button id="worldBtn"
-              class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[150px] justify-between"
+              class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold w-[170px] justify-between"
               aria-expanded="false" aria-haspopup="menu" aria-controls="worldMenu" data-i18n-attr="aria-label:topbar.tones.label">
-              <span class="flex items-center gap-2">
+              <span class="flex items-center gap-2 min-w-0">
                 <span class="tc-dot" aria-hidden="true"></span>
-                <span id="worldLabel" data-prefix="Sắc thái: ">Sắc thái: Origami</span>
+                <span id="worldLabel" class="truncate" data-prefix="">${defaultTone.label}</span>
               </span>
               <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true" style="opacity:.7">
                 <path d="M5.25 7.5l4.75 5 4.75-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="nebula" role="menuitem">Tinh vân</button>
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ocean" role="menuitem">Đại dương</button>
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="ink" role="menuitem">Mực tàu</button>
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="origami" role="menuitem">Origami</button>
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="arcade" role="menuitem">Arcade</button>
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="dunes" role="menuitem">Đồi cát</button>
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="chrome" role="menuitem">Chrome</button>
-              <button class="tc-world-item w-full text-left px-3 py-2 rounded-md" data-world="circuit" role="menuitem">Mạch điện</button>
+            <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+              ${toneMenu}
             </div>
           </div>
         </div>
@@ -80,5 +99,3 @@
     </header>
   `;
 })();
-
-
