@@ -18,6 +18,15 @@ const state = {
   samples: []
 };
 
+let stopDragIndex = null;
+let stopDragPointerId = null;
+let stopDragMoved = false;
+let stopSuppressClick = false;
+let stopPopoverIndex = null;
+let stopPopoverEl = null;
+let sampleDetailOpen = false;
+let sampleDetailBodyOverflow = "";
+
 const el = {
   preview: document.getElementById("gradientPreview"),
   angleRange: document.getElementById("gradientAngle"),
@@ -26,9 +35,11 @@ const el = {
   resetAngle: document.getElementById("gradientResetAngle"),
   typeSelect: document.getElementById("gradientType"),
   stopsWrap: document.getElementById("gradientStops"),
+  stopBar: document.getElementById("gradientStopBar"),
   addStop: document.getElementById("gradientAdd"),
   randomStop: document.getElementById("gradientRandom"),
   exportBtn: document.getElementById("gradientExport"),
+  copyTokenBtn: document.getElementById("gradientCopyToken"),
   toPalette: document.getElementById("gradientToPalette"),
   samplesWrap: document.getElementById("gradientSamples"),
   saveLibrary: document.getElementById("gradientSaveLibrary"),
@@ -37,7 +48,12 @@ const el = {
   exportSvg: document.getElementById("gradientExportSvg"),
   exportToken: document.getElementById("gradientExportToken"),
   importInput: document.getElementById("gradientImportInput"),
-  importBtn: document.getElementById("gradientImportBtn")
+  importBtn: document.getElementById("gradientImportBtn"),
+  exportMenu: document.getElementById("gradientExportMenu"),
+  sampleDetail: document.getElementById("gradientSampleDetail"),
+  sampleDetailBody: document.getElementById("gradientSampleDetailBody"),
+  sampleDetailTitle: document.getElementById("gradientSampleDetailTitle"),
+  sampleDetailSubtitle: document.getElementById("gradientSampleDetailSubtitle")
 };
 
 function normalizeHex(input) {
@@ -71,6 +87,22 @@ function hexToRgb(hex) {
   };
 }
 
+function rgbToHex(r, g, b) {
+  const toHex = (value) => clampNumber(Math.round(value), 0, 255).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function mixHex(hexA, hexB, ratio) {
+  const left = hexToRgb(hexA);
+  const right = hexToRgb(hexB);
+  if (!left || !right) return hexA;
+  const t = clampNumber(ratio, 0, 1);
+  const r = left.r + (right.r - left.r) * t;
+  const g = left.g + (right.g - left.g) * t;
+  const b = left.b + (right.b - left.b) * t;
+  return rgbToHex(r, g, b);
+}
+
 function migrateStops(rawStops) {
   if (!Array.isArray(rawStops)) return [];
   const cleaned = rawStops
@@ -102,7 +134,7 @@ function migrateStops(rawStops) {
 }
 
 function buildGradientStops(stops) {
-  const list = migrateStops(stops);
+  const list = migrateStops(stops).slice().sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
   if (!list.length) return "#000 0%";
   if (list.length === 1) return `${list[0].hex} 0%`;
   return list
@@ -141,12 +173,20 @@ function exportText() {
   return `/* Dải chuyển màu */\n${gradientCss()}\n\nHex: ${hexList}\n\n:root {\n${tokensFor(state.stops)}\n}\n`;
 }
 
-function exportTokenString() {
-  return gradientCss();
+function exportCssProperty(stops = state.stops) {
+  return `background: ${gradientCss(stops)};`;
 }
 
-function exportSvg() {
-  const stops = migrateStops(state.stops);
+function exportTokenBlock(stops = state.stops) {
+  return `:root {\n${tokensFor(stops)}\n}\n`;
+}
+
+function exportTokenString(stops = state.stops) {
+  return gradientCss(stops);
+}
+
+function exportSvg(stopsInput = state.stops) {
+  const stops = migrateStops(stopsInput).slice().sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
   if (!stops.length) return "";
   const stopMarkup = stops
     .map((stop) => {
@@ -310,14 +350,14 @@ function getCurrentProject() {
   }
 }
 
-function buildGradientAsset() {
+function buildGradientAsset(stopsInput = state.stops) {
   const now = new Date().toISOString();
   return {
     id: `asset_${Date.now()}`,
     type: "gradient",
     name: "Dải chuyển màu nhanh",
     tags: ["gradient"],
-    payload: { gradientParams: { stops: migrateStops(state.stops), angle: state.angle, type: state.type } },
+    payload: { gradientParams: { stops: migrateStops(stopsInput), angle: state.angle, type: state.type } },
     createdAt: now,
     updatedAt: now,
     sourceWorld: HANDOFF_FROM,
@@ -395,9 +435,246 @@ function renderPreview() {
   if (el.preview) {
     el.preview.style.background = gradientCss();
   }
+  if (el.stopBar) {
+    el.stopBar.style.background = gradientCss();
+  }
   if (el.angleValue) {
     el.angleValue.textContent = `${state.angle}°`;
   }
+}
+
+function getStopBarPercent(clientX) {
+  if (!el.stopBar) return 0;
+  const rect = el.stopBar.getBoundingClientRect();
+  if (!rect.width) return 0;
+  const raw = clampNumber(clientX - rect.left, 0, rect.width);
+  return (raw / rect.width) * 100;
+}
+
+function getStopHandle(index) {
+  if (!el.stopBar) return null;
+  return el.stopBar.querySelector(`.tc-stop-handle[data-index="${index}"]`);
+}
+
+function updateStopInputs(index, { posOnly = false } = {}) {
+  if (!el.stopsWrap) return;
+  const row = el.stopsWrap.querySelector(`[data-stop-row="${index}"]`);
+  if (!row) return;
+  const stop = state.stops[index];
+  if (!stop) return;
+  const posInput = row.querySelector("[data-stop-role='pos']");
+  if (posInput) posInput.value = String(Math.round(stop.pos ?? 0));
+  if (posOnly) return;
+  const colorInput = row.querySelector("[data-stop-role='color']");
+  const textInput = row.querySelector("[data-stop-role='hex']");
+  if (colorInput && colorInput.value !== stop.hex) colorInput.value = stop.hex;
+  if (textInput && textInput.value !== stop.hex) textInput.value = stop.hex;
+}
+
+function updateStopHandle(index) {
+  const stop = state.stops[index];
+  if (!stop) return;
+  const handle = getStopHandle(index);
+  if (!handle) return;
+  handle.style.left = `${clampNumber(stop.pos ?? 0, 0, 100)}%`;
+  handle.style.setProperty("--stop-color", stop.hex);
+  handle.setAttribute("aria-label", `Stop ${index + 1} tại ${Math.round(stop.pos ?? 0)}%`);
+}
+
+function ensureStopPopover() {
+  if (stopPopoverEl) return stopPopoverEl;
+  if (!el.stopBar) return null;
+  const popover = document.createElement("div");
+  popover.className = "tc-stop-popover";
+  popover.setAttribute("aria-hidden", "true");
+  popover.innerHTML = `
+    <div class="tc-stop-popover-row">
+      <input class="tc-color-input" type="color" data-stop-pop-color>
+      <input class="tc-input flex-1 text-sm" type="text" data-stop-pop-hex placeholder="#ffffff">
+    </div>
+    <div class="tc-stop-popover-row">
+      <span class="tc-muted text-xs" data-stop-pop-pos></span>
+      <button class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-stop-pop-remove>Xóa stop</button>
+    </div>
+  `;
+  popover.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (!event.target.closest("[data-stop-pop-remove]")) return;
+    if (stopPopoverIndex == null) return;
+    if (state.stops.length <= MIN_STOPS) {
+      showToast("Cần tối thiểu 2 stop.");
+      return;
+    }
+    state.stops.splice(stopPopoverIndex, 1);
+    closeStopPopover();
+    renderStops();
+    schedulePreview();
+  });
+  popover.addEventListener("input", (event) => {
+    if (stopPopoverIndex == null) return;
+    const target = event.target;
+    if (target.matches("[data-stop-pop-color]")) {
+      applyStopHex(stopPopoverIndex, target.value);
+      return;
+    }
+    if (target.matches("[data-stop-pop-hex]")) {
+      applyStopHex(stopPopoverIndex, target.value);
+    }
+  });
+  stopPopoverEl = popover;
+  return stopPopoverEl;
+}
+
+function syncStopPopover(index) {
+  if (!stopPopoverEl || stopPopoverIndex !== index) return;
+  const stop = state.stops[index];
+  if (!stop) return;
+  const colorInput = stopPopoverEl.querySelector("[data-stop-pop-color]");
+  const hexInput = stopPopoverEl.querySelector("[data-stop-pop-hex]");
+  const posLabel = stopPopoverEl.querySelector("[data-stop-pop-pos]");
+  const removeBtn = stopPopoverEl.querySelector("[data-stop-pop-remove]");
+  if (colorInput && colorInput.value !== stop.hex) colorInput.value = stop.hex;
+  if (hexInput && hexInput.value !== stop.hex) hexInput.value = stop.hex;
+  if (posLabel) posLabel.textContent = `Vị trí: ${Math.round(stop.pos ?? 0)}%`;
+  if (removeBtn) {
+    const locked = state.stops.length <= MIN_STOPS;
+    removeBtn.disabled = locked;
+    removeBtn.setAttribute("aria-disabled", locked ? "true" : "false");
+  }
+}
+
+function positionStopPopover(index) {
+  if (!el.stopBar || !stopPopoverEl || index == null) return;
+  const stop = state.stops[index];
+  if (!stop) return;
+  const rect = el.stopBar.getBoundingClientRect();
+  const rawLeft = (clampNumber(stop.pos ?? 0, 0, 100) / 100) * rect.width;
+  stopPopoverEl.style.left = `${rawLeft}px`;
+  window.requestAnimationFrame(() => {
+    if (!el.stopBar || !stopPopoverEl) return;
+    const popRect = stopPopoverEl.getBoundingClientRect();
+    const min = popRect.width / 2 + 8;
+    const max = rect.width - popRect.width / 2 - 8;
+    const clamped = clampNumber(rawLeft, min, max);
+    stopPopoverEl.style.left = `${clamped}px`;
+  });
+}
+
+function openStopPopover(index, handle) {
+  const popover = ensureStopPopover();
+  if (!popover) return;
+  if (stopPopoverIndex != null && stopPopoverIndex !== index) {
+    const prevHandle = getStopHandle(stopPopoverIndex);
+    if (prevHandle) prevHandle.classList.remove("is-active");
+  }
+  stopPopoverIndex = index;
+  popover.classList.add("is-open");
+  popover.setAttribute("aria-hidden", "false");
+  const targetHandle = handle || getStopHandle(index);
+  if (targetHandle) targetHandle.classList.add("is-active");
+  syncStopPopover(index);
+  positionStopPopover(index);
+}
+
+function closeStopPopover() {
+  if (!stopPopoverEl) return;
+  if (stopPopoverIndex != null) {
+    const handle = getStopHandle(stopPopoverIndex);
+    if (handle) handle.classList.remove("is-active");
+  }
+  stopPopoverIndex = null;
+  stopPopoverEl.classList.remove("is-open");
+  stopPopoverEl.setAttribute("aria-hidden", "true");
+}
+
+function toggleStopPopover(index, handle) {
+  if (stopPopoverIndex === index) {
+    closeStopPopover();
+    return;
+  }
+  openStopPopover(index, handle);
+}
+
+function applyStopHex(index, value) {
+  if (!state.stops[index]) return;
+  const normalized = normalizeHex(value);
+  if (!normalized) return;
+  state.stops[index].hex = normalized;
+  updateStopHandle(index);
+  updateStopInputs(index);
+  syncStopPopover(index);
+  schedulePreview();
+}
+
+function applyStopPos(index, value) {
+  if (!state.stops[index]) return;
+  const nextPos = clampNumber(value, 0, 100);
+  state.stops[index].pos = nextPos;
+  updateStopHandle(index);
+  updateStopInputs(index, { posOnly: true });
+  syncStopPopover(index);
+  if (stopPopoverIndex === index) {
+    positionStopPopover(index);
+  }
+  schedulePreview();
+}
+
+function pickStopColor(pos) {
+  const list = migrateStops(state.stops).slice().sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
+  if (!list.length) return randomHex();
+  const clamped = clampNumber(pos, 0, 100);
+  let left = list[0];
+  let right = list[list.length - 1];
+  for (let i = 0; i < list.length; i += 1) {
+    const stop = list[i];
+    if (stop.pos <= clamped) left = stop;
+    if (stop.pos >= clamped) {
+      right = stop;
+      break;
+    }
+  }
+  if (!left || !right) return list[0].hex;
+  if (left === right) return left.hex;
+  const span = right.pos - left.pos;
+  const ratio = span === 0 ? 0 : (clamped - left.pos) / span;
+  return mixHex(left.hex, right.hex, ratio);
+}
+
+function insertStopAt(pos, hex) {
+  if (state.stops.length >= MAX_STOPS) {
+    showToast("Đã đạt tối đa 7 stop.");
+    return null;
+  }
+  const stop = {
+    hex: normalizeHex(hex) || randomHex(),
+    pos: clampNumber(pos, 0, 100)
+  };
+  const insertIndex = state.stops.findIndex((item) => (item.pos ?? 0) > stop.pos);
+  if (insertIndex === -1) {
+    state.stops.push(stop);
+    return state.stops.length - 1;
+  }
+  state.stops.splice(insertIndex, 0, stop);
+  return insertIndex;
+}
+
+function renderStopBar() {
+  if (!el.stopBar) return;
+  el.stopBar.innerHTML = "";
+  closeStopPopover();
+  state.stops = migrateStops(state.stops);
+  state.stops.forEach((stop, index) => {
+    const handle = document.createElement("button");
+    handle.type = "button";
+    handle.className = "tc-stop-handle";
+    handle.dataset.index = String(index);
+    handle.style.left = `${clampNumber(stop.pos ?? 0, 0, 100)}%`;
+    handle.style.setProperty("--stop-color", stop.hex);
+    handle.setAttribute("aria-label", `Stop ${index + 1} tại ${Math.round(stop.pos ?? 0)}%`);
+    el.stopBar.appendChild(handle);
+  });
+  const popover = ensureStopPopover();
+  if (popover) el.stopBar.appendChild(popover);
 }
 
 function renderStops() {
@@ -407,14 +684,15 @@ function renderStops() {
   state.stops.forEach((stop, index) => {
     const row = document.createElement("div");
     row.className = "flex flex-wrap items-center gap-3";
+    row.dataset.stopRow = String(index);
 
     const colorInput = document.createElement("input");
     colorInput.type = "color";
     colorInput.value = stop.hex;
     colorInput.className = "tc-color-input";
+    colorInput.dataset.stopRole = "color";
     colorInput.addEventListener("input", () => {
-      state.stops[index].hex = colorInput.value;
-      schedulePreview();
+      applyStopHex(index, colorInput.value);
     });
 
     const textInput = document.createElement("input");
@@ -422,13 +700,9 @@ function renderStops() {
     textInput.value = stop.hex;
     textInput.className = "tc-input flex-1 min-w-[160px]";
     textInput.placeholder = "#ffffff";
+    textInput.dataset.stopRole = "hex";
     textInput.addEventListener("input", () => {
-      const normalized = normalizeHex(textInput.value);
-      if (normalized) {
-        state.stops[index].hex = normalized;
-        colorInput.value = normalized;
-        schedulePreview();
-      }
+      applyStopHex(index, textInput.value);
     });
 
     const posWrap = document.createElement("div");
@@ -440,9 +714,9 @@ function renderStops() {
     posInput.step = "1";
     posInput.value = String(stop.pos ?? 0);
     posInput.className = "tc-input w-20 text-right";
+    posInput.dataset.stopRole = "pos";
     posInput.addEventListener("input", () => {
-      state.stops[index].pos = clampNumber(posInput.value, 0, 100);
-      schedulePreview();
+      applyStopPos(index, posInput.value);
     });
     const posLabel = document.createElement("span");
     posLabel.className = "text-xs tc-muted";
@@ -461,6 +735,7 @@ function renderStops() {
       removeBtn.textContent = "Xóa";
       removeBtn.addEventListener("click", () => {
         state.stops.splice(index, 1);
+        closeStopPopover();
         renderStops();
         schedulePreview();
       });
@@ -469,6 +744,69 @@ function renderStops() {
 
     el.stopsWrap.appendChild(row);
   });
+  renderStopBar();
+}
+
+function handleStopBarClick(event) {
+  if (!el.stopBar) return;
+  const handle = event.target.closest(".tc-stop-handle");
+  if (handle && el.stopBar.contains(handle)) {
+    if (stopSuppressClick) {
+      stopSuppressClick = false;
+      return;
+    }
+    const idx = Number(handle.dataset.index || -1);
+    if (Number.isNaN(idx) || idx < 0) return;
+    toggleStopPopover(idx, handle);
+    return;
+  }
+  const pos = getStopBarPercent(event.clientX);
+  const hex = pickStopColor(pos);
+  const index = insertStopAt(pos, hex);
+  if (index == null) return;
+  renderStops();
+  schedulePreview();
+  openStopPopover(index);
+}
+
+function handleStopPointerDown(event) {
+  if (!el.stopBar) return;
+  const handle = event.target.closest(".tc-stop-handle");
+  if (!handle || !el.stopBar.contains(handle)) return;
+  event.preventDefault();
+  stopDragIndex = Number(handle.dataset.index || -1);
+  if (Number.isNaN(stopDragIndex) || stopDragIndex < 0) return;
+  stopDragPointerId = event.pointerId;
+  stopDragMoved = false;
+  handle.setPointerCapture(event.pointerId);
+  closeStopPopover();
+}
+
+function handleStopPointerMove(event) {
+  if (stopDragIndex == null) return;
+  if (event.pointerId !== stopDragPointerId) return;
+  event.preventDefault();
+  const pos = getStopBarPercent(event.clientX);
+  const current = state.stops[stopDragIndex]?.pos ?? 0;
+  if (Math.abs(pos - current) > 0.1) stopDragMoved = true;
+  applyStopPos(stopDragIndex, pos);
+}
+
+function handleStopPointerUp(event) {
+  if (stopDragIndex == null) return;
+  if (event.pointerId !== stopDragPointerId) return;
+  const handle = getStopHandle(stopDragIndex);
+  if (handle) handle.releasePointerCapture(event.pointerId);
+  if (stopDragMoved) stopSuppressClick = true;
+  stopDragIndex = null;
+  stopDragPointerId = null;
+}
+
+function handleStopOutsideClick(event) {
+  if (!stopPopoverEl || stopPopoverIndex == null) return;
+  const insideBar = event.target.closest("#gradientStopBar");
+  if (insideBar) return;
+  closeStopPopover();
 }
 function renderSamples() {
   if (!el.samplesWrap) return;
@@ -476,27 +814,204 @@ function renderSamples() {
   state.samples.slice(0, 8).forEach((palette) => {
     const card = document.createElement("button");
     card.type = "button";
-    card.className = "tc-card p-3 text-left w-full";
+    card.className = "tc-gradient-sample";
+    card.setAttribute("aria-label", palette.ten || "Mẫu dải phối");
 
-    const title = document.createElement("p");
-    title.className = "text-sm font-semibold";
-    title.textContent = palette.ten || "Bảng phối màu";
+    const tile = document.createElement("span");
+    tile.className = "tc-gradient-sample-tile";
+    tile.style.background = gradientCss(palette.stops, state.angle, state.type);
 
-    const preview = document.createElement("div");
-    preview.className = "tc-gradient-preview mt-2";
-    preview.style.minHeight = "56px";
-    preview.style.background = gradientCss(palette.stops, state.angle, state.type);
+    const title = document.createElement("span");
+    title.className = "tc-gradient-sample-title";
+    title.textContent = palette.ten || "Mẫu dải phối";
 
+    card.appendChild(tile);
     card.appendChild(title);
-    card.appendChild(preview);
 
     card.addEventListener("click", () => {
-      state.stops = migrateStops(palette.stops);
-      renderStops();
-      schedulePreview();
+      openSampleDetail(palette);
     });
 
     el.samplesWrap.appendChild(card);
+  });
+}
+
+function ensureSampleDetailOverlay() {
+  if (el.sampleDetail && el.sampleDetailBody) return el.sampleDetail;
+  const overlay = document.getElementById("gradientSampleDetail");
+  const body = document.getElementById("gradientSampleDetailBody");
+  const title = document.getElementById("gradientSampleDetailTitle");
+  const subtitle = document.getElementById("gradientSampleDetailSubtitle");
+  if (overlay && body) {
+    el.sampleDetail = overlay;
+    el.sampleDetailBody = body;
+    el.sampleDetailTitle = title;
+    el.sampleDetailSubtitle = subtitle;
+    return overlay;
+  }
+  return null;
+}
+
+function renderSampleDetail(palette) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "grid gap-3";
+
+  const preview = document.createElement("div");
+  preview.className = "tc-gradient-preview tc-gradient-detail-preview";
+  preview.style.background = gradientCss(palette.stops, state.angle, state.type);
+  wrapper.appendChild(preview);
+
+  const tags = Array.isArray(palette.tags) ? palette.tags.filter(Boolean) : [];
+  if (tags.length) {
+    const tagWrap = document.createElement("div");
+    tagWrap.className = "flex flex-wrap gap-2";
+    tags.forEach((tag) => {
+      const chip = document.createElement("span");
+      chip.className = "tc-chip px-3 py-1 text-xs";
+      chip.textContent = tag;
+      tagWrap.appendChild(chip);
+    });
+    wrapper.appendChild(tagWrap);
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "flex flex-wrap gap-2";
+
+  const applyBtn = document.createElement("button");
+  applyBtn.type = "button";
+  applyBtn.className = "tc-btn tc-btn-primary px-4 py-2 text-sm";
+  applyBtn.textContent = "Áp dụng dải này";
+  applyBtn.addEventListener("click", () => {
+    state.stops = migrateStops(palette.stops);
+    renderStops();
+    schedulePreview();
+    closeSampleDetail();
+    showToast("Đã áp dụng dải phối.");
+  });
+  actions.appendChild(applyBtn);
+
+  const copyCssBtn = document.createElement("button");
+  copyCssBtn.type = "button";
+  copyCssBtn.className = "tc-btn tc-chip px-3 py-2 text-sm";
+  copyCssBtn.textContent = "Sao chép CSS";
+  copyCssBtn.addEventListener("click", async () => {
+    const ok = await copyText(exportCssProperty(palette.stops));
+    showToast(ok ? "Đã sao chép CSS." : "Không thể sao chép.");
+  });
+  actions.appendChild(copyCssBtn);
+
+  const copyTokenBtn = document.createElement("button");
+  copyTokenBtn.type = "button";
+  copyTokenBtn.className = "tc-btn tc-chip px-3 py-2 text-sm";
+  copyTokenBtn.textContent = "Sao chép Token";
+  copyTokenBtn.addEventListener("click", async () => {
+    const ok = await copyText(exportTokenBlock(palette.stops));
+    showToast(ok ? "Đã sao chép token." : "Không thể sao chép.");
+  });
+  actions.appendChild(copyTokenBtn);
+
+  const tokenPctBtn = document.createElement("button");
+  tokenPctBtn.type = "button";
+  tokenPctBtn.className = "tc-btn tc-chip px-3 py-2 text-sm";
+  tokenPctBtn.textContent = "Token có %";
+  tokenPctBtn.addEventListener("click", async () => {
+    const ok = await copyText(exportTokenString(palette.stops));
+    showToast(ok ? "Đã sao chép token có %." : "Không thể sao chép.");
+  });
+  actions.appendChild(tokenPctBtn);
+
+  const svgBtn = document.createElement("button");
+  svgBtn.type = "button";
+  svgBtn.className = "tc-btn tc-chip px-3 py-2 text-sm";
+  svgBtn.textContent = "Xuất SVG";
+  svgBtn.addEventListener("click", async () => {
+    const svg = exportSvg(palette.stops);
+    if (!svg) {
+      showToast("Không thể tạo SVG.");
+      return;
+    }
+    const ok = await copyText(svg);
+    showToast(ok ? "Đã sao chép SVG gradient." : "Không thể sao chép SVG.");
+  });
+  actions.appendChild(svgBtn);
+
+  const shareBtn = document.createElement("button");
+  shareBtn.type = "button";
+  shareBtn.className = "tc-btn tc-chip px-3 py-2 text-sm";
+  shareBtn.textContent = "Chia sẻ";
+  shareBtn.addEventListener("click", () => {
+    publishToFeed(buildGradientAsset(palette.stops));
+  });
+  actions.appendChild(shareBtn);
+
+  wrapper.appendChild(actions);
+
+  const uiPreview = document.createElement("div");
+  uiPreview.className = "tc-gradient-ui";
+  const uiHead = document.createElement("div");
+  uiHead.className = "tc-gradient-ui-head";
+  uiHead.style.background = gradientCss(palette.stops, state.angle, state.type);
+  uiHead.textContent = "Thanh tiêu đề";
+  const uiBody = document.createElement("div");
+  uiBody.className = "tc-gradient-ui-body";
+  ["Thẻ CTA", "Nhãn phụ", "Tương phản"].forEach((label) => {
+    const pill = document.createElement("span");
+    pill.className = "tc-gradient-ui-pill";
+    pill.textContent = label;
+    uiBody.appendChild(pill);
+  });
+  uiPreview.appendChild(uiHead);
+  uiPreview.appendChild(uiBody);
+  wrapper.appendChild(uiPreview);
+
+  return wrapper;
+}
+
+function openSampleDetail(palette) {
+  if (!palette) return;
+  const overlay = ensureSampleDetailOverlay();
+  if (!overlay || !el.sampleDetailBody) return;
+  if (el.sampleDetailTitle) {
+    el.sampleDetailTitle.textContent = palette.ten || "Chi tiết dải phối";
+  }
+  if (el.sampleDetailSubtitle) {
+    const subtitle = Array.isArray(palette.tags) && palette.tags.length
+      ? palette.tags.join(" · ")
+      : "Mẫu dải phối";
+    el.sampleDetailSubtitle.textContent = subtitle;
+  }
+  el.sampleDetailBody.innerHTML = "";
+  el.sampleDetailBody.appendChild(renderSampleDetail(palette));
+  overlay.classList.remove("hidden");
+  overlay.setAttribute("aria-hidden", "false");
+  sampleDetailOpen = true;
+  sampleDetailBodyOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+}
+
+function closeSampleDetail() {
+  if (!el.sampleDetail) return;
+  el.sampleDetail.classList.add("hidden");
+  el.sampleDetail.setAttribute("aria-hidden", "true");
+  if (el.sampleDetailBody) el.sampleDetailBody.innerHTML = "";
+  document.body.style.overflow = sampleDetailBodyOverflow;
+  sampleDetailBodyOverflow = "";
+  sampleDetailOpen = false;
+}
+
+function initSampleDetail() {
+  const overlay = ensureSampleDetailOverlay();
+  if (!overlay || overlay.dataset.ready === "1") return;
+  overlay.dataset.ready = "1";
+  overlay.addEventListener("click", (event) => {
+    if (event.target.closest("[data-gradient-detail-close]")) {
+      closeSampleDetail();
+    }
+  });
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && sampleDetailOpen) {
+      closeSampleDetail();
+    }
   });
 }
 
@@ -541,11 +1056,20 @@ function initEvents() {
     state.type = next;
     schedulePreview();
   });
+  el.stopBar?.addEventListener("click", handleStopBarClick);
+  el.stopBar?.addEventListener("pointerdown", handleStopPointerDown);
+  window.addEventListener("pointermove", handleStopPointerMove);
+  window.addEventListener("pointerup", handleStopPointerUp);
+  window.addEventListener("resize", () => {
+    if (stopPopoverIndex != null) positionStopPopover(stopPopoverIndex);
+  });
+  document.addEventListener("click", handleStopOutsideClick);
 
   el.addStop?.addEventListener("click", () => {
     if (state.stops.length >= MAX_STOPS) return;
     const lastPos = state.stops[state.stops.length - 1]?.pos ?? 100;
-    state.stops.push({ hex: randomHex(), pos: clampNumber(lastPos + 10, 0, 100) });
+    const nextIndex = insertStopAt(clampNumber(lastPos + 10, 0, 100), randomHex());
+    if (nextIndex == null) return;
     renderStops();
     schedulePreview();
   });
@@ -557,14 +1081,18 @@ function initEvents() {
     renderStops();
     schedulePreview();
   });
-  if (el.exportBtn) el.exportBtn.textContent = "Xuất Bản thông số";
+  if (el.exportBtn) el.exportBtn.textContent = "Sao chép CSS";
   el.exportBtn?.addEventListener("click", async () => {
-    const ok = await copyText(exportText());
-    showToast(ok ? "Đã sao chép bản thông số." : "Không thể sao chép bản thông số.");
+    const ok = await copyText(exportCssProperty());
+    showToast(ok ? "Đã sao chép CSS." : "Không thể sao chép.");
+  });
+  el.copyTokenBtn?.addEventListener("click", async () => {
+    const ok = await copyText(exportTokenBlock());
+    showToast(ok ? "Đã sao chép token." : "Không thể sao chép.");
   });
   el.exportToken?.addEventListener("click", async () => {
     const ok = await copyText(exportTokenString());
-    showToast(ok ? "Đã sao chép token gradient." : "Không thể sao chép token.");
+    showToast(ok ? "Đã sao chép token có %." : "Không thể sao chép token.");
   });
   el.exportSvg?.addEventListener("click", async () => {
     const svg = exportSvg();
@@ -604,6 +1132,12 @@ function initEvents() {
       return;
     }
     applyImportedGradient(raw.trim());
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!el.exportMenu?.open) return;
+    if (event.target.closest("#gradientExportMenu")) return;
+    el.exportMenu.open = false;
   });
 }
 
@@ -648,6 +1182,7 @@ function init() {
   applyAngle(state.angle);
   loadSamples();
   initEvents();
+  initSampleDetail();
 }
 
 init();

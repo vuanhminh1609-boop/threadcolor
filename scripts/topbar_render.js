@@ -72,7 +72,7 @@
               <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="${basePath}worlds/library.html" role="menuitem">Thế giới Thư viện Tài sản Màu</a>
               <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="${basePath}worlds/paintfabric.html" role="menuitem">Thế giới màu Sơn&Vải</a>
               <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="${basePath}worlds/imagecolor.html" role="menuitem">Thế giới Màu từ Ảnh</a>
-              <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="${basePath}worlds/community.html" role="menuitem">Thế giới Chia sẻ + Remix</a>
+              <a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="${basePath}worlds/colorplay.html" role="menuitem">Thế giới trò chơi màu</a>
             </div>
           </div>
           <div class="relative" id="worldSwitcher">
@@ -87,7 +87,7 @@
                 <path d="M5.25 7.5l4.75 5 4.75-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            <div id="worldMenu" data-open="0" role="menu" class="absolute right-0 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
+            <div id="worldMenu" data-open="0" hidden role="menu" class="absolute right-0 mt-2 w-56 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
               ${toneMenu}
             </div>
           </div>

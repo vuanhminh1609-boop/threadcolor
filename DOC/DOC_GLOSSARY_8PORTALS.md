@@ -31,19 +31,30 @@
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
 | Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
+| Token nền (biến CSS đại diện nền theo sắc thái) | Token nền | Biến CSS đại diện nền của một sắc thái, dùng lại đồng bộ giữa card và nền trang. |
+| Canvas nền (lớp nền chính theo sắc thái) | Canvas nền | Lớp nền chính theo từng sắc thái, thường là gradient để tạo chiều sâu tổng thể. |
+| Token tương phản (bộ biến màu chữ theo sắc thái) | Token tương phản | Bộ biến màu chữ chính/phụ theo từng sắc thái để bảo đảm độ đọc rõ. |
+| Overlay nền (lớp hoạ tiết/ánh phủ trên nền chính) | Overlay nền | Lớp hoạ tiết/ánh phủ mỏng đặt trên nền chính để tạo chiều sâu nhưng vẫn nhẹ. |
 | Custom Tone (sắc thái tuỳ chỉnh do người dùng tạo) | Sắc thái tuỳ chỉnh | Sắc thái do người dùng tự lưu lại từ công cụ, có thể áp dụng/preview lại nhanh. |
-| Preset (thiết lập sẵn) | Preset | Gói thiết lập sẵn giúp chọn nhanh một cấu hình mà không phải chỉnh tay lại. |
+| Preset (thiết lập sẵn) | Preset | Gói thiết lập sẵn/mẫu có sẵn giúp chọn nhanh một cấu hình mà không phải chỉnh tay lại. |
 | SVG chevron | Mũi tên SVG | Biểu tượng mũi tên dựng bằng SVG để tránh lỗi ký tự hiển thị trên nhiều môi trường. |
 | component | Thành phần giao diện | Khối UI tái sử dụng, có thể render lại ở nhiều trang nhưng giữ cùng cấu trúc. |
 | basePath | Tiền tố đường dẫn | Chuỗi tiền tố để tạo đường dẫn tương đối đúng giữa trang gốc và thư mục con. |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
+| Line 98 (trò chơi xếp bi theo hàng) | Line 98 | Trò chơi xếp bi theo hàng để tạo chuỗi màu liên tiếp và ghi điểm. |
+| Bàn cờ 9×9 (lưới 9 hàng 9 cột) | Bàn cờ 9×9 | Lưới 9 hàng 9 cột dùng làm mặt chơi tiêu chuẩn. |
+| BFS (thuật toán tìm đường theo lớp) | BFS | Thuật toán tìm đường theo lớp, đảm bảo tìm ra đường đi ngắn nhất trong lưới ô. |
+| Ô trống (cell trống trên bàn) | Ô trống | Ô trên bàn cờ không có bi, dùng làm điểm di chuyển hợp lệ. |
 | Dải thẳng (linear gradient) | Dải thẳng | Dải chuyển màu theo một hướng thẳng, thường dùng góc để xác định hướng. |
 | Dải tròn (radial gradient) | Dải tròn | Dải chuyển màu loang tròn từ tâm ra ngoài theo bán kính. |
 | Dải nón (conic gradient) | Dải nón | Dải chuyển màu theo vòng xoay quanh tâm, giống mặt đồng hồ. |
 | Nội suy (interpolation) | Nội suy | Cách pha trộn màu giữa các điểm neo để tạo chuyển màu mượt. |
 | Hue (tông màu: góc màu trên vòng màu 0–360) | Hue | Tông màu biểu diễn góc trên vòng màu 0–360, dùng để nhóm và so sánh màu. |
+| Sort theo hue (sắp xếp theo tông màu) | Sort theo hue | Cách sắp xếp màu theo tông màu (hue) để các dải xanh/vàng/đỏ liền mạch, dễ quan sát. |
+| line-height (độ cao dòng) | line-height | Độ cao dòng chữ; dùng để tránh cắt phần đuôi chữ khi dòng quá thấp. |
+| chân chữ (phần nét chữ thò xuống dưới như g/y/p) | Chân chữ | Phần nét chữ thò xuống dưới dòng cơ sở (baseline), dễ bị cắt nếu line-height quá thấp. |
 | Tỷ lệ tương phản (contrast ratio) | Tỷ lệ tương phản | Mức chênh lệch sáng tối giữa 2 màu (chữ/nền); càng cao càng dễ đọc. |
 | Quy tắc hài hoà màu (harmony rules) | Quy tắc hài hoà màu | Nguyên tắc phối màu trên vòng màu để tạo cảm giác cân bằng, dễ chịu. |
 | Phối bù (complementary: phối lệch 180°) | Phối bù | Phối màu lệch 180° trên vòng màu để tạo tương phản mạnh. |
@@ -105,7 +116,7 @@
 | Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
-| Single Source of Truth | Nguồn chuẩn duy nhất | Nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| Single source of truth | Nguồn chuẩn duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
 | LocalStorage (bộ nhớ cục bộ của trình duyệt) | LocalStorage | Bộ nhớ lưu cục bộ theo domain, giữ dữ liệu ngay cả khi tải lại trang. |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
@@ -115,6 +126,7 @@
 | Manifest hop dong | Manifest hop dong | Tep ke khai: dataset nao dung schema nao + phien ban + checksum |
 | Danh mục tệp (manifest) | Danh mục tệp (manifest) | Danh sách liệt kê tệp trong repo/snapshot để kiểm tra và đối chiếu. |
 | JSONL | JSON Lines | Dinh dang JSON Lines: moi dong la 1 JSON, phu hop log/audit |
+| overflow (cơ chế xử lý phần tràn) | overflow | Cơ chế CSS quyết định phần nội dung vượt khung bị ẩn, cuộn hay hiển thị. |
 | Checksum | Checksum | Chuoi kiem chung toan ven du lieu |
 | Báo cáo chênh lệch dữ liệu (Data diff report) | Báo cáo chênh lệch dữ liệu (Data diff report) | Báo cáo so sánh dữ liệu giữa hai phiên bản để thấy phần thay đổi tăng/giảm/khác biệt. |
 | SHA-256 | SHA-256 | Ham bam tao dau van tay noi dung |
@@ -194,10 +206,18 @@
 | Lưới ô màu | Lưới ô màu | Cách hiển thị màu dạng các ô vuông xếp lưới để quét nhanh. |
 | Menu tác vụ gọn | Menu tác vụ gọn | Gom nhiều chức năng vào một nút nhỏ để tiết kiệm diện tích. |
 | Menu ngữ cảnh | Menu ngữ cảnh | Menu thao tác gắn với từng mục để thao tác đúng ngữ cảnh. |
+| Object URL (URL đối tượng: đường dẫn tạm để hiển thị file local) | Object URL | Đường dẫn tạm do trình duyệt tạo để xem trước file local (ảnh/âm thanh) mà không cần upload. |
+| Hover từng ký tự (hiệu ứng tương tác trên từng chữ/ký tự) | Hover từng ký tự | Hiệu ứng hover áp lên từng chữ/ký tự riêng lẻ để tạo cảm giác sống động. |
+| Container chuẩn (khung bề rộng thống nhất cho layout) | Container chuẩn | Khung bề rộng thống nhất cho các section để giữ nhịp và căn lề nhất quán. |
+| SVG inline (nhúng SVG trực tiếp trong HTML) | SVG inline | Nhúng SVG trực tiếp trong HTML để dễ style theo CSS và tránh phụ thuộc file ngoài. |
+| Scrim (lớp phủ mờ tăng tương phản chữ) | Scrim | Lớp phủ mờ đặt sau chữ để tăng tương phản và cải thiện khả năng đọc. |
+| Ink token (token màu chữ theo sắc thái) | Ink token | Biến màu chữ theo sắc thái để giữ tương phản đồng đều giữa các theme. |
+| Glass (nền kính mờ: nền trong suốt có blur nhẹ) | Glass | Nền trong suốt kèm blur nhẹ tạo cảm giác kính mờ. |
 | Bảng nổi (popover) | Bảng nổi (popover) | Menu nổi neo theo nút để thao tác nhanh mà không rời mục. |
 | Độ chồng lớp (z-index) | Độ chồng lớp (z-index) | Thứ tự lớp hiển thị của phần tử, lớp cao sẽ nổi lên trên. |
 | Nhóm màu | Nhóm màu | Gom theo tông màu để dễ quét và tìm nhanh trong lưới màu. |
 | Độ chói (luminance) | Độ chói (luminance) | Độ sáng cảm nhận của màu để chọn màu chữ tương phản. |
+| prefers-reduced-motion (tuỳ chọn hệ thống giảm chuyển động) | prefers-reduced-motion | Media query tôn trọng cài đặt hệ thống giảm chuyển động để hạn chế animation. |
 | Phổ màu chuẩn | Phổ màu chuẩn | Tập màu sinh tự động theo phổ RGB để tham khảo nhanh. |
 | Chọn nhiều | Chọn nhiều | Chế độ chọn nhiều mục để thao tác hàng loạt. |
 | Thanh hành động | Thanh hành động | Thanh thao tác xuất hiện khi có chọn để làm nhanh các lệnh chung. |
@@ -267,7 +287,7 @@
 | Dải chuyển màu (gradient: chuyển màu liên tục) | Dải chuyển màu | Dải màu chuyển liên tục giữa nhiều màu theo một hướng. |
 | Điểm neo màu (color stop: điểm màu trên dải) | Điểm neo màu | Vị trí màu cụ thể trong gradient, xác định độ chuyển và tỉ lệ. |
 | Token màu (biến màu dùng lại cho UI/thiết kế) | Token màu | Biến màu tái sử dụng trong thiết kế hoặc CSS, giúp thống nhất hệ màu. |
-| Token CSS (biến CSS dùng lại cho màu/thiết kế) | Token CSS | Biến CSS đóng gói màu/thiết kế để copy, dùng lại nhất quán trên nhiều màn hình. |
+| Token CSS (biến CSS dùng lại) | Token CSS | Biến CSS dùng lại để định nghĩa màu/thiết kế, dễ copy và áp dụng nhất quán. |
 | Remix (tạo biến thể từ mẫu có sẵn) | Tạo biến thể | Tạo biến thể màu mới bằng cách chỉnh sửa từ một dải gốc. |
 | Palette Link (chia sẻ dải màu bằng URL) | Palette Link | Đường link chứa thông tin dải màu để chia sẻ hoặc tái sử dụng nhanh. |
 | Bảng phối màu (palette: bộ phối màu gồm nhiều màu rời) | Bảng phối màu | Bộ phối màu gồm nhiều màu rời dùng để thiết kế nhất quán. |
@@ -473,9 +493,39 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 |---|---|---|
 | kebab menu | Menu ba chấm (kebab) | Menu dạng dấu ba chấm dùng để gom thao tác phụ gọn hơn. |
 | Clipboard API (API sao chép vào bộ nhớ tạm) | Clipboard API | API trình duyệt cho phép ghi/đọc văn bản vào bộ nhớ tạm (clipboard). |
+| URL fragment (phần sau dấu #) | URL fragment | Phần sau dấu `#` trong URL, dùng để lưu trạng thái hoặc tham số trên client. |
+| Encode JSON (mã hóa JSON để nhúng vào link) | Encode JSON | Chuyển JSON thành chuỗi an toàn (encode) để nhúng vào URL hoặc fragment. |
 | Toast (thông báo nhỏ tự biến mất) | Toast | Thông báo ngắn xuất hiện tạm thời rồi tự ẩn để phản hồi thao tác. |
+| Tooltip (chú giải khi rê chuột) | Tooltip | Nhãn chú giải nhỏ xuất hiện khi rê chuột lên nút/biểu tượng để mô tả chức năng. |
+| Icon-only (nút chỉ có biểu tượng) | Icon-only | Kiểu nút chỉ hiển thị biểu tượng, không kèm chữ để tiết kiệm diện tích. |
+| Handle (tay nắm kéo) | Handle | Phần tử nhỏ để nắm kéo, giúp thay đổi vị trí hoặc giá trị trên thanh chỉnh. |
+| Stop gradient (điểm neo màu trong dải chuyển) | Stop gradient | Điểm neo màu trong dải chuyển, xác định vị trí % của màu trên gradient. |
+| Micro-interaction (hiệu ứng nhỏ tăng cảm giác “đã”) | Micro-interaction | Hiệu ứng nhỏ phản hồi thao tác (ví dụ nhấn/pulse) giúp UI sống động và rõ trạng thái. |
+| Accordion (khối mở/thu gọn) | Accordion | Cơ chế mở/thu gọn từng khối nội dung để giữ giao diện gọn. |
+| Mount/Unmount (gắn/gỡ khối UI và sự kiện) | Mount/Unmount | Gắn hoặc gỡ một khối UI cùng các sự kiện đi kèm để tránh xung đột. |
+| Long-press (nhấn giữ trên điện thoại) | Long-press | Cử chỉ nhấn giữ trong một khoảng thời gian để mở thao tác phụ trên mobile. |
+| Thumbnail (hình xem trước) | Thumbnail | Hình thu nhỏ đại diện nội dung để người dùng quét nhanh trước khi mở. |
+| Mobile controls (nút điều khiển trên điện thoại) | Mobile controls | Cụm nút điều khiển tối giản hiển thị trên điện thoại để thao tác nhanh. |
+| Safe-area (vùng an toàn tránh tai thỏ/thanh hệ thống) | Safe-area | Vùng an toàn tránh tai thỏ hoặc thanh hệ thống che nội dung quan trọng. |
+| Color picker (bảng chọn màu) | Color picker | Bảng chọn màu cho phép chọn màu trực quan và trả về mã HEX/RGB. |
+| Bottom sheet (bảng trượt từ dưới lên) | Bottom sheet | Bảng nội dung trượt từ dưới lên, thường dùng cho chi tiết trên mobile. |
 | modal | Hộp thoại nổi | Hộp thoại bật lên để nhập thông tin hoặc xác nhận thao tác. |
 | scroll-into-view | Tự cuộn tới phần liên quan | Hành vi tự cuộn trang để đưa phần nội dung cần xem vào tầm nhìn. |
+| Tour hướng dẫn (onboarding tour) | Tour hướng dẫn | Chuỗi hướng dẫn theo từng bước giúp người dùng mới hiểu luồng thao tác nhanh. |
+| Chế độ mặc định (default) | Chế độ mặc định | Trạng thái/tuỳ chọn được áp dụng khi người dùng chưa chọn gì, làm giá trị khởi tạo an toàn. |
+| Toàn màn hình (fullscreen) | Toàn màn hình | Chế độ hiển thị toàn màn hình để tập trung nội dung và thao tác. |
+| Bảng màu 5 cột (five-column palette) | Bảng màu 5 cột | Bố cục 5 dải màu đứng cạnh nhau để xem nhanh một palette. |
+| Phím Space (phím cách) | Phím Space | Phím cách trên bàn phím, thường dùng làm thao tác nhanh (ví dụ đổi palette). |
+| Hue shift (dịch tông màu) | Hue shift | Thao tác xoay tông màu trên trục hue để dịch sắc thái toàn bảng màu. |
+| Undo/Redo (hoàn tác/làm lại) | Undo/Redo | Cặp thao tác hoàn tác bước trước và làm lại bước vừa hoàn tác trong lịch sử. |
+| Soft drop (rơi nhanh) | Soft drop | Thao tác tăng tốc rơi tạm thời (thường giữ phím xuống) để điều khiển rơi nhanh hơn. |
+| Hard drop (thả nhanh) | Hard drop | Thao tác thả rơi tức thì xuống vị trí thấp nhất hợp lệ để khoá khối nhanh. |
+| Rotate (xoay) | Rotate | Thao tác xoay khối/viên để đổi hướng trước khi rơi hoặc khi đang rơi. |
+| Gravity (rơi xuống sau khi xóa) | Gravity | Cơ chế khối còn lại rơi xuống lấp chỗ trống sau khi xoá. |
+| Sticky (dính nhẹ theo khung nhìn) | Sticky | Cơ chế bám nhẹ theo khung nhìn khi cuộn, giúp giữ HUD/khung thao tác trong tầm nhìn. |
+| HUD (thanh điều khiển nổi gọn) | HUD | Thanh điều khiển nổi gọn trên màn hình, chứa thao tác nhanh mà không chiếm nhiều diện tích. |
+| Lock cột (khóa cột để không đổi màu) | Lock cột | Cơ chế khóa một cột màu để giữ nguyên khi đổi/random các cột còn lại. |
+| Fullscreen API (API toàn màn hình của trình duyệt) | Fullscreen API | API trình duyệt cho phép vào/thoát toàn màn hình cho một phần tử khi cần. |
 | focus-guard | Chặn focus | Cơ chế kiểm soát focus để ngăn trình quản lý mật khẩu bật gợi ý không mong muốn. |
 | event bubble | Lan truyền sự kiện | Hiện tượng sự kiện nổi lên từ phần tử con lên phần tử cha trong DOM. |
 | stopPropagation | Chặn lan truyền sự kiện | Lệnh dừng lan truyền sự kiện để tránh click ảnh hưởng phần tử cha. |
@@ -498,6 +548,8 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Khối thu gọn (vùng mở/đóng để tiết kiệm chiều cao) | Khối thu gọn | Khối nội dung mặc định đóng và chỉ mở khi cần, giúp giao diện gọn hơn mà vẫn giữ đủ chức năng. |
 | Cuộn nội bộ (scroll bên trong card) | Cuộn nội bộ | Cơ chế giới hạn chiều cao phần tử và cho phép cuộn trong chính khối đó thay vì cuộn toàn trang. |
 | Scroll-margin-top (khoảng chừa khi cuộn đến mục) | Scroll-margin-top | Thuộc tính CSS đặt khoảng chừa phía trên khi cuộn tới một phần tử, giúp tránh bị topbar che. |
+| Card (thẻ UI) | Card | Khối UI dạng thẻ có tiêu đề/nội dung/CTA, dùng để nhóm thông tin gọn và dễ quét. |
+| Progressive disclosure (hiển thị dần để tránh rối) | Progressive disclosure | Cách hiển thị dần nội dung, chỉ mở phần chi tiết khi cần để giảm rối mắt. |
 
 
 ---

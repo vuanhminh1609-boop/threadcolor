@@ -110,6 +110,13 @@
           <div>
             <label class="text-sm font-semibold">Xem trước</label>
             <div id="gradientPreview" class="tc-gradient-preview mt-2"></div>
+            <div class="mt-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold">Thanh stop gradient</p>
+                <span class="tc-muted text-xs">Click để thêm · kéo để chỉnh %</span>
+              </div>
+              <div id="gradientStopBar" class="tc-stop-bar mt-2" aria-label="Thanh stop gradient"></div>
+            </div>
           </div>
           <div class="tc-card p-4 space-y-3">
             <div class="flex items-center justify-between">
@@ -138,7 +145,10 @@
                 <button id="gradientRandom" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Ngẫu nhiên</button>
               </div>
             </div>
-            <div id="gradientStops" class="mt-3 space-y-3"></div>
+            <details class="tc-advanced mt-3">
+              <summary class="tc-advanced-summary">Nâng cao</summary>
+              <div id="gradientStops" class="mt-3 space-y-3"></div>
+            </details>
           </div>
         </div>
 
@@ -147,21 +157,29 @@
             <p class="text-sm font-semibold">Xuất nhanh</p>
             <p class="tc-muted text-xs mt-1">Sao chép CSS linear-gradient và token màu.</p>
             <div class="mt-3 flex flex-wrap gap-3">
-              <button id="gradientExport" class="tc-btn tc-btn-primary px-4 py-2" type="button">Xuất</button>
-              <button id="gradientToPalette" class="tc-btn tc-chip px-4 py-2" type="button">Tách thành palette</button>
-              <button id="gradientSaveLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
-              <button id="gradientUseLibrary" class="tc-btn tc-chip px-4 py-2" type="button">Dùng từ Thư viện</button>
-              <button id="gradientShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
-              <button id="gradientExportToken" class="tc-btn tc-chip px-4 py-2" type="button">Token có %</button>
-              <button id="gradientExportSvg" class="tc-btn tc-chip px-4 py-2" type="button">Xuất SVG</button>
-            </div>
-            <div class="mt-4">
-              <label class="text-sm font-semibold">Nhập từ CSS gradient</label>
-              <textarea id="gradientImportInput" class="tc-input mt-2 w-full h-20 text-sm" placeholder="linear-gradient(90deg, #ff6b6b 0%, #ffd93d 50%, #6ee7b7 100%)"></textarea>
-              <div class="mt-2 flex items-center gap-2">
-                <button id="gradientImportBtn" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Nhập</button>
-                <span class="tc-muted text-xs">Hỗ trợ linear-gradient với %.</span>
-              </div>
+              <button id="gradientExport" class="tc-btn tc-btn-primary px-4 py-2" type="button">Sao chép CSS</button>
+              <button id="gradientCopyToken" class="tc-btn tc-chip px-4 py-2" type="button">Sao chép Token</button>
+              <details id="gradientExportMenu" class="tc-export-menu">
+                <summary class="tc-btn tc-chip px-4 py-2">Xuất</summary>
+                <div class="tc-export-panel">
+                  <button id="gradientExportToken" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Token có %</button>
+                  <button id="gradientExportSvg" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Xuất SVG</button>
+                  <button id="gradientShare" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Chia sẻ</button>
+                  <div class="tc-export-divider"></div>
+                  <button id="gradientToPalette" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Tách thành palette</button>
+                  <button id="gradientSaveLibrary" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Lưu vào Thư viện</button>
+                  <button id="gradientUseLibrary" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Dùng từ Thư viện</button>
+                  <div class="tc-export-divider"></div>
+                  <div class="tc-export-import">
+                    <label class="text-xs font-semibold">Nhập từ CSS gradient</label>
+                    <textarea id="gradientImportInput" class="tc-input mt-2 w-full h-20 text-xs" placeholder="linear-gradient(90deg, #ff6b6b 0%, #ffd93d 50%, #6ee7b7 100%)"></textarea>
+                    <div class="mt-2 flex items-center gap-2">
+                      <button id="gradientImportBtn" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Nhập</button>
+                      <span class="tc-muted text-xs">Hỗ trợ linear-gradient với %.</span>
+                    </div>
+                  </div>
+                </div>
+              </details>
             </div>
           </div>
 
@@ -189,6 +207,22 @@
   <script type="module" src="./gradient.js"></script>
   
   
+
+  <div id="gradientSampleDetail" class="tc-drawer hidden" aria-hidden="true">
+    <div class="tc-drawer-scrim" data-gradient-detail-close></div>
+    <div class="tc-drawer-panel">
+      <div class="tc-card tc-drawer-card">
+        <div class="tc-drawer-head">
+          <div>
+            <p id="gradientSampleDetailTitle" class="text-sm font-semibold">Chi tiết dải phối</p>
+            <p id="gradientSampleDetailSubtitle" class="tc-muted text-xs mt-1"></p>
+          </div>
+          <button class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-gradient-detail-close>Đóng</button>
+        </div>
+        <div id="gradientSampleDetailBody" class="mt-3 grid gap-3"></div>
+      </div>
+    </div>
+  </div>
 
 <script type="module" src="../scripts/hex_hub.js"></script>
   <script src="../scripts/topbar_render.js" defer></script>

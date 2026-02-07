@@ -92,21 +92,25 @@
         }
       }
       @media (max-width: 520px) {
-        .tc-topbar > .max-w-6xl {
+        .tc-topbar > .max-w-6xl,
+        .tc-topbar > .tc-shell {
           flex-wrap: wrap;
           row-gap: 8px;
           column-gap: 8px;
         }
-        .tc-topbar > .max-w-6xl > :nth-child(1) {
+        .tc-topbar > .max-w-6xl > :nth-child(1),
+        .tc-topbar > .tc-shell > :nth-child(1) {
           order: 1;
           min-width: 0;
         }
-        .tc-topbar > .max-w-6xl > :nth-child(2) {
+        .tc-topbar > .max-w-6xl > :nth-child(2),
+        .tc-topbar > .tc-shell > :nth-child(2) {
           order: 3;
           flex: 1 1 100%;
           min-width: 0;
         }
-        .tc-topbar > .max-w-6xl > :nth-child(3) {
+        .tc-topbar > .max-w-6xl > :nth-child(3),
+        .tc-topbar > .tc-shell > :nth-child(3) {
           order: 2;
           margin-left: auto;
         }
@@ -149,25 +153,30 @@
 
   <main>
     <!-- HERO -->
-    <section class="max-w-6xl mx-auto px-4 pt-14 pb-12">
+    <section class="tc-shell pt-14 pb-12">
       <div class="tc-hero-surface">
         <div class="tc-hero-grid">
           <div class="tc-hero-copy">
             <p class="text-xs uppercase tracking-[0.3em] tc-muted">Sảnh điều phối</p>
-            <h1 class="tc-neon-text tc-hero-title text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title">Không gian chuẩn hóa màu số.</h1>
+            <h1 class="tc-neon-text tc-hero-title text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title" data-hero-lines="Không gian|chuẩn hóa màu số">
+              <span class="heroLine heroLine1">Không gian</span>
+              <span class="heroLine heroLine2">chuẩn hóa màu số</span>
+            </h1>
             <p class="mt-4 tc-muted" data-i18n="hero.desc">Tra nhanh HEX/ảnh → ra mã chỉ gần nhất → tạo bảng phối & dải chuyển → lưu vào Thư viện. Chọn Thế giới ở thanh trên hoặc chọn 1 cổng bên dưới.</p>
-            <div class="mt-6 flex flex-wrap gap-3">
-              <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
-              <a class="tc-btn tc-chip px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaSecondary">Mở công cụ tra mã chỉ</a>
-              <a class="tc-btn tc-chip px-5 py-3" href="./worlds/library.html#tab=hex" data-i18n="hero.ctaHex">Kho HEX</a>
-            </div>
-            <div class="mt-5">
-              <div class="text-xs uppercase tc-muted">Đi nhanh</div>
-              <div class="mt-2 flex flex-wrap gap-2">
-                <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#portalHub">Sơ đồ 8 cổng (Premiere)</a>
-                <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#rouletteHub">Vòng quay dải màu</a>
-                <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#forgeHub">Lò rèn bảng màu</a>
-                <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#galleryHub">Bộ sưu tập sắc thái</a>
+            <div class="tc-hero-actions">
+              <div class="flex flex-wrap gap-3">
+                <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
+                <a class="tc-btn tc-chip px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaSecondary">Mở công cụ tra mã chỉ</a>
+                <a class="tc-btn tc-chip px-5 py-3" href="./worlds/library.html#tab=hex" data-i18n="hero.ctaHex">Kho HEX</a>
+              </div>
+              <div>
+                <div class="text-xs uppercase tc-muted">Đi nhanh</div>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#portalHub">Sơ đồ 8 cổng (Premiere)</a>
+                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#rouletteHub">Vòng quay dải màu</a>
+                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#forgeHub">Lò rèn bảng màu</a>
+                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#galleryHub">Bộ sưu tập sắc thái</a>
+                </div>
               </div>
             </div>
           </div>
@@ -182,14 +191,35 @@
             <div class="tc-aurora-body">
               <div class="tc-qa-aurora" id="qaHeroCard">
                 <div class="tc-qa-aurora-head">
-                  <span class="tc-qa-aurora-title">Mẫu cực quang</span>
+                  <span class="tc-qa-aurora-title">Bảng phối nhanh</span>
                 </div>
-                <div class="tc-qa-swatch-row" id="qaHeroSwatch">
-                  <span class="tc-qa-swatch" id="qaAuroraSw1" style="--swatch-color: var(--a1);" aria-hidden="true"></span>
-                  <span class="tc-qa-swatch" id="qaAuroraSw2" style="--swatch-color: var(--a2);" aria-hidden="true"></span>
-                  <span class="tc-qa-swatch" id="qaAuroraSw3" style="--swatch-color: var(--a3);" aria-hidden="true"></span>
+                <div class="tc-qa-swatch-grid" id="qaHeroSwatch">
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw1" aria-label="Sao chép màu 1">
+                    <span class="tc-qa-swatch" id="qaAuroraSw1" style="--swatch-color: var(--a1);" aria-hidden="true"></span>
+                    <span class="tc-qa-swatch-hex" id="qaAuroraHex1">#C07A45</span>
+                  </button>
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw2" aria-label="Sao chép màu 2">
+                    <span class="tc-qa-swatch" id="qaAuroraSw2" style="--swatch-color: var(--a2);" aria-hidden="true"></span>
+                    <span class="tc-qa-swatch-hex" id="qaAuroraHex2">#DDA26A</span>
+                  </button>
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw3" aria-label="Sao chép màu 3">
+                    <span class="tc-qa-swatch" id="qaAuroraSw3" style="--swatch-color: var(--a3);" aria-hidden="true"></span>
+                    <span class="tc-qa-swatch-hex" id="qaAuroraHex3">#906A4B</span>
+                  </button>
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw4" aria-label="Sao chép màu 4">
+                    <span class="tc-qa-swatch" id="qaAuroraSw4" style="--swatch-color: var(--a1);" aria-hidden="true"></span>
+                    <span class="tc-qa-swatch-hex" id="qaAuroraHex4">#C07A45</span>
+                  </button>
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw5" aria-label="Sao chép màu 5">
+                    <span class="tc-qa-swatch" id="qaAuroraSw5" style="--swatch-color: var(--a2);" aria-hidden="true"></span>
+                    <span class="tc-qa-swatch-hex" id="qaAuroraHex5">#DDA26A</span>
+                  </button>
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw6" aria-label="Sao chép màu 6">
+                    <span class="tc-qa-swatch" id="qaAuroraSw6" style="--swatch-color: var(--a3);" aria-hidden="true"></span>
+                    <span class="tc-qa-swatch-hex" id="qaAuroraHex6">#906A4B</span>
+                  </button>
                 </div>
-                <div class="tc-qa-hex" id="qaHeroHex"><span id="qaAuroraHexRow">#C07A45 · #DDA26A · #906A4B</span></div>
+                <div class="tc-qa-hex tc-qa-hex-row" id="qaHeroHex" aria-hidden="true"><span id="qaAuroraHexRow">#C07A45 · #DDA26A · #906A4B</span></div>
                 <div class="tc-qa-chips" id="qaHeroChips">
                   <button class="tc-qa-chip" id="qaChipThreadMap" type="button">Bản đồ mã chỉ</button>
                   <button class="tc-qa-chip" id="qaChipDeltaE" type="button">So khớp ΔE</button>
@@ -262,7 +292,7 @@
               <div class="space-y-4" id="quickPanels">
                 <div data-panel="paste" role="tabpanel">
                   <label class="text-sm font-semibold" for="qaPasteInput">Danh sách HEX</label>
-                  <textarea id="qaPasteInput" class="tc-input mt-2" placeholder="#FFAA00, #123456
+                  <textarea id="qaPasteInput" class="tc-input tc-qa-hex-input mt-2" rows="2" placeholder="#FFAA00, #123456
 #0F766E"></textarea>
                   <div class="mt-3 flex flex-wrap gap-2">
                     <button id="qaPasteApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Áp dụng</button>
@@ -317,6 +347,7 @@
                   <input id="qaImageInput" type="file" accept="image/*" class="sr-only">
                   <button id="qaImageAnalyze" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Phân tích</button>
                 </div>
+                <img id="qaImagePreview" class="tc-qa-image-preview hidden" alt="Xem trước ảnh đã chọn">
                 <div id="qaImageSwatches" class="mt-4 flex flex-wrap gap-2"></div>
                 <ul id="qaImageThreads" class="mt-4 space-y-2 text-sm"></ul>
                 <a id="qaImageOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Thêu)</a>
@@ -328,7 +359,7 @@
     </section>
 
     <!-- PORTAL HUB -->
-    <section class="max-w-6xl mx-auto px-4 pb-12" id="portalHub">
+    <section class="tc-shell pb-12" id="portalHub">
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold">8 Cổng SpaceColors</h2>
@@ -387,16 +418,16 @@
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold mt-3">Thế giới Chia sẻ + Remix</h3>
-            <p class="tc-muted text-sm mt-2">Chia sẻ tài sản màu, remix về Thư viện và khám phá cộng đồng.</p>
+            <h3 class="font-semibold mt-3">Thế giới trò chơi màu</h3>
+            <p class="tc-muted text-sm mt-2">Chơi Line 98, luyện mắt màu và tối ưu điểm số theo combo.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/community.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/colorplay.html">Mở</a>
         </div>
       </div>
     </section>
 
     <!-- ROULETTE -->
-    <section class="max-w-6xl mx-auto px-4 pb-12" id="rouletteHub">
+    <section class="tc-shell pb-12" id="rouletteHub">
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold" data-i18n="roulette.title">Vòng quay dải màu</h2>
@@ -419,7 +450,7 @@
     </section>
 
     <!-- FORGE -->
-    <section class="max-w-6xl mx-auto px-4 pb-12" id="forgeHub">
+    <section class="tc-shell pb-12" id="forgeHub">
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold" data-i18n="forge.title">Lò rèn bảng màu</h2>
@@ -461,7 +492,7 @@
     </section>
 
     <!-- GALLERY -->
-    <section class="max-w-6xl mx-auto px-4 pb-16" id="galleryHub">
+    <section class="tc-shell pb-16" id="galleryHub">
       <div class="flex items-end justify-between mb-6">
         <div>
           <h2 class="text-2xl font-semibold" data-i18n="gallery.title">Bộ sưu tập sắc thái</h2>
@@ -586,7 +617,7 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="max-w-6xl mx-auto px-4 pb-10">
+  <footer class="tc-shell pb-10">
     <div class="tc-card p-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
         <div class="space-y-3">
@@ -644,7 +675,13 @@
                     <span data-i18n="footer.columns.contact.call">Gọi ngay</span>
                     <span id="footerPhoneText">0928541111</span>
                   </a>
-                  <a id="footerZaloLink" class="hover:text-white inline-flex items-center gap-2" href="#" data-i18n="footer.columns.contact.zalo">Hỗ trợ trực tuyến 24/7</a>
+                  <a id="footerZaloLink" class="hover:text-white inline-flex items-center gap-2" href="https://zalo.me/0928541111">
+                    <svg class="tc-icon-zalo" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.2"/>
+                      <path d="M7 8h10v2l-7 6h7v2H7v-2l7-6H7z" fill="currentColor"/>
+                    </svg>
+                    <span data-i18n="footer.columns.contact.zalo">Hỗ trợ trực tuyến 24/7</span>
+                  </a>
                 </div>
               </li>
             </ul>
@@ -772,12 +809,13 @@
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
   <script src="./scripts/support_hub.js" defer></script>
+  <script src="./scripts/hero_fx.js" defer></script>
   <script>
     (() => {
       const meta = window.__SC_META__?.contact || {};
       const email = meta.email || "";
       const phone = meta.phone || "";
-      const zaloUrl = meta.zaloUrl || "";
+      const zaloUrl = meta.zaloUrl || "https://zalo.me/0928541111";
       const emailText = document.getElementById("footerEmailText");
       const emailLink = document.getElementById("footerEmailLink");
       const phoneLink = document.getElementById("footerPhoneLink");

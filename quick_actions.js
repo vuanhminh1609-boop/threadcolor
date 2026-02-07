@@ -45,26 +45,91 @@
     return `#${toHex(parts[0])}${toHex(parts[1])}${toHex(parts[2])}`.toUpperCase();
   };
 
-  const syncHeroAurora = (hexes = null) => {
-    const swatches = [
-      document.getElementById("qaAuroraSw1"),
-      document.getElementById("qaAuroraSw2"),
-      document.getElementById("qaAuroraSw3")
-    ];
+  const getCssVarValue = (name) => {
+    const root = document.documentElement;
+    if (!root) return "";
+    return getComputedStyle(root).getPropertyValue(name).trim();
+  };
+
+  const parseHexListFromCssVar = (value) => {
+    if (!value) return [];
+    return value
+      .split(/[\s,;|]+/)
+      .map(normalizeHex)
+      .filter(Boolean);
+  };
+
+  const getHeroText = () => {
+    const hero = document.querySelector(".tc-hero-title");
+    if (!hero) return "Không gian chuẩn hóa màu số";
+    const rawLines = hero.dataset.heroLines;
+    if (rawLines) {
+      return rawLines.split("|").map((part) => part.trim()).filter(Boolean).join(" ");
+    }
+    return (hero.getAttribute("aria-label") || hero.dataset.heroText || hero.textContent || "Không gian chuẩn hóa màu số").trim();
+  };
+
+  const getWordStartIndices = (text) => {
+    const indices = [];
+    if (!text) return indices;
+    let prevSpace = true;
+    for (let i = 0; i < text.length; i += 1) {
+      const char = text[i];
+      const isSpace = /\s/.test(char);
+      if (!isSpace && prevSpace) indices.push(i);
+      prevSpace = isSpace;
+    }
+    return indices;
+  };
+
+  const syncAuroraHexRowFromSwatches = () => {
+    const swatchIds = ["qaAuroraSw1", "qaAuroraSw2", "qaAuroraSw3", "qaAuroraSw4", "qaAuroraSw5", "qaAuroraSw6"];
+    const swatches = swatchIds.map((id) => document.getElementById(id));
+    const hexLabels = swatchIds.map((_, idx) => document.getElementById(`qaAuroraHex${idx + 1}`));
     const hexRow = document.getElementById("qaAuroraHexRow");
     if (!swatches.every(Boolean) || !hexRow) return;
-    const palette = pickTopHexes(hexes, 3);
-    if (palette.length) {
-      swatches.forEach((swatch, idx) => {
-        if (palette[idx]) setBg(swatch, palette[idx]);
-      });
-    }
     const current = swatches
       .map((swatch) => rgbCssToHex(getComputedStyle(swatch).backgroundColor))
       .filter(Boolean);
-    if (current.length === 3) {
-      setText(hexRow, current.join(" · "));
+    if (!current.length) return;
+    hexLabels.forEach((label, idx) => {
+      if (label && current[idx]) setText(label, current[idx]);
+    });
+    setText(hexRow, current.join(" · "));
+  };
+
+  const getHeroSwatchHexes = () => {
+    const cssVar = getCssVarValue("--hero-swatches");
+    const parsed = parseHexListFromCssVar(cssVar);
+    if (parsed.length >= 6) return parsed.slice(0, 6);
+    const start = parseFloat(getCssVarValue("--hero-hue-start"));
+    const step = parseFloat(getCssVarValue("--hero-hue-step"));
+    const hueStart = Number.isFinite(start) ? start : 0;
+    const hueStep = Number.isFinite(step) ? step : 8;
+    const heroText = getHeroText();
+    const wordIndices = getWordStartIndices(heroText);
+    const indices = wordIndices.length >= 6
+      ? wordIndices.slice(0, 6)
+      : Array.from({ length: 6 }, (_v, idx) => idx * 4);
+    return indices.map((offset) => rgbToHex(hslToRgb({
+      h: hueStart + hueStep * offset,
+      s: 0.78,
+      l: 0.58
+    })));
+  };
+
+  const syncHeroAurora = () => {
+    const swatchIds = ["qaAuroraSw1", "qaAuroraSw2", "qaAuroraSw3", "qaAuroraSw4", "qaAuroraSw5", "qaAuroraSw6"];
+    const swatches = swatchIds.map((id) => document.getElementById(id));
+    if (!swatches.every(Boolean)) return;
+    const palette = getHeroSwatchHexes();
+    if (palette.length) {
+      swatches.forEach((swatch, idx) => {
+        const hex = palette[idx] || palette[palette.length - 1];
+        if (hex) setBg(swatch, hex);
+      });
     }
+    syncAuroraHexRowFromSwatches();
   };
 
   const hexToRgb = (hex) => {
@@ -470,15 +535,7 @@
     if (key) lastAuroraKey = key;
     if (payload.mode) lastAuroraMode = payload.mode;
 
-    if (hexes.length) {
-      setBg(sw1, hexes[0]);
-      setBg(sw2, hexes[1] || hexes[0]);
-      setBg(sw3, hexes[2] || hexes[1] || hexes[0]);
-    }
-    syncHeroAurora(hexes);
-
-    const joinHexes = hexes.length ? hexes.join(" · ") : "";
-    if (joinHexes) setText(hexRow, joinHexes);
+    syncHeroAurora();
 
     const s1 = suggestions[0];
     const s2 = suggestions[1];
@@ -565,6 +622,21 @@
     showTokenToast._t = window.setTimeout(() => {
       tokenToast.classList.remove("is-visible");
     }, 1200);
+  };
+
+  const bindAuroraSwatchCopy = () => {
+    const items = Array.from(document.querySelectorAll(".tc-qa-swatch-item[data-swatch-id]"));
+    if (!items.length) return;
+    items.forEach((item) => {
+      item.addEventListener("click", () => {
+        const swatchId = item.dataset.swatchId;
+        const swatch = swatchId ? document.getElementById(swatchId) : item.querySelector(".tc-qa-swatch");
+        if (!swatch) return;
+        const hex = rgbCssToHex(getComputedStyle(swatch).backgroundColor);
+        if (!hex) return;
+        copyToClipboard(hex).then(() => showTokenToast(`Đã sao chép ${hex}`));
+      });
+    });
   };
 
   tokenPresetEl?.addEventListener("change", () => {
@@ -801,6 +873,7 @@
     btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
   });
   setActiveTab(tabState.active);
+  bindAuroraSwatchCopy();
   syncHeroAurora();
   renderAuroraTokenPanel({});
 
@@ -999,6 +1072,8 @@
     const imageSwatches = document.getElementById("qaImageSwatches");
     const imageThreads = document.getElementById("qaImageThreads");
     const imageOpen = document.getElementById("qaImageOpen");
+    const imagePreview = document.getElementById("qaImagePreview");
+    let imagePreviewUrl = "";
 
     const extractPalette = async (file) => {
       const bitmap = await createImageBitmap(file);
@@ -1030,6 +1105,34 @@
       return top;
     };
 
+    const clearImagePreview = () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+        imagePreviewUrl = "";
+      }
+      if (imagePreview) {
+        imagePreview.src = "";
+        imagePreview.classList.add("hidden");
+      }
+    };
+
+    const showImagePreview = (file) => {
+      if (!imagePreview || !file || !file.type.startsWith("image/")) return;
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+      imagePreviewUrl = URL.createObjectURL(file);
+      imagePreview.src = imagePreviewUrl;
+      imagePreview.classList.remove("hidden");
+    };
+
+    imageInput?.addEventListener("change", () => {
+      const file = imageInput?.files?.[0];
+      if (!file || !file.type.startsWith("image/")) {
+        clearImagePreview();
+        return;
+      }
+      showImagePreview(file);
+    });
+
     imageAnalyze?.addEventListener("click", async () => {
       const file = imageInput?.files?.[0];
       if (!file) return;
@@ -1058,6 +1161,15 @@
   };
 
   document.addEventListener("tc-world-changed", () => syncHeroAurora());
+  document.addEventListener("tc:tone-changed", () => syncHeroAurora());
+
+  if (typeof MutationObserver !== "undefined" && document.documentElement) {
+    const toneObserver = new MutationObserver((mutations) => {
+      const changed = mutations.some((m) => m.type === "attributes" && m.attributeName === "data-world");
+      if (changed) syncHeroAurora();
+    });
+    toneObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-world"] });
+  }
 })();
 
 
