@@ -35,12 +35,40 @@ const state = {
   generatorStops: []
 };
 
+const FULLSCREEN_COLUMNS = 5;
+const FULLSCREEN_HISTORY_LIMIT = 10;
+const FULLSCREEN_HUE_STEP = 8;
+const FULLSCREEN_HUE_STEP_LARGE = 20;
+const FULLSCREEN_LIGHT_STEP = 3;
+const FULLSCREEN_LIGHT_STEP_LARGE = 10;
+let fullscreenActive = false;
+let fullscreenPalette = [];
+let fullscreenLocks = Array.from({ length: FULLSCREEN_COLUMNS }, () => false);
+let fullscreenHelpVisible = false;
+let fullscreenBodyOverflow = "";
+let fullscreenHistory = [];
+let fullscreenHistoryIndex = -1;
+let fullscreenTokenVisible = false;
+let fullscreenLastPointer = "mouse";
+const fullscreenRailTimers = new WeakMap();
+let presetDetailOpen = false;
+let presetDetailBodyOverflow = "";
+
 const el = {
   grid: document.getElementById("paletteGrid"),
   empty: document.getElementById("paletteEmpty"),
   saveLibrary: document.getElementById("paletteSaveLibrary"),
   useLibrary: document.getElementById("paletteUseLibrary"),
   share: document.getElementById("paletteShare"),
+  fullscreenBtn: document.getElementById("paletteFullscreenBtn"),
+  fullscreen: document.getElementById("paletteFullscreen"),
+  fullscreenExit: document.getElementById("paletteFsExit"),
+  fullscreenCopyAll: document.getElementById("paletteFsCopyAll"),
+  fullscreenHelp: document.getElementById("paletteFsHelp"),
+  fullscreenToken: document.getElementById("paletteFsToken"),
+  fullscreenTokenCopy: document.getElementById("paletteFsTokenCopy"),
+  presetDetail: document.getElementById("palettePresetDetail"),
+  presetDetailBody: document.getElementById("palettePresetDetailBody"),
   hexInput: document.getElementById("paletteHexInput"),
   hexApply: document.getElementById("paletteHexApply"),
   baseColor: document.getElementById("paletteBaseColor"),
@@ -241,7 +269,10 @@ function getBestText(hex) {
 }
 
 function buildShareLink(stops) {
-  const payload = encodeURIComponent(stops.join(","));
+  const list = Array.isArray(stops)
+    ? stops.map((hex) => normalizeHex(hex)).filter(Boolean).map((hex) => hex.toUpperCase())
+    : [];
+  const payload = encodeURIComponent(JSON.stringify({ colors: list }));
   return `${window.location.origin}${window.location.pathname}#p=${payload}`;
 }
 
@@ -927,6 +958,898 @@ function showToast(message) {
   }, 1400);
 }
 
+function buildHexPaletteFromInput(list) {
+  const cleaned = Array.isArray(list) ? list.filter(Boolean) : [];
+  if (!cleaned.length) return [];
+  const base = cleaned[0];
+  const fallback = buildHarmonyPalette(base, "analogous");
+  const targetCount = 5;
+  const result = fallback.slice(0, targetCount);
+  cleaned.slice(0, targetCount).forEach((hex, idx) => {
+    result[idx] = hex;
+  });
+  return result.slice(0, targetCount);
+}
+
+function buildFullscreenPalette() {
+  const baseHue = Math.floor(Math.random() * 360);
+  const hueOffsets = [0, 28, 62, 130, 210];
+  const baseSat = clampNumber(45 + Math.random() * 30, 35, 85);
+  const baseLight = clampNumber(42 + Math.random() * 16, 30, 70);
+  return hueOffsets.map((offset, idx) => {
+    const h = (baseHue + offset) % 360;
+    const s = clampNumber(baseSat + (idx - 2) * 4, 28, 90);
+    const l = clampNumber(baseLight + (idx - 2) * 6, 24, 82);
+    return hslToHex(h, s, l);
+  });
+}
+
+function seedFullscreenPalette() {
+  const base = buildFullscreenPalette();
+  const active = getActivePalette();
+  const stops = Array.isArray(active?.stops) ? active.stops : [];
+  if (!stops.length) return base;
+  const cleaned = stops.map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (!cleaned.length) return base;
+  return Array.from({ length: FULLSCREEN_COLUMNS }, (_, idx) => cleaned[idx] || base[idx]);
+}
+
+function normalizeFullscreenHex(hex) {
+  const normalized = normalizeHex(hex);
+  return normalized ? normalized.toUpperCase() : "#111111";
+}
+
+function snapshotFullscreenPalette(palette) {
+  const list = Array.isArray(palette) ? palette : [];
+  return Array.from({ length: FULLSCREEN_COLUMNS }, (_, idx) => normalizeFullscreenHex(list[idx]));
+}
+
+function showRailForCol(col, duration = 2000) {
+  if (!col) return;
+  col.classList.add("is-rail-visible");
+  if (fullscreenRailTimers.has(col)) {
+    window.clearTimeout(fullscreenRailTimers.get(col));
+  }
+  const timer = window.setTimeout(() => {
+    col.classList.remove("is-rail-visible");
+    fullscreenRailTimers.delete(col);
+  }, duration);
+  fullscreenRailTimers.set(col, timer);
+}
+
+function hideRailForCol(col) {
+  if (!col) return;
+  col.classList.remove("is-rail-visible");
+  if (fullscreenRailTimers.has(col)) {
+    window.clearTimeout(fullscreenRailTimers.get(col));
+    fullscreenRailTimers.delete(col);
+  }
+}
+
+function hideAllRails() {
+  if (!el.fullscreen) return;
+  el.fullscreen.querySelectorAll(".pf-col.is-rail-visible").forEach((col) => {
+    hideRailForCol(col);
+  });
+}
+
+function closeAllTunePopovers(exceptCol) {
+  if (!el.fullscreen) return;
+  el.fullscreen.querySelectorAll(".pf-tune.is-open").forEach((panel) => {
+    const col = panel.closest(".pf-col");
+    if (exceptCol && col === exceptCol) return;
+    panel.classList.remove("is-open");
+    panel.setAttribute("aria-hidden", "true");
+    if (col) col.classList.remove("is-tune-open");
+  });
+}
+
+function toggleTunePopover(col) {
+  if (!col) return;
+  const panel = col.querySelector(".pf-tune");
+  if (!panel) return;
+  const isOpen = panel.classList.contains("is-open");
+  closeAllTunePopovers(col);
+  if (!isOpen) {
+    initTunePanel(col);
+    panel.classList.add("is-open");
+    panel.setAttribute("aria-hidden", "false");
+    col.classList.add("is-tune-open");
+  } else {
+    panel.classList.remove("is-open");
+    panel.setAttribute("aria-hidden", "true");
+    col.classList.remove("is-tune-open");
+  }
+}
+
+function randomFullscreenHex() {
+  const hue = Math.floor(Math.random() * 360);
+  const sat = clampNumber(45 + Math.random() * 40, 30, 90);
+  const light = clampNumber(35 + Math.random() * 30, 25, 80);
+  return hslToHex(hue, sat, light);
+}
+
+function updateFullscreenColumn(idx, hex, { recordHistory = true } = {}) {
+  if (idx < 0 || idx >= FULLSCREEN_COLUMNS) return;
+  const next = snapshotFullscreenPalette(fullscreenPalette);
+  next[idx] = normalizeFullscreenHex(hex);
+  applyFullscreenPalette(next, { respectLocks: false, recordHistory });
+}
+
+function adjustFullscreenColumn(idx, { hueDelta = 0, lightDelta = 0 } = {}) {
+  if (idx < 0 || idx >= FULLSCREEN_COLUMNS) return;
+  const baseHex = fullscreenPalette[idx];
+  const rgb = hexToRgb(baseHex);
+  if (!rgb) return;
+  const hsl = rgbToHsl(rgb);
+  const nextHue = (hsl.h + hueDelta + 360) % 360;
+  const nextLight = clampNumber(hsl.l + lightDelta, 0, 100);
+  updateFullscreenColumn(idx, hslToHex(nextHue, hsl.s, nextLight));
+}
+
+function formatTuneValue(value, { isOffset = false } = {}) {
+  const num = Math.round(Number(value) || 0);
+  if (!isOffset) return String(num);
+  if (num > 0) return `+${num}`;
+  return String(num);
+}
+
+function syncTuneValues(panel) {
+  if (!panel) return;
+  const hueInput = panel.querySelector("[data-tune='hue']");
+  const satInput = panel.querySelector("[data-tune='sat']");
+  const lightInput = panel.querySelector("[data-tune='light']");
+  const hueValue = panel.querySelector("[data-value='hue']");
+  const satValue = panel.querySelector("[data-value='sat']");
+  const lightValue = panel.querySelector("[data-value='light']");
+  if (hueInput && hueValue) hueValue.textContent = formatTuneValue(hueInput.value);
+  if (satInput && satValue) satValue.textContent = formatTuneValue(satInput.value, { isOffset: true });
+  if (lightInput && lightValue) lightValue.textContent = formatTuneValue(lightInput.value, { isOffset: true });
+}
+
+function initTunePanel(col) {
+  if (!col) return;
+  const panel = col.querySelector(".pf-tune");
+  if (!panel) return;
+  const idx = Number(col.dataset.idx || 0);
+  const hex = normalizeHex(fullscreenPalette[idx] || col.dataset.hex || "#111111");
+  const rgb = hex ? hexToRgb(hex) : null;
+  if (!rgb) return;
+  const hsl = rgbToHsl(rgb);
+  panel.dataset.baseH = String(Math.round(hsl.h));
+  panel.dataset.baseS = String(Math.round(hsl.s));
+  panel.dataset.baseL = String(Math.round(hsl.l));
+  const hueInput = panel.querySelector("[data-tune='hue']");
+  const satInput = panel.querySelector("[data-tune='sat']");
+  const lightInput = panel.querySelector("[data-tune='light']");
+  if (hueInput) hueInput.value = Math.round(hsl.h);
+  if (satInput) satInput.value = 0;
+  if (lightInput) lightInput.value = 0;
+  syncTuneValues(panel);
+}
+
+function computeTuneHex(panel) {
+  if (!panel) return null;
+  const baseH = Number(panel.dataset.baseH || 0);
+  const baseS = Number(panel.dataset.baseS || 0);
+  const baseL = Number(panel.dataset.baseL || 0);
+  const hueInput = panel.querySelector("[data-tune='hue']");
+  const satInput = panel.querySelector("[data-tune='sat']");
+  const lightInput = panel.querySelector("[data-tune='light']");
+  const hue = Number(hueInput?.value ?? baseH);
+  const satOffset = Number(satInput?.value ?? 0);
+  const lightOffset = Number(lightInput?.value ?? 0);
+  const nextS = clampNumber(baseS + satOffset, 0, 100);
+  const nextL = clampNumber(baseL + lightOffset, 0, 100);
+  return hslToHex(hue, nextS, nextL);
+}
+
+function getFullscreenStops() {
+  return snapshotFullscreenPalette(fullscreenPalette);
+}
+
+function toggleFullscreenTokenPanel(force) {
+  if (!el.fullscreenToken) return;
+  if (typeof force === "boolean") {
+    fullscreenTokenVisible = force;
+  } else {
+    fullscreenTokenVisible = !fullscreenTokenVisible;
+  }
+  el.fullscreenToken.classList.toggle("is-open", fullscreenTokenVisible);
+  el.fullscreenToken.setAttribute("aria-hidden", fullscreenTokenVisible ? "false" : "true");
+}
+
+async function copyFullscreenTokens() {
+  const stops = getFullscreenStops();
+  if (!stops.length) {
+    showToast("Chưa có màu để xuất token.");
+    return;
+  }
+  const ok = await copyText(tokensFor(stops));
+  showToast(ok ? "Đã sao chép CSS tokens." : "Không thể sao chép.");
+  if (ok) toggleFullscreenTokenPanel(false);
+}
+
+function saveFullscreenToLibrary() {
+  const stops = getFullscreenStops();
+  if (stops.length < MIN_STOPS) {
+    showToast("Chưa đủ màu để lưu.");
+    return;
+  }
+  const palette = {
+    ten: "Palette toàn màn hình",
+    tags: ["fullscreen"],
+    stops
+  };
+  const ok = addAssetToLibrary(buildPaletteAsset(palette));
+  showToast(ok ? "Đã lưu vào Thư viện." : "Không thể lưu tài sản.");
+}
+
+async function copyFullscreenShareLink() {
+  const stops = getFullscreenStops();
+  if (stops.length < MIN_STOPS) {
+    showToast("Chưa đủ màu để chia sẻ.");
+    return;
+  }
+  const ok = await copyText(buildShareLink(stops));
+  showToast(ok ? "Đã sao chép link chia sẻ." : "Không thể sao chép.");
+}
+
+function pushFullscreenHistory(palette) {
+  const snapshot = snapshotFullscreenPalette(palette);
+  const current = fullscreenHistory[fullscreenHistoryIndex];
+  if (current && current.join("|") === snapshot.join("|")) return;
+  if (fullscreenHistoryIndex < fullscreenHistory.length - 1) {
+    fullscreenHistory = fullscreenHistory.slice(0, fullscreenHistoryIndex + 1);
+  }
+  fullscreenHistory.push(snapshot);
+  if (fullscreenHistory.length > FULLSCREEN_HISTORY_LIMIT) {
+    const overflow = fullscreenHistory.length - FULLSCREEN_HISTORY_LIMIT;
+    fullscreenHistory = fullscreenHistory.slice(overflow);
+  }
+  fullscreenHistoryIndex = fullscreenHistory.length - 1;
+}
+
+function resetFullscreenHistory(palette) {
+  fullscreenHistory = [];
+  fullscreenHistoryIndex = -1;
+  pushFullscreenHistory(palette);
+}
+
+function applyFullscreenPalette(hexes, { respectLocks = false, recordHistory = true } = {}) {
+  const next = renderFullscreenPalette(hexes, { respectLocks });
+  if (recordHistory && next) {
+    pushFullscreenHistory(next);
+  }
+  return next;
+}
+
+function undoFullscreenPalette() {
+  if (fullscreenHistoryIndex <= 0) return;
+  fullscreenHistoryIndex -= 1;
+  renderFullscreenPalette(fullscreenHistory[fullscreenHistoryIndex] || []);
+}
+
+function redoFullscreenPalette() {
+  if (fullscreenHistoryIndex >= fullscreenHistory.length - 1) return;
+  fullscreenHistoryIndex += 1;
+  renderFullscreenPalette(fullscreenHistory[fullscreenHistoryIndex] || []);
+}
+
+function shiftFullscreenHue(delta) {
+  if (!fullscreenPalette.length) return;
+  const shifted = fullscreenPalette.map((hex) => {
+    const normalized = normalizeHex(hex);
+    if (!normalized) return hex;
+    const rgb = hexToRgb(normalized);
+    if (!rgb) return hex;
+    const hsl = rgbToHsl(rgb);
+    const nextHue = (hsl.h + delta + 360) % 360;
+    return hslToHex(nextHue, hsl.s, hsl.l);
+  });
+  applyFullscreenPalette(shifted, { respectLocks: true });
+}
+
+function shiftFullscreenLightness(delta) {
+  if (!fullscreenPalette.length) return;
+  const shifted = fullscreenPalette.map((hex) => {
+    const normalized = normalizeHex(hex);
+    if (!normalized) return hex;
+    const rgb = hexToRgb(normalized);
+    if (!rgb) return hex;
+    const hsl = rgbToHsl(rgb);
+    const nextLight = clampNumber(hsl.l + delta, 0, 100);
+    return hslToHex(hsl.h, hsl.s, nextLight);
+  });
+  applyFullscreenPalette(shifted, { respectLocks: true });
+}
+
+function ensureFullscreenOverlay() {
+  let overlay = el.fullscreen || document.getElementById("paletteFullscreen");
+  if (!overlay) {
+    const lockIcon = `
+      <svg class="pf-rail-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+      </svg>
+    `;
+    const copyRailIcon = `
+      <svg class="pf-rail-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="9" y="9" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+        <path d="M5 15V5a2 2 0 0 1 2-2h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    `;
+    const rollIcon = `
+      <svg class="pf-rail-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 4v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M20 20v-6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M20 10a8 8 0 0 0-14-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M4 14a8 8 0 0 0 14 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    `;
+    const tuneIcon = `
+      <svg class="pf-rail-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <circle cx="9" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <circle cx="15" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <circle cx="7" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"></circle>
+      </svg>
+    `;
+    const pickIcon = `
+      <svg class="pf-rail-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M14.5 3.5l6 6-2 2-1.5-1.5-7.5 7.5H7v-2.5l7.5-7.5L13 5.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M5 19h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+    `;
+    const rail = `
+      <div class="pf-rail" aria-hidden="false">
+        <button class="pf-rail-btn" type="button" data-action="lock" data-tooltip="Khóa cột" aria-label="Khóa cột">${lockIcon}</button>
+        <button class="pf-rail-btn" type="button" data-action="copy" data-tooltip="Sao chép HEX" aria-label="Sao chép HEX">${copyRailIcon}</button>
+        <button class="pf-rail-btn" type="button" data-action="roll" data-tooltip="Quay cột" aria-label="Quay cột">${rollIcon}</button>
+        <button class="pf-rail-btn" type="button" data-action="tune" data-tooltip="Tinh chỉnh" aria-label="Tinh chỉnh">${tuneIcon}</button>
+        <button class="pf-rail-btn" type="button" data-action="pick" data-tooltip="Chọn màu" aria-label="Chọn màu">${pickIcon}</button>
+      </div>
+      <div class="pf-tune" aria-hidden="true">
+        <div class="pf-tune-row">
+          <span class="pf-tune-label">Hue</span>
+          <input class="pf-tune-range" type="range" min="0" max="360" step="1" value="0" data-tune="hue" aria-label="Hue" />
+          <span class="pf-tune-value" data-value="hue">0</span>
+        </div>
+        <div class="pf-tune-row">
+          <span class="pf-tune-label">Bão hoà</span>
+          <input class="pf-tune-range" type="range" min="-30" max="30" step="1" value="0" data-tune="sat" aria-label="Bão hoà" />
+          <span class="pf-tune-value" data-value="sat">0</span>
+        </div>
+        <div class="pf-tune-row">
+          <span class="pf-tune-label">Sáng</span>
+          <input class="pf-tune-range" type="range" min="-20" max="20" step="1" value="0" data-tune="light" aria-label="Độ sáng" />
+          <span class="pf-tune-value" data-value="light">0</span>
+        </div>
+      </div>
+    `;
+    const cols = Array.from({ length: FULLSCREEN_COLUMNS }, (_, idx) => `
+      <div class="pf-col" role="button" tabindex="0" data-idx="${idx}">
+        ${rail}
+        <span class="pf-hex">#FFFFFF</span>
+      </div>
+    `).join("");
+    const shortcutsIcon = `
+      <svg class="pf-hud-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+        <path d="M7 10h2M11 10h2M15 10h2M7 14h2M11 14h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+    `;
+    const exitIcon = `
+      <svg class="pf-hud-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6l-12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+    `;
+    overlay = document.createElement("div");
+    overlay.id = "paletteFullscreen";
+    overlay.className = "pf-overlay";
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.innerHTML = `
+      <div class="pf-hud pf-hud-top">
+        <span class="pf-live">LIVE</span>
+        <div class="pf-hud-rail">
+          <button id="paletteFsShortcuts" class="pf-hud-btn" type="button" aria-label="Phím tắt">
+            ${shortcutsIcon}
+            <span class="pf-tooltip pf-tooltip--shortcuts" aria-hidden="true">
+              <span>Space</span>
+              <span>1-5</span>
+              <span>C</span>
+              <span>H</span>
+              <span>Esc</span>
+            </span>
+          </button>
+          <button id="paletteFsExit" class="pf-hud-btn" type="button" aria-label="Thoát">
+            ${exitIcon}
+          </button>
+        </div>
+      </div>
+      <div class="pf-cols">
+        ${cols}
+      </div>
+      <div id="paletteFsToken" class="pf-help" aria-hidden="true" style="top:auto; bottom:72px;">
+        <div style="display:flex; align-items:center; gap:0.6rem; justify-content:space-between;">
+          <p class="pf-help-title" style="margin:0;">CSS tokens</p>
+          <button id="paletteFsTokenCopy" class="pf-btn" type="button">Copy</button>
+        </div>
+      </div>
+      <div id="paletteFsHelp" class="pf-help" aria-hidden="true">
+        <p class="pf-help-title">Phím tắt</p>
+        <ul class="pf-help-list">
+          <li><span>Space</span> Đổi palette</li>
+          <li><span>1-5</span> Khoá/mở cột</li>
+          <li><span>C</span> Sao chép toàn bộ</li>
+          <li><span>H</span> Bật/tắt trợ giúp</li>
+          <li><span>Esc</span> Thoát</li>
+        </ul>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+  el.fullscreen = overlay;
+  el.fullscreenExit = overlay.querySelector("#paletteFsExit");
+  el.fullscreenCopyAll = overlay.querySelector("#paletteFsCopyAll");
+  el.fullscreenHelp = overlay.querySelector("#paletteFsHelp");
+  el.fullscreenToken = overlay.querySelector("#paletteFsToken");
+  el.fullscreenTokenCopy = overlay.querySelector("#paletteFsTokenCopy");
+  if (!el.fullscreenToken) {
+    const tokenPanel = document.createElement("div");
+    tokenPanel.id = "paletteFsToken";
+    tokenPanel.className = "pf-help";
+    tokenPanel.setAttribute("aria-hidden", "true");
+    tokenPanel.style.top = "auto";
+    tokenPanel.style.bottom = "72px";
+    tokenPanel.innerHTML = `
+      <div style="display:flex; align-items:center; gap:0.6rem; justify-content:space-between;">
+        <p class="pf-help-title" style="margin:0;">CSS tokens</p>
+        <button id="paletteFsTokenCopy" class="pf-btn" type="button">Copy</button>
+      </div>
+    `;
+    overlay.appendChild(tokenPanel);
+    el.fullscreenToken = tokenPanel;
+    el.fullscreenTokenCopy = tokenPanel.querySelector("#paletteFsTokenCopy");
+  }
+  let picker = overlay.querySelector("#paletteFsPicker");
+  if (!picker) {
+    picker = document.createElement("input");
+    picker.id = "paletteFsPicker";
+    picker.type = "color";
+    picker.className = "pf-picker";
+    picker.setAttribute("aria-hidden", "true");
+    overlay.appendChild(picker);
+  }
+  el.fullscreenPicker = picker;
+  const helpList = overlay.querySelector(".pf-help-list");
+  if (helpList) {
+    helpList.innerHTML = `
+      <li><span>Space</span> Đổi palette</li>
+      <li><span>1-5</span> Khoá/mở cột</li>
+      <li><span>C</span> Sao chép toàn bộ</li>
+      <li><span>H</span> Bật/tắt trợ giúp</li>
+      <li><span>Esc</span> Thoát</li>
+    `;
+  }
+  return overlay;
+}
+
+function renderFullscreenPalette(hexes, { respectLocks = false } = {}) {
+  if (!el.fullscreen) return;
+  const cols = Array.from(el.fullscreen.querySelectorAll(".pf-col"));
+  const nextPalette = [...fullscreenPalette];
+  for (let idx = 0; idx < FULLSCREEN_COLUMNS; idx += 1) {
+    const raw = hexes[idx] || nextPalette[idx] || "#111111";
+    const normalized = normalizeHex(raw) ? normalizeHex(raw).toUpperCase() : "#111111";
+    if (!respectLocks || !fullscreenLocks[idx] || !nextPalette[idx]) {
+      nextPalette[idx] = normalized;
+    }
+  }
+  cols.forEach((col) => {
+    const idx = Number(col.dataset.idx || 0);
+    const hex = nextPalette[idx] || "#111111";
+    col.dataset.hex = hex;
+    col.dataset.locked = fullscreenLocks[idx] ? "1" : "0";
+    col.style.background = hex;
+    const label = col.querySelector(".pf-hex");
+    if (label) {
+      label.textContent = hex;
+      const best = getBestText(hex);
+      const isDarkText = best.text === "#000000";
+      label.style.color = best.text;
+      label.style.backgroundColor = isDarkText ? "rgba(255,255,255,0.72)" : "rgba(0,0,0,0.35)";
+      label.style.borderColor = isDarkText ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.2)";
+    }
+  });
+  fullscreenPalette = nextPalette;
+  return nextPalette;
+}
+
+function toggleFullscreenLock(idx) {
+  if (idx < 0 || idx >= FULLSCREEN_COLUMNS) return;
+  fullscreenLocks[idx] = !fullscreenLocks[idx];
+  renderFullscreenPalette(fullscreenPalette, { respectLocks: true });
+}
+
+async function copyFullscreenAll() {
+  const list = fullscreenPalette.filter(Boolean);
+  if (!list.length) {
+    showToast("Chưa có màu để sao chép.");
+    return;
+  }
+  const ok = await copyText(list.join(", "));
+  showToast(ok ? "Đã sao chép toàn bộ HEX." : "Không thể sao chép.");
+}
+
+function toggleFullscreenHelp(force) {
+  if (!el.fullscreenHelp) return;
+  if (typeof force === "boolean") {
+    fullscreenHelpVisible = force;
+  } else {
+    fullscreenHelpVisible = !fullscreenHelpVisible;
+  }
+  el.fullscreenHelp.classList.toggle("is-open", fullscreenHelpVisible);
+  el.fullscreenHelp.setAttribute("aria-hidden", fullscreenHelpVisible ? "false" : "true");
+}
+
+function handleFullscreenKeydown(event) {
+  if (!fullscreenActive) return;
+  const tag = event.target?.tagName || "";
+  if (tag === "INPUT" || tag === "TEXTAREA") return;
+  if (event.code === "Space") {
+    event.preventDefault();
+    applyFullscreenPalette(buildFullscreenPalette(), { respectLocks: true });
+    return;
+  }
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    const step = event.shiftKey ? FULLSCREEN_HUE_STEP_LARGE : FULLSCREEN_HUE_STEP;
+    shiftFullscreenHue(-step);
+    return;
+  }
+  if (event.key === "ArrowRight") {
+    event.preventDefault();
+    const step = event.shiftKey ? FULLSCREEN_HUE_STEP_LARGE : FULLSCREEN_HUE_STEP;
+    shiftFullscreenHue(step);
+    return;
+  }
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+    const step = event.shiftKey ? FULLSCREEN_LIGHT_STEP_LARGE : FULLSCREEN_LIGHT_STEP;
+    shiftFullscreenLightness(step);
+    return;
+  }
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    const step = event.shiftKey ? FULLSCREEN_LIGHT_STEP_LARGE : FULLSCREEN_LIGHT_STEP;
+    shiftFullscreenLightness(-step);
+    return;
+  }
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeFullscreenPalette();
+    return;
+  }
+  if (event.key === "c" || event.key === "C") {
+    event.preventDefault();
+    copyFullscreenAll();
+    return;
+  }
+  if (event.key === "h" || event.key === "H") {
+    event.preventDefault();
+    toggleFullscreenHelp();
+    return;
+  }
+  if (event.key === "t" || event.key === "T") {
+    event.preventDefault();
+    toggleFullscreenTokenPanel();
+    return;
+  }
+  if (event.key === "s" || event.key === "S") {
+    event.preventDefault();
+    saveFullscreenToLibrary();
+    return;
+  }
+  if (event.key === "l" || event.key === "L") {
+    event.preventDefault();
+    copyFullscreenShareLink();
+    return;
+  }
+  if (event.key === "u" || event.key === "U") {
+    event.preventDefault();
+    undoFullscreenPalette();
+    return;
+  }
+  if (event.key === "r" || event.key === "R") {
+    event.preventDefault();
+    redoFullscreenPalette();
+    return;
+  }
+  if (/^[1-5]$/.test(event.key)) {
+    event.preventDefault();
+    toggleFullscreenLock(Number(event.key) - 1);
+  }
+}
+
+function openFullscreenColorPicker(idx) {
+  if (!el.fullscreenPicker) return;
+  const hex = normalizeFullscreenHex(fullscreenPalette[idx]);
+  el.fullscreenPicker.value = hex;
+  el.fullscreenPicker.dataset.idx = String(idx);
+  let opened = false;
+  try {
+    if (typeof el.fullscreenPicker.showPicker === "function") {
+      el.fullscreenPicker.showPicker();
+      opened = true;
+    } else {
+      el.fullscreenPicker.click();
+      opened = true;
+    }
+  } catch (_err) {
+    opened = false;
+  }
+  if (!opened) {
+    const fallback = window.prompt("Nhập mã HEX (#RRGGBB):", hex);
+    const next = normalizeHex(fallback);
+    if (next) {
+      updateFullscreenColumn(idx, next.toUpperCase());
+    } else if (fallback) {
+      showToast("Mã HEX không hợp lệ.");
+    }
+  }
+}
+
+function handleFullscreenPickerChange(event) {
+  const picker = event.target;
+  const idx = Number(picker.dataset.idx || -1);
+  if (Number.isNaN(idx) || idx < 0) return;
+  const next = normalizeHex(picker.value);
+  if (!next) return;
+  const normalized = next.toUpperCase();
+  updateFullscreenColumn(idx, normalized);
+  showToast(`Đã chọn ${normalized}.`);
+}
+
+async function handleFullscreenOverlayClick(event) {
+  if (!fullscreenActive || !el.fullscreen) return;
+  const overlay = el.fullscreen;
+  const actionBtn = event.target.closest("[data-action]");
+  if (actionBtn && overlay.contains(actionBtn)) {
+    event.preventDefault();
+    event.stopPropagation();
+    const col = actionBtn.closest(".pf-col");
+    const idx = Number(col?.dataset.idx ?? -1);
+    if (Number.isNaN(idx) || idx < 0) return;
+    const action = actionBtn.dataset.action || "";
+    const hex = fullscreenPalette[idx] || col?.dataset.hex || "";
+    if (action === "lock") {
+      toggleFullscreenLock(idx);
+      return;
+    }
+    if (action === "copy") {
+      if (!hex) {
+        showToast("Chưa có màu để sao chép.");
+        return;
+      }
+      const ok = await copyText(hex);
+      showToast(ok ? `Đã sao chép ${hex}` : "Không thể sao chép.");
+      closeAllTunePopovers();
+      return;
+    }
+    if (action === "roll") {
+      updateFullscreenColumn(idx, randomFullscreenHex());
+      closeAllTunePopovers();
+      return;
+    }
+    if (action === "tune") {
+      toggleTunePopover(col);
+      return;
+    }
+    if (action === "pick") {
+      openFullscreenColorPicker(idx);
+      closeAllTunePopovers();
+      return;
+    }
+    return;
+  }
+
+  const col = event.target.closest(".pf-col");
+  if (!col || !overlay.contains(col)) {
+    closeAllTunePopovers();
+    return;
+  }
+  if (event.target.closest(".pf-tune")) return;
+  if (fullscreenLastPointer === "touch") {
+    showRailForCol(col, 2000);
+    return;
+  }
+  const idx = Number(col.dataset.idx || 0);
+  toggleFullscreenLock(idx);
+  closeAllTunePopovers();
+  const hex = col.dataset.hex || "";
+  if (!hex) return;
+  const ok = await copyText(hex);
+  showToast(ok ? `Đã sao chép ${hex}` : "Không thể sao chép.");
+}
+
+function handleFullscreenOverlayPointerDown(event) {
+  if (!el.fullscreen) return;
+  fullscreenLastPointer = event.pointerType || "mouse";
+  if (fullscreenLastPointer !== "touch") return;
+  const col = event.target.closest(".pf-col");
+  if (!col || !el.fullscreen.contains(col)) return;
+  if (event.target.closest(".pf-rail") || event.target.closest(".pf-tune")) return;
+  showRailForCol(col, 2000);
+}
+
+function handleFullscreenOverlayInput(event) {
+  if (!fullscreenActive) return;
+  const range = event.target.closest(".pf-tune-range");
+  if (!range || !el.fullscreen?.contains(range)) return;
+  const panel = range.closest(".pf-tune");
+  const col = range.closest(".pf-col");
+  if (!panel || !col) return;
+  const idx = Number(col.dataset.idx || 0);
+  const nextHex = computeTuneHex(panel);
+  if (!nextHex) return;
+  syncTuneValues(panel);
+  updateFullscreenColumn(idx, nextHex, { recordHistory: false });
+}
+
+function handleFullscreenOverlayChange(event) {
+  if (!fullscreenActive) return;
+  const range = event.target.closest(".pf-tune-range");
+  if (!range || !el.fullscreen?.contains(range)) return;
+  const panel = range.closest(".pf-tune");
+  const col = range.closest(".pf-col");
+  if (!panel || !col) return;
+  const idx = Number(col.dataset.idx || 0);
+  const nextHex = computeTuneHex(panel);
+  if (!nextHex) return;
+  syncTuneValues(panel);
+  updateFullscreenColumn(idx, nextHex, { recordHistory: true });
+}
+
+function handleFullscreenChange() {
+  if (!fullscreenActive) return;
+  if (document.fullscreenElement !== el.fullscreen) {
+    closeFullscreenPalette({ skipExit: true });
+  }
+}
+
+function openFullscreenPalette() {
+  const overlay = ensureFullscreenOverlay();
+  if (!overlay || fullscreenActive) return;
+  fullscreenActive = true;
+  fullscreenBodyOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+  overlay.classList.add("is-active");
+  overlay.setAttribute("aria-hidden", "false");
+  fullscreenLocks = Array.from({ length: FULLSCREEN_COLUMNS }, () => false);
+  fullscreenHelpVisible = false;
+  toggleFullscreenHelp(false);
+  fullscreenTokenVisible = false;
+  toggleFullscreenTokenPanel(false);
+  fullscreenLastPointer = "mouse";
+  closeAllTunePopovers();
+  hideAllRails();
+  const seeded = renderFullscreenPalette(seedFullscreenPalette());
+  resetFullscreenHistory(seeded || []);
+  window.addEventListener("keydown", handleFullscreenKeydown);
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+  if (typeof overlay.requestFullscreen === "function") {
+    overlay.requestFullscreen().catch(() => {
+      overlay.classList.add("is-fallback");
+    });
+  } else {
+    overlay.classList.add("is-fallback");
+  }
+}
+
+function closeFullscreenPalette({ skipExit = false } = {}) {
+  if (!fullscreenActive || !el.fullscreen) return;
+  fullscreenActive = false;
+  el.fullscreen.classList.remove("is-active", "is-fallback");
+  el.fullscreen.setAttribute("aria-hidden", "true");
+  window.removeEventListener("keydown", handleFullscreenKeydown);
+  document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  toggleFullscreenHelp(false);
+  toggleFullscreenTokenPanel(false);
+  closeAllTunePopovers();
+  hideAllRails();
+  if (!skipExit && document.fullscreenElement === el.fullscreen) {
+    document.exitFullscreen().catch(() => {});
+  }
+  document.body.style.overflow = fullscreenBodyOverflow;
+  fullscreenBodyOverflow = "";
+  fullscreenHistory = [];
+  fullscreenHistoryIndex = -1;
+  fullscreenTokenVisible = false;
+}
+
+function initFullscreenPalette() {
+  const overlay = ensureFullscreenOverlay();
+  if (!overlay || overlay.dataset.ready === "1") return;
+  overlay.dataset.ready = "1";
+  const triggers = document.querySelectorAll("[data-action='palette-fullscreen']");
+  triggers.forEach((btn) => {
+    if (btn.dataset.fsBound === "1") return;
+    btn.dataset.fsBound = "1";
+    btn.addEventListener("click", openFullscreenPalette);
+  });
+  el.fullscreenExit?.addEventListener("click", closeFullscreenPalette);
+  el.fullscreenCopyAll?.addEventListener("click", copyFullscreenAll);
+  el.fullscreenTokenCopy?.addEventListener("click", copyFullscreenTokens);
+  overlay.addEventListener("click", handleFullscreenOverlayClick);
+  overlay.addEventListener("pointerdown", handleFullscreenOverlayPointerDown);
+  overlay.addEventListener("input", handleFullscreenOverlayInput);
+  overlay.addEventListener("change", handleFullscreenOverlayChange);
+  el.fullscreenPicker?.addEventListener("change", handleFullscreenPickerChange);
+  el.fullscreenPicker?.addEventListener("input", handleFullscreenPickerChange);
+}
+
+function initPaletteCardCtas() {
+  const bind = (selector, handler) => {
+    document.querySelectorAll(selector).forEach((btn) => {
+      if (btn.dataset.ctaBound === "1") return;
+      btn.dataset.ctaBound = "1";
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        handler(btn);
+      });
+    });
+  };
+
+  bind("[data-action='palette-goal-run']", (btn) => {
+    const card = btn.closest("details");
+    if (card) card.open = true;
+    if (el.suggestBtn) {
+      el.suggestBtn.click();
+      return;
+    }
+    showToast("Chưa sẵn sàng gợi ý theo mục tiêu.");
+  });
+
+  bind("[data-action='palette-smart-run']", async (btn) => {
+    const card = btn.closest("details");
+    if (card) card.open = true;
+    const brief = String(el.smartBrief?.value || "").trim();
+    if (!brief) {
+      showToast("Hãy nhập brief 1 dòng.");
+      el.smartBrief?.focus();
+      return;
+    }
+    if (el.smartGenerate) {
+      el.smartGenerate.click();
+      return;
+    }
+    const parsed = await parseBrief(brief);
+    const goal = parsed.goal || "ui";
+    const mood = parsed.mood || FALLBACK_KNOWLEDGE.defaults;
+    const boldness = clampNumber(parsed.boldness ?? 45, 0, 100);
+    const suggestions = buildSmartSuggestions(goal, mood, boldness);
+    const moodLabel = mood.label || "Mặc định";
+    renderSmartSuggestions(suggestions, goalDisplay(goal), moodLabel);
+  });
+
+  bind("[data-action='palette-hex-run']", (btn) => {
+    const card = btn.closest("details");
+    if (card) card.open = true;
+    const stops = parseHexList(el.hexInput?.value || "").slice(0, 5);
+    if (stops.length < MIN_STOPS) {
+      showToast("Hãy nhập ít nhất 2 màu hợp lệ.");
+      el.hexInput?.focus();
+      return;
+    }
+    const next = applyLocks(buildHexPaletteFromInput(stops));
+    createUserPalette(next, "Palette từ HEX", ["hex"]);
+  });
+}
+
 function buildPaletteAsset(palette) {
   const now = new Date().toISOString();
   return {
@@ -1035,6 +1958,98 @@ async function copyText(text) {
   }
 }
 
+function ensurePresetDetailOverlay() {
+  if (el.presetDetail && el.presetDetailBody) return el.presetDetail;
+  const overlay = document.getElementById("palettePresetDetail");
+  const body = document.getElementById("palettePresetDetailBody");
+  if (overlay && body) {
+    el.presetDetail = overlay;
+    el.presetDetailBody = body;
+    return overlay;
+  }
+  return null;
+}
+
+function openPresetDetail(palette) {
+  if (!palette) return;
+  const overlay = ensurePresetDetailOverlay();
+  if (!overlay || !el.presetDetailBody) return;
+  selectPalette(palette);
+  el.presetDetailBody.innerHTML = "";
+  const detail = renderPaletteCard(palette);
+  detail.classList.add("tc-palette-detail-card");
+  el.presetDetailBody.appendChild(detail);
+  overlay.classList.remove("hidden");
+  overlay.setAttribute("aria-hidden", "false");
+  presetDetailOpen = true;
+  presetDetailBodyOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+}
+
+function closePresetDetail() {
+  if (!el.presetDetail) return;
+  el.presetDetail.classList.add("hidden");
+  el.presetDetail.setAttribute("aria-hidden", "true");
+  if (el.presetDetailBody) el.presetDetailBody.innerHTML = "";
+  document.body.style.overflow = presetDetailBodyOverflow;
+  presetDetailBodyOverflow = "";
+  presetDetailOpen = false;
+}
+
+function initPresetDetail() {
+  const overlay = ensurePresetDetailOverlay();
+  if (!overlay || overlay.dataset.ready === "1") return;
+  overlay.dataset.ready = "1";
+  overlay.addEventListener("click", (event) => {
+    if (event.target.closest("[data-preset-close]")) {
+      closePresetDetail();
+    }
+  });
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && presetDetailOpen) {
+      closePresetDetail();
+    }
+  });
+}
+
+function renderPaletteMiniCard(palette) {
+  const card = document.createElement("div");
+  card.className = "tc-card tc-palette-mini p-3 flex flex-col gap-2";
+  card.dataset.paletteId = palette.id || "";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+
+  const title = document.createElement("p");
+  title.className = "text-sm font-semibold";
+  title.textContent = palette.ten || "Bảng phối màu";
+
+  const swatchRow = document.createElement("div");
+  swatchRow.className = "tc-palette-mini-swatches";
+  (palette.stops || []).slice(0, 5).forEach((hex) => {
+    const swatch = document.createElement("span");
+    swatch.className = "tc-palette-mini-swatch";
+    swatch.style.background = hex;
+    swatch.setAttribute("aria-label", hex.toUpperCase());
+    swatchRow.appendChild(swatch);
+  });
+
+  card.appendChild(title);
+  card.appendChild(swatchRow);
+
+  const openDetail = () => {
+    openPresetDetail(palette);
+  };
+  card.addEventListener("click", openDetail);
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openDetail();
+    }
+  });
+
+  return card;
+}
+
 function renderPaletteCard(palette) {
   const card = document.createElement("div");
   card.className = "tc-card p-4 flex flex-col gap-3";
@@ -1090,6 +2105,19 @@ function renderPaletteCard(palette) {
   });
 
   actions.appendChild(saveBtn);
+
+  const printSpecBtn = document.createElement("button");
+  printSpecBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  printSpecBtn.type = "button";
+  printSpecBtn.textContent = "Tạo bản thông số in";
+  printSpecBtn.addEventListener("click", () => {
+    const stops = (palette.stops || []).filter(Boolean);
+    if (!stops.length) return;
+    const hash = encodeURIComponent(stops.join(","));
+    window.location.href = `printcolor.html#p=${hash}`;
+  });
+
+  actions.appendChild(printSpecBtn);
 
   header.appendChild(meta);
   header.appendChild(actions);
@@ -1362,8 +2390,46 @@ function renderPalettes() {
   }
   el.empty.classList.add("hidden");
   list.forEach((palette) => {
-    el.grid.appendChild(renderPaletteCard(palette));
+    el.grid.appendChild(renderPaletteMiniCard(palette));
   });
+}
+
+function safeDecode(value) {
+  if (!value) return "";
+  try {
+    return decodeURIComponent(value);
+  } catch (_err) {
+    return value;
+  }
+}
+
+function decodePaletteStops(raw) {
+  if (!raw) return null;
+  const decoded = safeDecode(raw).trim();
+  if (!decoded) return null;
+  let list = null;
+  if (decoded.startsWith("{") || decoded.startsWith("[")) {
+    try {
+      const payload = JSON.parse(decoded);
+      if (Array.isArray(payload)) {
+        list = payload;
+      } else if (Array.isArray(payload?.colors)) {
+        list = payload.colors;
+      } else if (Array.isArray(payload?.stops)) {
+        list = payload.stops;
+      }
+    } catch (_err) {
+      list = null;
+    }
+  }
+  if (!list) {
+    list = decoded.split(",");
+  }
+  const stops = list.map((s) => normalizeHex(s)).filter(Boolean);
+  if (stops.length >= MIN_STOPS && stops.length <= MAX_STOPS) {
+    return stops;
+  }
+  return null;
 }
 
 function getHashStops(key) {
@@ -1372,11 +2438,7 @@ function getHashStops(key) {
   const params = new URLSearchParams(hash);
   const raw = params.get(key);
   if (!raw) return null;
-  const stops = raw.split(",").map((s) => normalizeHex(s)).filter(Boolean);
-  if (stops.length >= MIN_STOPS && stops.length <= MAX_STOPS) {
-    return stops;
-  }
-  return null;
+  return decodePaletteStops(raw);
 }
 
 function handleBackwardCompatibility() {
@@ -1450,6 +2512,9 @@ function init() {
     clearLocks();
   });
   renderLockRow();
+  initFullscreenPalette();
+  initPaletteCardCtas();
+  initPresetDetail();
 
   el.suggestBtn?.addEventListener("click", async () => {
     const goal = el.goalSelect?.value || "ui";

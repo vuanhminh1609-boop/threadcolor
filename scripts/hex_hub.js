@@ -1,10 +1,10 @@
-const STYLE_ID = "tc-hexhub-style";
+﻿const STYLE_ID = "tc-hexhub-style";
 const FAB_ID = "tc-hexhub-fab";
 const OVERLAY_ID = "tc-hexhub-overlay";
 const SHEET_ID = "tc-hexhub-sheet";
 const CACHE_KEY = "tc_hex_hub_cache";
 const VERSION_KEY = "tc_hex_hub_version";
-const CACHE_VERSION = "2";
+const CACHE_VERSION = "3";
 const DATA_URL = new URL("../threads.json", import.meta.url);
 
 let memoryCache = null;
@@ -17,6 +17,44 @@ const normalizeHex = (value) => {
   return `#${raw.toUpperCase()}`;
 };
 
+const hexToRgb = (hex) => {
+  const normalized = normalizeHex(hex);
+  if (!normalized) return null;
+  const clean = normalized.replace("#", "");
+  return {
+    r: parseInt(clean.slice(0, 2), 16),
+    g: parseInt(clean.slice(2, 4), 16),
+    b: parseInt(clean.slice(4, 6), 16)
+  };
+};
+
+const rgbToHsl = ({ r, g, b }) => {
+  const rNorm = r / 255;
+  const gNorm = g / 255;
+  const bNorm = b / 255;
+  const max = Math.max(rNorm, gNorm, bNorm);
+  const min = Math.min(rNorm, gNorm, bNorm);
+  const delta = max - min;
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (delta !== 0) {
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+    switch (max) {
+      case rNorm:
+        h = (gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0);
+        break;
+      case gNorm:
+        h = (bNorm - rNorm) / delta + 2;
+        break;
+      default:
+        h = (rNorm - gNorm) / delta + 4;
+    }
+    h *= 60;
+  }
+  return { h, s, l };
+};
+
 const buildHexList = (list) => {
   const hexes = list
     .map((item) => {
@@ -26,6 +64,24 @@ const buildHexList = (list) => {
     })
     .filter(Boolean);
   return Array.from(new Set(hexes));
+};
+
+const sortHexesByHue = (hexes) => {
+  const enriched = hexes
+    .map((hex) => {
+      const rgb = hexToRgb(hex);
+      if (!rgb) return null;
+      const hsl = rgbToHsl(rgb);
+      return { hex, h: hsl.h, s: hsl.s, l: hsl.l };
+    })
+    .filter(Boolean);
+  enriched.sort((a, b) => {
+    if (a.h !== b.h) return a.h - b.h;
+    if (a.s !== b.s) return a.s - b.s;
+    if (a.l !== b.l) return a.l - b.l;
+    return a.hex.localeCompare(b.hex);
+  });
+  return enriched.map((item) => item.hex);
 };
 
 const loadHexes = async () => {
@@ -47,7 +103,7 @@ const loadHexes = async () => {
     const response = await fetch(DATA_URL.toString(), { cache: "no-store" });
     const data = await response.json();
     const list = Array.isArray(data) ? data : [];
-    memoryCache = buildHexList(list);
+    memoryCache = sortHexesByHue(buildHexList(list));
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify(memoryCache));
       localStorage.setItem(VERSION_KEY, CACHE_VERSION);
@@ -117,14 +173,18 @@ const setupAutofillTrap = (input) => {
 
 const createUI = () => {
   if (document.getElementById(OVERLAY_ID)) return null;
-  if (document.getElementById(FAB_ID)) return null;
   ensureStyle();
-  const fab = document.createElement("button");
-  fab.id = FAB_ID;
-  fab.className = "tc-hexhub-fab";
-  fab.type = "button";
-  fab.textContent = "Kho HEX";
-  fab.setAttribute("aria-haspopup", "dialog");
+  const existingFab = document.getElementById(FAB_ID);
+  const hasTrigger = Boolean(document.querySelector("[data-hexhub-open]"));
+  let fab = existingFab;
+  if (!fab && !hasTrigger) {
+    fab = document.createElement("button");
+    fab.id = FAB_ID;
+    fab.className = "tc-hexhub-fab";
+    fab.type = "button";
+    fab.textContent = "Kho HEX";
+    fab.setAttribute("aria-haspopup", "dialog");
+  }
 
   const overlay = document.createElement("div");
   overlay.id = OVERLAY_ID;
@@ -153,7 +213,9 @@ const createUI = () => {
     </div>
   `;
   overlay.appendChild(sheet);
-  document.body.appendChild(fab);
+  if (fab && !fab.isConnected) {
+    document.body.appendChild(fab);
+  }
   document.body.appendChild(overlay);
 
   const input = sheet.querySelector(".tc-hexhub-input");
@@ -200,13 +262,11 @@ const initHexHub = async () => {
 
   const renderGrid = () => {
     if (!grid) return;
-    const maxItems = 240;
-    const slice = filtered.slice(0, maxItems);
-    if (!slice.length) {
+    if (!filtered.length) {
       grid.innerHTML = `<div class="tc-hexhub-status">Không tìm thấy màu phù hợp.</div>`;
       return;
     }
-    grid.innerHTML = slice
+    grid.innerHTML = filtered
       .map((hex) => {
         const isSelected = selected.has(hex) ? "is-selected" : "";
         return `
@@ -217,7 +277,7 @@ const initHexHub = async () => {
       `;
       })
       .join("");
-    updateStatus(`Hiển thị ${slice.length}/${filtered.length} màu · Đã chọn ${selected.size}.`);
+    updateStatus(`Hiển thị ${filtered.length} màu · Đã chọn ${selected.size}.`);
   };
 
   const applyFilter = () => {
@@ -268,7 +328,7 @@ const initHexHub = async () => {
     closeHexHub();
   };
 
-  fab.addEventListener("click", openHexHub);
+  fab?.addEventListener("click", openHexHub);
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-hexhub-open]");
     if (!trigger) return;
@@ -344,3 +404,4 @@ if (typeof window !== "undefined") {
     initHexHub();
   });
 }
+

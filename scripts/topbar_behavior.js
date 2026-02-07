@@ -124,8 +124,13 @@
 
     const setMenuOpen = (open) => {
       worldMenu.dataset.open = open ? "1" : "0";
+      worldMenu.hidden = !open;
       worldBtn.setAttribute("aria-expanded", open ? "true" : "false");
     };
+
+    setMenuOpen(false);
+    worldMenu.dataset.open = "0";
+    worldMenu.hidden = true;
 
     worldBtn.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -204,9 +209,11 @@
     if (WORLD_KEYS.includes(storedWorld)) {
       applyWorld(storedWorld);
     } else {
-      applyWorld(document.documentElement.dataset.world);
+      applyWorld("chrome");
     }
     setMenuOpen(false);
+    worldMenu.dataset.open = "0";
+    worldMenu.hidden = true;
 
     window.addEventListener("storage", (event) => {
       if (event.key === STORAGE_KEY && event.newValue) {

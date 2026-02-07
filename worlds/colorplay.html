@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="vi" data-world="arcade" data-page="colorplay">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thế giới trò chơi màu</title>
+  <link rel="stylesheet" href="../assets/dist/tailwind.css">
+  <link rel="stylesheet" href="../assets/tones.css">
+  <link rel="stylesheet" href="../assets/site_base.css">
+  <link rel="stylesheet" href="../assets/topbar_overrides.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body, button, input, select, textarea {
+      font-family: "Inter", "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <div id="tcTopbarMount"></div>
+
+  <main class="mx-auto max-w-6xl px-4 pt-10 pb-16">
+    <section class="tc-card p-6 md:p-8">
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold">Thế giới trò chơi màu</h1>
+          <p class="mt-2 tc-muted">Sảnh game gọn gàng, chọn nhanh trò chơi màu bạn muốn.</p>
+        </div>
+        <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
+          <span class="tc-dot" aria-hidden="true"></span>
+          <span>Chế độ thử nghiệm · Đang hoàn thiện</span>
+        </div>
+      </div>
+
+      <div class="mt-6 tc-game-lobby">
+        <div class="tc-card tc-game-card is-open" data-game-card="line98" aria-expanded="true">
+          <div class="tc-game-card-head">
+            <div class="tc-game-card-meta">
+              <div class="tc-game-thumb tc-game-thumb-line98" aria-hidden="true"></div>
+              <div>
+                <p class="tc-game-card-title">Game 1: Line 98</p>
+                <p class="tc-muted text-xs mt-1">Xếp bi 5+ cùng màu để xoá và ghi điểm.</p>
+              </div>
+            </div>
+            <div class="tc-game-card-actions">
+              <button class="tc-icon-btn tc-game-play" type="button" data-game-action="open" data-game="line98" data-tooltip="Chơi ngay" aria-label="Chơi ngay">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 6l10 6-10 6z" fill="currentColor"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="tc-game-card-body">
+            <div class="tc-game-card-body-inner" data-game-mount="line98"></div>
+          </div>
+        </div>
+
+        <div class="tc-card tc-game-card" data-game-card="pillstack" aria-expanded="false">
+          <div class="tc-game-card-head">
+            <div class="tc-game-card-meta">
+              <div class="tc-game-thumb tc-game-thumb-pill" aria-hidden="true"></div>
+              <div>
+                <p class="tc-game-card-title">Game 2: Xếp thuốc</p>
+                <p class="tc-muted text-xs mt-1">Ghép 4+ ô cùng màu để xoá và ghi điểm.</p>
+              </div>
+            </div>
+            <div class="tc-game-card-actions">
+              <button class="tc-icon-btn tc-game-play" type="button" data-game-action="open" data-game="pillstack" data-tooltip="Chơi ngay" aria-label="Chơi ngay">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 6l10 6-10 6z" fill="currentColor"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="tc-game-card-body">
+            <div class="tc-game-card-body-inner" data-game-mount="pillstack"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../auth.js"></script>
+  <script type="module" src="./colorplay.js"></script>
+  <script src="../scripts/topbar_render.js" defer></script>
+  <script src="../scripts/topbar_behavior.js" defer></script>
+</body>
+</html>

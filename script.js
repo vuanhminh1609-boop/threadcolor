@@ -259,6 +259,7 @@ let threads = [];
 let isDataReady = false;
 let lastResults = null;
 let lastChosenHex = null;
+let lastMultiHexes = null;
 let currentDeltaThreshold = 3.0;
 let currentDeltaMethod = "76";
 let selectedItemEl = null;
@@ -400,6 +401,8 @@ const MATCH_DEBOUNCE_MS = 160;
 let matchDebounceTimer = null;
 const RESULT_PAGE_SIZE = 60;
 let resultRenderLimit = RESULT_PAGE_SIZE;
+const MULTI_HEX_LIMIT = 10;
+const MULTI_HEX_RESULT_LIMIT = 60;
 let lastGroupedResults = null;
 let searchWorker = null;
 let searchWorkerReady = false;
@@ -1131,9 +1134,85 @@ function setMatchCache(key, value) {
   }
 }
 
+function normalizeHexList(hexes, limit = MULTI_HEX_LIMIT) {
+  const list = Array.isArray(hexes) ? hexes : [];
+  const output = [];
+  const seen = new Set();
+  list.forEach((hex) => {
+    const normalized = normalizeHex(hex);
+    if (!normalized || seen.has(normalized)) return;
+    seen.add(normalized);
+    output.push(normalized);
+  });
+  return output.slice(0, limit);
+}
+
+function renderMultiHexResults(blocks) {
+  if (!resultBox) return;
+  const summary = `<div class="mb-4 text-sm tc-muted">Hiển thị ${blocks.length} màu (tối đa ${MULTI_HEX_LIMIT}).</div>`;
+  const sections = blocks.map((block, index) => {
+    const items = block.items || [];
+    const count = items.length;
+    const header = `
+      <div class="flex flex-wrap items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-lg border" style="background:${block.hex}"></div>
+        <div>
+          <div class="font-semibold text-sm">HEX ${block.hex}</div>
+          <div class="text-xs tc-muted">${count} kết quả</div>
+        </div>
+      </div>
+    `;
+    if (!count) {
+      return `
+        <section class="mb-8">
+          ${header}
+          <div class="text-sm tc-muted">Không tìm thấy kết quả trong ngưỡng ΔE hiện tại.</div>
+        </section>
+      `;
+    }
+    return `
+      <section class="mb-8">
+        ${header}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          ${items.map((item) => renderColorCard(item, block.hex)).join("")}
+        </div>
+      </section>
+    `;
+  }).join("");
+  resultBox.innerHTML = summary + sections;
+  currentRendered = blocks.flatMap((block) => block.items || []);
+  lastGroupedResults = null;
+  if (currentRendered.length) {
+    telemetry.track("search_result");
+  }
+  updateHandoffLinks();
+}
+
+async function runSearchMany(hexes) {
+  const normalizedList = normalizeHexList(hexes);
+  if (!normalizedList.length) return;
+  lastMultiHexes = normalizedList;
+  lastChosenHex = normalizedList[0];
+  lastResults = null;
+  lastGroupedResults = null;
+  currentRendered = [];
+  resultRenderLimit = RESULT_PAGE_SIZE;
+  renderResultState("loading");
+  const method = currentDeltaMethod;
+  const blocks = await Promise.all(
+    normalizedList.map(async (hex) => {
+      const base = await searchNearestAsync(hex, MULTI_HEX_RESULT_LIMIT, method);
+      const filtered = base.filter(t => t.delta <= currentDeltaThreshold);
+      return { hex, items: filtered };
+    })
+  );
+  renderMultiHexResults(blocks);
+}
+
 async function runSearch(hex) {
   const normalized = normalizeHex(hex);
   if (!normalized) return;
+  lastMultiHexes = null;
   lastChosenHex = normalized;
   const method = currentDeltaMethod;
   const key = buildMatchCacheKey(normalized, currentDeltaThreshold, method);
@@ -1165,6 +1244,34 @@ function scheduleSearch(hex) {
   matchDebounceTimer = window.setTimeout(() => {
     runSearch(hex);
   }, MATCH_DEBOUNCE_MS);
+}
+
+function scheduleSearchMany(hexes) {
+  const list = Array.isArray(hexes) ? hexes.slice() : [];
+  if (matchDebounceTimer) window.clearTimeout(matchDebounceTimer);
+  matchDebounceTimer = window.setTimeout(() => {
+    runSearchMany(list);
+  }, MATCH_DEBOUNCE_MS);
+}
+
+function applyHexesFromHub(detail) {
+  const hexes = normalizeHexList(detail?.hexes || []);
+  if (!hexes.length) return;
+  if (!isDataReady) {
+    alert("Dữ liệu chưa sẵn sàng");
+    return;
+  }
+  const primary = hexes[0];
+  if (colorPicker) {
+    colorPicker.value = primary.toUpperCase();
+    colorPicker.dispatchEvent(new Event("input", { bubbles: true }));
+    colorPicker.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  if (hexes.length === 1) {
+    runSearch(primary);
+    return;
+  }
+  runSearchMany(hexes);
 }
 
 function renderResultState(type) {
@@ -2646,6 +2753,10 @@ if (deltaMethodSelect) {
   deltaMethodSelect.addEventListener("change", () => {
     currentDeltaMethod = deltaMethodSelect.value === "2000" ? "2000" : "76";
     matchCache.clear();
+    if (lastMultiHexes && lastMultiHexes.length > 1) {
+      scheduleSearchMany(lastMultiHexes);
+      return;
+    }
     if (lastChosenHex) scheduleSearch(lastChosenHex);
   });
 }
@@ -2664,6 +2775,10 @@ btnFindNearest?.addEventListener("click", () => {
 deltaSlider?.addEventListener("input", () => {
   currentDeltaThreshold = parseFloat(deltaSlider.value);
   deltaValueEls.forEach(el => el.textContent = `≈ ${currentDeltaThreshold.toFixed(1)}`);
+  if (lastMultiHexes && lastMultiHexes.length > 1) {
+    scheduleSearchMany(lastMultiHexes);
+    return;
+  }
   if (!lastResults || !lastChosenHex) return;
   scheduleSearch(lastChosenHex);
 });
