@@ -2,7 +2,8 @@
   const mount = document.getElementById("tcTopbarMount");
   if (!mount) return;
 
-  const basePath = window.location.pathname.includes("/worlds/") ? "../" : "./";
+  const isNested = window.location.pathname.includes("/worlds/") || window.location.pathname.includes("/spaces/");
+  const basePath = isNested ? "../" : "./";
   const logoSvg = `${basePath}assets/spacecolors-mark.svg`;
   const logoPng1x = `${basePath}assets/spacecolors-mark-128.png`;
   const logoPng2x = `${basePath}assets/spacecolors-mark-256.png`;
@@ -93,6 +94,7 @@
           </div>
         </div>
         <div class="flex items-center justify-end gap-3 order-2 ml-auto sm:order-none sm:ml-0 md:justify-self-end tc-topbar__right">
+          <a class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" href="${basePath}spaces/community.html">Cộng đồng</a>
           <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end order-2 col-span-1 justify-self-end sm:order-none"></div>
         </div>
       </div>

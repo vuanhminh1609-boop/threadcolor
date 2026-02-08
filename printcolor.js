@@ -1,5 +1,8 @@
 import { composeHandoff } from "./scripts/handoff.js";
 
+import { bootstrapIncomingHandoff, setWorkbenchContext } from "./scripts/workbench_context.js";
+import "./scripts/workbench_bridge.js";
+
 const PROFILE_PRESETS = {
   "300": { name: "Couche 300%", tac: 300 },
   "280": { name: "Thường 280%", tac: 280 },
@@ -2890,6 +2893,7 @@ const applyHexesFromHub = (detail) => {
   const mode = detail?.mode === "append" ? "append" : "replace";
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length || !elements.input) return;
+  setWorkbenchContext(normalized, { worldKey: "printcolor", source: "hex-apply" });
   const base = mode === "append" ? parseHexList(elements.input.value) : [];
   const combined = [...base, ...normalized];
   const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
@@ -2947,5 +2951,11 @@ if (!initReportView()) {
 
   window.addEventListener("tc:hex-apply", (event) => {
     applyHexesFromHub(event?.detail);
+  });
+
+  bootstrapIncomingHandoff({
+    minColors: 1,
+    worldKey: "printcolor",
+    applyFn: (hexes) => applyHexesFromHub({ hexes, mode: "replace" })
   });
 }

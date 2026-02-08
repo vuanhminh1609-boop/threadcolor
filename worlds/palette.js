@@ -1,5 +1,8 @@
 ﻿import { composeHandoff } from "../scripts/handoff.js";
 
+import { bootstrapIncomingHandoff, setWorkbenchContext } from "../scripts/workbench_context.js";
+import "../scripts/workbench_bridge.js";
+
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
@@ -2595,6 +2598,7 @@ function applyHexesFromHub(detail) {
   const mode = detail?.mode === "append" ? "append" : "replace";
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (normalized.length < 2) return;
+  setWorkbenchContext(normalized, { worldKey: "palette", source: "hex-apply" });
   const baseStops = mode === "append"
     ? (getActivePalette()?.stops || [])
     : [];
@@ -2619,4 +2623,10 @@ function applyHexesFromHub(detail) {
 
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
+});
+
+bootstrapIncomingHandoff({
+  minColors: 2,
+  worldKey: "palette",
+  applyFn: (hexes) => applyHexesFromHub({ hexes, mode: "replace" })
 });
