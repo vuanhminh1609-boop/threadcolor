@@ -1,5 +1,4 @@
-﻿import { bootstrapIncomingHandoff, normalizeHexList, setWorkbenchContext } from "../scripts/workbench_context.js";
-import "../scripts/workbench_bridge.js";
+﻿import { resolveIncoming, normalizeHexList } from "../scripts/workbench_context.js";
 const BOARD_SIZE = 9;
 const COLORS = [
   "#ef4444",
@@ -82,6 +81,8 @@ const settings = {
   pillDifficulty: "medium",
   colorBlind: false
 };
+
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
 
 const state = {
   board: [],
@@ -211,7 +212,7 @@ const applyHexPalette = (hexes) => {
   if (!normalized.length) return false;
   state.customPalette = normalized;
   pillState.customPalette = normalized;
-  setWorkbenchContext(normalized, { worldKey: "colorplay", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(normalized, { worldKey: "colorplay", source: "hex-apply" });
   renderBoardState();
   renderUpcoming();
   renderPillBoard();
@@ -3021,8 +3022,7 @@ window.addEventListener("tc:hex-apply", (event) => {
   applyHexPalette(event?.detail?.hexes || []);
 });
 
-bootstrapIncomingHandoff({
-  minColors: 1,
-  worldKey: "colorplay",
-  applyFn: (hexes) => applyHexPalette(hexes)
-});
+if (incomingHandoff?.hexes?.length) {
+  applyHexPalette(incomingHandoff.hexes);
+  window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "colorplay", source: incomingHandoff.source });
+}

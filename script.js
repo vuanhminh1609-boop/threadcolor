@@ -1,7 +1,6 @@
 ﻿import { saveSearch, getSavedSearch, listSavedSearches, deleteSavedSearch } from "./library.js";
 import { composeHandoff } from "./scripts/handoff.js";
-import { bootstrapIncomingHandoff, setWorkbenchContext } from "./scripts/workbench_context.js";
-import "./scripts/workbench_bridge.js";
+import { resolveIncoming } from "./scripts/workbench_context.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
   submitThread,
@@ -305,6 +304,8 @@ function hexToHsl([r, g, b]) {
 let threads = [];
 let isDataReady = false;
 let pendingHandoffHexes = null;
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
+const hasStrictIncoming = incomingHandoff && (incomingHandoff.source === "asset" || incomingHandoff.source === "buffer");
 let lastResults = null;
 let lastChosenHex = null;
 let lastMultiHexes = null;
@@ -1023,8 +1024,9 @@ function loadThreads() {
     }
 
     renderResultState("ready");
-
-    restoreInspectorFromUrl();
+    if (!incomingHandoff?.hexes?.length || !hasStrictIncoming) {
+      restoreInspectorFromUrl();
+    }
   })
   .catch(() => {
     renderResultState("error");
@@ -1353,7 +1355,7 @@ function scheduleSearchMany(hexes) {
 function applyHexesFromHub(detail) {
   const hexes = normalizeHexList(detail?.hexes || []);
   if (!hexes.length) return;
-  setWorkbenchContext(hexes, { worldKey: "threadcolor", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(hexes, { worldKey: "threadcolor", source: detail?.source || "hex-apply" });
   if (!isDataReady) {
     pendingHandoffHexes = hexes;
     return;
@@ -3068,12 +3070,10 @@ canvas?.addEventListener("click", e => {
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
 });
-
-bootstrapIncomingHandoff({
-  minColors: 1,
-  worldKey: "threadcolor",
-  applyFn: (hexes) => applyHexesFromHub({ hexes })
-});
+if (hasStrictIncoming && incomingHandoff?.hexes?.length) {
+  applyHexesFromHub({ hexes: incomingHandoff.hexes, source: incomingHandoff.source });
+  window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "threadcolor", source: incomingHandoff.source });
+}
 
 const initVaultTabs = () => {
   const savedPanel = document.getElementById("vaultTabSaved");

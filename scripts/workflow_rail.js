@@ -12,6 +12,17 @@
   if (!tablist || !panel || !titleEl || !descEl || !primaryBtn || !secondaryBtn) return;
 
   const STORAGE_KEY = "tc_lobby_workflow_step";
+  const buildBufferUrl = (url) => {
+    const ctx = window.tcWorkbench?.getContext?.();
+    const hexes = Array.isArray(ctx?.hexes) ? ctx.hexes : [];
+    if (!hexes.length) return url;
+    const ensure = window.tcWorkbench?.ensureBufferFromHexes;
+    const append = window.tcWorkbench?.appendBufferToUrl;
+    if (typeof ensure !== "function" || typeof append !== "function") return url;
+    const bufferId = ensure(hexes, { source: "workflow-rail" });
+    if (!bufferId) return url;
+    return append(url, bufferId);
+  };
   const steps = [
     {
       key: "threadcolor",
@@ -111,6 +122,16 @@
     }
   };
 
+  const handleCtaClick = (event) => {
+    const link = event.currentTarget;
+    const href = link?.getAttribute("href");
+    if (!href) return;
+    const nextUrl = buildBufferUrl(href);
+    if (nextUrl === href) return;
+    event.preventDefault();
+    window.location.href = nextUrl;
+  };
+
   const setActive = (key, opts = {}) => {
     const index = steps.findIndex((step) => step.key === key);
     const safeIndex = index >= 0 ? index : 0;
@@ -149,6 +170,9 @@
     }
   } catch (_err) {}
   setActive(initialKey);
+
+  primaryBtn.addEventListener("click", handleCtaClick);
+  secondaryBtn.addEventListener("click", handleCtaClick);
 
   tablist.addEventListener("click", (event) => {
     const tab = event.target.closest(".tc-rail-tab");

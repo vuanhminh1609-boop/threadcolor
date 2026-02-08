@@ -1,7 +1,5 @@
 ﻿import { composeHandoff } from "../scripts/handoff.js";
-
-import { bootstrapIncomingHandoff, setWorkbenchContext } from "../scripts/workbench_context.js";
-import "../scripts/workbench_bridge.js";
+import { resolveIncoming } from "../scripts/workbench_context.js";
 
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
@@ -9,6 +7,8 @@ const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "gradient";
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
+const hasStrictIncoming = incomingHandoff && (incomingHandoff.source === "asset" || incomingHandoff.source === "buffer");
 
 const state = {
   stops: [
@@ -1149,7 +1149,7 @@ function applyHexesFromHub(detail) {
   const mode = detail?.mode === "append" ? "append" : "replace";
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length) return;
-  setWorkbenchContext(normalized, { worldKey: "gradient", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(normalized, { worldKey: "gradient", source: detail?.source || "hex-apply" });
   const baseStops = mode === "append" ? migrateStops(state.stops) : [];
   const combined = [...baseStops, ...normalized.map((hex) => ({ hex }))];
   const unique = combined.filter((stop, idx) => {
@@ -1175,9 +1175,11 @@ function applyHexesFromHub(detail) {
 }
 
 function init() {
-  const hashStops = getStopsFromHash();
-  if (hashStops) {
-    state.stops = hashStops;
+  if (!hasStrictIncoming) {
+    const hashStops = getStopsFromHash();
+    if (hashStops) {
+      state.stops = hashStops;
+    }
   }
   state.stops = migrateStops(state.stops);
   if (el.typeSelect) el.typeSelect.value = state.type;
@@ -1194,9 +1196,7 @@ init();
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
 });
-
-bootstrapIncomingHandoff({
-  minColors: 1,
-  worldKey: "gradient",
-  applyFn: (hexes) => applyHexesFromHub({ hexes, mode: "replace" })
-});
+if (hasStrictIncoming && incomingHandoff?.hexes?.length) {
+  applyHexesFromHub({ hexes: incomingHandoff.hexes, mode: "replace" });
+  window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "gradient", source: incomingHandoff.source });
+}

@@ -1,7 +1,5 @@
 import { composeHandoff } from "./scripts/handoff.js";
-
-import { bootstrapIncomingHandoff, setWorkbenchContext } from "./scripts/workbench_context.js";
-import "./scripts/workbench_bridge.js";
+import { resolveIncoming } from "./scripts/workbench_context.js";
 
 const PROFILE_PRESETS = {
   "300": { name: "Couche 300%", tac: 300 },
@@ -158,6 +156,8 @@ const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "printcolor";
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
+const hasStrictIncoming = incomingHandoff && (incomingHandoff.source === "asset" || incomingHandoff.source === "buffer");
 const PRESET_STORAGE_KEY = "tc_printcolor_presets_v1";
 const PRESET_PINNED_KEY = "tc_printcolor_preset_pinned_v1";
 const PRESET_RECENT_KEY = "tc_printcolor_preset_recent_v1";
@@ -1516,6 +1516,7 @@ const pasteFromClipboard = async () => {
 
 
 const applyFromHash = () => {
+  if (hasStrictIncoming) return;
   const list = extractHashColors();
   if (elements.input && list.length) {
     elements.input.value = list.join("\n");
@@ -2893,7 +2894,7 @@ const applyHexesFromHub = (detail) => {
   const mode = detail?.mode === "append" ? "append" : "replace";
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length || !elements.input) return;
-  setWorkbenchContext(normalized, { worldKey: "printcolor", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(normalized, { worldKey: "printcolor", source: detail?.source || "hex-apply" });
   const base = mode === "append" ? parseHexList(elements.input.value) : [];
   const combined = [...base, ...normalized];
   const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
@@ -2953,9 +2954,8 @@ if (!initReportView()) {
     applyHexesFromHub(event?.detail);
   });
 
-  bootstrapIncomingHandoff({
-    minColors: 1,
-    worldKey: "printcolor",
-    applyFn: (hexes) => applyHexesFromHub({ hexes, mode: "replace" })
-  });
+  if (hasStrictIncoming && incomingHandoff?.hexes?.length) {
+    applyHexesFromHub({ hexes: incomingHandoff.hexes, mode: "replace" });
+    window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "printcolor", source: incomingHandoff.source });
+  }
 }
