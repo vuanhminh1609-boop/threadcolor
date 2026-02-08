@@ -973,10 +973,14 @@
               <button class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md" type="button" data-hexhub-open>
                 Mở Kho HEX
               </button>
+              <button id="btnToggleBrandGrid" class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md" type="button">
+                <span>Lưới màu hãng</span>
+                <span id="brandGridOpenBadge" class="ml-1 text-xs opacity-70" hidden>(đang mở)</span>
+              </button>
             </div>
           </section>
 
-          <section id="sectionBrandGrid" class="mb-6" data-tour="section-grid">
+          <section id="sectionBrandGrid" class="mb-6" data-tour="section-grid" hidden>
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div>
                 <h3 class="text-lg font-semibold">Lưới màu hãng</h3>

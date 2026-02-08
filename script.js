@@ -905,6 +905,9 @@ const brandFilterClear = document.getElementById("brandFilterClear");
 const brandFilterCount = document.getElementById("brandFilterCount");
 const btnFindNearest = document.getElementById("btnFindNearest");
 const colorPicker = document.getElementById("colorPicker");
+const sectionBrandGrid = document.getElementById("sectionBrandGrid");
+const btnToggleBrandGrid = document.getElementById("btnToggleBrandGrid");
+const brandGridOpenBadge = document.getElementById("brandGridOpenBadge");
 const codeInput = document.getElementById("codeInput");
 const btnFindByCode = document.getElementById("btnFindByCode");
 const imgInput = document.getElementById("imgInput");
@@ -937,6 +940,7 @@ const eyedropperFallback = document.getElementById("eyedropperFallback");
 const fallbackColorPicker = document.getElementById("fallbackColorPicker");
 const portalCtaWrap = document.getElementById("portalCtaWrap");
 const portalCta = document.getElementById("portalCta");
+let scrollToResultOnce = false;
 function getAuthApi() {
   return window.firebaseAuth || null;
 }
@@ -1659,6 +1663,10 @@ function showGroupedResults(groups, chosenHex) {
   renderGroupedResults(groups, chosenHex, resultRenderLimit);
   bindProjectInput();
   updateHandoffLinks();
+  if (scrollToResultOnce) {
+    scrollToResultOnce = false;
+    document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function loadMoreResults() {
@@ -2987,11 +2995,37 @@ if (deltaMethodSelect) {
 loadProjectPrefs();
 loadPins();
 
+if (btnToggleBrandGrid) {
+  btnToggleBrandGrid.setAttribute("aria-controls", "sectionBrandGrid");
+  const isOpen = sectionBrandGrid && !sectionBrandGrid.hasAttribute("hidden");
+  btnToggleBrandGrid.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  if (isOpen) {
+    brandGridOpenBadge?.removeAttribute("hidden");
+  } else {
+    brandGridOpenBadge?.setAttribute("hidden", "");
+  }
+  btnToggleBrandGrid.addEventListener("click", () => {
+    if (!sectionBrandGrid) return;
+    const willOpen = sectionBrandGrid.hasAttribute("hidden");
+    sectionBrandGrid.toggleAttribute("hidden");
+    btnToggleBrandGrid.setAttribute("aria-expanded", String(willOpen));
+    if (willOpen) {
+      brandGridOpenBadge?.removeAttribute("hidden");
+    } else {
+      brandGridOpenBadge?.setAttribute("hidden", "");
+    }
+    if (willOpen) {
+      sectionBrandGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+}
+
 btnFindNearest?.addEventListener("click", () => {
 
   if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
 
   const hex = colorPicker.value;
+  scrollToResultOnce = true;
   telemetry.track("search_start");
   runSearch(hex);
 });
