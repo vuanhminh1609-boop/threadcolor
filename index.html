@@ -168,12 +168,12 @@
               <div class="flex flex-wrap gap-3">
                 <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
                 <a class="tc-btn tc-chip px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaSecondary">Mở công cụ tra mã chỉ</a>
-                <a class="tc-btn tc-chip px-5 py-3" href="./worlds/library.html#tab=hex" data-i18n="hero.ctaHex">Kho HEX</a>
+                <button class="tc-btn tc-chip px-5 py-3" type="button" data-hexhub-open data-i18n="hero.ctaHex">Kho HEX</button>
               </div>
               <div>
                 <div class="text-xs uppercase tc-muted">Đi nhanh</div>
                 <div class="mt-2 flex flex-wrap gap-2">
-                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#portalHub">Sơ đồ 8 cổng (Premiere)</a>
+                  <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="#portalHub">Sơ đồ 8 cổng</a>
                   <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#rouletteHub">Vòng quay dải màu</a>
                   <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#forgeHub">Lò rèn bảng màu</a>
                   <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#galleryHub">Bộ sưu tập sắc thái</a>
@@ -353,6 +353,32 @@
                 <ul id="qaImageThreads" class="mt-4 space-y-2 text-sm"></ul>
                 <a id="qaImageOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Thêu)</a>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tc-shell pb-12" id="workflowRail">
+      <div class="tc-card p-6 md:p-8 tc-rail-surface">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-semibold">Đường ray điều phối</h2>
+            <p class="tc-muted text-sm mt-2">Chọn từng bước để mở đúng Thế giới, không ép buộc.</p>
+          </div>
+          <span class="tc-chip px-3 py-2 rounded-full text-xs">Hướng dẫn nhanh</span>
+        </div>
+        <div class="tc-rail mt-6" data-workflow-rail>
+          <div class="tc-rail-tabs" role="tablist" aria-label="Đường ray điều phối" data-rail-tabs></div>
+          <div class="tc-rail-panel" id="workflowRailPanel" role="tabpanel" aria-live="polite" data-rail-panel>
+            <div class="tc-rail-panel-meta">
+              <span class="tc-rail-step" data-rail-step></span>
+              <span class="tc-rail-title" data-rail-title></span>
+            </div>
+            <p class="tc-rail-desc" data-rail-desc></p>
+            <div class="tc-rail-actions">
+              <a class="tc-btn tc-btn-primary px-4 py-2 text-sm" data-rail-primary></a>
+              <a class="tc-btn tc-chip px-4 py-2 text-sm" data-rail-secondary></a>
             </div>
           </div>
         </div>
@@ -761,7 +787,7 @@
             <li><a class="hover:text-white" href="#quickHub" data-i18n="footer.columns.discover.quickHub">Trạm thao tác nhanh</a></li>
             <li><a class="hover:text-white" href="#rouletteHub" data-i18n="footer.columns.discover.rouletteHub">Vòng quay màu nhấn (A1→A3)</a></li>
             <li><a class="hover:text-white" href="#forgeHub" data-i18n="footer.columns.discover.forgeHub">Lò rèn màu nhấn (A1→A3)</a></li>
-            <li><a class="hover:text-white" href="./worlds/community.html" data-i18n="footer.columns.discover.community">Cộng đồng</a></li>
+            <li><a class="hover:text-white" href="./spaces/community.html" data-i18n="footer.columns.discover.community">Cộng đồng</a></li>
           </ul>
         </div>
         <div class="space-y-3">
@@ -946,9 +972,11 @@
   <script src="./scripts/site_meta.js"></script>
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
+  <script type="module" src="./scripts/hex_hub.js"></script>
   <script src="./scripts/support_hub.js" defer></script>
   <script src="./scripts/hero_fx.js" defer></script>
   <script src="./scripts/lobby_orchestrator.js" defer></script>
+  <script src="./scripts/workflow_rail.js" defer></script>
   <script src="./scripts/command_palette.js" defer></script>
   <script>
     (() => {

@@ -17,7 +17,7 @@ const WORLD_PATHS = {
   library: "./library.html",
   paintfabric: "./paintfabric.html",
   imagecolor: "./imagecolor.html",
-  community: "./community.html"
+  community: "../spaces/community.html"
 };
 const WORLD_LABELS = {
   threadcolor: "Màu thêu",

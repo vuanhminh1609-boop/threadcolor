@@ -1,5 +1,7 @@
 ﻿import { createSpec } from "./spec.js";
 import { composeHandoff } from "./handoff.js";
+import { bootstrapIncomingHandoff, setWorkbenchContext } from "./workbench_context.js";
+import "./workbench_bridge.js";
 
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
@@ -250,7 +252,7 @@ const publishToFeed = (asset) => {
     localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
     showToast("Đã đăng lên Cộng đồng. Bấm để xem.", {
       onClick: () => {
-        window.location.href = "../worlds/community.html#feed";
+        window.location.href = "../spaces/community.html#feed";
       }
     });
     return true;
@@ -1033,6 +1035,7 @@ const applyHexesFromHub = (detail) => {
   const mode = detail?.mode === "append" ? "append" : "replace";
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length) return;
+  setWorkbenchContext(normalized, { worldKey: "imagecolor", source: "hex-apply" });
   if (mode === "append" && state.palette.length) {
     const combined = [...state.palette, ...normalized];
     const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
@@ -1061,4 +1064,10 @@ bindEvents();
 
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
+});
+
+bootstrapIncomingHandoff({
+  minColors: 1,
+  worldKey: "imagecolor",
+  applyFn: (hexes) => applyHexesFromHub({ hexes, mode: "replace" })
 });

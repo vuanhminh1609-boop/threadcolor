@@ -1,5 +1,8 @@
 ﻿import { composeHandoff } from "../scripts/handoff.js";
 
+import { bootstrapIncomingHandoff, setWorkbenchContext } from "../scripts/workbench_context.js";
+import "../scripts/workbench_bridge.js";
+
 const STORAGE_KEY = "tc_paintfabric_assets";
 const ASSET_LIBRARY_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
@@ -2026,6 +2029,7 @@ const applyHexesFromHub = (detail) => {
   const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length || !elements.hex) return;
+  setWorkbenchContext(normalized, { worldKey: "paintfabric", source: "hex-apply" });
   elements.hex.value = normalized[0];
   markPresetCustom();
   syncUI();
@@ -2034,4 +2038,10 @@ const applyHexesFromHub = (detail) => {
 
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
+});
+
+bootstrapIncomingHandoff({
+  minColors: 1,
+  worldKey: "paintfabric",
+  applyFn: (hexes) => applyHexesFromHub({ hexes })
 });

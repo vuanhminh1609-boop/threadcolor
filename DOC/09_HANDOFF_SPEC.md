@@ -7,6 +7,7 @@ Mục tiêu: thống nhất quy ước truyền màu tối thiểu để mọi W
 - **Palette**: `#p=#RRGGBB,#RRGGBB,...`
 - **Gradient**: `#g=#RRGGBB,#RRGGBB,...`
 - **CMYK**: `#c=#RRGGBB,#RRGGBB,...`
+- **Mã đệm (bufferId)**: `?bufferId=buf_xxx` để mang palette tạm giữa các World.
 
 Ghi chú:
 - Dùng dấu `#` trong hash, khi cần encode URL thì dùng `%23`.
@@ -18,11 +19,14 @@ Ghi chú:
 - `../worlds/palette.html#p=%23F472B6,%230EA5A8,%23F59E0B`
 - `../worlds/gradient.html#g=%23F472B6,%230EA5A8,%23F59E0B`
 - `../worlds/printcolor.html#c=%23F472B6`
+- `../worlds/palette.html?assetId=asset_1690000000000`
+- `../worlds/gradient.html?bufferId=buf_1690000000000_abcd#p=%23F472B6,%230EA5A8`
 
 ## 3) Ưu tiên đọc dữ liệu
-1. Hash `#p/#g/#c` (nếu có).
-2. Query `?color` (fallback).
-3. Dữ liệu nội bộ (localStorage, assetId).
+1. `?assetId=` (mở đúng asset trong Thư viện).
+2. `?bufferId=` (mã đệm mang palette tạm).
+3. Hash `#p/#g/#c` (nếu có).
+4. Query `?color` (fallback).
 
 ## 4) CTA liên World — tiêu chuẩn nhãn
 - “Mở ở Thêu”

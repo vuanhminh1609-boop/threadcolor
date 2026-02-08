@@ -1,4 +1,4 @@
-const HANDOFF_KEYS = ["assetId", "projectId", "from", "intent", "shade"];
+const HANDOFF_KEYS = ["assetId", "bufferId", "projectId", "from", "intent", "shade"];
 
 const normalizeSearch = (search) => {
   if (!search) return "";

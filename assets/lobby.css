@@ -68,6 +68,98 @@
   color: rgba(15, 23, 42, 0.45);
 }
 
+.tc-rail {
+  display: grid;
+  gap: 1rem;
+}
+
+.tc-rail-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.tc-rail-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tc-rail-tab {
+  flex: 0 0 auto;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.tc-rail-tab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+}
+
+.tc-rail-tab.is-active {
+  background: linear-gradient(135deg, var(--a1), var(--a2));
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+}
+
+.tc-rail-tab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12), 0 0 0 6px var(--a1);
+}
+
+.tc-rail-panel {
+  border-radius: 1.1rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.6);
+  padding: 1rem 1.1rem;
+  display: grid;
+  gap: 0.6rem;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+}
+
+.tc-rail-panel-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.tc-rail-step {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tc-rail-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tc-rail-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.tc-rail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
 .tc-lobby-grid {
   display: grid;
   gap: 1.2rem;
@@ -301,6 +393,11 @@
 @media (max-width: 520px) {
   .tc-goal-card {
     padding: 1rem;
+  }
+
+  .tc-rail-tab {
+    font-size: 0.72rem;
+    padding: 0.45rem 0.75rem;
   }
 
   .tc-preview-frame {

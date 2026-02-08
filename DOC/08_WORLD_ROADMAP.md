@@ -15,8 +15,10 @@ Mục tiêu: tạo “vòng tròn hệ sinh thái thịnh vượng” để ngư
 4. **World4 (Màu in/CMYK)** → kiểm tra TAC/gamut.
 5. **World5 (Thư viện)** → lưu tài sản màu chuẩn.
 6. **World7 (Ảnh → màu)** → trích palette từ ảnh.
-7. **World8 (Chia sẻ/Remix)** → chia sẻ, remix về Thư viện.
+7. **World8 (Trò chơi màu)** → luyện cảm giác màu, giải trí có điểm số.
 8. **World6 (Sơn&Vải)** → mô phỏng vật liệu, trả về palette/gradient.
+
+Không gian Cộng đồng (Chia sẻ + Remix) là không gian xuyên suốt 8 World, không phải một World riêng.
 
 ## 3) Tiêu chí “Đẹp + Mượt + Sang + Đã + Nghiện + Workflow mạnh”
 - **Đẹp**: bảng màu, swatch, typography thống nhất; không lệch topbar.
@@ -34,7 +36,7 @@ Mục tiêu: tạo “vòng tròn hệ sinh thái thịnh vượng” để ngư
 - **World5**: mở Thêu / Palette / Gradient.
 - **World6**: mở Palette / Gradient.
 - **World7**: mở Palette / Gradient / Thêu.
-- **World8**: mở Thư viện / Palette.
+- **World8**: mở Thư viện / Không gian Cộng đồng.
 
 ## 5) Roadmap triển khai nhỏ mà chất
 ### Giai đoạn 1 — Chuẩn hoá nhận màu (ngay)
@@ -46,7 +48,7 @@ Mục tiêu: tạo “vòng tròn hệ sinh thái thịnh vượng” để ngư
 - Duy trì lịch sử chuyển đổi trong Library.
 
 ### Giai đoạn 3 — Sức mạnh cộng đồng
-- Remix/Share làm giàu vòng tròn tài sản màu.
+- Không gian Cộng đồng làm giàu vòng tròn tài sản màu.
 - Gắn điểm thưởng cho tài sản chất lượng.
 
 ## 6) Checklist kiểm thử

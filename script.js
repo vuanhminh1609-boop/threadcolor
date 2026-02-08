@@ -1,5 +1,7 @@
 ﻿import { saveSearch, getSavedSearch, listSavedSearches, deleteSavedSearch } from "./library.js";
 import { composeHandoff } from "./scripts/handoff.js";
+import { bootstrapIncomingHandoff, setWorkbenchContext } from "./scripts/workbench_context.js";
+import "./scripts/workbench_bridge.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
   submitThread,
@@ -302,6 +304,7 @@ function hexToHsl([r, g, b]) {
 //======================= GLOBAL STATE =======================
 let threads = [];
 let isDataReady = false;
+let pendingHandoffHexes = null;
 let lastResults = null;
 let lastChosenHex = null;
 let lastMultiHexes = null;
@@ -1013,6 +1016,12 @@ function loadThreads() {
     });
     isDataReady = true;
 
+    if (pendingHandoffHexes && pendingHandoffHexes.length) {
+      const next = pendingHandoffHexes;
+      pendingHandoffHexes = null;
+      applyHexesFromHub({ hexes: next });
+    }
+
     renderResultState("ready");
 
     restoreInspectorFromUrl();
@@ -1344,8 +1353,9 @@ function scheduleSearchMany(hexes) {
 function applyHexesFromHub(detail) {
   const hexes = normalizeHexList(detail?.hexes || []);
   if (!hexes.length) return;
+  setWorkbenchContext(hexes, { worldKey: "threadcolor", source: "hex-apply" });
   if (!isDataReady) {
-    alert("Dữ liệu chưa sẵn sàng");
+    pendingHandoffHexes = hexes;
     return;
   }
   const primary = hexes[0];
@@ -3057,6 +3067,12 @@ canvas?.addEventListener("click", e => {
 
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
+});
+
+bootstrapIncomingHandoff({
+  minColors: 1,
+  worldKey: "threadcolor",
+  applyFn: (hexes) => applyHexesFromHub({ hexes })
 });
 
 const initVaultTabs = () => {

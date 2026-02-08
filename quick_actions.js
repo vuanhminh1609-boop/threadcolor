@@ -98,6 +98,19 @@
     setText(hexRow, current.join(" · "));
   };
 
+  const applyAuroraSwatches = (hexes = []) => {
+    const swatchIds = ["qaAuroraSw1", "qaAuroraSw2", "qaAuroraSw3", "qaAuroraSw4", "qaAuroraSw5", "qaAuroraSw6"];
+    const swatches = swatchIds.map((id) => document.getElementById(id));
+    if (!swatches.every(Boolean)) return;
+    const normalized = (Array.isArray(hexes) ? hexes : []).map(normalizeHex).filter(Boolean);
+    if (!normalized.length) return;
+    swatches.forEach((swatch, idx) => {
+      const hex = normalized[idx] || normalized[normalized.length - 1];
+      if (hex) setBg(swatch, hex);
+    });
+    syncAuroraHexRowFromSwatches();
+  };
+
   const getHeroSwatchHexes = () => {
     const cssVar = getCssVarValue("--hero-swatches");
     const parsed = parseHexListFromCssVar(cssVar);
@@ -122,6 +135,10 @@
     const swatchIds = ["qaAuroraSw1", "qaAuroraSw2", "qaAuroraSw3", "qaAuroraSw4", "qaAuroraSw5", "qaAuroraSw6"];
     const swatches = swatchIds.map((id) => document.getElementById(id));
     if (!swatches.every(Boolean)) return;
+    if (auroraOverrideHexes && auroraOverrideHexes.length) {
+      applyAuroraSwatches(auroraOverrideHexes);
+      return;
+    }
     const palette = getHeroSwatchHexes();
     if (palette.length) {
       swatches.forEach((swatch, idx) => {
@@ -281,6 +298,7 @@
   let lastAuroraMode = "paste";
   let lastTokenKey = "";
   let lastTokenContext = null;
+  let auroraOverrideHexes = null;
 
   const clampValue = (value, min, max) => Math.min(max, Math.max(min, value));
 
@@ -952,6 +970,13 @@
 
   const handlePasteApply = () => {
     pasteColors = parseHexList(pasteInput?.value || "");
+    if (pasteColors.length > 0) {
+      auroraOverrideHexes = pasteColors.slice(0, 6);
+      applyAuroraSwatches(auroraOverrideHexes);
+    } else {
+      auroraOverrideHexes = null;
+      syncHeroAurora();
+    }
     renderPasteSwatches();
     updateAuroraPreview({ mode: "paste", hexes: pasteColors });
     pasteCmykOut.textContent = "";

@@ -1,4 +1,6 @@
-﻿const BOARD_SIZE = 9;
+﻿import { bootstrapIncomingHandoff, normalizeHexList, setWorkbenchContext } from "../scripts/workbench_context.js";
+import "../scripts/workbench_bridge.js";
+const BOARD_SIZE = 9;
 const COLORS = [
   "#ef4444",
   "#f97316",
@@ -109,7 +111,8 @@ const state = {
   hintOn: false,
   hintCooldownUntil: 0,
   hintPath: [],
-  hintMove: null
+  hintMove: null,
+  customPalette: null
 };
 
 const pillState = {
@@ -129,7 +132,8 @@ const pillState = {
   startedAt: null,
   elapsedMs: 0,
   hardDrops: 0,
-  piecesLocked: 0
+  piecesLocked: 0,
+  customPalette: null
 };
 
 function clampNumber(value, min, max) {
@@ -183,13 +187,37 @@ function applyColorBlindMode() {
   document.body.classList.toggle("colorplay-colorblind", settings.colorBlind);
 }
 
+const buildPaletteForCount = (list, count, fallback) => {
+  const base = Array.isArray(list) && list.length ? list : fallback;
+  if (!Array.isArray(base) || !base.length) return [];
+  const total = Math.max(1, Number(count) || 1);
+  const output = [];
+  for (let i = 0; i < total; i += 1) {
+    output.push(base[i] || base[base.length - 1]);
+  }
+  return output;
+};
+
 function getLineColors() {
-  return COLORS.slice(0, state.colorCount);
+  return buildPaletteForCount(state.customPalette, state.colorCount, COLORS);
 }
 
 function getPillColors() {
-  return PILL_COLORS.slice(0, pillState.colorCount);
+  return buildPaletteForCount(pillState.customPalette, pillState.colorCount, PILL_COLORS);
 }
+
+const applyHexPalette = (hexes) => {
+  const normalized = normalizeHexList(hexes);
+  if (!normalized.length) return false;
+  state.customPalette = normalized;
+  pillState.customPalette = normalized;
+  setWorkbenchContext(normalized, { worldKey: "colorplay", source: "hex-apply" });
+  renderBoardState();
+  renderUpcoming();
+  renderPillBoard();
+  renderPillNext();
+  return true;
+};
 
 function safeParseJSON(raw, fallback = null) {
   if (!raw) return fallback;
@@ -2988,3 +3016,13 @@ window.addEventListener("beforeunload", () => {
 loadSettings();
 applyColorBlindMode();
 initLobby();
+
+window.addEventListener("tc:hex-apply", (event) => {
+  applyHexPalette(event?.detail?.hexes || []);
+});
+
+bootstrapIncomingHandoff({
+  minColors: 1,
+  worldKey: "colorplay",
+  applyFn: (hexes) => applyHexPalette(hexes)
+});

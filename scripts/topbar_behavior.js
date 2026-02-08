@@ -69,6 +69,19 @@
     portalMenu.addEventListener("click", (event) => {
       const item = event.target.closest(".tc-menu-item");
       if (!item || !portalMenu.contains(item)) return;
+      const href = item.getAttribute("href") || "";
+      const workbench = window.tcWorkbench || null;
+      const context = workbench?.getContext?.();
+      if (href && context?.hexes?.length && workbench?.ensureBufferFromHexes && workbench?.appendBufferToUrl) {
+        const bufferId = workbench.ensureBufferFromHexes(context.hexes, { source: "topbar" });
+        if (bufferId) {
+          event.preventDefault();
+          const nextUrl = workbench.appendBufferToUrl(href, bufferId);
+          setOpen(false);
+          window.location.href = nextUrl;
+          return;
+        }
+      }
       setOpen(false);
     });
 

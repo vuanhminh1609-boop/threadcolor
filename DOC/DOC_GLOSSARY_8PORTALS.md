@@ -531,6 +531,9 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Mobile controls (nút điều khiển trên điện thoại) | Mobile controls | Cụm nút điều khiển tối giản hiển thị trên điện thoại để thao tác nhanh. |
 | Bảng lệnh (command palette) | Bảng lệnh | Bảng tìm kiếm nhanh để mở Thế giới, chạy route hoặc gọi lệnh tức thì. |
 | Handoff dữ liệu (bàn giao dữ liệu) | Handoff dữ liệu | Cơ chế chuyển hoặc bàn giao dữ liệu giữa các bước/Thế giới để tiếp tục xử lý liền mạch. |
+| Bàn làm việc (workbench) | Bàn làm việc | Trạng thái làm việc tạm thời chứa palette đang dùng để mang qua Thế giới khác. |
+| Mã đệm (bufferId) | Mã đệm | Mã tham chiếu tới một buffer lưu tạm palette để mở lại đúng màu trong World khác. |
+| Liên kết mở đúng trạng thái (deep-link) | Liên kết mở đúng trạng thái | Link chứa đủ tham số để mở đúng màu/trạng thái như người dùng đang thấy. |
 | Safe-area (vùng an toàn tránh tai thỏ/thanh hệ thống) | Safe-area | Vùng an toàn tránh tai thỏ hoặc thanh hệ thống che nội dung quan trọng. |
 | Color picker (bảng chọn màu) | Color picker | Bảng chọn màu cho phép chọn màu trực quan và trả về mã HEX/RGB. |
 | Bottom sheet (bảng trượt từ dưới lên) | Bottom sheet | Bảng nội dung trượt từ dưới lên, thường dùng cho chi tiết trên mobile. |
