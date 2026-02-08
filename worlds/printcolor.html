@@ -55,6 +55,13 @@
       letter-spacing: 0.15em;
       color: var(--muted);
     }
+    .tc-preflight-canvas{
+      width: 100%;
+      max-height: 360px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: #0f172a;
+    }
     .tc-badge{
       display: inline-flex;
       align-items: center;
@@ -171,6 +178,7 @@
       <div id="cmykMode">
         <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
           <div class="space-y-4">
+            <div class="text-xs font-semibold tracking-[0.2em] uppercase tc-muted">Nhập dữ liệu</div>
           <div class="tc-card p-4">
             <label class="text-sm font-semibold" for="hexInput">Danh sách mã màu (HEX)</label>
             <textarea id="hexInput" class="tc-input mt-2" placeholder="#FFAA00, #123456
@@ -182,28 +190,50 @@
             </div>
             <p class="tc-muted text-xs mt-3">Hỗ trợ hash <strong>#c=</strong>, <strong>#p=</strong>, <strong>#g=</strong> (VD: <code>#c=ffcc00,0033aa</code>).</p>
           </div>
-          <div class="tc-card p-4">
-            <h2 class="text-sm font-semibold">Hồ sơ in</h2>
-            <p class="tc-muted text-xs mt-1">Chọn preset và tinh chỉnh ngưỡng TAC.</p>
-            <div class="mt-3 space-y-3">
-              <label class="text-sm font-semibold" for="profilePreset">Preset</label>
-              <select id="profilePreset" class="tc-input">
-                <option value="300">Couche 300%</option>
-                <option value="280">Thường 280%</option>
-                <option value="240">Báo 240%</option>
-                <option value="screen_process">In lưới – Process CMYK (tham chiếu)</option>
-                <option value="screen_spot">In lưới – Spot (tham chiếu)</option>
-              </select>
-              <p id="profileNote" class="tc-muted text-xs hidden"></p>
-              <label class="text-sm font-semibold flex items-center gap-2">
-                <input id="darkFabric" type="checkbox" class="accent-black">
-                Nền vải tối (áo đen)
-              </label>
-              <div class="flex items-center justify-between text-xs tc-muted">
-                <span>Ngưỡng TAC</span>
-                <span id="tacValue">300%</span>
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="tc-card p-4">
+              <h2 class="text-sm font-semibold">Hồ sơ in</h2>
+              <p class="tc-muted text-xs mt-1">Chọn preset và tinh chỉnh ngưỡng TAC.</p>
+              <div class="mt-3 space-y-3">
+                <label class="text-sm font-semibold" for="profilePreset">Preset</label>
+                <select id="profilePreset" class="tc-input">
+                  <option value="300">Couche 300%</option>
+                  <option value="280">Thường 280%</option>
+                  <option value="240">Báo 240%</option>
+                  <option value="screen_process">In lưới – Process CMYK (tham chiếu)</option>
+                  <option value="screen_spot">In lưới – Spot (tham chiếu)</option>
+                </select>
+                <p id="profileNote" class="tc-muted text-xs hidden"></p>
+                <label class="text-sm font-semibold flex items-center gap-2">
+                  <input id="darkFabric" type="checkbox" class="accent-black">
+                  Nền vải tối (áo đen)
+                </label>
+                <div class="flex items-center justify-between text-xs tc-muted">
+                  <span>Ngưỡng TAC</span>
+                  <span id="tacValue">300%</span>
+                </div>
+                <input id="tacRange" class="tc-range" type="range" min="200" max="360" step="5" value="300">
               </div>
-              <input id="tacRange" class="tc-range" type="range" min="200" max="360" step="5" value="300">
+            </div>
+            <div class="tc-card p-4">
+              <h2 class="text-sm font-semibold">Preset dự án</h2>
+              <p class="tc-muted text-xs mt-1">Lưu, ghim và dùng lại bộ thiết lập in.</p>
+              <div class="mt-3 space-y-3">
+                <label class="text-sm font-semibold" for="presetName">Tên preset</label>
+                <input id="presetName" class="tc-input" type="text" placeholder="VD: Áo tối - 280%">
+                <label class="text-sm font-semibold" for="presetSelect">Preset đã lưu</label>
+                <select id="presetSelect" class="tc-input"></select>
+                <label class="text-sm font-semibold flex items-center gap-2">
+                  <input id="presetPin" type="checkbox" class="accent-black">
+                  Ghim preset này
+                </label>
+                <div class="flex flex-wrap gap-2">
+                  <button id="presetSaveNew" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Lưu mới</button>
+                  <button id="presetUpdate" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Cập nhật</button>
+                  <button id="presetApply" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Dùng preset</button>
+                  <button id="presetDelete" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Xóa</button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="tc-card p-4">
@@ -254,7 +284,9 @@
           </div>
         </div>
 
-        <div class="tc-card p-4">
+        <div class="space-y-3">
+          <div class="text-xs font-semibold tracking-[0.2em] uppercase tc-muted">Kiểm tra QC</div>
+          <div class="tc-card p-4">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-semibold">Bảng chuyển đổi</h2>
@@ -265,6 +297,19 @@
               <button id="reduceAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Giảm TAC theo ngưỡng</button>
               <span class="tc-badge">TAC ngưỡng <span id="tacBadge">300%</span></span>
             </div>
+          </div>
+          <div class="tc-qc-bar mt-3">
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <div class="tc-chip px-3 py-2 rounded-full">Tổng màu: <span id="summaryTotal">0</span></div>
+              <div class="tc-chip px-3 py-2 rounded-full">Vượt TAC: <span id="summaryTac">0</span></div>
+              <div class="tc-chip px-3 py-2 rounded-full">Ngoài gamut: <span id="summaryGamut">0</span></div>
+              <div class="tc-chip px-3 py-2 rounded-full">ΔE lớn nhất: <span id="summaryDelta">0</span></div>
+            </div>
+            <div class="mt-2 flex flex-wrap items-center gap-2">
+              <button id="syncProofAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Đồng bộ ngoài gamut theo mô phỏng in</button>
+              <button id="restoreOriginalAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Khôi phục màu gốc</button>
+            </div>
+            <p id="summaryHint" class="tc-muted text-xs mt-2"></p>
           </div>
           <div id="printEmpty" class="mt-4 tc-muted text-sm">Chưa có màu để chuyển đổi.</div>
           <div id="printTableWrap" class="mt-4 overflow-auto hidden">
@@ -283,7 +328,8 @@
               <tbody id="printTableBody"></tbody>
             </table>
           </div>
-          <div class="mt-4 flex flex-wrap items-center gap-2">
+          <div class="mt-4 text-xs font-semibold tracking-[0.2em] uppercase tc-muted">Xuất / Lưu / Chia sẻ</div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
             <select id="exportFormat" class="tc-input w-[190px]">
               <option value="csv">Xuất CSV</option>
               <option value="json">JSON tokens</option>
@@ -304,6 +350,45 @@
           </div>
         </div>
 
+        <details id="preflightDetails" class="mt-6 tc-card p-4">
+          <summary class="cursor-pointer font-semibold">Preflight ảnh/PDF (thử nghiệm)</summary>
+          <div class="mt-3 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+            <div class="space-y-3">
+              <div class="grid gap-2">
+                <label class="text-sm font-semibold" for="preflightFile">Tệp ảnh/PDF</label>
+                <input id="preflightFile" class="tc-input !min-h-0" type="file" accept="image/*,application/pdf">
+              </div>
+              <div class="grid gap-2 md:grid-cols-2">
+                <div class="space-y-2">
+                  <label class="text-sm font-semibold" for="preflightResolution">Độ phân giải kiểm tra</label>
+                  <select id="preflightResolution" class="tc-input !min-h-0">
+                    <option value="256">256 px</option>
+                    <option value="384" selected>384 px</option>
+                    <option value="512">512 px</option>
+                  </select>
+                </div>
+                <label class="text-sm font-semibold flex items-center gap-2 md:mt-6">
+                  <input id="preflightHeatmap" type="checkbox" class="accent-black" checked>
+                  Hiển thị heatmap TAC
+                </label>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button id="preflightRun" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Chạy preflight</button>
+                <span id="preflightNote" class="tc-muted text-xs"></span>
+              </div>
+              <div class="tc-chip px-3 py-2 rounded-2xl text-xs flex flex-wrap gap-3">
+                <span>% pixel vượt TAC: <strong id="preflightOver">0%</strong></span>
+                <span>TAC lớn nhất: <strong id="preflightMax">0%</strong></span>
+                <span>Ngưỡng TAC hiện tại: <strong id="preflightThreshold">300%</strong></span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <canvas id="preflightCanvas" class="tc-preflight-canvas" width="512" height="320"></canvas>
+              <p class="tc-muted text-xs">Gợi ý: dùng ảnh đã flatten, nền đơn giản để kết quả rõ hơn.</p>
+            </div>
+          </div>
+        </details>
+
         <details class="mt-6 tc-card p-4">
           <summary class="cursor-pointer font-semibold">Hướng dẫn rõ ràng cho người mới</summary>
         <div class="mt-3 space-y-4 text-sm tc-muted leading-relaxed">
@@ -315,13 +400,6 @@
               <li>3) Xem CMYK + TAC, giảm TAC khi vượt ngưỡng, rồi sao chép/xuất/lưu.</li>
             </ol>
           </div>
-          <div class="mt-3 grid gap-2 sm:grid-cols-4 text-xs">
-            <div class="tc-chip px-3 py-2 rounded-full">Tổng màu: <span id="summaryTotal">0</span></div>
-            <div class="tc-chip px-3 py-2 rounded-full">Vượt TAC: <span id="summaryTac">0</span></div>
-            <div class="tc-chip px-3 py-2 rounded-full">Ngoài gamut: <span id="summaryGamut">0</span></div>
-            <div class="tc-chip px-3 py-2 rounded-full">ΔE lớn nhất: <span id="summaryDelta">0</span></div>
-          </div>
-          <p id="summaryHint" class="tc-muted text-xs mt-2"></p>
           <div>
             <p class="font-semibold text-[13px] text-white">Định nghĩa nhanh</p>
             <ul class="mt-2 space-y-2">
@@ -481,5 +559,3 @@
   <script src="../scripts/topbar_behavior.js" defer></script>
 </body>
 </html>
-
-

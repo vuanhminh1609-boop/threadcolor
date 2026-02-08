@@ -1,4 +1,4 @@
-import { saveSearch, getSavedSearch, listSavedSearches, deleteSavedSearch } from "./library.js";
+﻿import { saveSearch, getSavedSearch, listSavedSearches, deleteSavedSearch } from "./library.js";
 import { composeHandoff } from "./scripts/handoff.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
@@ -93,6 +93,51 @@ function normalizeCodeKey(code) {
     .trim()
     .toUpperCase()
     .replace(/\s+/g, " ");
+}
+
+function isTypingContext(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return el.isContentEditable || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+}
+
+function renderHighlightedText(containerEl, fullText, query) {
+  if (!containerEl) return;
+  const text = String(fullText || "");
+  const q = String(query || "").trim();
+  while (containerEl.firstChild) {
+    containerEl.removeChild(containerEl.firstChild);
+  }
+  if (!q) {
+    containerEl.textContent = text;
+    return;
+  }
+  const lowerText = text.toLowerCase();
+  const lowerQ = q.toLowerCase();
+  if (!lowerQ) {
+    containerEl.textContent = text;
+    return;
+  }
+  let start = 0;
+  let idx = lowerText.indexOf(lowerQ, start);
+  if (idx === -1) {
+    containerEl.textContent = text;
+    return;
+  }
+  while (idx !== -1) {
+    if (idx > start) {
+      containerEl.appendChild(document.createTextNode(text.slice(start, idx)));
+    }
+    const mark = document.createElement("span");
+    mark.className = "tc-match";
+    mark.textContent = text.slice(idx, idx + q.length);
+    containerEl.appendChild(mark);
+    start = idx + q.length;
+    idx = lowerText.indexOf(lowerQ, start);
+  }
+  if (start < text.length) {
+    containerEl.appendChild(document.createTextNode(text.slice(start)));
+  }
 }
 
 function isVerifiedThread(thread) {
@@ -407,6 +452,8 @@ let lastGroupedResults = null;
 let searchWorker = null;
 let searchWorkerReady = false;
 let searchWorkerSeq = 0;
+let brandFilterQuery = "";
+let brandFilterTimer = null;
 const searchWorkerRequests = new Map();
 const PIN_STORAGE_KEY = "tc_pins_v1";
 let pinnedItems = [];
@@ -494,8 +541,38 @@ const updateHandoffLinks = () => {
   if (handoffEls.printLink) handoffEls.printLink.href = `./printcolor.html${printParam}`;
 };
 
+const applyBrandFilter = () => {
+  if (!brandFilters) return;
+  const raw = brandFilterSearch ? brandFilterSearch.value : brandFilterQuery;
+  brandFilterQuery = raw;
+  const normalized = normalizeBrandKey(raw);
+  const compact = normalized.replace(/\s+/g, "");
+  let visible = 0;
+  const tiles = brandFilters.querySelectorAll(".brand-tile-wrap");
+  tiles.forEach((tile) => {
+    const search = tile.dataset.search || "";
+    const searchCompact = tile.dataset.searchCompact || "";
+    const match = !normalized || search.includes(normalized) || (compact && searchCompact.includes(compact));
+    tile.hidden = !match;
+    const nameEl = tile.querySelector(".brand-tile-name");
+    if (nameEl) {
+      renderHighlightedText(nameEl, tile.dataset.fullName || nameEl.dataset.fullName || "", raw);
+    }
+    if (match) visible += 1;
+  });
+  if (brandFilterCount) {
+    brandFilterCount.textContent = `Đang hiển thị ${visible}/${tiles.length} hãng`;
+  }
+  if (brandFilterClear) {
+    brandFilterClear.disabled = !normalized;
+  }
+};
+
 function renderBrandFilters(brands) {
   if (!brandFilters) return;
+  const existing = brandFilters.querySelectorAll(".brand-filter");
+  const hasExisting = existing.length > 0;
+  const selected = new Set([...existing].filter(cb => cb.checked).map(cb => cb.value));
   brandFilters.innerHTML = "";
   brands.forEach(rawBrand => {
     const brandName = (rawBrand || "").trim();
@@ -503,30 +580,27 @@ function renderBrandFilters(brands) {
     const stats = brandStats.get(brandName) || { count: 0, sources: new Set(), verifiedCount: 0 };
     const sources = Array.from(stats.sources || []);
     const label = document.createElement("label");
-    label.className = "cursor-pointer";
+    label.className = "brand-tile-wrap";
 
     const input = document.createElement("input");
     input.type = "checkbox";
-    input.className = "brand-filter peer sr-only";
+    input.className = "brand-filter";
     input.value = brandName;
-    input.checked = true;
+    input.checked = hasExisting ? selected.has(brandName) : true;
 
-    const pill = document.createElement("span");
-    pill.className = "inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 bg-white/70 text-gray-700 shadow-sm transition duration-200 hover:shadow-md hover:-translate-y-px peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-400 peer-focus-visible:ring-offset-2";
+    const tile = document.createElement("div");
+    tile.className = "brand-tile";
 
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "w-4 h-4 text-indigo-600 opacity-0 transition-opacity duration-150 peer-checked:opacity-100");
-    svg.setAttribute("viewBox", "0 0 20 20");
-    svg.setAttribute("fill", "currentColor");
-    svg.setAttribute("aria-hidden", "true");
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("fill-rule", "evenodd");
-    path.setAttribute("d", "M16.704 5.29a1 1 0 010 1.42l-7.25 7.25a1 1 0 01-1.42 0l-3.25-3.25a1 1 0 011.42-1.42l2.54 2.54 6.54-6.54a1 1 0 011.42 0z");
-    path.setAttribute("clip-rule", "evenodd");
-    svg.appendChild(path);
+    const top = document.createElement("div");
+    top.className = "brand-tile-top";
 
-    const text = document.createElement("span");
-    text.textContent = brandName;
+    const name = document.createElement("div");
+    name.className = "brand-tile-name";
+    name.textContent = brandName;
+    name.dataset.fullName = brandName;
+
+    const meta = document.createElement("div");
+    meta.className = "brand-tile-meta";
 
     const badge = document.createElement("span");
     badge.className = "brand-badge";
@@ -540,6 +614,7 @@ function renderBrandFilters(brands) {
     infoBtn.className = "brand-info-btn";
     infoBtn.textContent = "i";
     infoBtn.dataset.brandInfo = "1";
+    infoBtn.setAttribute("aria-label", `Thông tin hãng ${brandName}`);
     const panel = document.createElement("div");
     panel.className = "brand-popover-panel text-xs";
     panel.innerHTML = `
@@ -552,14 +627,21 @@ function renderBrandFilters(brands) {
     popover.appendChild(infoBtn);
     popover.appendChild(panel);
 
-    pill.appendChild(svg);
-    pill.appendChild(text);
-    pill.appendChild(badge);
-    pill.appendChild(popover);
+    meta.appendChild(badge);
+    meta.appendChild(popover);
+    top.appendChild(name);
+    top.appendChild(meta);
+
+    tile.appendChild(top);
     label.appendChild(input);
-    label.appendChild(pill);
+    const searchKey = normalizeBrandKey(brandName);
+    label.dataset.search = searchKey;
+    label.dataset.searchCompact = searchKey.replace(/\s+/g, "");
+    label.dataset.fullName = brandName;
+    label.appendChild(tile);
     brandFilters.appendChild(label);
   });
+  applyBrandFilter();
 }
 
 function getUniqueBrands(list) {
@@ -803,6 +885,11 @@ const pinList = document.getElementById("pinList");
 const pinClear = document.getElementById("pinClear");
 const brandFilters = document.getElementById("brandFilters");
 const verifiedOnlyToggle = document.getElementById("verifiedOnlyToggle");
+const brandSelectAll = document.getElementById("brandSelectAll");
+const brandClearAll = document.getElementById("brandClearAll");
+const brandFilterSearch = document.getElementById("brandFilterSearch");
+const brandFilterClear = document.getElementById("brandFilterClear");
+const brandFilterCount = document.getElementById("brandFilterCount");
 const btnFindNearest = document.getElementById("btnFindNearest");
 const colorPicker = document.getElementById("colorPicker");
 const codeInput = document.getElementById("codeInput");
@@ -2456,7 +2543,50 @@ function startEyeDropper() {
 window.addEventListener("firebase-auth-ready", bindAuth);
 bindAuth();
 bindHandoffActions();
-setupAutofillTrap(codeInput);
+window.setupAutofillTrap?.(codeInput);
+const clearBrandFilter = (shouldFocus = true) => {
+  if (!brandFilterSearch) return;
+  brandFilterSearch.value = "";
+  brandFilterQuery = "";
+  applyBrandFilter();
+  if (shouldFocus) brandFilterSearch.focus();
+};
+const scheduleBrandFilter = () => {
+  if (!brandFilterSearch) return;
+  window.clearTimeout(brandFilterTimer);
+  brandFilterTimer = window.setTimeout(() => {
+    brandFilterQuery = brandFilterSearch.value;
+    applyBrandFilter();
+  }, 90);
+};
+if (brandFilterSearch) {
+  brandFilterSearch.addEventListener("input", scheduleBrandFilter);
+  brandFilterSearch.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      const hasQuery = brandFilterSearch.value.trim().length > 0;
+      clearBrandFilter(false);
+      if (!hasQuery) {
+        brandFilterSearch.blur();
+      }
+    }
+  });
+}
+if (brandFilterClear) {
+  brandFilterClear.addEventListener("click", () => clearBrandFilter(true));
+}
+document.addEventListener("keydown", (event) => {
+  if (event.defaultPrevented) return;
+  if (event.key !== "/") return;
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  if (isTypingContext(event.target)) return;
+  if (!brandFilterSearch) return;
+  event.preventDefault();
+  brandFilterSearch.focus();
+  if (brandFilterSearch.value) {
+    brandFilterSearch.select();
+  }
+});
 if (brandFilters) {
   brandFilters.addEventListener("click", (event) => {
     const btn = event.target.closest("[data-brand-info]");
@@ -2468,6 +2598,34 @@ if (brandFilters) {
     const isOpen = popover.dataset.open === "1";
     closeBrandPopovers();
     popover.dataset.open = isOpen ? "0" : "1";
+  });
+}
+if (brandSelectAll) {
+  brandSelectAll.addEventListener("click", () => {
+    if (!brandFilters) return;
+    brandFilters.querySelectorAll(".brand-filter").forEach((checkbox) => {
+      checkbox.checked = true;
+    });
+    matchCache.clear();
+    if (lastMultiHexes.length) {
+      scheduleSearchMany(lastMultiHexes);
+    } else if (lastChosenHex) {
+      scheduleSearch(lastChosenHex);
+    }
+  });
+}
+if (brandClearAll) {
+  brandClearAll.addEventListener("click", () => {
+    if (!brandFilters) return;
+    brandFilters.querySelectorAll(".brand-filter").forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+    matchCache.clear();
+    if (lastMultiHexes.length) {
+      scheduleSearchMany(lastMultiHexes);
+    } else if (lastChosenHex) {
+      scheduleSearch(lastChosenHex);
+    }
   });
 }
 document.addEventListener("click", (event) => {

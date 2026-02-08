@@ -1,54 +1,83 @@
-(() => {
+﻿(() => {
   const STORAGE_KEY = "tc_w1_tour_seen_v1";
   const steps = [
     {
       id: "brand",
-      selector: "#sectionBrand",
+      tour: "section-brand",
       title: "Chọn hãng chỉ",
-      desc: "Chọn 1-3 hãng để kết quả sát với chỉ bạn dùng."
+      desc: "Bắt đầu nhanh: Chọn hãng → chọn cách tra → xem kết quả."
     },
     {
       id: "pick",
-      selector: "#sectionPick",
-      title: "Chọn màu / Mở Kho HEX",
-      desc: "Dùng picker hoặc mở Kho HEX để lấy màu nhanh."
+      tour: "section-pick",
+      tab: "color",
+      title: "Màu → Mã chỉ",
+      desc: "Chọn màu nhanh bằng picker hoặc Kho HEX để tìm mã gần nhất."
+    },
+    {
+      id: "grid",
+      tour: "section-grid",
+      tab: "color",
+      title: "Lưới màu hãng",
+      desc: "Quét nhanh bảng màu theo hãng, bấm swatch để tra mã ngay."
     },
     {
       id: "image",
-      selector: "#sectionImage",
-      title: "Chọn từ ảnh",
-      desc: "Tải ảnh và bấm vào điểm màu để trích mã."
+      tour: "section-image",
+      tab: "image",
+      title: "Ảnh → Mã chỉ",
+      desc: "Tải ảnh rồi bấm vào điểm màu để trích và tra mã."
     },
     {
       id: "delta",
-      selector: "#inspectorDelta, #deltaSlider, #deltaValue, #deltaMethod",
-      title: "Tinh chỉnh độ tương đồng (ΔE)",
-      desc: "Giảm/tăng ngưỡng để lọc kết quả sát hơn.",
-      useSection: true
+      tour: "section-delta",
+      title: "Độ tương đồng ΔE",
+      desc: "Tinh chỉnh ngưỡng ΔE để lọc kết quả sát hơn."
     },
     {
       id: "result",
-      selector: "#result",
-      title: "Xem kết quả",
-      desc: "Danh sách mã chỉ tương ứng hiển thị tại đây."
+      tour: "section-result",
+      title: "Kết quả tra cứu",
+      desc: "Danh sách mã chỉ hiển thị tại đây, có thể ghim hoặc sao chép."
     }
   ];
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const getTopInset = () => {
+    const cssVal = getComputedStyle(document.documentElement).getPropertyValue("--tc-topbar-h");
+    const num = parseFloat(cssVal);
+    return Number.isFinite(num) ? num + 8 : 72;
+  };
+
+  const isHidden = (el) => {
+    if (!el) return true;
+    const style = window.getComputedStyle(el);
+    if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") return true;
+    const rect = el.getBoundingClientRect();
+    return rect.width === 0 || rect.height === 0;
+  };
+
   const getTarget = (step) => {
     if (!step) return null;
-    const el = document.querySelector(step.selector);
-    if (!el) return null;
-    if (step.useSection) {
-      return el.closest("section") || el;
+    const selector = step.tour ? `[data-tour="${step.tour}"]` : step.selector;
+    if (!selector) return null;
+    return document.querySelector(selector);
+  };
+
+  const ensureTab = (tab) => {
+    if (!tab) return;
+    if (typeof window.tcWorld1ActivateTab === "function") {
+      window.tcWorld1ActivateTab(tab);
+      return;
     }
-    return el;
+    const btn = document.querySelector(`[data-tour="tab-${tab}"]`) || document.querySelector(`[data-tc-tab="${tab}"]`);
+    btn?.click();
   };
 
   let activeTour = null;
 
   const shouldRun = (force) => {
-    if (!document.querySelector("#sectionBrand")) return false;
+    if (!document.querySelector("[data-tour=\"section-brand\"]")) return false;
     if (force) return true;
     try {
       return localStorage.getItem(STORAGE_KEY) !== "1";
@@ -73,8 +102,9 @@
         <div class="tc-tour-title"></div>
         <div class="tc-tour-desc"></div>
         <div class="tc-tour-actions">
+          <button class="tc-tour-btn tc-tour-prev" type="button">Quay lại</button>
           <button class="tc-tour-btn tc-tour-skip" type="button">Bỏ qua</button>
-          <button class="tc-tour-btn tc-tour-next" type="button">Bước tiếp theo</button>
+          <button class="tc-tour-btn tc-tour-next" type="button">Tiếp theo</button>
         </div>
       </div>
     `;
@@ -84,12 +114,13 @@
 
   const positionCard = (card, rect) => {
     const margin = 16;
+    const topInset = getTopInset();
     const cardRect = card.getBoundingClientRect();
     let top = rect.bottom + 12;
     if (top + cardRect.height > window.innerHeight - margin) {
       top = rect.top - cardRect.height - 12;
     }
-    top = clamp(top, margin, window.innerHeight - cardRect.height - margin);
+    top = clamp(top, topInset, window.innerHeight - cardRect.height - margin);
     let left = rect.left;
     if (left + cardRect.width > window.innerWidth - margin) {
       left = window.innerWidth - cardRect.width - margin;
@@ -113,16 +144,30 @@
     const descEl = overlay.querySelector(".tc-tour-desc");
     const nextBtn = overlay.querySelector(".tc-tour-next");
     const skipBtn = overlay.querySelector(".tc-tour-skip");
+    const prevBtn = overlay.querySelector(".tc-tour-prev");
 
     let index = 0;
+
+    const findValidIndex = (start, direction) => {
+      let idx = start;
+      while (idx >= 0 && idx < steps.length) {
+        const step = steps[idx];
+        if (step?.tab) ensureTab(step.tab);
+        const target = getTarget(step);
+        if (target && !isHidden(target)) return idx;
+        idx += direction;
+      }
+      return -1;
+    };
 
     const position = () => {
       const step = steps[index];
       const target = getTarget(step);
-      if (!target) return;
+      if (!target || isHidden(target)) return;
       const rect = target.getBoundingClientRect();
-      const padding = 8;
-      const top = clamp(rect.top - padding, 8, window.innerHeight - 16);
+      const padding = 10;
+      const topInset = getTopInset();
+      const top = clamp(rect.top - padding, topInset, window.innerHeight - 16);
       const left = clamp(rect.left - padding, 8, window.innerWidth - 16);
       const width = clamp(rect.width + padding * 2, 40, window.innerWidth - 16);
       const height = clamp(rect.height + padding * 2, 40, window.innerHeight - 16);
@@ -132,23 +177,30 @@
       positionCard(card, { top, left, width, height, bottom: top + height });
     };
 
-    const update = () => {
-      const step = steps[index];
-      if (!step) return;
-      const target = getTarget(step);
-      if (!target) {
-        if (index >= steps.length - 1) return;
-        index = Math.min(index + 1, steps.length - 1);
-        return update();
+    const update = (direction = 1) => {
+      const nextIndex = findValidIndex(index, direction);
+      if (nextIndex === -1) {
+        finish(true);
+        return;
       }
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-      window.setTimeout(position, 120);
-      stepEl.textContent = `Bước ${index + 1}/${steps.length}`;
-      titleEl.textContent = step.title;
-      descEl.textContent = step.desc;
-      nextBtn.textContent = index === steps.length - 1
-        ? "Tôi đã hiểu, bắt đầu ngay thôi"
-        : "Bước tiếp theo";
+      index = nextIndex;
+      const step = steps[index];
+      if (step?.tab) ensureTab(step.tab);
+      window.setTimeout(() => {
+        const target = getTarget(step);
+        if (!target || isHidden(target)) {
+          index = index + direction;
+          update(direction);
+          return;
+        }
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        window.setTimeout(position, 120);
+        stepEl.textContent = `Bước ${index + 1}/${steps.length}`;
+        titleEl.textContent = step.title;
+        descEl.textContent = step.desc;
+        prevBtn.disabled = index === 0;
+        nextBtn.textContent = index === steps.length - 1 ? "Hoàn tất" : "Tiếp theo";
+      }, 60);
     };
 
     const finish = (mark = true) => {
@@ -167,7 +219,13 @@
         return;
       }
       index += 1;
-      update();
+      update(1);
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (index <= 0) return;
+      index -= 1;
+      update(-1);
     });
 
     skipBtn.addEventListener("click", () => finish(true));
@@ -175,7 +233,7 @@
     window.addEventListener("resize", position);
     window.addEventListener("scroll", position, true);
 
-    update();
+    update(1);
   };
 
   window.startWorld1Tour = startWorld1Tour;

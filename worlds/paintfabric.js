@@ -8,10 +8,17 @@ const HANDOFF_FROM = "paintfabric";
 const TEMPLATE_BASE = "../assets/material_scenes";
 const PAINT_CALC_KEY = "tc_paint_calc_v1";
 const TRIPTYCH_KEY = "tc_paintfabric_triptych_v1";
+const LAST_PRESET_KEY = "tc_w6_last_preset_v1";
 
 const elements = {
   tabs: document.getElementById("pfTabs"),
   hex: document.getElementById("pfHex"),
+  summaryBar: document.getElementById("pfSummaryBar"),
+  summaryHex: document.getElementById("pfSummaryHex"),
+  summaryMode: document.getElementById("pfSummaryMode"),
+  summaryPreset: document.getElementById("pfSummaryPreset"),
+  summaryMaterial: document.getElementById("pfSummaryMaterial"),
+  summaryCompare: document.getElementById("pfSummaryCompare"),
   scene: document.getElementById("pfScene"),
   finish: document.getElementById("pfFinish"),
   lighting: document.getElementById("pfLighting"),
@@ -24,13 +31,44 @@ const elements = {
   textureScale: document.getElementById("pfTextureScale"),
   compare: document.getElementById("pfCompare"),
   compareLabel: document.getElementById("pfCompareLabel"),
+  compareModes: document.getElementById("pfCompareModes"),
+  compareSlots: document.getElementById("pfCompareSlots"),
+  compareSliderWrap: document.getElementById("pfCompareSliderWrap"),
   paintPanel: document.getElementById("pfPaintPanel"),
   fabricPanel: document.getElementById("pfFabricPanel"),
   preview: document.getElementById("pfPreview"),
+  companionMain: document.getElementById("pfCompanionMain"),
+  companionTrim: document.getElementById("pfCompanionTrim"),
+  companionAccent: document.getElementById("pfCompanionAccent"),
+  companionMainHex: document.getElementById("pfCompanionMainHex"),
+  companionTrimHex: document.getElementById("pfCompanionTrimHex"),
+  companionAccentHex: document.getElementById("pfCompanionAccentHex"),
+  companionPreview: document.getElementById("pfCompanionPreview"),
+  openPalette: document.getElementById("pfOpenPalette"),
+  openGradient: document.getElementById("pfOpenGradient"),
+  photoDetails: document.getElementById("pfPhotoDetails"),
+  photoInput: document.getElementById("pfPhotoInput"),
+  photoCanvas: document.getElementById("pfPhotoCanvas"),
+  photoBrush: document.getElementById("pfPhotoBrush"),
+  photoBrushValue: document.getElementById("pfPhotoBrushValue"),
+  photoFeather: document.getElementById("pfPhotoFeather"),
+  photoFeatherValue: document.getElementById("pfPhotoFeatherValue"),
+  photoOpacity: document.getElementById("pfPhotoOpacity"),
+  photoOpacityValue: document.getElementById("pfPhotoOpacityValue"),
+  photoBlend: document.getElementById("pfPhotoBlend"),
+  photoUndo: document.getElementById("pfPhotoUndo"),
+  photoClear: document.getElementById("pfPhotoClear"),
+  photoCompare: document.getElementById("pfPhotoCompare"),
+  photoCompareValue: document.getElementById("pfPhotoCompareValue"),
+  photoSave: document.getElementById("pfPhotoSave"),
+  photoStatus: document.getElementById("pfPhotoStatus"),
   save: document.getElementById("pfSave"),
   useLibrary: document.getElementById("pfUseLibrary"),
   share: document.getElementById("pfShare"),
   export: document.getElementById("pfExport"),
+  exportJson: document.getElementById("pfExportJson"),
+  exportPng: document.getElementById("pfExportPng"),
+  copySummaryLine: document.getElementById("pfCopySummaryLine"),
   seed: document.getElementById("pfSeed"),
   savedSelect: document.getElementById("pfSavedSelect"),
   spec: document.getElementById("pfSpec"),
@@ -54,6 +92,45 @@ const svgCache = new Map();
 const defaultHex = "#C27B4B";
 let previewRenderSeq = 0;
 let rafScheduled = false;
+
+const state = {
+  mode: "paint",
+  presetId: "",
+  presetLabel: "",
+  compareMode: "off",
+  compareSlot: "A",
+  compareColors: {
+    A: defaultHex,
+    B: "#D9A46B",
+    C: "#8C4B2E"
+  },
+  companions: {
+    main: defaultHex,
+    trim: "#D9A46B",
+    accent: "#8C4B2E"
+  }
+};
+
+const photoState = {
+  initialized: false,
+  imageLoaded: false,
+  imageName: "",
+  width: 0,
+  height: 0,
+  baseCanvas: null,
+  baseCtx: null,
+  maskCanvas: null,
+  maskCtx: null,
+  blurCanvas: null,
+  blurCtx: null,
+  overlayCanvas: null,
+  overlayCtx: null,
+  undoStack: [],
+  isDrawing: false,
+  lastPoint: null,
+  renderPending: false,
+  hasMask: false
+};
 
 const typeLabels = {
   paint_profile: "Sơn",
@@ -121,6 +198,12 @@ const fabricApplications = {
   wool: "Chăn ấm"
 };
 
+const compareModeLabels = {
+  off: "Tắt",
+  ab: "A/B",
+  tri: "Triptych"
+};
+
 const paintPresetButtons = [
   { label: "Ấm mềm", lighting: "am", finish: "mo" },
   { label: "Ấm bóng", lighting: "am", finish: "bong" },
@@ -137,6 +220,61 @@ const fabricPresetButtons = [
   { label: "Denim lạnh", lighting: "trang", finish: "mo", texture: "tho" },
   { label: "Len ấm", lighting: "am", finish: "mo", texture: "tho" },
   { label: "Sáng sang", lighting: "trang", finish: "bong", texture: "min" }
+];
+
+const goalPresets = [
+  {
+    id: "bedroom_calm",
+    label: "Phòng ngủ thư giãn",
+    mode: "paint",
+    scene: "bedroom",
+    surface: "tuong",
+    lighting: "am",
+    finish: "mo",
+    accentShift: -12
+  },
+  {
+    id: "living_luxe",
+    label: "Phòng khách sang",
+    mode: "paint",
+    scene: "living",
+    surface: "tuong",
+    lighting: "tu_nhien",
+    finish: "bong",
+    accentShift: 14
+  },
+  {
+    id: "facade_clean",
+    label: "Mặt tiền sạch",
+    mode: "paint",
+    scene: "facade",
+    surface: "gach",
+    lighting: "trang",
+    finish: "mo",
+    accentShift: -6
+  },
+  {
+    id: "streetwear",
+    label: "Áo streetwear",
+    mode: "fabric",
+    object: "shirt",
+    fabricType: "denim",
+    lighting: "trang",
+    finish: "mo",
+    texture: "tho",
+    accentShift: 18
+  },
+  {
+    id: "curtain_minimal",
+    label: "Rèm tối giản",
+    mode: "fabric",
+    object: "curtain",
+    fabricType: "linen",
+    lighting: "tu_nhien",
+    finish: "mo",
+    texture: "min",
+    accentShift: -8
+  }
 ];
 
 const templates = {
@@ -216,6 +354,83 @@ const applyLighting = (hex, lighting) => {
 const adjust = (hex, amount) => {
   const { r, g, b } = hexToRgb(hex);
   return rgbToHex(r + amount, g + amount, b + amount);
+};
+
+const rgbToHsl = (r, g, b) => {
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const delta = max - min;
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (delta !== 0) {
+    s = delta / (1 - Math.abs(2 * l - 1));
+    switch (max) {
+      case rn:
+        h = ((gn - bn) / delta) % 6;
+        break;
+      case gn:
+        h = (bn - rn) / delta + 2;
+        break;
+      default:
+        h = (rn - gn) / delta + 4;
+        break;
+    }
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  return { h, s: s * 100, l: l * 100 };
+};
+
+const hslToRgb = (h, s, l) => {
+  const sat = Math.max(0, Math.min(100, s)) / 100;
+  const light = Math.max(0, Math.min(100, l)) / 100;
+  const c = (1 - Math.abs(2 * light - 1)) * sat;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = light - c / 2;
+  let r1 = 0;
+  let g1 = 0;
+  let b1 = 0;
+  if (h < 60) {
+    r1 = c; g1 = x; b1 = 0;
+  } else if (h < 120) {
+    r1 = x; g1 = c; b1 = 0;
+  } else if (h < 180) {
+    r1 = 0; g1 = c; b1 = x;
+  } else if (h < 240) {
+    r1 = 0; g1 = x; b1 = c;
+  } else if (h < 300) {
+    r1 = x; g1 = 0; b1 = c;
+  } else {
+    r1 = c; g1 = 0; b1 = x;
+  }
+  return {
+    r: (r1 + m) * 255,
+    g: (g1 + m) * 255,
+    b: (b1 + m) * 255
+  };
+};
+
+const shiftHue = (hex, shift, satShift = 0, lightShift = 0) => {
+  const { r, g, b } = hexToRgb(hex);
+  const hsl = rgbToHsl(r, g, b);
+  const h = (hsl.h + shift + 360) % 360;
+  const s = Math.max(6, Math.min(92, hsl.s + satShift));
+  const l = Math.max(8, Math.min(92, hsl.l + lightShift));
+  const rgb = hslToRgb(h, s, l);
+  return rgbToHex(rgb.r, rgb.g, rgb.b);
+};
+
+const deriveCompanionColors = (hex, presetId) => {
+  const base = normalizeHex(hex) || defaultHex;
+  const preset = goalPresets.find((item) => item.id === presetId);
+  const accentShift = preset?.accentShift ?? 12;
+  const trim = shiftHue(base, 0, -12, 10);
+  const accent = shiftHue(base, accentShift, 12, -4);
+  return { main: base, trim, accent };
 };
 
 const setStatus = (message) => {
@@ -392,12 +607,30 @@ const addAssetToLibrary = (asset) => {
 };
 
 const buildLibraryAsset = (spec) => {
+  const presetLabel = spec.presetLabel || "Tuỳ chỉnh";
+  const modeTag = spec.type === "paint_profile" ? "sơn" : "vải";
+  const tags = [
+    "paintfabric",
+    modeTag,
+    presetLabel ? `preset:${presetLabel}` : null,
+    spec.finish ? `finish:${spec.finish}` : null,
+    spec.lighting ? `light:${spec.lighting}` : null
+  ].filter(Boolean);
+  const colors = [
+    spec.colorHex,
+    spec.companions?.trim,
+    spec.companions?.accent
+  ].map((hex) => normalizeHex(hex)).filter(Boolean);
   return {
     id: `asset_${Date.now()}`,
     type: spec.type,
     name: spec.name,
-    tags: ["paintfabric"],
+    tags,
     payload: {
+      colors,
+      preset: { id: spec.presetId || "", label: presetLabel },
+      companions: spec.companions || null,
+      compare: { mode: spec.compareMode || "off", colors: spec.compareColors || {} },
       materialProfile: {
         colorHex: spec.colorHex,
         finish: spec.finish,
@@ -456,6 +689,7 @@ const saveAssets = (assets) => {
 
 const buildSpec = () => {
   const hex = normalizeHex(elements.hex?.value) || defaultHex;
+  const companions = deriveCompanionColors(hex, state.presetId);
   const activeTab = elements.paintPanel?.classList.contains("hidden") ? "fabric" : "paint";
   const createdAt = new Date().toISOString();
   const paintCalc = activeTab === "paint" ? {
@@ -478,6 +712,11 @@ const buildSpec = () => {
     colorHex: hex,
     finish: activeTab === "paint" ? elements.finish?.value : elements.finishFabric?.value,
     lighting: activeTab === "paint" ? elements.lighting?.value : elements.lightingFabric?.value,
+    presetId: state.presetId || "",
+    presetLabel: state.presetLabel || "Tuỳ chỉnh",
+    companions,
+    compareMode: state.compareMode,
+    compareColors: { ...state.compareColors },
     createdAt,
     project: getCurrentProject()
   };
@@ -502,31 +741,86 @@ const buildSpec = () => {
 
 const buildOneLineSummary = (spec) => {
   const hex = spec.colorHex || defaultHex;
+  const preset = spec.presetLabel || "Tuỳ chỉnh";
+  const companions = spec.companions || state.companions;
+  const trim = companions?.trim || "";
+  const accent = companions?.accent || "";
   if (spec.type === "paint_profile") {
     const finishLabel = finishLabels[spec.finish] || spec.finish;
     const lightingLabel = lightingLabels[spec.lighting] || spec.lighting;
-    const surfaceLabel = surfaceLabels[spec.surface] || spec.surface;
-    const sceneLabel = sceneLabels[spec.scene] || spec.scene;
-    const coats = spec.paintCalc?.coats ? `${spec.paintCalc.coats} lớp` : "-- lớp";
-    const liters = (() => {
-      const area = spec.paintCalc?.area;
-      const coverage = spec.paintCalc?.coverage;
-      const waste = spec.paintCalc?.waste ?? 0;
-      const coatsVal = spec.paintCalc?.coats;
-      if (!area || !coverage || !coatsVal) return null;
-      const needed = (area / coverage) * coatsVal * (1 + waste / 100);
-      return `${needed.toFixed(2)}L`;
-    })();
-    const litersLabel = liters ? `~${liters}` : "--";
-    return `${hex} • Sơn • ${finishLabel} • ${lightingLabel} • ${surfaceLabel} • ${sceneLabel} • ${coats} • ${litersLabel}`;
+    return `World 6 • Sơn • ${hex} • Finish: ${finishLabel} • Ánh sáng: ${lightingLabel} • Preset: ${preset} • Viền: ${trim} • Nhấn: ${accent}`;
   }
   const finishLabel = finishLabels[spec.finish] || spec.finish;
   const lightingLabel = lightingLabels[spec.lighting] || spec.lighting;
-  const fabricLabel = fabricLabels[spec.fabricType] || spec.fabricType;
-  const objectLabel = objectLabels[spec.object] || spec.object;
-  const textureLabel = spec.textureLevel === "tho" ? "Thô" : "Mịn";
-  const textureScale = spec.textureScale ? `Tỷ lệ ${spec.textureScale}` : "Tỷ lệ --";
-  return `${hex} • Vải • ${finishLabel} • ${lightingLabel} • ${fabricLabel} • ${objectLabel} • ${textureLabel} • ${textureScale}`;
+  return `World 6 • Vải • ${hex} • Finish: ${finishLabel} • Ánh sáng: ${lightingLabel} • Preset: ${preset} • Viền: ${trim} • Nhấn: ${accent}`;
+};
+
+const buildExportPayload = (specInput) => {
+  const spec = specInput || buildSpec();
+  return {
+    schemaVersion: 1,
+    exportedAt: new Date().toISOString(),
+    mode: spec.type === "paint_profile" ? "paint" : "fabric",
+    hex: spec.colorHex,
+    preset: { id: spec.presetId || "", label: spec.presetLabel || "Tuỳ chỉnh" },
+    lighting: spec.lighting,
+    finish: spec.finish,
+    texture: spec.textureLevel || null,
+    textureScale: spec.textureScale || null,
+    scene: spec.scene || null,
+    surface: spec.surface || null,
+    object: spec.object || null,
+    fabricType: spec.fabricType || null,
+    companions: spec.companions || null,
+    compare: { mode: spec.compareMode || "off", colors: spec.compareColors || {} },
+    paintCalc: spec.paintCalc || null,
+    summary: buildOneLineSummary(spec)
+  };
+};
+
+const handleCopySummaryLine = async () => {
+  const summary = buildOneLineSummary(buildSpec());
+  const ok = await copyToClipboard(summary);
+  setStatus(ok ? "Đã sao chép tóm tắt." : "Không thể sao chép tóm tắt.");
+};
+
+const handleExportJson = () => {
+  const payload = buildExportPayload();
+  const hex = normalizeHex(elements.hex?.value) || defaultHex;
+  const modeLabel = payload.mode === "paint" ? "son" : "vai";
+  const filename = `world6-${modeLabel}-${hex.replace("#", "")}.json`;
+  const ok = downloadBlob(JSON.stringify(payload, null, 2), filename, "application/json");
+  setStatus(ok ? "Đã xuất JSON." : "Không thể xuất JSON.");
+};
+
+const handleOpenPalette = () => {
+  const colors = getCompanionList();
+  if (colors.length < 2) {
+    setStatus("Chưa đủ màu để mở Palette.");
+    return;
+  }
+  const payload = encodeURIComponent(JSON.stringify({ colors }));
+  const query = composeHandoff({
+    from: HANDOFF_FROM,
+    intent: "open",
+    projectId: getCurrentProject()
+  });
+  window.location.href = `palette.html${query}#p=${payload}`;
+};
+
+const handleOpenGradient = () => {
+  const colors = getCompanionList();
+  if (colors.length < 2) {
+    setStatus("Chưa đủ màu để mở Gradient.");
+    return;
+  }
+  const payload = encodeURIComponent(colors.join(","));
+  const query = composeHandoff({
+    from: HANDOFF_FROM,
+    intent: "open",
+    projectId: getCurrentProject()
+  });
+  window.location.href = `gradient.html${query}#g=${payload}`;
 };
 
 const renderSpec = (spec) => {
@@ -610,6 +904,40 @@ const buildSvgLayer = (svgText, options, meta) => {
   return svg.outerHTML;
 };
 
+const parseSvgSize = (svgText) => {
+  const viewBoxMatch = svgText.match(/viewBox="[^"]*?0\s+0\s+([\d.]+)\s+([\d.]+)"/i);
+  if (viewBoxMatch) {
+    const width = Number.parseFloat(viewBoxMatch[1]);
+    const height = Number.parseFloat(viewBoxMatch[2]);
+    if (Number.isFinite(width) && Number.isFinite(height)) {
+      return { width, height };
+    }
+  }
+  const widthMatch = svgText.match(/width="([\d.]+)"/i);
+  const heightMatch = svgText.match(/height="([\d.]+)"/i);
+  const width = widthMatch ? Number.parseFloat(widthMatch[1]) : 600;
+  const height = heightMatch ? Number.parseFloat(heightMatch[1]) : 400;
+  return {
+    width: Number.isFinite(width) ? width : 600,
+    height: Number.isFinite(height) ? height : 400
+  };
+};
+
+const svgToImage = (svgText) => new Promise((resolve, reject) => {
+  const blob = new Blob([svgText], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    resolve(img);
+  };
+  img.onerror = () => {
+    URL.revokeObjectURL(url);
+    reject(new Error("Không thể nạp SVG."));
+  };
+  img.src = url;
+});
+
 const getTriptych = () => {
   try {
     const raw = localStorage.getItem(TRIPTYCH_KEY);
@@ -626,30 +954,75 @@ const saveTriptych = (slots) => {
   } catch (_err) {}
 };
 
-const applyPreset = (preset) => {
+const setPresetSelection = (preset) => {
+  if (!preset) {
+    state.presetId = "";
+    state.presetLabel = "Tuỳ chỉnh";
+    return;
+  }
+  state.presetId = preset.id;
+  state.presetLabel = preset.label;
+  try {
+    localStorage.setItem(LAST_PRESET_KEY, preset.id);
+  } catch (_err) {}
+};
+
+const markPresetCustom = () => {
+  if (!state.presetId && state.presetLabel === "Tuỳ chỉnh") return;
+  state.presetId = "";
+  state.presetLabel = "Tuỳ chỉnh";
+};
+
+const applyGoalPreset = (preset) => {
   if (!preset) return;
-  if (!elements.paintPanel?.classList.contains("hidden")) {
-    if (preset.lighting && elements.lighting) elements.lighting.value = preset.lighting;
-    if (preset.finish && elements.finish) elements.finish.value = preset.finish;
+  if (preset.mode === "paint") {
+    updateTabs("paint");
+    if (elements.scene && preset.scene) elements.scene.value = preset.scene;
+    if (elements.surface && preset.surface) elements.surface.value = preset.surface;
+    if (elements.lighting && preset.lighting) elements.lighting.value = preset.lighting;
+    if (elements.finish && preset.finish) elements.finish.value = preset.finish;
   } else {
-    if (preset.lighting && elements.lightingFabric) elements.lightingFabric.value = preset.lighting;
-    if (preset.finish && elements.finishFabric) elements.finishFabric.value = preset.finish;
-    if (preset.texture && elements.texture) elements.texture.value = preset.texture;
+    updateTabs("fabric");
+    if (elements.object && preset.object) elements.object.value = preset.object;
+    if (elements.fabricType && preset.fabricType) elements.fabricType.value = preset.fabricType;
+    if (elements.lightingFabric && preset.lighting) elements.lightingFabric.value = preset.lighting;
+    if (elements.finishFabric && preset.finish) elements.finishFabric.value = preset.finish;
+    if (elements.texture && preset.texture) elements.texture.value = preset.texture;
+  }
+  setPresetSelection(preset);
+  if (state.compareMode !== "off") {
+    const companions = deriveCompanionColors(state.compareColors.A, preset.id);
+    if (state.compareMode === "ab") {
+      state.compareColors.B = companions.trim;
+    }
+    if (state.compareMode === "tri") {
+      state.compareColors.B = companions.trim;
+      state.compareColors.C = companions.accent;
+    }
   }
   scheduleSyncUI();
 };
 
+const loadLastPreset = () => {
+  try {
+    const presetId = localStorage.getItem(LAST_PRESET_KEY);
+    if (!presetId) return null;
+    return goalPresets.find((preset) => preset.id === presetId) || null;
+  } catch (_err) {
+    return null;
+  }
+};
+
 const renderPresets = () => {
   if (!elements.presets) return;
-  const isPaint = !elements.paintPanel?.classList.contains("hidden");
-  const presets = isPaint ? paintPresetButtons : fabricPresetButtons;
   elements.presets.innerHTML = "";
-  presets.forEach((preset) => {
+  goalPresets.forEach((preset) => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "tc-btn tc-chip px-3 py-2 text-xs";
+    const isActive = state.presetId === preset.id;
+    btn.className = `tc-btn tc-chip px-3 py-2 text-xs${isActive ? " tc-btn-primary" : ""}`;
     btn.textContent = preset.label;
-    btn.addEventListener("click", () => applyPreset(preset));
+    btn.addEventListener("click", () => applyGoalPreset(preset));
     elements.presets.appendChild(btn);
   });
 };
@@ -745,13 +1118,117 @@ const getTextureSettings = (type, surface, textureLevel, textureScale, finish) =
 };
 
 const updateCompareUI = () => {
+  if (elements.compareSliderWrap) {
+    elements.compareSliderWrap.classList.toggle("hidden", state.compareMode !== "ab");
+  }
+  if (elements.compareSlots) {
+    elements.compareSlots.classList.toggle("hidden", state.compareMode === "off");
+  }
+  if (elements.compareModes) {
+    elements.compareModes.querySelectorAll("[data-compare-mode]").forEach((btn) => {
+      btn.classList.toggle("is-active", btn.dataset.compareMode === state.compareMode);
+    });
+  }
+  if (elements.compareSlots) {
+    elements.compareSlots.querySelectorAll("[data-compare-slot]").forEach((btn) => {
+      const slot = btn.dataset.compareSlot;
+      const show = state.compareMode === "tri" || slot !== "C";
+      btn.classList.toggle("hidden", state.compareMode !== "tri" && slot === "C");
+      btn.classList.toggle("is-active", slot === state.compareSlot && show);
+    });
+  }
   const compareValue = Number(elements.compare?.value || 60);
   if (elements.compareLabel) {
-    elements.compareLabel.textContent = `Sau: ${compareValue}%`;
+    const label = compareModeLabels[state.compareMode] || "Tắt";
+    elements.compareLabel.textContent = state.compareMode === "ab"
+      ? `${label}: ${compareValue}%`
+      : label;
   }
   const compareNode = elements.preview?.querySelector(".pf-compare");
   if (compareNode) {
     compareNode.style.setProperty("--pf-compare", `${compareValue}%`);
+  }
+};
+
+const setCompareMode = (mode) => {
+  const next = compareModeLabels[mode] ? mode : "off";
+  state.compareMode = next;
+  if (next === "off") {
+    state.compareSlot = "A";
+    if (elements.hex) elements.hex.value = state.compareColors.A;
+  } else if (next === "ab") {
+    if (!state.compareColors.B || state.compareColors.B === state.compareColors.A) {
+      state.compareColors.B = deriveCompanionColors(state.compareColors.A, state.presetId).trim;
+    }
+    state.compareSlot = "A";
+    if (elements.hex) elements.hex.value = state.compareColors.A;
+  } else if (next === "tri") {
+    const companions = deriveCompanionColors(state.compareColors.A, state.presetId);
+    state.compareColors.B = companions.trim;
+    state.compareColors.C = companions.accent;
+    state.compareSlot = "A";
+    if (elements.hex) elements.hex.value = state.compareColors.A;
+  }
+  updateCompareUI();
+  scheduleSyncUI();
+};
+
+const setCompareSlot = (slot) => {
+  if (!slot) return;
+  state.compareSlot = slot;
+  if (elements.hex) elements.hex.value = state.compareColors[slot] || state.compareColors.A;
+  updateCompareUI();
+  scheduleSyncUI();
+};
+
+const updateCompanionUI = () => {
+  const companions = state.companions;
+  if (elements.companionMain) elements.companionMain.style.background = companions.main;
+  if (elements.companionTrim) elements.companionTrim.style.background = companions.trim;
+  if (elements.companionAccent) elements.companionAccent.style.background = companions.accent;
+  if (elements.companionMainHex) elements.companionMainHex.textContent = companions.main;
+  if (elements.companionTrimHex) elements.companionTrimHex.textContent = companions.trim;
+  if (elements.companionAccentHex) elements.companionAccentHex.textContent = companions.accent;
+  if (elements.companionPreview) {
+    const layers = elements.companionPreview.querySelectorAll(".pf-companion-layer");
+    layers.forEach((layer) => {
+      const role = layer.dataset.role;
+      if (role === "trim") layer.style.background = companions.trim;
+      else if (role === "accent") layer.style.background = companions.accent;
+      else layer.style.background = companions.main;
+    });
+  }
+};
+
+const getCompanionList = () => {
+  const base = normalizeHex(elements.hex?.value) || defaultHex;
+  const companions = deriveCompanionColors(base, state.presetId);
+  state.companions = companions;
+  updateCompanionUI();
+  return [companions.main, companions.trim, companions.accent].filter(Boolean);
+};
+
+const updateSummaryBar = () => {
+  if (!elements.summaryBar) return;
+  const hex = state.companions.main;
+  if (elements.summaryHex) elements.summaryHex.textContent = hex;
+  if (elements.summaryMode) {
+    elements.summaryMode.textContent = state.mode === "paint" ? "Sơn" : "Vải";
+  }
+  if (elements.summaryPreset) {
+    elements.summaryPreset.textContent = state.presetLabel || "Tuỳ chỉnh";
+  }
+  if (elements.summaryCompare) {
+    elements.summaryCompare.textContent = compareModeLabels[state.compareMode] || "Tắt";
+  }
+  if (elements.summaryMaterial) {
+    const finish = state.mode === "paint" ? elements.finish?.value : elements.finishFabric?.value;
+    const lighting = state.mode === "paint" ? elements.lighting?.value : elements.lightingFabric?.value;
+    const texture = state.mode === "paint" ? "—" : (elements.texture?.value || "min");
+    const finishLabel = finishLabels[finish] || finish;
+    const lightingLabel = lightingLabels[lighting] || lighting;
+    const textureLabel = state.mode === "paint" ? "" : ` · ${texture === "tho" ? "Thô" : "Mịn"}`;
+    elements.summaryMaterial.textContent = `${finishLabel} · ${lightingLabel}${textureLabel}`;
   }
 };
 
@@ -767,7 +1244,6 @@ const scheduleSyncUI = () => {
 const updatePreview = async () => {
   if (!elements.preview) return;
   const renderToken = ++previewRenderSeq;
-  const hex = normalizeHex(elements.hex?.value) || defaultHex;
   const activeTab = elements.paintPanel?.classList.contains("hidden") ? "fabric" : "paint";
   const finish = activeTab === "paint" ? elements.finish?.value || "mo" : elements.finishFabric?.value || "mo";
   const lighting = activeTab === "paint" ? elements.lighting?.value || "trang" : elements.lightingFabric?.value || "trang";
@@ -782,9 +1258,6 @@ const updatePreview = async () => {
   if (!svgText) return;
   if (renderToken !== previewRenderSeq) return;
 
-  const neutralBase = activeTab === "paint" ? "#E8E1D6" : "#EFEDEA";
-  const adjusted = applyLighting(hex, lighting);
-  const adjustedNeutral = applyLighting(neutralBase, lighting);
   const textureSettings = getTextureSettings(
     activeTab,
     surface,
@@ -792,35 +1265,152 @@ const updatePreview = async () => {
     textureScale,
     finish
   );
+  const colorA = applyLighting(state.compareColors.A || defaultHex, lighting);
+  const colorB = applyLighting(state.compareColors.B || state.compareColors.A || defaultHex, lighting);
+  const colorC = applyLighting(state.compareColors.C || state.compareColors.A || defaultHex, lighting);
 
-  const beforeLayer = buildSvgLayer(svgText, {
-    color: adjustedNeutral,
-    textureOpacity: textureSettings.textureOpacity * 0.7,
-    noiseFrequency: textureSettings.noiseFrequency
-  }, { type: activeTab, key: activeTab === "paint" ? scene : object });
-  const afterLayer = buildSvgLayer(svgText, {
-    color: adjusted,
-    textureOpacity: textureSettings.textureOpacity,
+  const buildLayer = (color, opacityScale = 1) => buildSvgLayer(svgText, {
+    color,
+    textureOpacity: textureSettings.textureOpacity * opacityScale,
     noiseFrequency: textureSettings.noiseFrequency
   }, { type: activeTab, key: activeTab === "paint" ? scene : object });
 
   if (renderToken !== previewRenderSeq) return;
-  elements.preview.innerHTML = `
-    <div class="pf-compare" style="--pf-compare:${compareValue};">
-      <div class="pf-layer pf-before">${beforeLayer}</div>
-      <div class="pf-layer pf-after">${afterLayer}</div>
-    </div>
-  `;
+  if (state.compareMode === "tri") {
+    elements.preview.innerHTML = `
+      <div class="pf-triptych-grid">
+        <div class="pf-triptych-card">
+          <div class="pf-triptych-label">A</div>
+          <div class="pf-layer">${buildLayer(colorA, 0.95)}</div>
+        </div>
+        <div class="pf-triptych-card">
+          <div class="pf-triptych-label">B</div>
+          <div class="pf-layer">${buildLayer(colorB, 0.95)}</div>
+        </div>
+        <div class="pf-triptych-card">
+          <div class="pf-triptych-label">C</div>
+          <div class="pf-layer">${buildLayer(colorC, 0.95)}</div>
+        </div>
+      </div>
+    `;
+  } else if (state.compareMode === "ab") {
+    elements.preview.innerHTML = `
+      <div class="pf-compare" style="--pf-compare:${compareValue};">
+        <div class="pf-layer pf-before">${buildLayer(colorA, 0.9)}</div>
+        <div class="pf-layer pf-after">${buildLayer(colorB, 1)}</div>
+      </div>
+    `;
+  } else {
+    elements.preview.innerHTML = `
+      <div class="pf-layer">${buildLayer(colorA, 1)}</div>
+    `;
+  }
   updateCompareUI();
 };
 
+const exportPreviewPng = async () => {
+  syncState();
+  const activeTab = elements.paintPanel?.classList.contains("hidden") ? "fabric" : "paint";
+  const finish = activeTab === "paint" ? elements.finish?.value || "mo" : elements.finishFabric?.value || "mo";
+  const lighting = activeTab === "paint" ? elements.lighting?.value || "trang" : elements.lightingFabric?.value || "trang";
+  const surface = elements.surface?.value || "tuong";
+  const scene = elements.scene?.value || "living";
+  const object = elements.object?.value || "shirt";
+  const textureLevel = activeTab === "paint" ? "min" : elements.texture?.value || "min";
+  const textureScale = Number(elements.textureScale?.value || 5);
+  const compareValue = Number(elements.compare?.value || 60);
+  const svgText = await loadSvgTemplate(activeTab, activeTab === "paint" ? scene : object);
+  if (!svgText) {
+    setStatus("Không thể tải preview để xuất PNG.");
+    return false;
+  }
+
+  const { width, height } = parseSvgSize(svgText);
+  const textureSettings = getTextureSettings(
+    activeTab,
+    surface,
+    textureLevel,
+    textureScale,
+    finish
+  );
+  const colorA = applyLighting(state.compareColors.A || defaultHex, lighting);
+  const colorB = applyLighting(state.compareColors.B || state.compareColors.A || defaultHex, lighting);
+  const colorC = applyLighting(state.compareColors.C || state.compareColors.A || defaultHex, lighting);
+  const buildLayer = (color, opacityScale = 1) => buildSvgLayer(svgText, {
+    color,
+    textureOpacity: textureSettings.textureOpacity * opacityScale,
+    noiseFrequency: textureSettings.noiseFrequency
+  }, { type: activeTab, key: activeTab === "paint" ? scene : object });
+
+  try {
+    const [imgA, imgB, imgC] = await Promise.all([
+      svgToImage(buildLayer(colorA, 0.95)),
+      svgToImage(buildLayer(colorB, 0.95)),
+      svgToImage(buildLayer(colorC, 0.95))
+    ]);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      setStatus("Không thể xuất PNG.");
+      return false;
+    }
+    if (state.compareMode === "tri") {
+      const colWidth = width / 3;
+      ctx.drawImage(imgA, 0, 0, colWidth, height);
+      ctx.drawImage(imgB, colWidth, 0, colWidth, height);
+      ctx.drawImage(imgC, colWidth * 2, 0, colWidth, height);
+    } else if (state.compareMode === "ab") {
+      ctx.drawImage(imgA, 0, 0, width, height);
+      const clipX = width * (compareValue / 100);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(clipX, 0, width - clipX, height);
+      ctx.clip();
+      ctx.drawImage(imgB, 0, 0, width, height);
+      ctx.restore();
+    } else {
+      ctx.drawImage(imgA, 0, 0, width, height);
+    }
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    if (!blob) {
+      setStatus("Không thể xuất PNG.");
+      return false;
+    }
+    const hex = normalizeHex(elements.hex?.value) || defaultHex;
+    const modeLabel = activeTab === "paint" ? "son" : "vai";
+    const filename = `world6-${modeLabel}-${hex.replace("#", "")}.png`;
+    downloadBlob(blob, filename, "image/png");
+    setStatus("Đã xuất PNG.");
+    return true;
+  } catch (_err) {
+    setStatus("Không thể xuất PNG.");
+    return false;
+  }
+};
+
+const syncState = () => {
+  const isPaint = !elements.paintPanel?.classList.contains("hidden");
+  state.mode = isPaint ? "paint" : "fabric";
+  const hex = normalizeHex(elements.hex?.value) || defaultHex;
+  if (state.compareMode === "off") {
+    state.compareColors.A = hex;
+  } else if (state.compareSlot) {
+    state.compareColors[state.compareSlot] = hex;
+  }
+  state.companions = deriveCompanionColors(state.compareColors.A, state.presetId);
+  updateCompanionUI();
+  updateSummaryBar();
+};
+
 const syncUI = () => {
+  syncState();
   const spec = buildSpec();
   renderSpec(spec);
   updatePreview().catch(() => {});
   updatePaintCalc();
   renderPresets();
-  renderTriptych();
 };
 
 const updateTabs = (target) => {
@@ -893,6 +1483,321 @@ const copyToClipboard = async (text) => {
   return ok;
 };
 
+const downloadBlob = (data, filename, type) => {
+  if (!data) return false;
+  const blob = data instanceof Blob ? data : new Blob([data], { type: type || "application/octet-stream" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename || "download";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return true;
+};
+
+const setPhotoStatus = (message) => {
+  if (!elements.photoStatus) return;
+  elements.photoStatus.textContent = message || "";
+};
+
+const updatePhotoLabels = () => {
+  if (elements.photoBrushValue && elements.photoBrush) {
+    elements.photoBrushValue.textContent = elements.photoBrush.value;
+  }
+  if (elements.photoFeatherValue && elements.photoFeather) {
+    elements.photoFeatherValue.textContent = elements.photoFeather.value;
+  }
+  if (elements.photoOpacityValue && elements.photoOpacity) {
+    elements.photoOpacityValue.textContent = `${elements.photoOpacity.value}%`;
+  }
+  if (elements.photoCompareValue && elements.photoCompare) {
+    const value = Number(elements.photoCompare.value || 0);
+    elements.photoCompareValue.textContent = value <= 0 ? "Trước" : `Sau ${value}%`;
+  }
+};
+
+const getPhotoSettings = () => ({
+  brushSize: Number(elements.photoBrush?.value || 24),
+  feather: Number(elements.photoFeather?.value || 0),
+  opacity: Number(elements.photoOpacity?.value || 70) / 100,
+  blendMode: elements.photoBlend?.value || "source-over",
+  compare: Number(elements.photoCompare?.value || 100)
+});
+
+const ensurePhotoCanvases = (width, height) => {
+  if (!elements.photoCanvas) return false;
+  if (!photoState.baseCanvas) {
+    photoState.baseCanvas = document.createElement("canvas");
+    photoState.baseCtx = photoState.baseCanvas.getContext("2d");
+    photoState.maskCanvas = document.createElement("canvas");
+    photoState.maskCtx = photoState.maskCanvas.getContext("2d");
+    photoState.blurCanvas = document.createElement("canvas");
+    photoState.blurCtx = photoState.blurCanvas.getContext("2d");
+    photoState.overlayCanvas = document.createElement("canvas");
+    photoState.overlayCtx = photoState.overlayCanvas.getContext("2d");
+  }
+  [photoState.baseCanvas, photoState.maskCanvas, photoState.blurCanvas, photoState.overlayCanvas, elements.photoCanvas]
+    .forEach((canvas) => {
+      canvas.width = width;
+      canvas.height = height;
+    });
+  photoState.width = width;
+  photoState.height = height;
+  const ctx = elements.photoCanvas.getContext("2d");
+  photoState.previewCtx = ctx;
+  return Boolean(photoState.baseCtx && photoState.maskCtx && photoState.blurCtx && photoState.overlayCtx && ctx);
+};
+
+const pushPhotoUndo = () => {
+  if (!photoState.maskCtx || !photoState.width) return;
+  try {
+    const snapshot = photoState.maskCtx.getImageData(0, 0, photoState.width, photoState.height);
+    photoState.undoStack.push({ snapshot, hasMask: photoState.hasMask });
+    if (photoState.undoStack.length > 20) {
+      photoState.undoStack.shift();
+    }
+  } catch (_err) {}
+};
+
+const restorePhotoUndo = () => {
+  if (!photoState.maskCtx || !photoState.undoStack.length) return;
+  const last = photoState.undoStack.pop();
+  if (!last) return;
+  photoState.maskCtx.putImageData(last.snapshot, 0, 0);
+  photoState.hasMask = last.hasMask;
+  schedulePhotoRender();
+};
+
+const clearPhotoMask = () => {
+  if (!photoState.maskCtx) return;
+  pushPhotoUndo();
+  photoState.maskCtx.clearRect(0, 0, photoState.width, photoState.height);
+  photoState.hasMask = false;
+  schedulePhotoRender();
+};
+
+const schedulePhotoRender = () => {
+  if (photoState.renderPending) return;
+  photoState.renderPending = true;
+  requestAnimationFrame(() => {
+    photoState.renderPending = false;
+    renderPhotoPreview();
+  });
+};
+
+const renderPhotoPreview = () => {
+  if (!photoState.previewCtx || !photoState.imageLoaded) return;
+  const ctx = photoState.previewCtx;
+  const { width, height } = photoState;
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(photoState.baseCanvas, 0, 0, width, height);
+  if (!photoState.hasMask) return;
+
+  const settings = getPhotoSettings();
+  const overlayCtx = photoState.overlayCtx;
+  const blurCtx = photoState.blurCtx;
+  let maskSource = photoState.maskCanvas;
+
+  if (settings.feather > 0) {
+    blurCtx.clearRect(0, 0, width, height);
+    blurCtx.filter = `blur(${settings.feather}px)`;
+    blurCtx.drawImage(photoState.maskCanvas, 0, 0, width, height);
+    blurCtx.filter = "none";
+    maskSource = photoState.blurCanvas;
+  }
+
+  overlayCtx.clearRect(0, 0, width, height);
+  overlayCtx.globalCompositeOperation = "source-over";
+  overlayCtx.globalAlpha = 1;
+  const hex = normalizeHex(elements.hex?.value) || defaultHex;
+  overlayCtx.fillStyle = hex;
+  overlayCtx.fillRect(0, 0, width, height);
+  overlayCtx.globalCompositeOperation = "destination-in";
+  overlayCtx.drawImage(maskSource, 0, 0, width, height);
+  overlayCtx.globalCompositeOperation = "source-over";
+
+  ctx.save();
+  ctx.globalCompositeOperation = settings.blendMode;
+  ctx.globalAlpha = settings.opacity;
+  if (settings.compare < 100) {
+    ctx.beginPath();
+    ctx.rect(0, 0, width * (settings.compare / 100), height);
+    ctx.clip();
+  }
+  ctx.drawImage(photoState.overlayCanvas, 0, 0, width, height);
+  ctx.restore();
+};
+
+const handlePhotoFile = (file) => {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    const maxSide = 1600;
+    const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+    const width = Math.max(1, Math.round(img.width * scale));
+    const height = Math.max(1, Math.round(img.height * scale));
+    if (!ensurePhotoCanvases(width, height)) {
+      setPhotoStatus("Không thể khởi tạo canvas.");
+      return;
+    }
+    photoState.baseCtx.clearRect(0, 0, width, height);
+    photoState.baseCtx.drawImage(img, 0, 0, width, height);
+    photoState.maskCtx.clearRect(0, 0, width, height);
+    photoState.undoStack = [];
+    photoState.imageLoaded = true;
+    photoState.imageName = file.name || "";
+    photoState.hasMask = false;
+    updatePhotoLabels();
+    schedulePhotoRender();
+    setPhotoStatus("Ảnh đã sẵn sàng. Hãy vẽ vùng cần tô.");
+  };
+  img.onerror = () => {
+    URL.revokeObjectURL(url);
+    setPhotoStatus("Không thể đọc ảnh.");
+  };
+  img.src = url;
+};
+
+const getPhotoPoint = (event) => {
+  const canvas = elements.photoCanvas;
+  if (!canvas) return null;
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return null;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (event.clientX - rect.left) * scaleX,
+    y: (event.clientY - rect.top) * scaleY
+  };
+};
+
+const startPhotoStroke = (event) => {
+  if (!photoState.imageLoaded || !photoState.maskCtx) return;
+  event.preventDefault();
+  const point = getPhotoPoint(event);
+  if (!point) return;
+  pushPhotoUndo();
+  photoState.isDrawing = true;
+  photoState.lastPoint = point;
+  const settings = getPhotoSettings();
+  photoState.maskCtx.strokeStyle = "rgba(255,255,255,1)";
+  photoState.maskCtx.lineWidth = settings.brushSize;
+  photoState.maskCtx.lineCap = "round";
+  photoState.maskCtx.lineJoin = "round";
+  photoState.maskCtx.beginPath();
+  photoState.maskCtx.moveTo(point.x, point.y);
+  photoState.maskCtx.lineTo(point.x + 0.1, point.y + 0.1);
+  photoState.maskCtx.stroke();
+  photoState.hasMask = true;
+  schedulePhotoRender();
+};
+
+const movePhotoStroke = (event) => {
+  if (!photoState.isDrawing || !photoState.maskCtx) return;
+  const point = getPhotoPoint(event);
+  if (!point) return;
+  photoState.maskCtx.lineTo(point.x, point.y);
+  photoState.maskCtx.stroke();
+  photoState.lastPoint = point;
+  schedulePhotoRender();
+};
+
+const endPhotoStroke = () => {
+  if (!photoState.isDrawing) return;
+  photoState.isDrawing = false;
+  photoState.lastPoint = null;
+  schedulePhotoRender();
+};
+
+const buildPhotoMockAsset = () => {
+  if (!elements.photoCanvas || !photoState.imageLoaded) return null;
+  const dataUrl = elements.photoCanvas.toDataURL("image/png");
+  const settings = getPhotoSettings();
+  const hex = normalizeHex(elements.hex?.value) || defaultHex;
+  const now = new Date().toISOString();
+  const type = state.mode === "paint" ? "paint_visual_mock" : "fabric_visual_mock";
+  return {
+    id: `asset_${Date.now()}`,
+    type,
+    name: `Mockup ${state.mode === "paint" ? "Sơn" : "Vải"} ${hex}`,
+    tags: ["paintfabric", "mockup", state.mode],
+    payload: {
+      previewPng: dataUrl,
+      hex,
+      blendMode: settings.blendMode,
+      opacity: settings.opacity,
+      brushSize: settings.brushSize,
+      feather: settings.feather,
+      compare: settings.compare,
+      imageName: photoState.imageName,
+      size: { width: photoState.width, height: photoState.height }
+    },
+    notes: "Ảnh của bạn",
+    createdAt: now,
+    updatedAt: now,
+    sourceWorld: HANDOFF_FROM,
+    project: getCurrentProject()
+  };
+};
+
+const handleSavePhotoMock = () => {
+  if (!photoState.imageLoaded) {
+    setPhotoStatus("Hãy tải ảnh trước khi lưu.");
+    return;
+  }
+  const asset = buildPhotoMockAsset();
+  if (!asset) {
+    setPhotoStatus("Không thể tạo asset.");
+    return;
+  }
+  const ok = addAssetToLibrary(asset);
+  setPhotoStatus(ok ? "Đã lưu mockup vào Thư viện." : "Không thể lưu vào Thư viện.");
+};
+
+const initPhotoMode = () => {
+  if (photoState.initialized) return;
+  if (!elements.photoCanvas) return;
+  photoState.initialized = true;
+  const placeholderWidth = 720;
+  const placeholderHeight = 420;
+  ensurePhotoCanvases(placeholderWidth, placeholderHeight);
+  photoState.imageLoaded = false;
+  updatePhotoLabels();
+  elements.photoCanvas.addEventListener("pointerdown", startPhotoStroke);
+  elements.photoCanvas.addEventListener("pointermove", movePhotoStroke);
+  elements.photoCanvas.addEventListener("pointerup", endPhotoStroke);
+  elements.photoCanvas.addEventListener("pointerleave", endPhotoStroke);
+  elements.photoCanvas.addEventListener("pointercancel", endPhotoStroke);
+  if (elements.photoInput) {
+    elements.photoInput.addEventListener("change", () => {
+      const file = elements.photoInput.files?.[0];
+      if (!file) return;
+      handlePhotoFile(file);
+    });
+  }
+  [
+    elements.photoBrush,
+    elements.photoFeather,
+    elements.photoOpacity,
+    elements.photoCompare
+  ].forEach((input) => {
+    input?.addEventListener("input", () => {
+      updatePhotoLabels();
+      schedulePhotoRender();
+    });
+  });
+  elements.photoBlend?.addEventListener("change", () => {
+    schedulePhotoRender();
+  });
+  elements.photoUndo?.addEventListener("click", restorePhotoUndo);
+  elements.photoClear?.addEventListener("click", clearPhotoMask);
+  elements.photoSave?.addEventListener("click", handleSavePhotoMock);
+};
+
 const handleSave = () => {
   const spec = buildSpec();
   addAsset(spec);
@@ -938,6 +1843,7 @@ const bindEvents = () => {
   elements.tabs?.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-tab]");
     if (!button) return;
+    markPresetCustom();
     updateTabs(button.dataset.tab);
   });
 
@@ -946,8 +1852,21 @@ const bindEvents = () => {
       const hex = normalizeHex(button.dataset.quick);
       if (!hex || !elements.hex) return;
       elements.hex.value = hex;
+      markPresetCustom();
       syncUI();
     });
+  });
+
+  elements.compareModes?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-compare-mode]");
+    if (!btn) return;
+    setCompareMode(btn.dataset.compareMode);
+  });
+
+  elements.compareSlots?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-compare-slot]");
+    if (!btn) return;
+    setCompareSlot(btn.dataset.compareSlot);
   });
 
   [
@@ -965,8 +1884,16 @@ const bindEvents = () => {
     elements.compare
   ].forEach((input) => {
     if (input === elements.compare) return;
-    input?.addEventListener("input", scheduleSyncUI);
-    input?.addEventListener("change", scheduleSyncUI);
+    input?.addEventListener("input", () => {
+      markPresetCustom();
+      scheduleSyncUI();
+      if (photoState.imageLoaded) schedulePhotoRender();
+    });
+    input?.addEventListener("change", () => {
+      markPresetCustom();
+      scheduleSyncUI();
+      if (photoState.imageLoaded) schedulePhotoRender();
+    });
   });
 
   [
@@ -989,6 +1916,13 @@ const bindEvents = () => {
   elements.compare?.addEventListener("change", updateCompareUI);
 
   elements.save?.addEventListener("click", handleSave);
+  elements.copySummaryLine?.addEventListener("click", handleCopySummaryLine);
+  elements.exportJson?.addEventListener("click", handleExportJson);
+  elements.exportPng?.addEventListener("click", () => {
+    exportPreviewPng();
+  });
+  elements.openPalette?.addEventListener("click", handleOpenPalette);
+  elements.openGradient?.addEventListener("click", handleOpenGradient);
   elements.useLibrary?.addEventListener("click", () => {
     const payload = composeHandoff({
       from: HANDOFF_FROM,
@@ -1024,6 +1958,36 @@ const bindEvents = () => {
     const selected = assets.find((asset) => asset.id === elements.savedSelect.value);
     loadAsset(selected);
   });
+
+  elements.photoDetails?.addEventListener("toggle", () => {
+    if (elements.photoDetails?.open) {
+      initPhotoMode();
+      if (photoState.imageLoaded) schedulePhotoRender();
+      setPhotoStatus(photoState.imageLoaded ? "Ảnh đã sẵn sàng." : "Tải ảnh để bắt đầu.");
+    }
+  });
+};
+
+const initTopbarHeight = () => {
+  const apply = () => {
+    const topbar = document.querySelector(".tc-topbar");
+    if (!topbar) return false;
+    const height = topbar.offsetHeight || 56;
+    document.documentElement.style.setProperty("--tc-topbar-h", `${height}px`);
+    return true;
+  };
+  let timer = null;
+  const schedule = () => {
+    if (timer) window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      apply();
+    }, 120);
+  };
+  apply();
+  window.setTimeout(() => {
+    apply();
+  }, 600);
+  window.addEventListener("resize", schedule);
 };
 
 const init = () => {
@@ -1042,7 +2006,17 @@ const init = () => {
   }
   populateSavedSelect(getAssets());
   bindEvents();
-  updateTabs("paint");
+  initTopbarHeight();
+  const lastPreset = loadLastPreset();
+  if (lastPreset) {
+    applyGoalPreset(lastPreset);
+  } else {
+    updateTabs("paint");
+  }
+  if (elements.photoDetails?.open) {
+    initPhotoMode();
+    setPhotoStatus("Tải ảnh để bắt đầu.");
+  }
   setStatus("");
 };
 
@@ -1053,7 +2027,9 @@ const applyHexesFromHub = (detail) => {
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length || !elements.hex) return;
   elements.hex.value = normalized[0];
+  markPresetCustom();
   syncUI();
+  if (photoState.imageLoaded) schedulePhotoRender();
 };
 
 window.addEventListener("tc:hex-apply", (event) => {

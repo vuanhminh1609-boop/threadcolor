@@ -149,13 +149,24 @@ const setupAutofillTrap = (input) => {
   if (!input) return;
   input.setAttribute("readonly", "readonly");
   input.dataset.userTouched = "0";
+  input.dataset.autofillCleared = "0";
+
+  const isEmailLike = (value) => {
+    const trimmed = String(value || "").trim();
+    if (!trimmed) return false;
+    return /.+@.+\\..+/.test(trimmed);
+  };
+
   const clearIfAutofill = () => {
     if (input.dataset.userTouched === "1") return;
+    if (input.dataset.autofillCleared === "1") return;
     const value = String(input.value || "");
-    if (value.includes("@") && value.includes(".")) {
+    if (isEmailLike(value)) {
       input.value = "";
+      input.dataset.autofillCleared = "1";
     }
   };
+
   const unlock = () => {
     input.removeAttribute("readonly");
     input.dataset.userTouched = "1";
@@ -168,8 +179,14 @@ const setupAutofillTrap = (input) => {
   input.addEventListener("input", () => {
     input.dataset.userTouched = "1";
   });
-  window.setTimeout(clearIfAutofill, 500);
+
+  window.setTimeout(clearIfAutofill, 320);
+  window.setTimeout(clearIfAutofill, 560);
 };
+
+if (typeof window !== "undefined") {
+  window.setupAutofillTrap = setupAutofillTrap;
+}
 
 const createUI = () => {
   if (document.getElementById(OVERLAY_ID)) return null;

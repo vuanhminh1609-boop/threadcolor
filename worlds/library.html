@@ -120,6 +120,67 @@
       font-size: 12px;
       font-weight: 600;
     }
+    .asset-strip{
+      display: grid;
+      gap: 10px;
+    }
+    .asset-strip__list{
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(180px, 1fr);
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+    }
+    .asset-mini{
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      scroll-snap-align: start;
+      text-align: left;
+    }
+    .asset-mini__title{
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .asset-mini__meta{
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+    .asset-mini__swatches{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .asset-mini.is-selected{
+      border-color: rgba(255,255,255,0.55);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+    }
+    .asset-actionbar{
+      position: sticky;
+      bottom: 0;
+      z-index: 6;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 1rem;
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(12px);
+    }
+    .asset-actionbar__count{
+      font-size: 12px;
+      font-weight: 600;
+    }
     .tc-swatch{
       width: 28px;
       height: 28px;
@@ -165,11 +226,21 @@
       right: 0;
       top: calc(100% + 8px);
       min-width: 160px;
-      z-index: 40;
+      z-index: 80;
       display: none;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid var(--stroke);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
     }
     .asset-kebab[open] .asset-kebab__panel{
       display: block;
+    }
+    .asset-card{
+      cursor: pointer;
+    }
+    .asset-card:focus-visible{
+      outline: 2px solid var(--a1);
+      outline-offset: 2px;
     }
     .tc-offscreen-trap{
       position: absolute;
@@ -280,7 +351,7 @@
           <!-- Ô bẫy để Edge Password Manager không bám vào ô tìm kiếm -->
           <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
           <input type="password" autocomplete="current-password" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
-          <input id="assetSearch" type="search" name="world5_asset_query" autocomplete="new-password" inputmode="search" spellcheck="false" autocapitalize="none" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo tên/tags..." data-lpignore="true" data-1p-ignore="true" data-bwignore="true" readonly>
+          <input id="assetSearch" type="search" name="world5_asset_query" autocomplete="new-password" inputmode="search" spellcheck="false" autocapitalize="none" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo tên/tags… ( / )" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" readonly>
           <select id="assetFilter" class="tc-input w-full md:w-[200px]">
             <option value="all">Tất cả loại</option>
             <option value="palette">Palette</option>
@@ -293,6 +364,10 @@
           <select id="assetProjectFilter" class="tc-input w-full md:w-[200px]">
             <option value="__all__">Tất cả dự án</option>
           </select>
+          <label class="flex items-center gap-2 text-xs font-semibold">
+            <input id="assetMultiSelect" type="checkbox" class="h-4 w-4">
+            Chọn nhiều
+          </label>
           <button id="assetCreateDemo" class="tc-btn tc-btn-primary px-4 py-2">Tạo tài sản demo</button>
           <details class="tc-card tc-chip px-4 py-3 text-sm">
             <summary class="cursor-pointer font-semibold">Hướng dẫn đặt tên Tài sản</summary>
@@ -302,6 +377,22 @@
               <div>Ví dụ: “Tường Phòng khách — Sơn&Vải — Trắng · Mờ · Tĩnh — v01”.</div>
             </div>
           </details>
+        </div>
+        <div class="mt-6 space-y-4">
+          <div id="assetPinnedStrip" class="asset-strip hidden">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.2em] tc-muted">Ghim</h3>
+              <span class="tc-muted text-xs">Ưu tiên nhanh</span>
+            </div>
+            <div id="assetPinnedList" class="asset-strip__list"></div>
+          </div>
+          <div id="assetRecentStrip" class="asset-strip hidden">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.2em] tc-muted">Gần đây</h3>
+              <span class="tc-muted text-xs">Lần dùng gần nhất</span>
+            </div>
+            <div id="assetRecentList" class="asset-strip__list"></div>
+          </div>
         </div>
         <div class="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
@@ -320,6 +411,14 @@
                   <div class="tc-muted text-xs" id="assetPanelNotes"></div>
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
+                  <button id="assetApply" class="tc-btn tc-btn-primary px-4 py-2" type="button">Dùng ngay</button>
+                  <button id="assetPinToggle" class="tc-btn tc-chip px-4 py-2" type="button">Ghim</button>
+                  <button id="assetRename" class="tc-btn tc-chip px-4 py-2" type="button">Đổi tên</button>
+                  <button id="assetDelete" class="tc-btn tc-chip px-4 py-2" type="button">Xóa</button>
+                </div>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  <button id="assetOpenWorld" class="tc-btn tc-chip px-4 py-2" type="button">Mở đúng Thế giới</button>
+                  <button id="assetSharePack" class="tc-btn tc-chip px-4 py-2" type="button">Sao chép gói chia sẻ</button>
                   <button id="assetSave" class="tc-btn tc-chip px-4 py-2" type="button">Lưu vào Thư viện</button>
                   <button id="assetShare" class="tc-btn tc-chip px-4 py-2" type="button">Chia sẻ</button>
                 </div>
@@ -333,10 +432,45 @@
                   <pre id="assetSpecJson" class="text-[11px] tc-muted whitespace-pre-wrap"></pre>
                   <button id="assetCopyJson" class="tc-btn tc-chip px-3 py-2 text-xs mt-2">Sao chép</button>
                 </div>
+                <details id="assetHistoryPanel" class="tc-card tc-chip px-3 py-2 text-sm mt-4">
+                  <summary class="cursor-pointer font-semibold">Lịch sử phiên bản</summary>
+                  <div id="assetHistoryList" class="mt-2 grid gap-2 text-xs"></div>
+                </details>
               </div>
             </div>
           </div>
         </div>
+        <div id="assetActionBar" class="asset-actionbar mt-4 hidden">
+          <div class="asset-actionbar__count">Đã chọn: <span id="assetSelectedCount">0</span></div>
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <button id="assetBulkPin" class="tc-btn tc-btn-primary px-4 py-2 text-xs" type="button">Ghim</button>
+            <button id="assetBulkUnpin" class="tc-btn tc-chip px-4 py-2 text-xs" type="button">Bỏ ghim</button>
+            <button id="assetBulkExport" class="tc-btn tc-chip px-4 py-2 text-xs" type="button">Xuất JSON</button>
+            <button id="assetBulkDelete" class="tc-btn tc-chip px-4 py-2 text-xs" type="button">Xóa an toàn</button>
+          </div>
+        </div>
+        <details id="assetSyncPanel" class="tc-card mt-4 p-4">
+          <summary class="cursor-pointer font-semibold">Đồng bộ thủ công (Xuất/Nhập)</summary>
+          <div class="mt-3 grid gap-3 md:grid-cols-[1fr_1fr]">
+            <div class="space-y-2">
+              <button id="assetExportPack" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Xuất gói Thư viện (.json)</button>
+              <p class="tc-muted text-xs">Gói gồm tài sản + ghim + gần đây.</p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-semibold">Nhập gói Thư viện</label>
+              <input id="assetImportFile" class="tc-input !min-h-0" type="file" accept="application/json">
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <span class="tc-muted">Chế độ:</span>
+                <select id="assetImportMode" class="tc-input !min-h-0 w-[160px]">
+                  <option value="merge" selected>Gộp</option>
+                  <option value="overwrite">Ghi đè theo id</option>
+                </select>
+                <button id="assetImportPack" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Nhập</button>
+              </div>
+              <button id="assetShareImportOpen" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Nhập gói chia sẻ</button>
+            </div>
+          </div>
+        </details>
         <section id="customTonesHub" class="mt-6 tc-card p-4">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -365,7 +499,7 @@
       <div id="hexTabPanel" class="mt-6 hidden">
         <div class="hex-toolbar">
           <div class="hex-toolbar__row">
-            <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm theo HEX/brand/mã...">
+            <input id="hexSearch" class="tc-input w-full md:w-[260px]" placeholder="Tìm HEX… ( / )">
             <details class="tc-card px-3 py-2" style="border-radius:0.85rem;">
               <summary class="text-xs font-semibold">Bộ lọc &amp; Sắp xếp</summary>
               <div class="mt-2 grid gap-2 sm:grid-cols-2">
@@ -528,6 +662,25 @@
       <div class="mt-5 flex justify-end gap-2">
         <button id="assetNameCancel" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Hủy</button>
         <button id="assetNameSave" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="assetShareModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tc-card w-full max-w-md p-5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Nhập gói chia sẻ</h2>
+        <button id="assetShareClose" class="tc-btn tc-chip px-3 py-1 text-sm" type="button">Đóng</button>
+      </div>
+      <div class="mt-4 space-y-3 text-sm">
+        <label class="block">
+          <span class="tc-muted text-xs uppercase tracking-[0.2em]">Gói chia sẻ</span>
+          <textarea id="assetShareInput" class="tc-input w-full mt-2" rows="5" placeholder="Dán gói SCASSET1:..."></textarea>
+        </label>
+      </div>
+      <div class="mt-5 flex justify-end gap-2">
+        <button id="assetShareCancel" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Hủy</button>
+        <button id="assetShareImport" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Nhập</button>
       </div>
     </div>
   </div>

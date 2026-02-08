@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tra mã chỉ thêu theo màu</title>
+  <title>Trung tâm Điều phối Màu Chỉ Thêu</title>
   <!-- Tailwind CSS -->
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <link rel="stylesheet" href="../assets/tones.css">
@@ -307,25 +307,225 @@
     .tc-range{
       accent-color: var(--a1);
     }
+    .tc-tablist {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .tc-tab {
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: var(--glass);
+      color: var(--text);
+      transition: filter .15s ease, transform .08s ease;
+    }
+    .tc-tab:hover { filter: brightness(1.03); }
+    .tc-tab:active { transform: translateY(1px); }
+    .tc-tab.is-active {
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border-color: rgba(255,255,255,.18);
+    }
+    .tc-tab-panel[hidden] { display: none; }
+    .tc-brand-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 0.6rem;
+    }
+    .tc-brand-swatch {
+      display: grid;
+      gap: 0.35rem;
+      padding: 0.5rem;
+      border-radius: 0.9rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .18s ease;
+    }
+    .tc-brand-swatch:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(0,0,0,.12);
+    }
+    .tc-brand-swatch-color {
+      width: 100%;
+      height: 52px;
+      border-radius: 0.7rem;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+    .tc-brand-swatch-code {
+      font-size: 0.7rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tc-brand-swatch-name {
+      font-size: 0.7rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tc-convert-result {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .tc-extract-grid {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .tc-extract-card {
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      border-radius: 1rem;
+      padding: 0.75rem;
+      display: grid;
+      gap: 0.5rem;
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+    .tc-extract-swatch {
+      height: 72px;
+      border-radius: 0.8rem;
+      border: 1px solid rgba(0,0,0,.12);
+    }
+    .tc-skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,.2), rgba(255,255,255,.55), rgba(255,255,255,.2));
+      background-size: 200% 100%;
+      animation: tc-shimmer 1.2s ease-in-out infinite;
+    }
+    @keyframes tc-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    #result .btn-vault{
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      border-radius: 0.75rem;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      transition: filter .15s ease, transform .05s ease, box-shadow .15s ease;
+    }
+    #result .btn-vault:hover{ filter: brightness(1.03); }
+    #result .btn-vault:active{ transform: translateY(1px); }
+    #result .btn-vault:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
     main h3 { color: var(--text); }
     main .tc-helper { color: var(--muted); }
     #result {
       border: 1px solid var(--stroke);
     }
-    #brandFilters label{
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      cursor: pointer;
-      user-select: none;
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 0.45rem 0.7rem;
+    .brand-grid{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
     }
-    #brandFilters label:hover{ filter: brightness(1.03); }
-    #brandFilters input[type="checkbox"] { accent-color: var(--a1); }
+    .brand-filter-bar{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      padding: 0.5rem 0.6rem;
+      border-radius: 0.95rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      box-shadow: 0 12px 28px rgba(0,0,0,.08);
+    }
+    .brand-filter-field{
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1 1 220px;
+    }
+    .brand-filter-clear{
+      min-width: 64px;
+    }
+    .brand-filter-count{
+      white-space: nowrap;
+    }
+    @media (min-width: 768px){
+      .brand-grid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px){
+      .brand-filter-count{
+        width: 100%;
+      }
+    }
+    .brand-tile-wrap{
+      position: relative;
+      display: block;
+    }
+    .brand-filter{
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .brand-tile{
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.85rem 0.9rem;
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
+      box-shadow: 0 12px 26px rgba(0,0,0,.08);
+      min-height: 86px;
+    }
+    .brand-tile:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.14);
+      filter: brightness(1.02);
+    }
+    .brand-filter:checked + .brand-tile{
+      border-color: rgba(99,102,241,.7);
+      box-shadow: 0 18px 45px rgba(99,102,241,.18);
+      background: linear-gradient(135deg, rgba(99,102,241,.12), rgba(255,255,255,.7));
+    }
+    .brand-filter:focus-visible + .brand-tile{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
+    }
+    .brand-tile-top{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .brand-tile-name{
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .brand-tile-meta{
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+    .tc-match{
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 0 2px;
+      background: rgba(255,255,255,.65);
+      box-shadow: inset 0 0 0 1px rgba(99,102,241,.25);
+    }
     .brand-badge{
       font-size: 11px;
       line-height: 1;
@@ -681,23 +881,52 @@
   <main class="mx-auto max-w-4xl px-4 pt-6 pb-10">
     <div class="tc-card rounded-2xl p-6 md:p-8">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold tc-gradient-text text-center md:text-left" data-i18n="tc.title">Tra mã chỉ thêu theo màu</h1>
+        <h1 class="text-3xl font-bold tc-gradient-text text-center md:text-left">Trung tâm Điều phối Màu Chỉ Thêu</h1>
       </div>
 
-      <section id="sectionBrand" class="mb-6">
-        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.brand.title">Chọn hãng chỉ</h3>
-        <div id="brandFilters" class="flex flex-wrap gap-3"></div>
-        <label class="mt-3 inline-flex items-center gap-2 text-sm tc-muted">
-          <input id="verifiedOnlyToggle" type="checkbox" class="tc-check">
-          <span data-i18n="tc.section.brand.verified">Chỉ đã xác minh</span>
-        </label>
-        <p class="mt-2 text-xs tc-muted">Chạm biểu tượng “i” để xem thông tin hãng.</p>
+      <section id="sectionBrand" class="mb-6" data-tour="section-brand">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 class="text-lg font-semibold mb-1" data-i18n="tc.section.brand.title">Chọn hãng chỉ</h3>
+            <p class="text-sm tc-muted">Chọn hãng để hệ thống so khớp mã chính xác hơn.</p>
+          </div>
+          <div class="brand-toolbar flex flex-wrap items-center gap-2">
+            <button id="brandSelectAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Chọn tất cả</button>
+            <button id="brandClearAll" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Bỏ chọn</button>
+          </div>
+        </div>
+        <div class="mt-2 flex flex-wrap items-center gap-3 text-sm">
+          <label class="inline-flex items-center gap-2 tc-muted">
+            <input id="verifiedOnlyToggle" type="checkbox" class="tc-check">
+            <span data-i18n="tc.section.brand.verified">Chỉ đã xác minh</span>
+          </label>
+          <span class="text-xs tc-muted">Chạm biểu tượng “i” để xem thông tin hãng.</span>
+        </div>
+        <div class="brand-filter-bar mt-3">
+          <div class="brand-filter-field">
+            <input
+              id="brandFilterSearch"
+              class="tc-field flex-1 min-w-[220px]"
+              type="search"
+              placeholder="Lọc nhanh theo tên hãng..."
+              name="w1_brand_filter_search"
+              autocomplete="off"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
+              inputmode="search"
+            >
+            <button id="brandFilterClear" class="tc-btn tc-chip px-3 py-2 text-xs brand-filter-clear" type="button" aria-label="Xoá lọc">Xoá</button>
+          </div>
+          <span id="brandFilterCount" class="brand-filter-count text-xs tc-muted">Đang hiển thị 0/0 hãng</span>
+        </div>
+        <div id="brandFilters" class="brand-grid mt-4"></div>
       </section>
 
         <details class="mb-6 tc-card p-4" id="w1GuideDetails">
           <summary class="cursor-pointer font-semibold">Hướng dẫn rõ ràng cho người mới</summary>
         </details>
-      <section class="mb-6">
+      <section class="mb-6" data-tour="section-delta">
         <h3 class="text-lg font-semibold mb-2">
           <span data-i18n="tc.section.delta.title">Độ tương đồng màu (ΔE)</span>
           <span id="deltaValue" class="text-sm tc-muted">(ΔE 3.0)</span>
@@ -726,44 +955,140 @@
         </div>
       </section>
 
-      <section id="sectionPick" class="mb-6">
-        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.pick.title">Chọn màu trực tiếp</h3>
-          <div class="flex items-center gap-4">
-            <input type="color" id="colorPicker" class="tc-color">
-            <button id="btnFindNearest" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.pick.nearest">
-              Tìm mã chỉ gần nhất
-            </button>
-            <button class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md" type="button" data-hexhub-open>
-              Mở Kho HEX
-            </button>
-          </div>
-      </section>
+      <div class="tc-tablist" role="tablist" aria-label="Chế độ tra cứu">
+        <button class="tc-tab is-active" type="button" data-tc-tab="color" data-tour="tab-color" role="tab" aria-selected="true">Màu → Mã chỉ</button>
+        <button class="tc-tab" type="button" data-tc-tab="image" data-tour="tab-image" role="tab" aria-selected="false">Ảnh → Mã chỉ</button>
+        <button class="tc-tab" type="button" data-tc-tab="convert" data-tour="tab-convert" role="tab" aria-selected="false">Mã chỉ → Thay thế / Chuyển hãng</button>
+      </div>
 
-      <section id="sectionImage" class="mb-6">
-        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.image.title">Chọn màu từ ảnh</h3>
-        <div class="mb-2 flex flex-wrap items-center gap-3">
-          <input type="file" id="imgInput" accept="image/*" class="hidden">
-          <button id="imgInputBtn" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chọn tệp ảnh</button>
-          <span id="imgInputName" class="text-sm tc-muted">Chưa chọn tệp</span>
+      <div class="tc-tab-panels">
+        <div class="tc-tab-panel" data-tc-panel="color" role="tabpanel">
+          <section id="sectionPick" class="mb-6" data-tour="section-pick">
+            <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.pick.title">Chọn màu trực tiếp</h3>
+            <div class="flex items-center gap-4">
+              <input type="color" id="colorPicker" class="tc-color">
+              <button id="btnFindNearest" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.pick.nearest">
+                Tìm mã chỉ gần nhất
+              </button>
+              <button class="tc-chip tc-btn flex items-center gap-2 px-4 py-2 rounded-lg shadow-md" type="button" data-hexhub-open>
+                Mở Kho HEX
+              </button>
+            </div>
+          </section>
+
+          <section id="sectionBrandGrid" class="mb-6" data-tour="section-grid">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h3 class="text-lg font-semibold">Lưới màu hãng</h3>
+                <p class="text-sm tc-muted">Chọn hãng, bấm swatch để tra mã ngay.</p>
+              </div>
+              <select id="brandGridSelect" class="tc-field text-sm py-2"></select>
+            </div>
+            <div class="mt-3 flex flex-wrap items-center gap-3">
+              <input
+                id="brandGridSearch"
+                class="tc-field flex-1 min-w-[220px]"
+                type="search"
+                placeholder="Tìm theo mã hoặc tên màu"
+                name="w1_brand_grid_search"
+                autocomplete="off"
+                autocapitalize="none"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="search"
+              >
+              <span id="brandGridCount" class="text-xs tc-muted">0 màu</span>
+            </div>
+            <div id="brandGrid" class="tc-brand-grid mt-4"></div>
+            <div id="brandGridEmpty" class="tc-muted text-sm mt-3 hidden">Chưa có màu phù hợp.</div>
+          </section>
         </div>
-        <canvas
-          id="canvas"
-          class="border rounded-lg max-w-full min-h-[200px] bg-gray-100">
-        </canvas>
-        <p class="text-sm tc-muted mb-1" data-i18n="tc.section.image.helper">Chọn ảnh và bấm vào bất kỳ điểm nào để lấy màu</p>
-      </section>
 
-      <section class="mb-6">
-        <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.code.title">Tra ngược theo mã chỉ</h3>
-        <div class="flex items-center gap-4">
-          <input type="search" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="tc-field flex-1" data-i18n-attr="placeholder:tc.section.code.placeholder" autocomplete="off" name="thread_code_query" inputmode="search" spellcheck="false" autocorrect="off" autocapitalize="none">
-          <button id="btnFindByCode" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.code.action">
-            Tra cứu
-          </button>
+        <div class="tc-tab-panel" data-tc-panel="image" role="tabpanel" hidden>
+          <section id="sectionImage" class="mb-6" data-tour="section-image">
+            <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.image.title">Chọn màu từ ảnh</h3>
+            <div class="mb-2 flex flex-wrap items-center gap-3">
+              <input type="file" id="imgInput" accept="image/*" class="hidden">
+              <button id="imgInputBtn" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chọn tệp ảnh</button>
+              <span id="imgInputName" class="text-sm tc-muted">Chưa chọn tệp</span>
+            </div>
+            <canvas
+              id="canvas"
+              class="border rounded-lg max-w-full min-h-[200px] bg-gray-100">
+            </canvas>
+            <p class="text-sm tc-muted mb-1" data-i18n="tc.section.image.helper">Chọn ảnh và bấm vào bất kỳ điểm nào để lấy màu</p>
+          </section>
+
+          <section id="sectionExtract" class="mb-6 tc-card p-4">
+            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h3 class="text-lg font-semibold">Trích bảng màu tự động</h3>
+                <p class="text-sm tc-muted">Chọn số màu rồi bấm trích để lấy các màu chủ đạo từ ảnh.</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <label for="paletteExtractCount" class="text-sm tc-muted">Số màu</label>
+                <select id="paletteExtractCount" class="tc-field text-sm py-2">
+                  <option value="5">5</option>
+                  <option value="8">8</option>
+                  <option value="12">12</option>
+                  <option value="16">16</option>
+                  <option value="20">20</option>
+                  <option value="24">24</option>
+                  <option value="30">30</option>
+                </select>
+                <button id="paletteExtractBtn" class="tc-btn tc-btn-primary px-4 py-2" type="button">
+                  Trích bảng màu
+                </button>
+              </div>
+            </div>
+            <div id="paletteExtractLoading" class="tc-extract-grid mt-4 hidden">
+              <div class="tc-extract-card tc-skeleton h-[160px]"></div>
+              <div class="tc-extract-card tc-skeleton h-[160px]"></div>
+              <div class="tc-extract-card tc-skeleton h-[160px]"></div>
+            </div>
+            <div id="paletteExtractList" class="tc-extract-grid mt-4"></div>
+            <div id="paletteExtractEmpty" class="tc-muted text-sm mt-3 hidden">Chưa có bảng màu trích xuất.</div>
+          </section>
         </div>
-      </section>
 
-      <section id="result" class="p-4 tc-chip rounded-lg shadow-inner"></section>
+        <div class="tc-tab-panel" data-tc-panel="convert" role="tabpanel" hidden>
+          <section class="mb-6">
+            <h3 class="text-lg font-semibold mb-2" data-i18n="tc.section.code.title">Tra ngược theo mã chỉ</h3>
+            <div class="flex items-center gap-4">
+              <input type="search" id="codeInput" placeholder="Nhập mã (VD: DMC 310)" class="tc-field flex-1" data-i18n-attr="placeholder:tc.section.code.placeholder" autocomplete="off" name="thread_code_query" inputmode="search" spellcheck="false" autocorrect="off" autocapitalize="none">
+              <button id="btnFindByCode" class="tc-btn tc-btn-primary px-4 py-2 rounded-lg shadow-md" data-i18n="tc.section.code.action">
+                Tra cứu
+              </button>
+            </div>
+          </section>
+
+          <section id="sectionConvert" class="mb-6 tc-card p-4">
+            <h3 class="text-lg font-semibold mb-2">Chuyển hãng theo mã</h3>
+            <p class="text-sm tc-muted">Chọn hãng + mã để tìm màu gần nhất ở các hãng khác.</p>
+            <div class="mt-3 flex flex-wrap items-center gap-3">
+              <select id="convertBrand" class="tc-field text-sm py-2 min-w-[160px]"></select>
+              <input
+                id="convertCode"
+                class="tc-field flex-1 min-w-[180px]"
+                type="search"
+                placeholder="VD: 310, 666, 311"
+                name="w1_convert_code"
+                autocomplete="off"
+                autocapitalize="none"
+                autocorrect="off"
+                spellcheck="false"
+                inputmode="search"
+              >
+              <button id="convertBtn" class="tc-btn tc-btn-primary px-4 py-2" type="button">Chuyển hãng</button>
+            </div>
+            <div id="convertMeta" class="text-xs tc-muted mt-2"></div>
+            <div id="convertResults" class="tc-convert-result mt-4"></div>
+            <div id="convertEmpty" class="tc-muted text-sm mt-3 hidden">Chưa có kết quả chuyển hãng.</div>
+          </section>
+        </div>
+      </div>
+
+      <section id="result" class="p-4 tc-chip rounded-lg shadow-inner" data-tour="section-result"></section>
 
       <section class="mt-6 tc-card p-4">
         <h3 class="text-sm font-semibold">Liên thông nhanh</h3>
@@ -975,6 +1300,1054 @@
         name.textContent = fileName;
       });
     })();
+  </script>
+  <script type="module">
+    import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    const THREADS_URL = new URL("../threads.json", import.meta.url);
+    const WORKER_URL = new URL("../workers/thread_search.worker.js", import.meta.url);
+    const PALETTE_WORKER_URL = new URL("../workers/palette_extract.worker.js", import.meta.url);
+    const STOCK_LOCAL_KEY = "tc_stock_local_v1";
+    const BUY_LOCAL_KEY = "tc_buy_local_v1";
+    const BRAND_GRID_STORAGE_KEY = "tc_w1_brandGridBrand";
+    const CONVERT_LIMIT = 12;
+
+    const state = {
+      threads: [],
+      brandList: [],
+      brandMap: new Map(),
+      brandGridMap: new Map(),
+      worker: null,
+      workerReady: false,
+      workerSeq: 0,
+      workerRequests: new Map(),
+      paletteWorker: null,
+      paletteWorkerReady: false,
+      paletteWorkerSeq: 0,
+      paletteWorkerRequests: new Map(),
+      labCache: new Map()
+    };
+
+    let activateTab = null;
+
+    const normalizeHex = (value) => {
+      if (!value) return "";
+      const raw = String(value).trim().replace(/^#/, "");
+      if (!/^[0-9a-fA-F]{6}$/.test(raw)) return "";
+      return `#${raw.toUpperCase()}`;
+    };
+
+    const normalizeBrandKey = (name) => {
+      return String(name || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ");
+    };
+
+    const normalizeCodeKey = (code) => {
+      return String(code || "")
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, " ");
+    };
+
+    const escapeHtml = (value) => {
+      return String(value || "").replace(/[&<>"']/g, (ch) => {
+        switch (ch) {
+          case "&":
+            return "&amp;";
+          case "<":
+            return "&lt;";
+          case ">":
+            return "&gt;";
+          case "\"":
+            return "&quot;";
+          case "'":
+            return "&#39;";
+          default:
+            return ch;
+        }
+      });
+    };
+
+    const hexToRgbArray = (hex) => {
+      const normalized = normalizeHex(hex);
+      if (!normalized) return null;
+      const raw = normalized.slice(1);
+      return [
+        parseInt(raw.slice(0, 2), 16),
+        parseInt(raw.slice(2, 4), 16),
+        parseInt(raw.slice(4, 6), 16)
+      ];
+    };
+
+    const rgbToHsl = (r, g, b) => {
+      const rn = r / 255;
+      const gn = g / 255;
+      const bn = b / 255;
+      const max = Math.max(rn, gn, bn);
+      const min = Math.min(rn, gn, bn);
+      const delta = max - min;
+      let h = 0;
+      let s = 0;
+      const l = (max + min) / 2;
+      if (delta !== 0) {
+        s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+        switch (max) {
+          case rn:
+            h = (gn - bn) / delta + (gn < bn ? 6 : 0);
+            break;
+          case gn:
+            h = (bn - rn) / delta + 2;
+            break;
+          default:
+            h = (rn - gn) / delta + 4;
+        }
+        h *= 60;
+      }
+      return { h, s, l };
+    };
+
+    const rgbToLab = ([r, g, b]) => {
+      let rn = r / 255;
+      let gn = g / 255;
+      let bn = b / 255;
+      rn = rn > 0.04045 ? Math.pow((rn + 0.055) / 1.055, 2.4) : rn / 12.92;
+      gn = gn > 0.04045 ? Math.pow((gn + 0.055) / 1.055, 2.4) : gn / 12.92;
+      bn = bn > 0.04045 ? Math.pow((bn + 0.055) / 1.055, 2.4) : bn / 12.92;
+
+      let x = (rn * 0.4124 + gn * 0.3576 + bn * 0.1805) / 0.95047;
+      let y = (rn * 0.2126 + gn * 0.7152 + bn * 0.0722);
+      let z = (rn * 0.0193 + gn * 0.1192 + bn * 0.9505) / 1.08883;
+
+      x = x > 0.008856 ? Math.cbrt(x) : (7.787 * x + 16 / 116);
+      y = y > 0.008856 ? Math.cbrt(y) : (7.787 * y + 16 / 116);
+      z = z > 0.008856 ? Math.cbrt(z) : (7.787 * z + 16 / 116);
+
+      return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
+    };
+
+    const getLabForHex = (hex) => {
+      const normalized = normalizeHex(hex);
+      if (!normalized) return null;
+      if (state.labCache.has(normalized)) return state.labCache.get(normalized);
+      const rgb = hexToRgbArray(normalized);
+      if (!rgb) return null;
+      const lab = rgbToLab(rgb);
+      state.labCache.set(normalized, lab);
+      return lab;
+    };
+
+    const deltaE76 = (lab1, lab2) => {
+      return Math.sqrt(
+        (lab1[0] - lab2[0]) ** 2 +
+        (lab1[1] - lab2[1]) ** 2 +
+        (lab1[2] - lab2[2]) ** 2
+      );
+    };
+
+    const deltaE2000 = (lab1, lab2) => {
+      const [l1, a1, b1] = lab1;
+      const [l2, a2, b2] = lab2;
+      const avgL = (l1 + l2) / 2;
+      const c1 = Math.sqrt(a1 * a1 + b1 * b1);
+      const c2 = Math.sqrt(a2 * a2 + b2 * b2);
+      const avgC = (c1 + c2) / 2;
+      const g = 0.5 * (1 - Math.sqrt(Math.pow(avgC, 7) / (Math.pow(avgC, 7) + Math.pow(25, 7))));
+      const a1p = (1 + g) * a1;
+      const a2p = (1 + g) * a2;
+      const c1p = Math.sqrt(a1p * a1p + b1 * b1);
+      const c2p = Math.sqrt(a2p * a2p + b2 * b2);
+      const avgCp = (c1p + c2p) / 2;
+      const h1p = Math.atan2(b1, a1p) >= 0 ? Math.atan2(b1, a1p) : Math.atan2(b1, a1p) + 2 * Math.PI;
+      const h2p = Math.atan2(b2, a2p) >= 0 ? Math.atan2(b2, a2p) : Math.atan2(b2, a2p) + 2 * Math.PI;
+      let deltahp = h2p - h1p;
+      if (Math.abs(deltahp) > Math.PI) {
+        deltahp -= Math.sign(deltahp) * 2 * Math.PI;
+      }
+      const deltaLp = l2 - l1;
+      const deltaCp = c2p - c1p;
+      const deltaHp = 2 * Math.sqrt(c1p * c2p) * Math.sin(deltahp / 2);
+      const avgLp = (l1 + l2) / 2;
+      let avghp = h1p + h2p;
+      if (Math.abs(h1p - h2p) > Math.PI) {
+        avghp += 2 * Math.PI;
+      }
+      avghp /= 2;
+      const t = 1
+        - 0.17 * Math.cos(avghp - Math.PI / 6)
+        + 0.24 * Math.cos(2 * avghp)
+        + 0.32 * Math.cos(3 * avghp + Math.PI / 30)
+        - 0.20 * Math.cos(4 * avghp - 7 * Math.PI / 18);
+      const deltaTheta = (30 * Math.PI / 180) * Math.exp(-((((avghp * 180 / Math.PI) - 275) / 25) ** 2));
+      const rc = 2 * Math.sqrt(Math.pow(avgCp, 7) / (Math.pow(avgCp, 7) + Math.pow(25, 7)));
+      const sl = 1 + (0.015 * ((avgLp - 50) ** 2)) / Math.sqrt(20 + ((avgLp - 50) ** 2));
+      const sc = 1 + 0.045 * avgCp;
+      const sh = 1 + 0.015 * avgCp * t;
+      const rt = -Math.sin(2 * deltaTheta) * rc;
+      return Math.sqrt(
+        (deltaLp / sl) ** 2 +
+        (deltaCp / sc) ** 2 +
+        (deltaHp / sh) ** 2 +
+        rt * (deltaCp / sc) * (deltaHp / sh)
+      );
+    };
+
+    const getDelta = (lab1, lab2, method) => {
+      return method === "2000" ? deltaE2000(lab1, lab2) : deltaE76(lab1, lab2);
+    };
+
+    const isVerifiedThread = (thread) => {
+      const conf = typeof thread?.confidence === "number" ? thread.confidence : 0;
+      return conf >= 0.85 || thread?.source?.type === "CROWD_VERIFIED";
+    };
+
+    const showToast = (text) => {
+      if (!text) return;
+      const container = $("#toastContainer");
+      if (!container) {
+        console.info("[toast]", text);
+        return;
+      }
+      const item = document.createElement("div");
+      item.className = "bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg animate-fade-in-up";
+      item.textContent = text;
+      container.appendChild(item);
+      window.setTimeout(() => {
+        item.classList.add("opacity-0", "translate-y-1");
+        window.setTimeout(() => item.remove(), 400);
+      }, 1500);
+    };
+
+    const initTabs = () => {
+      const tabs = $$(".tc-tab[data-tc-tab]");
+      const panels = $$(".tc-tab-panel[data-tc-panel]");
+      if (!tabs.length || !panels.length) return;
+      const panelMap = new Map();
+      panels.forEach((panel) => {
+        const key = panel.dataset.tcPanel;
+        if (!key) return;
+        if (!panel.id) panel.id = `tc-tab-${key}`;
+        panelMap.set(key, panel);
+      });
+
+      const setActive = (key, opts = {}) => {
+        const { focus = false } = opts;
+        tabs.forEach((btn) => {
+          const active = btn.dataset.tcTab === key;
+          btn.classList.toggle("is-active", active);
+          btn.setAttribute("aria-selected", active ? "true" : "false");
+          btn.setAttribute("tabindex", active ? "0" : "-1");
+          const panel = panelMap.get(btn.dataset.tcTab);
+          if (panel) btn.setAttribute("aria-controls", panel.id);
+          if (active && focus) btn.focus();
+        });
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.tcPanel !== key;
+        });
+      };
+
+      tabs.forEach((btn) => {
+        btn.addEventListener("click", () => setActive(btn.dataset.tcTab, { focus: false }));
+      });
+      const initial = tabs.find(btn => btn.classList.contains("is-active"))?.dataset.tcTab || tabs[0].dataset.tcTab;
+      setActive(initial, { focus: false });
+      activateTab = (key) => setActive(key, { focus: false });
+      window.tcWorld1ActivateTab = activateTab;
+    };
+
+    const loadThreads = async () => {
+      if (Array.isArray(window.__tcThreadCache)) return window.__tcThreadCache;
+      const response = await fetch(THREADS_URL.toString(), { cache: "no-store" });
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : [];
+      const normalized = list.map((item) => {
+        const brand = (item.brand || "").trim();
+        const code = (item.code || "").trim();
+        const hex = normalizeHex(item.hex);
+        if (!brand || !code || !hex) return null;
+        return {
+          brand,
+          code,
+          name: (item.name || "").trim(),
+          hex,
+          confidence: item.confidence,
+          source: item.source,
+          lab: Array.isArray(item.lab) && item.lab.length === 3 ? item.lab : null
+        };
+      }).filter(Boolean);
+      window.__tcThreadCache = normalized;
+      return normalized;
+    };
+
+    const buildIndexes = (threads) => {
+      const byBrand = new Map();
+      const brands = new Set();
+      threads.forEach((thread) => {
+        if (!thread?.brand) return;
+        if (!byBrand.has(thread.brand)) byBrand.set(thread.brand, []);
+        byBrand.get(thread.brand).push(thread);
+        brands.add(thread.brand);
+      });
+      const brandList = Array.from(brands).sort((a, b) => a.localeCompare(b, "vi", { sensitivity: "base" }));
+      const brandGridMap = new Map();
+      brandList.forEach((brand) => {
+        const list = byBrand.get(brand) || [];
+        const enriched = list.map((item) => {
+          const rgb = hexToRgbArray(item.hex);
+          const hsl = rgb ? rgbToHsl(rgb[0], rgb[1], rgb[2]) : { h: 0, s: 0, l: 0 };
+          return {
+            ...item,
+            hue: hsl.h,
+            search: `${item.code} ${item.name || ""} ${item.hex}`.toLowerCase()
+          };
+        });
+        enriched.sort((a, b) => {
+          if (a.hue !== b.hue) return a.hue - b.hue;
+          return a.code.localeCompare(b.code);
+        });
+        brandGridMap.set(brand, enriched);
+      });
+      return { brandList, brandMap: byBrand, brandGridMap };
+    };
+
+    const initWorker = (threads) => {
+      if (state.worker || typeof Worker === "undefined") return;
+      try {
+        state.worker = new Worker(WORKER_URL, { type: "module" });
+      } catch (_err) {
+        state.worker = null;
+        return;
+      }
+      state.worker.onmessage = (event) => {
+        const data = event.data || {};
+        if (data.type === "ready") {
+          state.workerReady = true;
+          return;
+        }
+        const entry = state.workerRequests.get(data.id);
+        if (!entry) return;
+        state.workerRequests.delete(data.id);
+        if (data.error) {
+          entry.reject(new Error(data.error));
+          return;
+        }
+        entry.resolve(data.results || []);
+      };
+      state.worker.postMessage({ type: "init", threads });
+    };
+
+    const initPaletteWorker = () => {
+      if (state.paletteWorker || typeof Worker === "undefined") return;
+      try {
+        state.paletteWorker = new Worker(PALETTE_WORKER_URL, { type: "module" });
+      } catch (_err) {
+        state.paletteWorker = null;
+        return;
+      }
+      state.paletteWorker.onmessage = (event) => {
+        const data = event.data || {};
+        if (data.type === "ready") {
+          state.paletteWorkerReady = true;
+          return;
+        }
+        const entry = state.paletteWorkerRequests.get(data.id);
+        if (!entry) return;
+        state.paletteWorkerRequests.delete(data.id);
+        if (data.error) {
+          entry.reject(new Error(data.error));
+          return;
+        }
+        entry.resolve(data.colors || []);
+      };
+      state.paletteWorker.postMessage({ type: "init" });
+    };
+
+    const extractPaletteWithWorker = (imageData, count) => {
+      if (!state.paletteWorker) return Promise.reject(new Error("worker-missing"));
+      return new Promise((resolve, reject) => {
+        const id = ++state.paletteWorkerSeq;
+        state.paletteWorkerRequests.set(id, { resolve, reject });
+        const payload = {
+          width: imageData.width,
+          height: imageData.height,
+          count,
+          buffer: imageData.data.buffer
+        };
+        state.paletteWorker.postMessage({ type: "extract", id, payload }, [payload.buffer]);
+      });
+    };
+
+    const searchWithWorker = (payload) => {
+      if (!state.worker || !state.workerReady) return Promise.reject(new Error("worker-not-ready"));
+      return new Promise((resolve, reject) => {
+        const id = ++state.workerSeq;
+        state.workerRequests.set(id, { resolve, reject });
+        state.worker.postMessage({ type: "search", id, payload });
+      });
+    };
+
+    const addTopK = (list, item, limit) => {
+      if (list.length < limit) {
+        list.push(item);
+        return;
+      }
+      let worstIndex = 0;
+      let worst = list[0].delta;
+      for (let i = 1; i < list.length; i += 1) {
+        if (list[i].delta > worst) {
+          worst = list[i].delta;
+          worstIndex = i;
+        }
+      }
+      if (item.delta < worst) list[worstIndex] = item;
+    };
+
+    const findNearestLocal = (targetHex, brands, limit, method, verifiedOnly) => {
+      const normalized = normalizeHex(targetHex);
+      if (!normalized) return [];
+      const targetLab = getLabForHex(normalized);
+      if (!targetLab) return [];
+      const results = [];
+      const lists = brands.length ? brands.map((b) => state.brandMap.get(b) || []) : [state.threads];
+      for (const list of lists) {
+        for (const thread of list) {
+          if (verifiedOnly && !isVerifiedThread(thread)) continue;
+          const lab = thread.lab || getLabForHex(thread.hex);
+          if (!lab) continue;
+          const delta = getDelta(targetLab, lab, method);
+          addTopK(results, { ...thread, lab, delta }, limit);
+        }
+      }
+      return results.sort((a, b) => a.delta - b.delta);
+    };
+
+    const searchNearest = async (targetHex, brands, limit, method, verifiedOnly) => {
+      const normalized = normalizeHex(targetHex);
+      if (!normalized) return [];
+      if (state.workerReady) {
+        try {
+          const results = await searchWithWorker({
+            targetHex: normalized,
+            brands,
+            verifiedOnly,
+            method,
+            limit
+          });
+          return results.map((item) => ({
+            ...item,
+            hex: normalizeHex(item.hex) || item.hex,
+            lab: item.lab || getLabForHex(item.hex)
+          }));
+        } catch (_err) {
+          return findNearestLocal(normalized, brands, limit, method, verifiedOnly);
+        }
+      }
+      return findNearestLocal(normalized, brands, limit, method, verifiedOnly);
+    };
+
+    const readBrandGridPreference = () => {
+      try {
+        return localStorage.getItem(BRAND_GRID_STORAGE_KEY) || "";
+      } catch (_err) {
+        return "";
+      }
+    };
+
+    const saveBrandGridPreference = (brand) => {
+      if (!brand) return;
+      try {
+        localStorage.setItem(BRAND_GRID_STORAGE_KEY, brand);
+      } catch (_err) {}
+    };
+
+    const findGingkoBrand = () => {
+      const targetKeys = new Set(["gingko", "ginkgo"]);
+      return state.brandList.find((brand) => targetKeys.has(normalizeBrandKey(brand))) || "";
+    };
+
+    const findLargestBrand = () => {
+      let best = "";
+      let bestCount = -1;
+      state.brandGridMap.forEach((list, brand) => {
+        const count = Array.isArray(list) ? list.length : 0;
+        if (count > bestCount) {
+          bestCount = count;
+          best = brand;
+        }
+      });
+      return best;
+    };
+
+    const resolveDefaultBrand = () => {
+      const stored = readBrandGridPreference();
+      if (stored && state.brandList.includes(stored)) return stored;
+      const gingko = findGingkoBrand();
+      if (gingko) return gingko;
+      const largest = findLargestBrand();
+      if (largest) return largest;
+      return state.brandList[0] || "";
+    };
+
+    const renderBrandOptions = (select, preferredBrand) => {
+      if (!select) return;
+      const prev = preferredBrand || select.value;
+      select.innerHTML = "";
+      state.brandList.forEach((brand) => {
+        const opt = document.createElement("option");
+        opt.value = brand;
+        opt.textContent = brand;
+        select.appendChild(opt);
+      });
+      if (prev && state.brandList.includes(prev)) {
+        select.value = prev;
+      } else if (state.brandList.length) {
+        select.value = state.brandList[0];
+      }
+    };
+
+    const renderBrandGrid = (brand, query) => {
+      const grid = $("#brandGrid");
+      const countEl = $("#brandGridCount");
+      const emptyEl = $("#brandGridEmpty");
+      if (!grid) return;
+      const list = state.brandGridMap.get(brand) || [];
+      const q = String(query || "").trim().toLowerCase();
+      const filtered = q
+        ? list.filter((item) => item.search.includes(q))
+        : list;
+      if (countEl) countEl.textContent = `${filtered.length} màu`;
+      if (emptyEl) emptyEl.classList.toggle("hidden", filtered.length !== 0);
+      grid.innerHTML = filtered.map((item) => {
+        const brand = escapeHtml(item.brand);
+        const code = escapeHtml(item.code || "");
+        const name = escapeHtml(item.name || "");
+        const hex = escapeHtml(item.hex);
+        return `
+        <button class="tc-brand-swatch" type="button" data-hex="${hex}" data-brand="${brand}" data-code="${code}" aria-label="Chọn ${brand} ${code}">
+          <span class="tc-brand-swatch-color" style="background:${hex}"></span>
+          <span class="tc-brand-swatch-code">${code}</span>
+          <span class="tc-brand-swatch-name">${name}</span>
+        </button>
+      `;
+      }).join("");
+    };
+
+    const ensureBrandSelected = (brand) => {
+      if (!brand) return;
+      const filters = $$(".brand-filter");
+      if (!filters.length) return;
+      const target = filters.find((cb) => cb.value === brand);
+      if (target && !target.checked) target.checked = true;
+    };
+
+    const applyHexToSearch = (hex, brand) => {
+      const normalized = normalizeHex(hex);
+      if (!normalized) return;
+      const colorPicker = $("#colorPicker");
+      const btnFindNearest = $("#btnFindNearest");
+      if (colorPicker) {
+        colorPicker.value = normalized;
+        colorPicker.dispatchEvent(new Event("input", { bubbles: true }));
+        colorPicker.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      ensureBrandSelected(brand);
+      btnFindNearest?.click();
+    };
+
+    const getSelectedBrands = () => {
+      return $$(".brand-filter:checked").map((cb) => cb.value);
+    };
+
+    const getScaledImageData = (sourceCanvas, maxSize = 360) => {
+      if (!sourceCanvas || !sourceCanvas.width || !sourceCanvas.height) return null;
+      const maxDim = Math.max(sourceCanvas.width, sourceCanvas.height);
+      const scale = maxDim > maxSize ? maxSize / maxDim : 1;
+      const targetW = Math.max(1, Math.round(sourceCanvas.width * scale));
+      const targetH = Math.max(1, Math.round(sourceCanvas.height * scale));
+      const offscreen = document.createElement("canvas");
+      offscreen.width = targetW;
+      offscreen.height = targetH;
+      const ctx = offscreen.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return null;
+      ctx.drawImage(sourceCanvas, 0, 0, targetW, targetH);
+      return ctx.getImageData(0, 0, targetW, targetH);
+    };
+
+    const setExtractLoading = (isLoading) => {
+      const loading = $("#paletteExtractLoading");
+      const list = $("#paletteExtractList");
+      const empty = $("#paletteExtractEmpty");
+      if (loading) loading.classList.toggle("hidden", !isLoading);
+      if (list) list.innerHTML = "";
+      if (empty) empty.classList.add("hidden");
+    };
+
+    const renderExtractResults = (items) => {
+      const list = $("#paletteExtractList");
+      const empty = $("#paletteExtractEmpty");
+      if (!list) return;
+      if (!items.length) {
+        list.innerHTML = "";
+        if (empty) empty.classList.remove("hidden");
+        return;
+      }
+      if (empty) empty.classList.add("hidden");
+      list.innerHTML = items.map((item) => {
+        const safeHex = escapeHtml(item.hex);
+        const percent = typeof item.percent === "number" ? `${item.percent.toFixed(1)}%` : "";
+        const match = item.match;
+        let matchLine = "Chưa chọn hãng để đối chiếu.";
+        if (item.status === "missing") {
+          matchLine = "Không tìm thấy mã chỉ phù hợp.";
+        }
+        if (match) {
+          matchLine = `${escapeHtml(match.brand || "")} ${escapeHtml(match.code || "")} · ΔE ${match.delta.toFixed(2)}`;
+        }
+        const matchName = match?.name ? `<div class="text-xs tc-muted truncate">${escapeHtml(match.name)}</div>` : "";
+        return `
+          <div class="tc-extract-card">
+            <div class="tc-extract-swatch" style="background:${safeHex}"></div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="font-semibold">${safeHex}</div>
+              <div class="text-xs tc-muted">${percent}</div>
+            </div>
+            <div class="text-xs">${matchLine}</div>
+            ${matchName}
+          </div>
+        `;
+      }).join("");
+    };
+
+    const initBrandGrid = () => {
+      const brandSelect = $("#brandGridSelect");
+      const searchInput = $("#brandGridSearch");
+      const grid = $("#brandGrid");
+      if (!brandSelect || !grid) return;
+      const defaultBrand = resolveDefaultBrand();
+      renderBrandOptions(brandSelect, defaultBrand);
+      renderBrandGrid(brandSelect.value, searchInput?.value);
+      brandSelect.addEventListener("change", () => {
+        saveBrandGridPreference(brandSelect.value);
+        renderBrandGrid(brandSelect.value, searchInput?.value);
+      });
+      let searchTimer;
+      searchInput?.addEventListener("input", () => {
+        window.clearTimeout(searchTimer);
+        searchTimer = window.setTimeout(() => {
+          renderBrandGrid(brandSelect.value, searchInput.value);
+        }, 120);
+      });
+      grid.addEventListener("click", (event) => {
+        const btn = event.target.closest(".tc-brand-swatch");
+        if (!btn) return;
+        const hex = btn.getAttribute("data-hex");
+        const brand = btn.getAttribute("data-brand");
+        applyHexToSearch(hex, brand);
+      });
+    };
+
+    const parseBrandCodeInput = (raw, fallbackBrand) => {
+      const trimmed = String(raw || "").trim();
+      if (!trimmed) return { brand: fallbackBrand, code: "" };
+      const lower = trimmed.toLowerCase();
+      for (const brand of state.brandList) {
+        const brandLower = brand.toLowerCase();
+        if (lower.startsWith(`${brandLower} `)) {
+          return { brand, code: trimmed.slice(brand.length).trim() };
+        }
+      }
+      return { brand: fallbackBrand, code: trimmed };
+    };
+
+    const renderConvertResults = (base, results, methodLabel) => {
+      const resultBox = $("#result");
+      const meta = $("#convertMeta");
+      const list = $("#convertResults");
+      const empty = $("#convertEmpty");
+      const safeBaseBrand = escapeHtml(base.brand);
+      const safeBaseCode = escapeHtml(base.code);
+      const safeBaseHex = escapeHtml(base.hex);
+      if (meta) {
+        meta.textContent = `Nguồn: ${base.brand} ${base.code} · ${base.hex}`;
+      }
+      if (list) {
+        list.innerHTML = results.length
+          ? `<div class="text-sm tc-muted">Đã tìm thấy ${results.length} màu gần nhất (${methodLabel}). Kết quả hiển thị phía dưới.</div>`
+          : "";
+      }
+      if (empty) empty.classList.toggle("hidden", results.length !== 0);
+      if (!resultBox) return;
+      if (!results.length) {
+        resultBox.innerHTML = `<div class="text-sm tc-muted">Chưa tìm thấy kết quả chuyển hãng phù hợp.</div>`;
+        return;
+      }
+      const header = `
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+          <div class="w-10 h-10 rounded-lg border" style="background:${safeBaseHex}"></div>
+          <div class="min-w-0">
+            <div class="font-semibold">Chuyển hãng từ ${safeBaseBrand} ${safeBaseCode}</div>
+            <div class="text-xs tc-muted">HEX ${safeBaseHex} · ${results.length} kết quả gần nhất (${methodLabel})</div>
+          </div>
+        </div>
+      `;
+      const cards = results.map((item) => {
+        const deltaText = typeof item.delta === "number" ? item.delta.toFixed(2) : "";
+        const labAttr = item.lab ? item.lab.join(",") : "";
+        const safeBrand = escapeHtml(item.brand || "");
+        const safeCode = escapeHtml(item.code || "");
+        const safeName = escapeHtml(item.name || "");
+        const safeHex = escapeHtml(item.hex || "");
+        return `
+          <div class="result-item rounded-xl shadow-md bg-white p-3 hover:scale-[1.02] transition border border-transparent"
+               data-hex="${safeHex}" data-brand="${safeBrand}" data-code="${safeCode}" data-name="${safeName}" data-delta="${deltaText}" data-lab="${labAttr}">
+            <div class="flex gap-3 items-center min-w-0">
+              <div class="w-12 h-12 rounded-lg border" style="background:${safeHex}"></div>
+              <div class="flex-1 text-sm result-meta min-w-0">
+                <div class="font-semibold truncate">${safeBrand} ${safeCode}</div>
+                <div class="text-gray-600 truncate">${safeName}</div>
+                <div class="text-xs text-gray-500">ΔE ${deltaText}</div>
+              </div>
+            </div>
+            <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
+              <div class="w-4 h-4 rounded border" style="background:${safeBaseHex}"></div>
+              <span>so với</span>
+              <div class="w-4 h-4 rounded border" style="background:${safeHex}"></div>
+            </div>
+            <div class="mt-3 result-actions flex flex-wrap justify-end gap-2">
+              <button class="btn-save px-3 py-1 text-xs rounded-lg border" type="button" data-action="compare-thread" data-hex="${safeHex}" data-brand="${safeBrand}">
+                So sánh
+              </button>
+              <button class="btn-pin px-3 py-1 text-xs rounded-lg border" type="button" data-action="pin-toggle" data-hex="${safeHex}">
+                Ghim
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+      resultBox.innerHTML = `${header}<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">${cards}</div>`;
+      resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    const initConvert = () => {
+      const brandSelect = $("#convertBrand");
+      const codeInput = $("#convertCode");
+      const btn = $("#convertBtn");
+      if (!brandSelect || !codeInput || !btn) return;
+      renderBrandOptions(brandSelect);
+      const runConvert = async () => {
+        if (!state.threads.length) {
+          showToast("Dữ liệu màu chưa sẵn sàng.");
+          return;
+        }
+        const parsed = parseBrandCodeInput(codeInput.value, brandSelect.value);
+        const brand = parsed.brand;
+        const codeKey = normalizeCodeKey(parsed.code);
+        if (!brand || !codeKey) {
+          showToast("Nhập mã chỉ để chuyển hãng.");
+          return;
+        }
+        const list = state.brandMap.get(brand) || [];
+        const matches = list.filter((item) => normalizeCodeKey(item.code) === codeKey);
+        if (!matches.length) {
+          const meta = $("#convertMeta");
+          const listBox = $("#convertResults");
+          const empty = $("#convertEmpty");
+          const resultBox = $("#result");
+          if (meta) meta.textContent = `Không tìm thấy ${brand} ${codeKey}.`;
+          if (listBox) listBox.innerHTML = "";
+          if (empty) empty.classList.remove("hidden");
+          if (resultBox) {
+            resultBox.innerHTML = `<div class="text-sm tc-muted">Không tìm thấy mã ${brand} ${codeKey}.</div>`;
+          }
+          return;
+        }
+        matches.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+        const base = matches[0];
+        const method = $("#deltaMethod")?.value === "2000" ? "2000" : "76";
+        const methodLabel = method === "2000" ? "ΔE2000" : "ΔE76";
+        const verifiedOnly = $("#verifiedOnlyToggle")?.checked ?? false;
+        const brands = state.brandList.filter((b) => b !== base.brand);
+        const results = await searchNearest(base.hex, brands, CONVERT_LIMIT, method, verifiedOnly);
+        renderConvertResults(base, results, methodLabel);
+      };
+      btn.addEventListener("click", runConvert);
+      codeInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          runConvert();
+        }
+      });
+    };
+
+    const mapPaletteToThreads = async (colors) => {
+      const brands = getSelectedBrands();
+      const method = $("#deltaMethod")?.value === "2000" ? "2000" : "76";
+      const verifiedOnly = $("#verifiedOnlyToggle")?.checked ?? false;
+      const tasks = colors.map(async (item) => {
+        const normalized = normalizeHex(item.hex);
+        const base = { hex: normalized, percent: item.percent };
+        if (!brands.length) {
+          return { ...base, status: "no-brand", match: null };
+        }
+        const results = await searchNearest(normalized, brands, 1, method, verifiedOnly);
+        if (results && results.length) {
+          const top = results[0];
+          return {
+            ...base,
+            status: "ok",
+            match: {
+              brand: top.brand || "",
+              code: top.code || "",
+              name: top.name || "",
+              delta: typeof top.delta === "number" ? top.delta : 0
+            }
+          };
+        }
+        return { ...base, status: "missing", match: null };
+      });
+      return Promise.all(tasks);
+    };
+
+    const initPaletteExtract = () => {
+      const btn = $("#paletteExtractBtn");
+      const countSelect = $("#paletteExtractCount");
+      const canvas = $("#canvas");
+      if (!btn || !countSelect || !canvas) return;
+      btn.addEventListener("click", async () => {
+        if (!state.threads.length) {
+          showToast("Dữ liệu màu chưa sẵn sàng.");
+          return;
+        }
+        const imageData = getScaledImageData(canvas, 360);
+        if (!imageData) {
+          showToast("Hãy tải ảnh trước khi trích bảng màu.");
+          return;
+        }
+        const count = Math.min(30, Math.max(5, parseInt(countSelect.value, 10) || 5));
+        initPaletteWorker();
+        if (!state.paletteWorker) {
+          showToast("Trình duyệt không hỗ trợ trích bảng màu.");
+          return;
+        }
+        setExtractLoading(true);
+        try {
+          const colors = await extractPaletteWithWorker(imageData, count);
+          const mapped = await mapPaletteToThreads(colors);
+          setExtractLoading(false);
+          renderExtractResults(mapped);
+        } catch (err) {
+          console.error(err);
+          setExtractLoading(false);
+          renderExtractResults([]);
+          showToast("Không trích được bảng màu từ ảnh.");
+        }
+      });
+    };
+
+    const normalizeKey = (value) => {
+      return (value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ");
+    };
+
+    const normalizeCode = (value) => {
+      return (value || "")
+        .toUpperCase()
+        .trim()
+        .replace(/\s+/g, " ");
+    };
+
+    const buildDocId = (brand, code) => `${normalizeKey(brand)}__${normalizeCode(code)}`;
+
+    const readLocalList = (key) => {
+      try {
+        const raw = localStorage.getItem(key);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_err) {
+        return [];
+      }
+    };
+
+    const writeLocalList = (key, list) => {
+      try {
+        localStorage.setItem(key, JSON.stringify(list));
+      } catch (_err) {}
+    };
+
+    const upsertLocalItem = (key, item, extra = {}) => {
+      const list = readLocalList(key);
+      const targetBrand = normalizeKey(item.brand);
+      const targetCode = normalizeCode(item.code);
+      const idx = list.findIndex((entry) => normalizeKey(entry.brand) === targetBrand && normalizeCode(entry.code) === targetCode);
+      const payload = {
+        ...list[idx],
+        ...item,
+        ...extra,
+        updatedAt: new Date().toISOString()
+      };
+      if (idx >= 0) {
+        list[idx] = payload;
+      } else {
+        list.unshift(payload);
+      }
+      writeLocalList(key, list.slice(0, 200));
+    };
+
+    const upsertStockItem = async (item, mode) => {
+      const api = window.firebaseAuth || window.firebaseAuthApi || null;
+      const user = api?.auth?.currentUser || api?.user || null;
+      if (!api?.db || !user?.uid) return false;
+      const ref = doc(api.db, "users", user.uid, "stockItems", buildDocId(item.brand, item.code));
+      let current = {};
+      try {
+        const snap = await getDoc(ref);
+        if (snap.exists()) current = snap.data() || {};
+      } catch (_err) {}
+      const currentQty = Number(current.qty) || 0;
+      const currentMin = Number(current.minQty) || 0;
+      const payload = {
+        brand: item.brand,
+        brandKey: normalizeKey(item.brand),
+        code: item.code,
+        codeKey: normalizeCode(item.code),
+        name: item.name || current.name || "",
+        hex: item.hex || current.hex || "",
+        unit: current.unit || "",
+        location: current.location || "",
+        note: current.note || "",
+        qty: currentQty,
+        minQty: currentMin,
+        updatedAt: serverTimestamp()
+      };
+      if (mode === "buy") {
+        payload.minQty = Math.max(currentMin, 1);
+        if (!payload.note) payload.note = "Danh sách mua";
+      } else {
+        payload.qty = Math.max(currentQty, 1);
+      }
+      await setDoc(ref, payload, { merge: true });
+      return true;
+    };
+
+    const handleVaultAction = async (mode, item) => {
+      const safeHex = normalizeHex(item.hex);
+      if (!item.brand || !item.code || !safeHex) {
+        showToast("Thiếu thông tin màu để lưu.");
+        return;
+      }
+      const loggedIn = window.tcAuth?.isLoggedIn?.() || false;
+      if (loggedIn) {
+        try {
+          const ok = await upsertStockItem({ ...item, hex: safeHex }, mode);
+          if (ok) {
+            showToast(mode === "buy" ? "Đã thêm vào danh sách mua." : "Đã đánh dấu có trong kho.");
+            return;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      if (mode === "buy") {
+        upsertLocalItem(BUY_LOCAL_KEY, { ...item, hex: safeHex }, { qty: 0, minQty: 1, note: "Danh sách mua" });
+        showToast("Đã lưu tạm vào danh sách mua (local).");
+      } else {
+        upsertLocalItem(STOCK_LOCAL_KEY, { ...item, hex: safeHex }, { qty: 1, minQty: 0 });
+        showToast("Đã lưu tạm vào kho (local).");
+      }
+    };
+
+    const ensureVaultButtons = () => {
+      const resultBox = $("#result");
+      if (!resultBox) return;
+      const injectButtons = (card) => {
+        const actions = card.querySelector(".result-actions");
+        if (!actions) return;
+        if (actions.querySelector('[data-action="vault-stock"]')) return;
+        const stockBtn = document.createElement("button");
+        stockBtn.type = "button";
+        stockBtn.className = "btn-vault px-3 py-1 text-xs";
+        stockBtn.dataset.action = "vault-stock";
+        stockBtn.textContent = "Đánh dấu có trong kho";
+        const buyBtn = document.createElement("button");
+        buyBtn.type = "button";
+        buyBtn.className = "btn-vault px-3 py-1 text-xs";
+        buyBtn.dataset.action = "vault-buy";
+        buyBtn.textContent = "Thêm vào danh sách mua";
+        actions.appendChild(stockBtn);
+        actions.appendChild(buyBtn);
+      };
+      const enhanceAll = () => {
+        resultBox.querySelectorAll(".result-item").forEach(injectButtons);
+      };
+      enhanceAll();
+      const observer = new MutationObserver(() => enhanceAll());
+      observer.observe(resultBox, { childList: true, subtree: true });
+      if (resultBox.dataset.vaultBound === "1") return;
+      resultBox.dataset.vaultBound = "1";
+      resultBox.addEventListener("click", (event) => {
+        const btn = event.target.closest("[data-action]");
+        if (!btn) return;
+        const action = btn.dataset.action;
+        if (!["compare-thread", "vault-stock", "vault-buy"].includes(action)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const card = btn.closest(".result-item");
+        if (!card) return;
+        const item = {
+          hex: card.dataset.hex || "",
+          brand: card.dataset.brand || "",
+          code: card.dataset.code || "",
+          name: card.dataset.name || ""
+        };
+        if (action === "compare-thread") {
+          applyHexToSearch(item.hex, item.brand);
+          return;
+        }
+        handleVaultAction(action === "vault-buy" ? "buy" : "stock", item);
+      }, true);
+    };
+
+    const initThreadData = async () => {
+      try {
+        const threads = await loadThreads();
+        state.threads = threads;
+        const indexes = buildIndexes(threads);
+        state.brandList = indexes.brandList;
+        state.brandMap = indexes.brandMap;
+        state.brandGridMap = indexes.brandGridMap;
+        initWorker(threads);
+        initPaletteWorker();
+        initBrandGrid();
+        initConvert();
+        initPaletteExtract();
+      } catch (err) {
+        console.error("[threadcolor] load failed", err);
+        const grid = $("#brandGrid");
+        if (grid) grid.innerHTML = `<div class="tc-muted text-sm">Không tải được dữ liệu màu.</div>`;
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      initTabs();
+      ensureVaultButtons();
+      initThreadData();
+      const trap = window.setupAutofillTrap;
+      if (typeof trap === "function") {
+        trap($("#codeInput"));
+        trap($("#brandGridSearch"));
+        trap($("#convertCode"));
+      }
+    });
   </script>
 
   <script type="module" src="../scripts/onboarding_world1.js"></script>
