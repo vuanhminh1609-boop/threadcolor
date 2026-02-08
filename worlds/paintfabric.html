@@ -92,6 +92,76 @@
       position: relative;
       overflow: hidden;
     }
+    .pf-summary{
+      position: sticky;
+      top: calc(var(--tc-topbar-h, 56px) + 10px);
+      z-index: 5;
+    }
+    .pf-summary-grid{
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+    .pf-summary-item{
+      display: grid;
+      gap: 4px;
+      font-size: 12px;
+    }
+    .pf-summary-label{
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .pf-compare-modes,
+    .pf-compare-slots{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pf-compare-slot.is-active,
+    .pf-compare-mode.is-active{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border-color: transparent;
+    }
+    .pf-triptych-grid{
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .pf-triptych-card{
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      overflow: hidden;
+      background: var(--glass);
+    }
+    .pf-triptych-label{
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .pf-companion-preview{
+      position: relative;
+      height: 110px;
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      overflow: hidden;
+    }
+    .pf-companion-layer{
+      position: absolute;
+      inset: 0;
+      mix-blend-mode: normal;
+    }
+    .pf-companion-layer[data-role="trim"]{
+      clip-path: inset(10% 55% 55% 10%);
+    }
+    .pf-companion-layer[data-role="accent"]{
+      clip-path: inset(60% 10% 10% 60%);
+    }
     .pf-compare{
       position: relative;
       width: 100%;
@@ -109,6 +179,38 @@
     }
     .pf-layer.pf-after{
       clip-path: inset(0 calc(100% - var(--pf-compare)) 0 0);
+    }
+    .pf-photo-stage{
+      border-radius: 1rem;
+      border: 1px dashed var(--stroke);
+      padding: 0.5rem;
+      background: rgba(255,255,255,0.03);
+    }
+    #pfPhotoCanvas{
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0.85rem;
+      background: #0b1220;
+      touch-action: none;
+    }
+    .pf-photo-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .pf-photo-field{
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .pf-photo-field input[type="range"]{
+      width: 180px;
+    }
+    .pf-photo-chip{
+      font-size: 11px;
+      color: var(--muted);
     }
     .tc-menu-item{
       color: var(--text);
@@ -206,10 +308,36 @@
         <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="fabric" aria-selected="false">Vải</button>
       </div>
 
+      <div id="pfSummaryBar" class="tc-card pf-summary mt-4 p-4">
+        <div class="pf-summary-grid">
+          <div class="pf-summary-item">
+            <div class="pf-summary-label">HEX</div>
+            <strong id="pfSummaryHex">#C27B4B</strong>
+          </div>
+          <div class="pf-summary-item">
+            <div class="pf-summary-label">Chế độ</div>
+            <strong id="pfSummaryMode">Sơn</strong>
+          </div>
+          <div class="pf-summary-item">
+            <div class="pf-summary-label">Preset</div>
+            <strong id="pfSummaryPreset">—</strong>
+          </div>
+          <div class="pf-summary-item">
+            <div class="pf-summary-label">Vật liệu</div>
+            <strong id="pfSummaryMaterial">—</strong>
+          </div>
+          <div class="pf-summary-item">
+            <div class="pf-summary-label">Compare</div>
+            <strong id="pfSummaryCompare">Tắt</strong>
+          </div>
+        </div>
+      </div>
+
       <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div id="pfControls">
           <div class="space-y-4">
             <div>
+              <div class="text-xs font-semibold tracking-[0.2em] uppercase tc-muted">Nhập dữ liệu</div>
               <label class="text-sm font-semibold">Màu HEX</label>
               <div class="mt-2 flex flex-wrap gap-2 items-center">
                 <input id="pfHex" class="tc-input w-[180px]" placeholder="#C27B4B">
@@ -349,12 +477,112 @@
               </div>
             </div>
 
-            <div class="flex flex-wrap gap-2">
-              <button id="pfSave" class="tc-btn tc-btn-primary px-4 py-2">Lưu vào Thư viện</button>
-              <button id="pfUseLibrary" class="tc-btn tc-chip px-4 py-2">Dùng từ Thư viện</button>
-              <button id="pfShare" class="tc-btn tc-chip px-4 py-2">Chia sẻ</button>
-              <button id="pfExport" class="tc-btn tc-chip px-4 py-2">Xuất Bản thông số</button>
-              <button id="pfSeed" class="tc-btn tc-chip px-4 py-2">Tạo nhanh 6 mẫu</button>
+            <div>
+              <div class="text-xs font-semibold tracking-[0.2em] uppercase tc-muted">Mô phỏng vật liệu</div>
+              <div class="mt-3">
+                <label class="text-sm font-semibold">Preset theo mục tiêu</label>
+                <div id="pfPresets" class="mt-2 flex flex-wrap gap-2"></div>
+              </div>
+              <div class="mt-4 tc-card p-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-semibold">Phối gợi ý</h3>
+                  <div class="flex flex-wrap gap-2">
+                    <button id="pfOpenPalette" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Mở thành Palette</button>
+                    <button id="pfOpenGradient" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Mở thành Gradient</button>
+                  </div>
+                </div>
+                <div class="mt-3 grid gap-3 sm:grid-cols-3">
+                  <div class="tc-chip px-3 py-2 text-xs">
+                    <div class="font-semibold">Chính</div>
+                    <div class="mt-2 flex items-center gap-2">
+                      <span id="pfCompanionMain" class="tc-swatch"></span>
+                      <span id="pfCompanionMainHex" class="tc-muted">#C27B4B</span>
+                    </div>
+                  </div>
+                  <div class="tc-chip px-3 py-2 text-xs">
+                    <div class="font-semibold">Viền</div>
+                    <div class="mt-2 flex items-center gap-2">
+                      <span id="pfCompanionTrim" class="tc-swatch"></span>
+                      <span id="pfCompanionTrimHex" class="tc-muted">#D8B89B</span>
+                    </div>
+                  </div>
+                  <div class="tc-chip px-3 py-2 text-xs">
+                    <div class="font-semibold">Nhấn</div>
+                    <div class="mt-2 flex items-center gap-2">
+                      <span id="pfCompanionAccent" class="tc-swatch"></span>
+                      <span id="pfCompanionAccentHex" class="tc-muted">#9D4F2A</span>
+                    </div>
+                  </div>
+                </div>
+                <div id="pfCompanionPreview" class="pf-companion-preview mt-3">
+                  <div class="pf-companion-layer" data-role="main"></div>
+                  <div class="pf-companion-layer" data-role="trim"></div>
+                  <div class="pf-companion-layer" data-role="accent"></div>
+                </div>
+              </div>
+            </div>
+
+            <details id="pfPhotoDetails" class="tc-card p-4">
+              <summary class="text-sm font-semibold cursor-pointer">Ảnh của bạn</summary>
+              <p class="mt-2 text-xs tc-muted">Vẽ vùng cần tô, chọn màu, kéo thanh để xem trước/sau.</p>
+              <div class="mt-3 pf-photo-row">
+                <label class="text-xs font-semibold">Tải ảnh</label>
+                <input id="pfPhotoInput" class="tc-input" type="file" accept="image/*">
+              </div>
+              <div class="mt-3 pf-photo-row">
+                <div class="pf-photo-field">
+                  <label class="text-xs font-semibold">Cỡ cọ</label>
+                  <input id="pfPhotoBrush" type="range" min="4" max="80" value="24">
+                  <span id="pfPhotoBrushValue" class="pf-photo-chip">24</span>
+                </div>
+                <div class="pf-photo-field">
+                  <label class="text-xs font-semibold">Feather</label>
+                  <input id="pfPhotoFeather" type="range" min="0" max="16" value="6">
+                  <span id="pfPhotoFeatherValue" class="pf-photo-chip">6</span>
+                </div>
+                <div class="pf-photo-field">
+                  <label class="text-xs font-semibold">Opacity</label>
+                  <input id="pfPhotoOpacity" type="range" min="10" max="100" value="70">
+                  <span id="pfPhotoOpacityValue" class="pf-photo-chip">70%</span>
+                </div>
+                <div class="pf-photo-field">
+                  <label class="text-xs font-semibold">Chế độ hoà trộn</label>
+                  <select id="pfPhotoBlend" class="tc-input">
+                    <option value="source-over">Phủ màu</option>
+                    <option value="multiply">Nhân (Multiply)</option>
+                    <option value="screen">Màn hình (Screen)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mt-3 pf-photo-row">
+                <button id="pfPhotoUndo" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Hoàn tác</button>
+                <button id="pfPhotoClear" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Xoá mask</button>
+                <div class="pf-photo-field">
+                  <label class="text-xs font-semibold">Trước/Sau</label>
+                  <input id="pfPhotoCompare" type="range" min="0" max="100" value="100">
+                  <span id="pfPhotoCompareValue" class="pf-photo-chip">Sau 100%</span>
+                </div>
+                <button id="pfPhotoSave" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Lưu vào Thư viện</button>
+              </div>
+              <div class="mt-3 pf-photo-stage">
+                <canvas id="pfPhotoCanvas"></canvas>
+              </div>
+              <p id="pfPhotoStatus" class="mt-2 text-xs tc-muted"></p>
+            </details>
+
+            <div>
+              <div class="text-xs font-semibold tracking-[0.2em] uppercase tc-muted">Lưu / Xuất / Chuyển Thế giới</div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button id="pfCopySummaryLine" class="tc-btn tc-btn-primary px-4 py-2">Sao chép tóm tắt</button>
+                <button id="pfExportJson" class="tc-btn tc-chip px-4 py-2">Xuất JSON</button>
+                <button id="pfExportPng" class="tc-btn tc-chip px-4 py-2">Xuất PNG</button>
+                <button id="pfSave" class="tc-btn tc-chip px-4 py-2">Lưu vào Thư viện</button>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button id="pfUseLibrary" class="tc-btn tc-chip px-3 py-2 text-xs">Dùng từ Thư viện</button>
+                <button id="pfShare" class="tc-btn tc-chip px-3 py-2 text-xs">Chia sẻ</button>
+                <button id="pfSeed" class="tc-btn tc-chip px-3 py-2 text-xs">Tạo nhanh 6 mẫu</button>
+              </div>
             </div>
 
             <details class="tc-card p-3">
@@ -380,12 +608,22 @@
 
         <div>
           <div class="flex items-center justify-between mb-3">
-            <label class="text-sm font-semibold" data-i18n="paintfabric.labels.compare">So sánh trước/sau</label>
-            <span id="pfCompareLabel" class="text-xs tc-muted">Sau: 60%</span>
+            <label class="text-sm font-semibold" data-i18n="paintfabric.labels.compare">So sánh</label>
+            <span id="pfCompareLabel" class="text-xs tc-muted">A/B: 60%</span>
           </div>
-          <input id="pfCompare" class="tc-input" type="range" min="0" max="100" value="60">
-          <div id="pfPresets" class="mt-4 flex flex-wrap gap-2"></div>
-          <div id="pfTriptych" class="mt-4 grid gap-3 sm:grid-cols-3"></div>
+          <div id="pfCompareModes" class="pf-compare-modes">
+            <button class="tc-btn tc-chip px-3 py-2 text-xs pf-compare-mode" data-compare-mode="off">Tắt</button>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs pf-compare-mode" data-compare-mode="ab">A/B</button>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs pf-compare-mode" data-compare-mode="tri">Triptych</button>
+          </div>
+          <div id="pfCompareSlots" class="pf-compare-slots mt-2">
+            <button class="tc-btn tc-chip px-3 py-2 text-xs pf-compare-slot" data-compare-slot="A">Màu A</button>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs pf-compare-slot" data-compare-slot="B">Màu B</button>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs pf-compare-slot" data-compare-slot="C">Màu C</button>
+          </div>
+          <div id="pfCompareSliderWrap" class="mt-3">
+            <input id="pfCompare" class="tc-input" type="range" min="0" max="100" value="60">
+          </div>
           <div id="pfPreview" class="tc-preview"></div>
         </div>
       </div>

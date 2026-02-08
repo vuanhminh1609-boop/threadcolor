@@ -37,13 +37,34 @@
 | Overlay nền (lớp hoạ tiết/ánh phủ trên nền chính) | Overlay nền | Lớp hoạ tiết/ánh phủ mỏng đặt trên nền chính để tạo chiều sâu nhưng vẫn nhẹ. |
 | Custom Tone (sắc thái tuỳ chỉnh do người dùng tạo) | Sắc thái tuỳ chỉnh | Sắc thái do người dùng tự lưu lại từ công cụ, có thể áp dụng/preview lại nhanh. |
 | Preset (thiết lập sẵn) | Preset | Gói thiết lập sẵn/mẫu có sẵn giúp chọn nhanh một cấu hình mà không phải chỉnh tay lại. |
+| Preset theo mục tiêu | Preset theo mục tiêu | Gói preset dựng theo bối cảnh/mục tiêu (ví dụ phòng ngủ, streetwear) để áp nhanh nhiều tham số. |
+| Màu đi kèm (Companion colors) | Màu đi kèm | Bộ màu phụ trợ đi kèm màu chính (viền/nhấn) để phối nhanh và giữ cân bằng. |
+| So sánh A/B | So sánh A/B | Chế độ đặt hai phương án màu cạnh nhau để so sánh nhanh. |
+| Triptych (bộ ba so sánh) | Triptych | Chế độ so sánh ba phương án màu song song A/B/C. |
+| Mặt nạ (Mask) | Mặt nạ | Lớp alpha dùng để giới hạn vùng tác động khi chỉnh màu/hiệu ứng. |
+| Cọ vẽ (Brush) | Cọ vẽ | Công cụ vẽ vùng chọn bằng nét cọ trên canvas/mask. |
+| Chế độ hoà trộn (Blend mode) | Chế độ hoà trộn | Cách trộn lớp màu phủ với ảnh nền (ví dụ Multiply, Screen). |
+| Before/After (trước/sau) | Before/After | So sánh ảnh trước và sau chỉnh sửa bằng slider hoặc toggle. |
+| Kính lúp màu | Kính lúp màu | Hiển thị phóng to điểm ảnh dưới con trỏ để chọn màu chính xác. |
+| Màu chủ đạo | Màu chủ đạo | Màu chiếm tỷ trọng lớn trong ảnh/palette, dùng làm màu chính. |
+| Màu nhấn | Màu nhấn | Màu dùng để tạo điểm nhấn, thường dùng cho nút/chi tiết nổi bật. |
+| Multi-lock | Giữ nhiều màu | Chế độ giữ cùng lúc nhiều màu để tránh bị thay khi lấy mẫu. |
 | SVG chevron | Mũi tên SVG | Biểu tượng mũi tên dựng bằng SVG để tránh lỗi ký tự hiển thị trên nhiều môi trường. |
 | component | Thành phần giao diện | Khối UI tái sử dụng, có thể render lại ở nhiều trang nhưng giữ cùng cấu trúc. |
 | basePath | Tiền tố đường dẫn | Chuỗi tiền tố để tạo đường dẫn tương đối đúng giữa trang gốc và thư mục con. |
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
+| Lưới màu hãng | Lưới màu hãng | Lưới swatch theo từng hãng chỉ, sắp theo hue để chọn nhanh màu mục tiêu. |
+| Chuyển hãng theo mã | Chuyển hãng theo mã | Tìm mã tương đương ở hãng khác từ một mã chỉ gốc, kèm ΔE để so sánh. |
+| Trích bảng màu tự động | Trích bảng màu tự động | Chức năng tự phân tích ảnh để lấy các màu chủ đạo và tỷ lệ xuất hiện. |
+| K-means (thuật toán gom cụm tìm màu chủ đạo) | K-means | Thuật toán gom cụm dữ liệu màu thành các nhóm để tìm màu trung tâm đại diện. |
+| Clustering | Gom cụm | Kỹ thuật nhóm các điểm màu tương tự thành cụm để chọn màu đại diện. |
+| Histogram màu | Histogram màu | Bảng tần suất xuất hiện của màu (hoặc bin màu) trong ảnh. |
+| Chọn vùng | Chọn vùng | Thao tác khoanh vùng ảnh để chỉ trích màu trong khu vực cần thiết. |
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
 | Line 98 (trò chơi xếp bi theo hàng) | Line 98 | Trò chơi xếp bi theo hàng để tạo chuỗi màu liên tiếp và ghi điểm. |
+| Thử thách mỗi ngày | Thử thách mỗi ngày | Chế độ chơi có đề/seed theo ngày để mọi người cùng chơi chung một thử thách. |
+| Seed (hạt giống ngẫu nhiên) | Seed | Giá trị khởi tạo ngẫu nhiên để tái lập cùng một kết quả khi cần. |
 | Bàn cờ 9×9 (lưới 9 hàng 9 cột) | Bàn cờ 9×9 | Lưới 9 hàng 9 cột dùng làm mặt chơi tiêu chuẩn. |
 | BFS (thuật toán tìm đường theo lớp) | BFS | Thuật toán tìm đường theo lớp, đảm bảo tìm ra đường đi ngắn nhất trong lưới ô. |
 | Ô trống (cell trống trên bàn) | Ô trống | Ô trên bàn cờ không có bi, dùng làm điểm di chuyển hợp lệ. |
@@ -64,6 +85,7 @@
 | Vai trò màu (color roles) | Vai trò màu | Cách phân vai màu trong palette: nền/bề mặt/chữ/primary/accent để dùng nhất quán. |
 | Chấm điểm (scoring) | Chấm điểm | Cách đánh giá điểm số để xếp hạng gợi ý palette theo tiêu chí. |
 | Thuật toán kinh nghiệm (heuristic) | Thuật toán kinh nghiệm | Phép suy đoán dựa trên quy tắc kinh nghiệm để phân loại gần đúng, không cần ML. |
+| Heuristic (quy tắc chấm điểm nhanh) | Heuristic | Quy tắc chấm điểm nhanh để chọn phương án tốt nhất mà không cần tính toán nặng. |
 | Brief 1 dòng | Brief 1 dòng | Mô tả ngắn một câu về mục tiêu, cảm xúc và bối cảnh dùng màu. |
 | Kho tri thức | Kho tri thức | Bộ dữ liệu quy tắc/keywords dùng để suy luận nhanh theo mục tiêu và cảm xúc. |
 | Chốt chặn chất lượng | Chốt chặn chất lượng | Bước kiểm tra tối thiểu (ví dụ tương phản) để bảo đảm đầu ra đạt chuẩn. |
@@ -84,7 +106,7 @@
 | LCh | LCh | Biểu diễn Lab theo L* (độ sáng), C (độ rực), h (góc màu) để dễ so sánh trực quan. |
 | Contrast | Độ tương phản chữ/nền | Mức chênh sáng giữa chữ và nền; giúp chọn màu chữ dễ đọc. |
 | Carousel | Dải lướt ngang | Danh sách cuộn ngang để duyệt nhanh các gợi ý màu. |
-| Độ sai khác màu ΔE (delta E) | Độ sai khác màu ΔE | Thước đo mức khác biệt giữa hai màu trong không gian Lab; càng nhỏ càng giống. |
+| ΔE (độ chênh lệch màu) | ΔE | Thước đo mức khác biệt giữa hai màu trong không gian Lab; càng nhỏ càng giống. |
 | CMYK | CMYK | Hệ màu in 4 kênh: Cyan, Magenta, Yellow, Key (đen). |
 | In lưới (in lụa) | In lưới (in lụa) | Phương pháp in xuyên lưới, dùng khuôn và lớp mực dày; màu cần kiểm soát thủ công. |
 | Màu spot | Màu spot | Màu pha riêng theo mã mực chuẩn, không pha từ CMYK, dùng cho in lưới/offset. |
@@ -501,11 +523,14 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Handle (tay nắm kéo) | Handle | Phần tử nhỏ để nắm kéo, giúp thay đổi vị trí hoặc giá trị trên thanh chỉnh. |
 | Stop gradient (điểm neo màu trong dải chuyển) | Stop gradient | Điểm neo màu trong dải chuyển, xác định vị trí % của màu trên gradient. |
 | Micro-interaction (hiệu ứng nhỏ tăng cảm giác “đã”) | Micro-interaction | Hiệu ứng nhỏ phản hồi thao tác (ví dụ nhấn/pulse) giúp UI sống động và rõ trạng thái. |
+| Hint engine (bộ gợi ý nước đi) | Hint engine | Bộ logic gợi ý nước đi tốt dựa trên trạng thái bàn cờ để hỗ trợ người chơi. |
 | Accordion (khối mở/thu gọn) | Accordion | Cơ chế mở/thu gọn từng khối nội dung để giữ giao diện gọn. |
 | Mount/Unmount (gắn/gỡ khối UI và sự kiện) | Mount/Unmount | Gắn hoặc gỡ một khối UI cùng các sự kiện đi kèm để tránh xung đột. |
 | Long-press (nhấn giữ trên điện thoại) | Long-press | Cử chỉ nhấn giữ trong một khoảng thời gian để mở thao tác phụ trên mobile. |
 | Thumbnail (hình xem trước) | Thumbnail | Hình thu nhỏ đại diện nội dung để người dùng quét nhanh trước khi mở. |
 | Mobile controls (nút điều khiển trên điện thoại) | Mobile controls | Cụm nút điều khiển tối giản hiển thị trên điện thoại để thao tác nhanh. |
+| Bảng lệnh (command palette) | Bảng lệnh | Bảng tìm kiếm nhanh để mở Thế giới, chạy route hoặc gọi lệnh tức thì. |
+| Handoff dữ liệu (bàn giao dữ liệu) | Handoff dữ liệu | Cơ chế chuyển hoặc bàn giao dữ liệu giữa các bước/Thế giới để tiếp tục xử lý liền mạch. |
 | Safe-area (vùng an toàn tránh tai thỏ/thanh hệ thống) | Safe-area | Vùng an toàn tránh tai thỏ hoặc thanh hệ thống che nội dung quan trọng. |
 | Color picker (bảng chọn màu) | Color picker | Bảng chọn màu cho phép chọn màu trực quan và trả về mã HEX/RGB. |
 | Bottom sheet (bảng trượt từ dưới lên) | Bottom sheet | Bảng nội dung trượt từ dưới lên, thường dùng cho chi tiết trên mobile. |
@@ -518,6 +543,9 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Phím Space (phím cách) | Phím Space | Phím cách trên bàn phím, thường dùng làm thao tác nhanh (ví dụ đổi palette). |
 | Hue shift (dịch tông màu) | Hue shift | Thao tác xoay tông màu trên trục hue để dịch sắc thái toàn bảng màu. |
 | Undo/Redo (hoàn tác/làm lại) | Undo/Redo | Cặp thao tác hoàn tác bước trước và làm lại bước vừa hoàn tác trong lịch sử. |
+| Autosave | Autosave | Cơ chế tự lưu tiến trình/thiết lập theo nhịp để có thể tiếp tục khi quay lại. |
+| Chế độ hỗ trợ mù màu | Chế độ hỗ trợ mù màu | Chế độ hiển thị thêm hoa văn/ký hiệu để phân biệt màu khi thị lực màu bị hạn chế. |
+| Juicy (phản hồi đã tay) | Juicy | Hiệu ứng phản hồi “đã tay” (nhịp/âm/hiệu ứng) làm thao tác thấy sướng hơn. |
 | Soft drop (rơi nhanh) | Soft drop | Thao tác tăng tốc rơi tạm thời (thường giữ phím xuống) để điều khiển rơi nhanh hơn. |
 | Hard drop (thả nhanh) | Hard drop | Thao tác thả rơi tức thì xuống vị trí thấp nhất hợp lệ để khoá khối nhanh. |
 | Rotate (xoay) | Rotate | Thao tác xoay khối/viên để đổi hướng trước khi rơi hoặc khi đang rơi. |
@@ -534,6 +562,21 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | TOC | Mục lục | Danh sách câu hỏi/mục nội dung giúp nhảy nhanh trong modal. |
 | Focus | Focus | Đưa con trỏ nhập liệu vào đúng ô để người dùng thao tác nhanh. |
 | Live binding (liên kết sống: UI tự cập nhật theo dữ liệu) | Live binding | Cơ chế UI tự cập nhật theo dữ liệu mới mà không cần tải lại hay bấm làm mới. |
+| Bẫy tự điền (Autofill trap) | Bẫy tự điền | Kỹ thuật ngăn trình duyệt tự điền email vào ô tìm kiếm không liên quan, tránh nhiễu dữ liệu. |
+| Thẻ chọn hãng (Brand Tile) | Thẻ chọn hãng | Thẻ UI dạng tile dùng để chọn hãng chỉ, hiển thị tên + badge và trạng thái chọn rõ ràng. |
+| Preset dự án | Preset dự án | Bộ thiết lập in lưu lại (TAC/ICC/intent/ΔE…) để dùng lại nhanh và nhất quán. |
+| Màu mô phỏng in (Proof color) | Màu mô phỏng in | Màu mô phỏng sau chuyển đổi/ICC để so sánh và đồng bộ khi màu ngoài gamut. |
+| TAC (Tổng diện tích mực) | TAC | Tổng % C+M+Y+K của một màu; vượt ngưỡng dễ lem hoặc bệt. |
+| Preflight (kiểm tra trước in) | Preflight | Bước kiểm tra nhanh trước in để phát hiện rủi ro như vượt TAC hoặc sai cấu hình. |
+| Bản đồ nhiệt TAC (Heatmap TAC) | Bản đồ nhiệt TAC | Lớp màu trực quan tô vùng pixel vượt ngưỡng TAC để dễ nhận biết khu vực rủi ro. |
+| Web Worker (luồng xử lý nền trong trình duyệt) | Web Worker | Luồng xử lý nền tách khỏi UI, giúp chạy tác vụ nặng mà không làm giật giao diện. |
+| Thao tác hàng loạt (Bulk actions) | Thao tác hàng loạt | Nhóm thao tác áp dụng cho nhiều mục cùng lúc để tiết kiệm thời gian. |
+| Tô sáng phần khớp | Tô sáng phần khớp | Cách làm nổi bật đoạn chữ khớp với từ khoá tìm kiếm để dễ quét nhanh. |
+| Micro-hint (gợi ý vi mô) | Micro-hint | Gợi ý nhỏ trong UI (placeholder/nhãn mờ) giúp người dùng nhớ phím tắt hoặc cách dùng. |
+| Gói đồng bộ (Sync pack) | Gói đồng bộ | Gói JSON chứa dữ liệu thư viện để xuất/nhập thủ công giữa thiết bị mà không cần server. |
+| Gói chia sẻ | Gói chia sẻ | Chuỗi dữ liệu ngắn đại diện cho một tài sản, cho phép copy/paste nhanh giữa người dùng. |
+| Phiên bản hoá (Versioning) | Phiên bản hoá | Cơ chế lưu phiên bản khi chỉnh sửa để theo dõi thay đổi và phục hồi khi cần. |
+| Hoàn tác (Revert) | Hoàn tác | Thao tác khôi phục lại trạng thái/phiên bản trước đó của một tài sản. |
 | Preview theme (xem trước sắc thái: áp dụng tạm thời không lưu) | Preview theme | Cơ chế áp dụng tạm thời bộ màu lên UI để xem trước, không lưu vĩnh viễn. |
 | MutationObserver (bộ quan sát thay đổi DOM: theo dõi đổi thuộc tính) | MutationObserver | API theo dõi thay đổi DOM (thuộc tính/nút) để phản ứng khi trạng thái giao diện đổi. |
 | Phần đuôi chữ (descender) | Phần đuôi chữ | Phần nét của ký tự kéo xuống dưới baseline (như chữ g, y, p), cần đủ line-height để không bị cắt. |

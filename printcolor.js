@@ -32,6 +32,13 @@ const elements = {
   empty: document.getElementById("printEmpty"),
   toast: document.getElementById("printToast"),
   profilePreset: document.getElementById("profilePreset"),
+  presetName: document.getElementById("presetName"),
+  presetSelect: document.getElementById("presetSelect"),
+  presetPin: document.getElementById("presetPin"),
+  presetSaveNew: document.getElementById("presetSaveNew"),
+  presetUpdate: document.getElementById("presetUpdate"),
+  presetApply: document.getElementById("presetApply"),
+  presetDelete: document.getElementById("presetDelete"),
   profileNote: document.getElementById("profileNote"),
   darkFabric: document.getElementById("darkFabric"),
   tacRange: document.getElementById("tacRange"),
@@ -78,11 +85,23 @@ const elements = {
   gamutOverlay: document.getElementById("gamutOverlay"),
   richBlackPreset: document.getElementById("richBlackPreset"),
   safePrintAll: document.getElementById("safePrintAll"),
+  syncProofAll: document.getElementById("syncProofAll"),
+  restoreOriginalAll: document.getElementById("restoreOriginalAll"),
   summaryTotal: document.getElementById("summaryTotal"),
   summaryTac: document.getElementById("summaryTac"),
   summaryGamut: document.getElementById("summaryGamut"),
   summaryDelta: document.getElementById("summaryDelta"),
   summaryHint: document.getElementById("summaryHint"),
+  preflightDetails: document.getElementById("preflightDetails"),
+  preflightFile: document.getElementById("preflightFile"),
+  preflightResolution: document.getElementById("preflightResolution"),
+  preflightHeatmap: document.getElementById("preflightHeatmap"),
+  preflightRun: document.getElementById("preflightRun"),
+  preflightCanvas: document.getElementById("preflightCanvas"),
+  preflightOver: document.getElementById("preflightOver"),
+  preflightMax: document.getElementById("preflightMax"),
+  preflightThreshold: document.getElementById("preflightThreshold"),
+  preflightNote: document.getElementById("preflightNote"),
   pressJobName: document.getElementById("pressJobName"),
   pressClient: document.getElementById("pressClient"),
   pressMachine: document.getElementById("pressMachine"),
@@ -136,9 +155,22 @@ const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "printcolor";
+const PRESET_STORAGE_KEY = "tc_printcolor_presets_v1";
+const PRESET_PINNED_KEY = "tc_printcolor_preset_pinned_v1";
+const PRESET_RECENT_KEY = "tc_printcolor_preset_recent_v1";
 const REPORT_STORAGE_KEY = "tc_printcolor_qc_report_v1";
 const SCREEN_REPORT_STORAGE_KEY = "tc_screenprint_report_v1";
 const ROWS_PER_PAGE = 12;
+let presetList = [];
+let presetPinned = new Set();
+let presetRecent = [];
+let preflightWorker = null;
+let preflightBound = false;
+let preflightBaseCanvas = null;
+let preflightResult = null;
+let preflightSeq = 0;
+let preflightBusy = false;
+let pdfjsPromise = null;
 
 const normalizeHex = (value) => {
   if (!value) return null;
@@ -180,6 +212,19 @@ const hexToRgb = (hex) => {
 const rgbToHex = ({ r, g, b }) => {
   const toHex = (value) => value.toString(16).padStart(2, "0");
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+};
+
+const getLuminance = ({ r, g, b }) => {
+  const rl = srgbToLinear(r);
+  const gl = srgbToLinear(g);
+  const bl = srgbToLinear(b);
+  return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+};
+
+const isLightHex = (hex) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return false;
+  return getLuminance(rgb) >= 0.7;
 };
 
 const rgbToCmyk = ({ r, g, b }) => {
@@ -657,6 +702,19 @@ const renderTable = () => {
     const disabled = tac <= state.tacLimit ? "disabled" : "";
     const rowClass = isGamut && state.gamutOverlay ? "tc-row-gamut" : "";
     const cmykText = `C ${item.cmyk.c}% \u00c2\u00b7 M ${item.cmyk.m}% \u00c2\u00b7 Y ${item.cmyk.y}% \u00c2\u00b7 K ${item.cmyk.k}%`;
+    const actions = [
+      `<button class=\"tc-btn tc-chip px-2 py-1 text-xs\" data-action=\"copy-cmyk\" data-index=\"${index}\">Sao ch\u00e9p CMYK</button>`,
+      `<button class=\"tc-btn tc-chip px-2 py-1 text-xs\" data-action=\"copy-tac\" data-index=\"${index}\">Sao ch\u00e9p TAC</button>`,
+      `<button class=\"tc-btn tc-chip px-2 py-1 text-xs\" data-action=\"reduce\" data-index=\"${index}\" ${disabled}>Gi\u1ea3m TAC</button>`
+    ];
+    if (isGamut) {
+      actions.push(`<button class=\"tc-btn tc-chip px-2 py-1 text-xs\" data-action=\"apply-proof\" data-index=\"${index}\">D\u00f9ng HEX m\u00f4 ph\u1ecfng</button>`);
+      actions.push(`<button class=\"tc-btn tc-chip px-2 py-1 text-xs\" data-action=\"copy-proof\" data-index=\"${index}\">Sao ch\u00e9p HEX m\u00f4 ph\u1ecfng</button>`);
+    }
+    if (item.originalHex) {
+      actions.push(`<button class=\"tc-btn tc-chip px-2 py-1 text-xs\" data-action=\"restore-original\" data-index=\"${index}\">Kh\u00f4i ph\u1ee5c HEX g\u1ed1c</button>`);
+    }
+    const actionHtml = actions.join("");
     return `
       <tr data-row="${index}" class="${rowClass}">
         <td>
@@ -672,15 +730,7 @@ const renderTable = () => {
         <td>${deltaLabel} · ${deltaTag} ${item.delta.toFixed(1)}</td>
         <td>
           <div class="flex flex-wrap gap-1">
-            <button class="tc-btn tc-chip px-2 py-1 text-xs" data-action="copy-cmyk" data-index="${index}">
-              Sao ch\u00e9p CMYK
-            </button>
-            <button class="tc-btn tc-chip px-2 py-1 text-xs" data-action="copy-tac" data-index="${index}">
-              Sao ch\u00e9p TAC
-            </button>
-            <button class="tc-btn tc-chip px-2 py-1 text-xs" data-action="reduce" data-index="${index}" ${disabled}>
-              Gi\u1ea3m TAC
-            </button>
+            ${actionHtml}
           </div>
         </td>
       </tr>`;
@@ -707,15 +757,216 @@ const updateSummary = () => {
     elements.summaryHint.textContent = "Chưa có dữ liệu để kiểm tra.";
     return;
   }
+  if (tacOver > 0 && gamutOver > 0) {
+    elements.summaryHint.textContent = "Gợi ý: Đưa về an toàn in / Giảm TAC, sau đó cân nhắc đồng bộ theo mô phỏng in.";
+    return;
+  }
   if (tacOver > 0) {
-    elements.summaryHint.textContent = "Gợi ý: giảm TAC cho màu vượt ngưỡng.";
+    elements.summaryHint.textContent = "Gợi ý: Đưa về an toàn in / Giảm TAC.";
     return;
   }
   if (gamutOver > 0) {
-    elements.summaryHint.textContent = "Gợi ý: cân nhắc đổi profile/intent hoặc giảm ngưỡng ΔE.";
+    elements.summaryHint.textContent = "Gợi ý: Đồng bộ theo mô phỏng in hoặc đổi profile/intent.";
     return;
   }
   elements.summaryHint.textContent = "Gợi ý: dữ liệu ổn, có thể xuất báo cáo in.";
+};
+
+const loadPresetStore = () => {
+  try {
+    const raw = localStorage.getItem(PRESET_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    presetList = Array.isArray(parsed) ? parsed : [];
+  } catch (_err) {
+    presetList = [];
+  }
+  try {
+    const raw = localStorage.getItem(PRESET_PINNED_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    presetPinned = new Set(Array.isArray(parsed) ? parsed : []);
+  } catch (_err) {
+    presetPinned = new Set();
+  }
+  try {
+    const raw = localStorage.getItem(PRESET_RECENT_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    presetRecent = Array.isArray(parsed) ? parsed : [];
+  } catch (_err) {
+    presetRecent = [];
+  }
+};
+
+const savePresetStore = () => {
+  try {
+    localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetList));
+    localStorage.setItem(PRESET_PINNED_KEY, JSON.stringify(Array.from(presetPinned)));
+    localStorage.setItem(PRESET_RECENT_KEY, JSON.stringify(presetRecent));
+  } catch (_err) {}
+};
+
+const touchPresetRecent = (id) => {
+  if (!id) return;
+  presetRecent = presetRecent.filter((item) => item !== id);
+  presetRecent.unshift(id);
+  presetRecent = presetRecent.slice(0, 5);
+  savePresetStore();
+};
+
+const getPresetById = (id) => presetList.find((preset) => preset.id === id);
+
+const sortPresetList = () => {
+  const recentRank = (id) => {
+    const idx = presetRecent.indexOf(id);
+    return idx === -1 ? 999 : idx;
+  };
+  return presetList.slice().sort((a, b) => {
+    const aPinned = presetPinned.has(a.id) ? 0 : 1;
+    const bPinned = presetPinned.has(b.id) ? 0 : 1;
+    if (aPinned !== bPinned) return aPinned - bPinned;
+    const aRecent = recentRank(a.id);
+    const bRecent = recentRank(b.id);
+    if (aRecent !== bRecent) return aRecent - bRecent;
+    const aTime = a.updatedAt || a.createdAt || 0;
+    const bTime = b.updatedAt || b.createdAt || 0;
+    if (aTime !== bTime) return bTime - aTime;
+    return String(a.name || "").localeCompare(String(b.name || ""), "vi");
+  });
+};
+
+const renderPresetOptions = (selectedId) => {
+  if (!elements.presetSelect) return;
+  const sorted = sortPresetList();
+  elements.presetSelect.innerHTML = "";
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = sorted.length ? "Chọn preset..." : "Chưa có preset";
+  elements.presetSelect.appendChild(placeholder);
+  sorted.forEach((preset) => {
+    const option = document.createElement("option");
+    option.value = preset.id;
+    option.textContent = `${presetPinned.has(preset.id) ? "★ " : ""}${preset.name}`;
+    elements.presetSelect.appendChild(option);
+  });
+  const nextId = selectedId || elements.presetSelect.dataset.selected || "";
+  if (nextId && sorted.some((preset) => preset.id === nextId)) {
+    elements.presetSelect.value = nextId;
+  }
+};
+
+const syncPresetFields = () => {
+  if (!elements.presetName || !elements.presetPin || !elements.presetSelect) return;
+  const preset = getPresetById(elements.presetSelect.value);
+  elements.presetName.value = preset ? preset.name : "";
+  elements.presetPin.checked = preset ? presetPinned.has(preset.id) : false;
+};
+
+const buildPresetSnapshot = () => ({
+  tacLimit: state.tacLimit,
+  profilePreset: elements.profilePreset?.value || "",
+  iccSelectedId: state.iccSelectedId,
+  iccIntent: state.iccIntent,
+  iccBpc: state.iccBpc,
+  deltaMethod: state.deltaMethod,
+  gamutThreshold: state.gamutThreshold,
+  gamutOverlay: state.gamutOverlay,
+  richBlackPreset: state.richBlackPreset,
+  darkFabric: state.darkFabric,
+  printMode: state.printMode,
+  screenFabricTone: elements.screenFabricTone?.value || state.screenFabricTone,
+  screenUnderbase: elements.screenUnderbase?.checked ?? state.screenUnderbase,
+  screenUnderbaseType: elements.screenUnderbaseType?.value || state.screenUnderbaseType,
+  screenCoverage: Number(elements.screenCoverage?.value ?? state.screenCoverage),
+  screenHalftoneMode: elements.screenHalftoneMode?.value || state.screenHalftoneMode,
+  screenHalftoneLpi: Number(elements.screenHalftoneLpi?.value ?? state.screenHalftoneLpi),
+  screenDotGain: Number(elements.screenDotGain?.value ?? state.screenDotGain)
+});
+
+const applyPresetData = (data) => {
+  if (!data) return;
+  if (elements.profilePreset && data.profilePreset) {
+    elements.profilePreset.value = data.profilePreset;
+    updateProfileNote(data.profilePreset);
+  }
+  if (Number.isFinite(data.tacLimit)) {
+    state.tacLimit = data.tacLimit;
+    if (elements.tacRange) elements.tacRange.value = String(state.tacLimit);
+    updateTacDisplay();
+  }
+  if (elements.darkFabric) {
+    state.darkFabric = Boolean(data.darkFabric);
+    elements.darkFabric.checked = state.darkFabric;
+  }
+  if (elements.richBlackPreset && data.richBlackPreset) {
+    state.richBlackPreset = data.richBlackPreset;
+    elements.richBlackPreset.value = data.richBlackPreset;
+  }
+  state.iccSelectedId = data.iccSelectedId || state.iccSelectedId;
+  if (elements.iccProfile) {
+    const exists = Array.from(elements.iccProfile.options).some((opt) => opt.value === state.iccSelectedId);
+    if (!exists) state.iccSelectedId = "srgb";
+    elements.iccProfile.value = state.iccSelectedId;
+  }
+  if (elements.iccIntent && data.iccIntent) {
+    state.iccIntent = data.iccIntent;
+    elements.iccIntent.value = data.iccIntent;
+  }
+  if (elements.iccBpc) {
+    state.iccBpc = typeof data.iccBpc === "boolean" ? data.iccBpc : state.iccBpc;
+    elements.iccBpc.checked = state.iccBpc;
+  }
+  if (elements.deltaMethod && data.deltaMethod) {
+    state.deltaMethod = data.deltaMethod;
+    elements.deltaMethod.value = data.deltaMethod;
+  }
+  if (elements.gamutThreshold) {
+    const next = Number.isFinite(data.gamutThreshold) ? data.gamutThreshold : state.gamutThreshold;
+    state.gamutThreshold = next;
+    elements.gamutThreshold.value = String(state.gamutThreshold);
+  }
+  if (elements.gamutOverlay) {
+    state.gamutOverlay = typeof data.gamutOverlay === "boolean" ? data.gamutOverlay : state.gamutOverlay;
+    elements.gamutOverlay.checked = state.gamutOverlay;
+  }
+  if (data.printMode) {
+    setPrintMode(data.printMode);
+  }
+  if (elements.screenFabricTone && data.screenFabricTone) {
+    state.screenFabricTone = data.screenFabricTone;
+    elements.screenFabricTone.value = data.screenFabricTone;
+  }
+  if (elements.screenUnderbase) {
+    state.screenUnderbase = Boolean(data.screenUnderbase);
+    elements.screenUnderbase.checked = state.screenUnderbase;
+  }
+  if (elements.screenUnderbaseType && data.screenUnderbaseType) {
+    state.screenUnderbaseType = data.screenUnderbaseType;
+    elements.screenUnderbaseType.value = data.screenUnderbaseType;
+  }
+  if (elements.screenCoverage) {
+    const coverage = Number.isFinite(data.screenCoverage) ? data.screenCoverage : state.screenCoverage;
+    state.screenCoverage = coverage;
+    elements.screenCoverage.value = String(state.screenCoverage);
+  }
+  if (elements.screenHalftoneMode && data.screenHalftoneMode) {
+    state.screenHalftoneMode = data.screenHalftoneMode;
+    elements.screenHalftoneMode.value = data.screenHalftoneMode;
+  }
+  if (elements.screenHalftoneLpi) {
+    const lpi = Number.isFinite(data.screenHalftoneLpi) ? data.screenHalftoneLpi : state.screenHalftoneLpi;
+    state.screenHalftoneLpi = lpi;
+    elements.screenHalftoneLpi.value = String(state.screenHalftoneLpi);
+  }
+  if (elements.screenDotGain) {
+    const dotGain = Number.isFinite(data.screenDotGain) ? data.screenDotGain : state.screenDotGain;
+    state.screenDotGain = dotGain;
+    elements.screenDotGain.value = String(state.screenDotGain);
+    updateDotGainUI();
+  }
+  updateIccStatus();
+  if (state.iccSelectedId !== "srgb") loadIccEngine();
+  applyScreenPreset(state.screenHalftoneLpi);
+  rebuildItems();
+  renderSpotList();
 };
 
 const getQcThreshold = () => {
@@ -806,6 +1057,251 @@ const updateTacDisplay = () => {
   const label = `${state.tacLimit}%`;
   if (elements.tacValue) elements.tacValue.textContent = label;
   if (elements.tacBadge) elements.tacBadge.textContent = label;
+  if (elements.preflightThreshold) elements.preflightThreshold.textContent = label;
+};
+
+const setPreflightNote = (message, isWarn = false) => {
+  if (!elements.preflightNote) return;
+  elements.preflightNote.textContent = message;
+  elements.preflightNote.classList.toggle("tc-warn", isWarn);
+};
+
+const getPreflightMaxDim = () => {
+  const raw = Number(elements.preflightResolution?.value || 384);
+  return Number.isFinite(raw) ? raw : 384;
+};
+
+const getPreflightSize = (width, height) => {
+  const safeWidth = Math.max(1, width || 1);
+  const safeHeight = Math.max(1, height || 1);
+  const maxDim = getPreflightMaxDim();
+  const scale = Math.min(1, maxDim / Math.max(safeWidth, safeHeight));
+  return {
+    width: Math.max(1, Math.round(safeWidth * scale)),
+    height: Math.max(1, Math.round(safeHeight * scale)),
+    scale
+  };
+};
+
+const buildHeatmapCanvas = (heat, width, height) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return canvas;
+  const imageData = ctx.createImageData(width, height);
+  const data = imageData.data;
+  const r = 239;
+  const g = 68;
+  const b = 68;
+  for (let i = 0; i < heat.length; i += 1) {
+    const value = heat[i];
+    if (!value) continue;
+    const idx = i * 4;
+    const alpha = Math.min(230, Math.round(value * 0.9));
+    data[idx] = r;
+    data[idx + 1] = g;
+    data[idx + 2] = b;
+    data[idx + 3] = alpha;
+  }
+  ctx.putImageData(imageData, 0, 0);
+  return canvas;
+};
+
+const updatePreflightStats = (result) => {
+  if (!result) return;
+  const percent = result.total ? (result.countOver / result.total) * 100 : 0;
+  if (elements.preflightOver) elements.preflightOver.textContent = `${percent.toFixed(1)}%`;
+  if (elements.preflightMax) elements.preflightMax.textContent = `${result.maxTac.toFixed(1)}%`;
+};
+
+const renderPreflightCanvas = () => {
+  if (!elements.preflightCanvas || !preflightBaseCanvas) return;
+  const canvas = elements.preflightCanvas;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  const width = preflightBaseCanvas.width;
+  const height = preflightBaseCanvas.height;
+  if (canvas.width !== width) canvas.width = width;
+  if (canvas.height !== height) canvas.height = height;
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(preflightBaseCanvas, 0, 0);
+  if (elements.preflightHeatmap?.checked && preflightResult?.overlayCanvas) {
+    ctx.drawImage(preflightResult.overlayCanvas, 0, 0);
+  }
+};
+
+const ensurePreflightWorker = () => {
+  if (preflightWorker) return preflightWorker;
+  const workerUrl = new URL("./workers/print_preflight.worker.js", import.meta.url);
+  preflightWorker = new Worker(workerUrl);
+  preflightWorker.addEventListener("message", (event) => {
+    const payload = event.data || {};
+    if (payload.seq !== preflightSeq) return;
+    preflightBusy = false;
+    if (elements.preflightRun) elements.preflightRun.disabled = false;
+    const heat = payload.heat instanceof Uint8Array ? payload.heat : new Uint8Array(payload.heat || []);
+    preflightResult = {
+      width: payload.width || 1,
+      height: payload.height || 1,
+      heat,
+      countOver: payload.countOver || 0,
+      maxTac: payload.maxTac || 0,
+      total: payload.total || 0,
+      overlayCanvas: buildHeatmapCanvas(heat, payload.width || 1, payload.height || 1)
+    };
+    updatePreflightStats(preflightResult);
+    renderPreflightCanvas();
+    setPreflightNote("");
+  });
+  preflightWorker.addEventListener("error", () => {
+    preflightBusy = false;
+    if (elements.preflightRun) elements.preflightRun.disabled = false;
+    setPreflightNote("Không thể chạy preflight ở thời điểm này.", true);
+  });
+  return preflightWorker;
+};
+
+const loadPdfJs = () => {
+  if (pdfjsPromise) return pdfjsPromise;
+  pdfjsPromise = new Promise((resolve) => {
+    if (window.pdfjsLib) {
+      resolve(window.pdfjsLib);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    script.async = true;
+    script.onload = () => {
+      if (window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        resolve(window.pdfjsLib);
+      } else {
+        resolve(null);
+      }
+    };
+    script.onerror = () => resolve(null);
+    document.head.appendChild(script);
+  });
+  return pdfjsPromise;
+};
+
+const loadImageSource = async (file) => {
+  if (typeof window.createImageBitmap === "function") {
+    return window.createImageBitmap(file);
+  }
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Không đọc được ảnh."));
+    };
+    img.src = url;
+  });
+};
+
+const runPreflight = async () => {
+  if (preflightBusy) return;
+  const file = elements.preflightFile?.files?.[0];
+  if (!file) {
+    setPreflightNote("Vui lòng chọn ảnh hoặc PDF.", true);
+    return;
+  }
+  preflightBusy = true;
+  preflightSeq += 1;
+  preflightResult = null;
+  if (elements.preflightRun) elements.preflightRun.disabled = true;
+  setPreflightNote("Đang phân tích...");
+  if (elements.preflightOver) elements.preflightOver.textContent = "—";
+  if (elements.preflightMax) elements.preflightMax.textContent = "—";
+  try {
+    let imageData = null;
+    let width = 1;
+    let height = 1;
+    if (file.type === "application/pdf") {
+      const pdfjs = await loadPdfJs();
+      if (!pdfjs) {
+        setPreflightNote("Không tải được engine đọc PDF. Vui lòng xuất PDF ra ảnh (PNG/JPG) để preflight.", true);
+        preflightBusy = false;
+        if (elements.preflightRun) elements.preflightRun.disabled = false;
+        return;
+      }
+      const buffer = await file.arrayBuffer();
+      const task = pdfjs.getDocument({ data: buffer });
+      const pdf = await task.promise;
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({ scale: 1 });
+      const size = getPreflightSize(viewport.width, viewport.height);
+      const scaledViewport = page.getViewport({ scale: size.scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(scaledViewport.width));
+      canvas.height = Math.max(1, Math.round(scaledViewport.height));
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
+      page.cleanup?.();
+      pdf.destroy?.();
+      preflightBaseCanvas = canvas;
+      imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      width = canvas.width;
+      height = canvas.height;
+    } else {
+      const source = await loadImageSource(file);
+      const sourceWidth = source.width || source.naturalWidth || 1;
+      const sourceHeight = source.height || source.naturalHeight || 1;
+      const size = getPreflightSize(sourceWidth, sourceHeight);
+      const canvas = document.createElement("canvas");
+      canvas.width = size.width;
+      canvas.height = size.height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(source, 0, 0, size.width, size.height);
+      preflightBaseCanvas = canvas;
+      imageData = ctx.getImageData(0, 0, size.width, size.height);
+      width = size.width;
+      height = size.height;
+      if (typeof source.close === "function") source.close();
+    }
+    renderPreflightCanvas();
+    const worker = ensurePreflightWorker();
+    const buffer = imageData.data.buffer.slice(0);
+    worker.postMessage({ buffer, width, height, tacLimit: state.tacLimit, seq: preflightSeq }, [buffer]);
+  } catch (_err) {
+    preflightBusy = false;
+    if (elements.preflightRun) elements.preflightRun.disabled = false;
+    setPreflightNote("Không thể đọc tệp để preflight.", true);
+  }
+};
+
+const ensurePreflightReady = () => {
+  if (preflightBound) return;
+  preflightBound = true;
+  updateTacDisplay();
+  if (elements.preflightHeatmap) {
+    elements.preflightHeatmap.addEventListener("change", () => {
+      renderPreflightCanvas();
+    });
+  }
+  if (elements.preflightRun) {
+    elements.preflightRun.addEventListener("click", runPreflight);
+  }
+  if (elements.preflightFile) {
+    elements.preflightFile.addEventListener("change", () => {
+      setPreflightNote("");
+    });
+  }
+};
+
+const initPreflight = () => {
+  if (!elements.preflightDetails) return;
+  elements.preflightDetails.addEventListener("toggle", () => {
+    if (elements.preflightDetails?.open) ensurePreflightReady();
+  });
+  if (elements.preflightDetails.open) ensurePreflightReady();
 };
 
 const setPrintMode = (mode) => {
@@ -1041,6 +1537,53 @@ const reduceAll = () => {
     updateItemMetrics(next);
     return next;
   });
+  renderTable();
+};
+
+const applyProofColor = (item) => {
+  if (!item) return;
+  if (!item.simRgb) {
+    item.simRgb = convertCmykToRgb(item.cmyk);
+    item.simLab = xyzToLab(rgbToXyz(item.simRgb));
+  }
+  if (!item.originalHex) item.originalHex = item.hex;
+  item.hex = rgbToHex(item.simRgb);
+  item.baseRgb = { ...item.simRgb };
+  item.baseLab = item.simLab ? { ...item.simLab } : xyzToLab(rgbToXyz(item.simRgb));
+  item.delta = getDelta(item.baseLab, item.simLab, state.deltaMethod);
+};
+
+const restoreOriginalColor = (item) => {
+  if (!item?.originalHex) return;
+  const original = item.originalHex;
+  item.hex = original;
+  item.baseRgb = hexToRgb(original);
+  item.baseLab = xyzToLab(rgbToXyz(item.baseRgb));
+  delete item.originalHex;
+  updateItemMetrics(item);
+};
+
+const syncProofAll = () => {
+  if (!state.items.length) return;
+  const affected = state.items.filter((item) => item.delta > state.gamutThreshold);
+  if (!affected.length) {
+    showToast("Không có màu ngoài gamut để đồng bộ.");
+    return;
+  }
+  if (!window.confirm("Đồng bộ tất cả màu ngoài gamut theo mô phỏng in?")) return;
+  affected.forEach((item) => applyProofColor(item));
+  renderTable();
+};
+
+const restoreOriginalAll = () => {
+  if (!state.items.length) return;
+  const affected = state.items.filter((item) => item.originalHex);
+  if (!affected.length) {
+    showToast("Không có màu gốc để khôi phục.");
+    return;
+  }
+  if (!window.confirm("Khôi phục toàn bộ màu gốc đã thay?")) return;
+  affected.forEach((item) => restoreOriginalColor(item));
   renderTable();
 };
 
@@ -1495,6 +2038,33 @@ const renderScreenReportView = (report) => {
     return section;
   };
 
+  const buildProductionWarnings = () => {
+    const warnings = [];
+    const darkFabric = data.screenInfo?.fabricTone === "dark";
+    const underbaseOn = Boolean(data.screenInfo?.underbase);
+    if (darkFabric && !underbaseOn) {
+      warnings.push("N\u1ec1n t\u1ed1i ch\u01b0a b\u1eadt underbase.");
+    }
+    if (darkFabric) {
+      const lightCount = rows.filter((row) => isLightHex(row.hex)).length;
+      if (lightCount > 0) {
+        warnings.push(`C\u00f3 ${lightCount} m\u00e0u s\u00e1ng tr\u00ean n\u1ec1n t\u1ed1i, n\u00ean b\u1eadt underbase tr\u1eafng.`);
+      }
+    }
+    if (!warnings.length) return null;
+    const section = document.createElement("section");
+    section.className = "qc-report-top qc-report-warning";
+    const title = document.createElement("strong");
+    title.textContent = "C\u1ea3nh b\u00e1o s\u1ea3n xu\u1ea5t";
+    section.appendChild(title);
+    warnings.forEach((line) => {
+      const div = document.createElement("div");
+      div.textContent = line;
+      section.appendChild(div);
+    });
+    return section;
+  };
+
   const buildTopWarnings = () => {
     if (rows.length <= 60) return null;
     const container = document.createElement("div");
@@ -1599,6 +2169,8 @@ const renderScreenReportView = (report) => {
       page.appendChild(buildJobInfo());
       page.appendChild(buildScreenInfo());
       page.appendChild(buildProcessInfo());
+      const productionWarnings = buildProductionWarnings();
+      if (productionWarnings) page.appendChild(productionWarnings);
       const topWarnings = buildTopWarnings();
       if (topWarnings) page.appendChild(topWarnings);
     }
@@ -1985,6 +2557,107 @@ const bindEvents = () => {
       renderTable();
     });
   }
+  if (elements.presetSelect) {
+    elements.presetSelect.addEventListener("change", () => {
+      syncPresetFields();
+    });
+  }
+  if (elements.presetPin) {
+    elements.presetPin.addEventListener("change", () => {
+      const id = elements.presetSelect?.value;
+      if (!id) return;
+      if (elements.presetPin.checked) presetPinned.add(id);
+      else presetPinned.delete(id);
+      savePresetStore();
+      renderPresetOptions(id);
+    });
+  }
+  if (elements.presetSaveNew) {
+    elements.presetSaveNew.addEventListener("click", () => {
+      const name = elements.presetName?.value.trim() || "";
+      if (!name) {
+        showToast("Vui lòng nhập tên preset.");
+        return;
+      }
+      const id = typeof crypto !== "undefined" && crypto.randomUUID
+        ? `preset_${crypto.randomUUID()}`
+        : `preset_${Date.now()}`;
+      const now = Date.now();
+      presetList.push({
+        id,
+        name,
+        createdAt: now,
+        updatedAt: now,
+        data: buildPresetSnapshot()
+      });
+      if (elements.presetPin?.checked) presetPinned.add(id);
+      touchPresetRecent(id);
+      savePresetStore();
+      renderPresetOptions(id);
+      if (elements.presetSelect) elements.presetSelect.value = id;
+      syncPresetFields();
+      showToast("Đã lưu preset.");
+    });
+  }
+  if (elements.presetUpdate) {
+    elements.presetUpdate.addEventListener("click", () => {
+      const id = elements.presetSelect?.value;
+      if (!id) {
+        showToast("Chọn preset để cập nhật.");
+        return;
+      }
+      const preset = getPresetById(id);
+      if (!preset) {
+        showToast("Preset không tồn tại.");
+        return;
+      }
+      const name = elements.presetName?.value.trim() || preset.name;
+      preset.name = name;
+      preset.updatedAt = Date.now();
+      preset.data = buildPresetSnapshot();
+      if (elements.presetPin?.checked) presetPinned.add(id);
+      else presetPinned.delete(id);
+      touchPresetRecent(id);
+      savePresetStore();
+      renderPresetOptions(id);
+      showToast("Đã cập nhật preset.");
+    });
+  }
+  if (elements.presetApply) {
+    elements.presetApply.addEventListener("click", () => {
+      const id = elements.presetSelect?.value;
+      if (!id) {
+        showToast("Chọn preset để dùng.");
+        return;
+      }
+      const preset = getPresetById(id);
+      if (!preset) {
+        showToast("Preset không tồn tại.");
+        return;
+      }
+      applyPresetData(preset.data);
+      touchPresetRecent(id);
+      renderPresetOptions(id);
+      showToast("Đã áp dụng preset.");
+    });
+  }
+  if (elements.presetDelete) {
+    elements.presetDelete.addEventListener("click", () => {
+      const id = elements.presetSelect?.value;
+      if (!id) {
+        showToast("Chọn preset để xóa.");
+        return;
+      }
+      if (!window.confirm("Xóa preset này?")) return;
+      presetList = presetList.filter((preset) => preset.id !== id);
+      presetPinned.delete(id);
+      presetRecent = presetRecent.filter((item) => item !== id);
+      savePresetStore();
+      renderPresetOptions();
+      syncPresetFields();
+      showToast("Đã xóa preset.");
+    });
+  }
   if (elements.darkFabric) {
     elements.darkFabric.addEventListener("change", () => {
       state.darkFabric = elements.darkFabric.checked;
@@ -2002,6 +2675,12 @@ const bindEvents = () => {
   if (elements.reduceAll) {
     elements.reduceAll.addEventListener("click", reduceAll);
   }
+  if (elements.syncProofAll) {
+    elements.syncProofAll.addEventListener("click", syncProofAll);
+  }
+  if (elements.restoreOriginalAll) {
+    elements.restoreOriginalAll.addEventListener("click", restoreOriginalAll);
+  }
   if (elements.tableBody) {
     elements.tableBody.addEventListener("click", (event) => {
       const button = event.target.closest("[data-action]");
@@ -2013,6 +2692,21 @@ const bindEvents = () => {
       if (!item) return;
       if (action === "reduce") {
         handleReduce(index);
+        return;
+      }
+      if (action === "apply-proof") {
+        applyProofColor(item);
+        renderTable();
+        return;
+      }
+      if (action === "copy-proof") {
+        const simHex = rgbToHex(item.simRgb);
+        copyToClipboard(simHex).then(() => showToast("Đã sao chép HEX mô phỏng."));
+        return;
+      }
+      if (action === "restore-original") {
+        restoreOriginalColor(item);
+        renderTable();
         return;
       }
       if (action === "copy-cmyk") {
@@ -2169,6 +2863,28 @@ elements.saveLibrary?.addEventListener("click", () => {
   }
 };
 
+const initTopbarHeight = () => {
+  const apply = () => {
+    const topbar = document.querySelector(".tc-topbar");
+    if (!topbar) return false;
+    const height = topbar.offsetHeight || 56;
+    document.documentElement.style.setProperty("--tc-topbar-h", `${height}px`);
+    return true;
+  };
+  let timer = null;
+  const schedule = () => {
+    if (timer) window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      apply();
+    }, 120);
+  };
+  apply();
+  window.setTimeout(() => {
+    apply();
+  }, 600);
+  window.addEventListener("resize", schedule);
+};
+
 const applyHexesFromHub = (detail) => {
   const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
   const mode = detail?.mode === "append" ? "append" : "replace";
@@ -2183,6 +2899,9 @@ const applyHexesFromHub = (detail) => {
 
 if (!initReportView()) {
   updateTacDisplay();
+  loadPresetStore();
+  renderPresetOptions();
+  syncPresetFields();
   if (elements.iccBpc) {
     elements.iccBpc.checked = state.iccBpc;
   }
@@ -2206,6 +2925,8 @@ if (!initReportView()) {
   }
   initProfiles();
   bindEvents();
+  initPreflight();
+  initTopbarHeight();
   setPrintMode(state.printMode);
   renderSpotList();
   if (elements.screenHalftoneMode) {

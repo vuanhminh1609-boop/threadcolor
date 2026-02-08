@@ -15,6 +15,69 @@
     html, body, button, input, select, textarea {
       font-family: "Inter", "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
+    .tc-colorplay-daily {
+      display: grid;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .tc-colorplay-daily-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .tc-colorplay-daily-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      font-size: 0.75rem;
+    }
+    .tc-colorplay-hint {
+      outline: 2px dashed rgba(56, 189, 248, 0.55);
+      outline-offset: 2px;
+    }
+    .tc-colorplay-hint.is-hint-from {
+      outline-color: rgba(34, 197, 94, 0.7);
+    }
+    .tc-colorplay-hint.is-hint-to {
+      outline-color: rgba(244, 63, 94, 0.75);
+    }
+    .tc-achievement-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .tc-achievement-card {
+      padding: 0.75rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(255, 255, 255, 0.6);
+      display: grid;
+      gap: 0.35rem;
+    }
+    .tc-achievement-card.is-locked {
+      opacity: 0.6;
+    }
+    .tc-achievement-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .tc-achievement-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+    }
+    @media (min-width: 768px) {
+      .tc-achievement-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
   </style>
 </head>
 <body class="font-sans">
@@ -41,12 +104,28 @@
               <div>
                 <p class="tc-game-card-title">Game 1: Line 98</p>
                 <p class="tc-muted text-xs mt-1">Xếp bi 5+ cùng màu để xoá và ghi điểm.</p>
+                <div class="tc-game-card-stats">
+                  <div class="tc-game-card-stat">
+                    <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Kỷ lục</span>
+                    <strong data-game-best="line98">0</strong>
+                  </div>
+                  <div class="tc-game-card-stat">
+                    <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Ván gần nhất</span>
+                    <span data-game-last="line98" class="tc-muted text-xs">--</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="tc-game-card-actions">
+              <button class="tc-btn tc-chip px-3 py-2 text-xs tc-game-resume is-hidden" type="button" data-game-action="resume" data-game="line98" aria-label="Tiếp tục">Tiếp tục</button>
               <button class="tc-icon-btn tc-game-play" type="button" data-game-action="open" data-game="line98" data-tooltip="Chơi ngay" aria-label="Chơi ngay">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M8 6l10 6-10 6z" fill="currentColor"></path>
+                </svg>
+              </button>
+              <button class="tc-icon-btn tc-game-fullscreen" type="button" data-game-action="fullscreen" data-game="line98" data-tooltip="Toàn màn hình" aria-label="Toàn màn hình">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
               </button>
             </div>
@@ -63,12 +142,28 @@
               <div>
                 <p class="tc-game-card-title">Game 2: Xếp thuốc</p>
                 <p class="tc-muted text-xs mt-1">Ghép 4+ ô cùng màu để xoá và ghi điểm.</p>
+                <div class="tc-game-card-stats">
+                  <div class="tc-game-card-stat">
+                    <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Kỷ lục</span>
+                    <strong data-game-best="pillstack">0</strong>
+                  </div>
+                  <div class="tc-game-card-stat">
+                    <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Ván gần nhất</span>
+                    <span data-game-last="pillstack" class="tc-muted text-xs">--</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="tc-game-card-actions">
+              <button class="tc-btn tc-chip px-3 py-2 text-xs tc-game-resume is-hidden" type="button" data-game-action="resume" data-game="pillstack" aria-label="Tiếp tục">Tiếp tục</button>
               <button class="tc-icon-btn tc-game-play" type="button" data-game-action="open" data-game="pillstack" data-tooltip="Chơi ngay" aria-label="Chơi ngay">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M8 6l10 6-10 6z" fill="currentColor"></path>
+                </svg>
+              </button>
+              <button class="tc-icon-btn tc-game-fullscreen" type="button" data-game-action="fullscreen" data-game="pillstack" data-tooltip="Toàn màn hình" aria-label="Toàn màn hình">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
               </button>
             </div>
@@ -78,6 +173,12 @@
           </div>
         </div>
       </div>
+
+      <details class="tc-card mt-6 p-4">
+        <summary class="cursor-pointer font-semibold">Thành tựu & nhiệm vụ nhẹ</summary>
+        <p class="tc-muted text-xs mt-2">Mở khoá khi chơi offline, không cần đăng nhập.</p>
+        <div id="colorplayAchievementList" class="tc-achievement-grid mt-4"></div>
+      </details>
     </section>
   </main>
 

@@ -7,6 +7,8 @@ const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "library";
 const HEX_VIEW_STORAGE_KEY = "tc_hex_view_mode";
 const HEX_MENU_TIP_KEY = "tc_hex_menu_tip_v1";
+const PINNED_ASSET_KEY = "tc_w5_pinned_assets_v1";
+const RECENT_ASSET_KEY = "tc_w5_recent_assets_v1";
 const WORLD_PATHS = {
   threadcolor: "./threadcolor.html",
   gradient: "./gradient.html",
@@ -17,12 +19,33 @@ const WORLD_PATHS = {
   imagecolor: "./imagecolor.html",
   community: "./community.html"
 };
+const WORLD_LABELS = {
+  threadcolor: "Màu thêu",
+  gradient: "Dải chuyển",
+  palette: "Palette",
+  printcolor: "Màu in (CMYK)",
+  paintfabric: "Sơn & Vải",
+  imagecolor: "Ảnh"
+};
+const PACK_SCHEMA_VERSION = "1.0";
+const SHARE_PREFIX = "SCASSET1:";
 
 const elements = {
   search: document.getElementById("assetSearch"),
   filter: document.getElementById("assetFilter"),
   projectFilter: document.getElementById("assetProjectFilter"),
   grid: document.getElementById("assetGrid"),
+  pinnedStrip: document.getElementById("assetPinnedStrip"),
+  pinnedList: document.getElementById("assetPinnedList"),
+  recentStrip: document.getElementById("assetRecentStrip"),
+  recentList: document.getElementById("assetRecentList"),
+  assetMultiSelect: document.getElementById("assetMultiSelect"),
+  assetActionBar: document.getElementById("assetActionBar"),
+  assetSelectedCount: document.getElementById("assetSelectedCount"),
+  assetBulkPin: document.getElementById("assetBulkPin"),
+  assetBulkUnpin: document.getElementById("assetBulkUnpin"),
+  assetBulkExport: document.getElementById("assetBulkExport"),
+  assetBulkDelete: document.getElementById("assetBulkDelete"),
   createDemo: document.getElementById("assetCreateDemo"),
   panel: document.getElementById("assetPanel"),
   panelEmpty: document.getElementById("assetPanelEmpty"),
@@ -33,6 +56,9 @@ const elements = {
     panelNotes: document.getElementById("assetPanelNotes"),
     save: document.getElementById("assetSave"),
     apply: document.getElementById("assetApply"),
+    openWorld: document.getElementById("assetOpenWorld"),
+    pinToggle: document.getElementById("assetPinToggle"),
+    sharePack: document.getElementById("assetSharePack"),
     rename: document.getElementById("assetRename"),
     remove: document.getElementById("assetDelete"),
     share: document.getElementById("assetShare"),
@@ -40,6 +66,8 @@ const elements = {
     specJson: document.getElementById("assetSpecJson"),
     copyText: document.getElementById("assetCopyText"),
     copyJson: document.getElementById("assetCopyJson"),
+    historyPanel: document.getElementById("assetHistoryPanel"),
+    historyList: document.getElementById("assetHistoryList"),
     nameModal: document.getElementById("assetNameModal"),
     nameClose: document.getElementById("assetNameClose"),
     nameCancel: document.getElementById("assetNameCancel"),
@@ -47,6 +75,16 @@ const elements = {
     nameInput: document.getElementById("assetNameInput"),
     tagsInput: document.getElementById("assetTagsInput"),
     toast: document.getElementById("assetToast"),
+    syncExport: document.getElementById("assetExportPack"),
+    syncFile: document.getElementById("assetImportFile"),
+    syncMode: document.getElementById("assetImportMode"),
+    syncImport: document.getElementById("assetImportPack"),
+    shareImportOpen: document.getElementById("assetShareImportOpen"),
+    shareModal: document.getElementById("assetShareModal"),
+    shareClose: document.getElementById("assetShareClose"),
+    shareCancel: document.getElementById("assetShareCancel"),
+    shareImport: document.getElementById("assetShareImport"),
+    shareInput: document.getElementById("assetShareInput"),
     tabAssets: document.getElementById("assetTabBtn"),
   tabHex: document.getElementById("hexTabBtn"),
   tabContainer: document.getElementById("assetTabs") || document.getElementById("libraryTabs"),
@@ -135,11 +173,142 @@ const state = {
   hexFullscreenIndex: 0,
   hexSimilarCache: new Map(),
   nameModalMode: "save",
-  nameModalAsset: null
+  nameModalAsset: null,
+  assetMultiSelect: false,
+  assetSelectedIds: new Set(),
+  assetRenderedIds: [],
+  assetLastSelectedIndex: null
 };
+
+let assetPinnedIds = [];
+let assetRecentIds = [];
 
 const normalizeText = (value) => (value || "").toLowerCase();
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const escapeHTML = (value) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+const highlightHTML = (fullText, query) => {
+  const text = String(fullText ?? "");
+  const needle = String(query ?? "").trim();
+  if (!needle) return escapeHTML(text);
+  const lowerText = text.toLowerCase();
+  const lowerNeedle = needle.toLowerCase();
+  let result = "";
+  let cursor = 0;
+  while (cursor < text.length) {
+    const idx = lowerText.indexOf(lowerNeedle, cursor);
+    if (idx === -1) {
+      result += escapeHTML(text.slice(cursor));
+      break;
+    }
+    if (idx > cursor) {
+      result += escapeHTML(text.slice(cursor, idx));
+    }
+    const match = text.slice(idx, idx + lowerNeedle.length);
+    result += `<span class="tc-match">${escapeHTML(match)}</span>`;
+    cursor = idx + lowerNeedle.length;
+  }
+  return result;
+};
+
+const normalizeHexLoose = (value) => {
+  if (!value) return "";
+  const cleaned = value.toString().trim().replace(/^#/, "");
+  if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(cleaned)) return "";
+  const hex = cleaned.length === 3
+    ? cleaned.split("").map((c) => c + c).join("")
+    : cleaned;
+  return `#${hex.toUpperCase()}`;
+};
+
+const cloneAsset = (asset) => {
+  try {
+    return JSON.parse(JSON.stringify(asset));
+  } catch (_err) {
+    return { ...asset };
+  }
+};
+
+const ensureVersion = (asset) => {
+  if (!asset) return;
+  if (!asset.version) asset.version = "1.0.0";
+  if (!asset.updatedAt) asset.updatedAt = new Date().toISOString();
+};
+
+const bumpVersion = (version) => {
+  const raw = String(version || "");
+  const parts = raw.split(".").map((part) => Number(part));
+  if (parts.length !== 3 || parts.some((num) => Number.isNaN(num))) {
+    return "1.0.1";
+  }
+  const [major, minor, patch] = parts;
+  return `${major}.${minor}.${patch + 1}`;
+};
+
+const pushHistory = (asset) => {
+  if (!asset) return;
+  ensureVersion(asset);
+  const snapshot = cloneAsset(asset);
+  delete snapshot.history;
+  asset.history = Array.isArray(asset.history) ? asset.history : [];
+  asset.history.unshift({
+    version: asset.version,
+    savedAt: new Date().toISOString(),
+    snapshot
+  });
+  asset.history = asset.history.slice(0, 10);
+};
+
+const restoreAssetVersion = (asset, entry) => {
+  if (!asset || !entry?.snapshot) return;
+  pushHistory(asset);
+  const snapshot = cloneAsset(entry.snapshot);
+  const history = Array.isArray(asset.history) ? asset.history : [];
+  Object.keys(asset).forEach((key) => delete asset[key]);
+  Object.assign(asset, snapshot);
+  asset.history = history;
+  asset.version = bumpVersion(snapshot.version || asset.version);
+  asset.updatedAt = new Date().toISOString();
+};
+
+const encodeBase64 = (text) => {
+  try {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+    bytes.forEach((b) => {
+      binary += String.fromCharCode(b);
+    });
+    return btoa(binary);
+  } catch (_err) {
+    return btoa(unescape(encodeURIComponent(text)));
+  }
+};
+
+const decodeBase64 = (payload) => {
+  try {
+    const binary = atob(payload);
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  } catch (_err) {
+    try {
+      return decodeURIComponent(escape(atob(payload)));
+    } catch (_err2) {
+      return "";
+    }
+  }
+};
+
+const parseDateValue = (value) => {
+  const time = Date.parse(value || "");
+  return Number.isNaN(time) ? 0 : time;
+};
 
 const setupAutofillTrap = (input) => {
   if (!input) return;
@@ -202,6 +371,13 @@ const setModalOpen = (open) => {
   elements.nameModal.classList.toggle("hidden", !open);
   elements.nameModal.setAttribute("aria-hidden", open ? "false" : "true");
   if (open && elements.nameInput) elements.nameInput.focus();
+};
+
+const setShareModalOpen = (open) => {
+  if (!elements.shareModal) return;
+  elements.shareModal.classList.toggle("hidden", !open);
+  elements.shareModal.setAttribute("aria-hidden", open ? "false" : "true");
+  if (open && elements.shareInput) elements.shareInput.focus();
 };
 
 const normalizeHexView = (value) => {
@@ -666,6 +842,131 @@ const saveAssets = () => {
   } catch (_err) {}
 };
 
+const buildLibraryPack = () => ({
+  schemaVersion: PACK_SCHEMA_VERSION,
+  exportedAt: new Date().toISOString(),
+  assets: state.assets,
+  pinnedIds: assetPinnedIds,
+  recentIds: assetRecentIds
+});
+
+const downloadPack = () => {
+  const payload = JSON.stringify(buildLibraryPack(), null, 2);
+  const blob = new Blob([payload], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `library_pack_${stamp}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+
+const importLibraryPack = (pack, mode = "merge") => {
+  if (!pack || typeof pack !== "object") return false;
+  if (!pack.schemaVersion || String(pack.schemaVersion).startsWith("1") === false) {
+    return false;
+  }
+  const incoming = Array.isArray(pack.assets) ? pack.assets : [];
+  if (!incoming.length) return false;
+  const byId = new Map(state.assets.map((asset) => [asset.id, asset]));
+  const nextAssets = state.assets.slice();
+  incoming.forEach((asset) => {
+    if (!asset?.id) return;
+    ensureVersion(asset);
+    const existing = byId.get(asset.id);
+    if (!existing) {
+      nextAssets.push(asset);
+      return;
+    }
+    if (mode === "overwrite") {
+      const idx = nextAssets.findIndex((item) => item.id === asset.id);
+      if (idx !== -1) nextAssets[idx] = asset;
+      return;
+    }
+    const incomingTime = parseDateValue(asset.updatedAt);
+    const existingTime = parseDateValue(existing.updatedAt);
+    if (incomingTime > existingTime) {
+      const idx = nextAssets.findIndex((item) => item.id === asset.id);
+      if (idx !== -1) nextAssets[idx] = asset;
+    }
+  });
+  state.assets = nextAssets;
+  const packPinned = Array.isArray(pack.pinnedIds) ? pack.pinnedIds : [];
+  const packRecent = Array.isArray(pack.recentIds) ? pack.recentIds : [];
+  assetPinnedIds = [...packPinned, ...assetPinnedIds.filter((id) => !packPinned.includes(id))];
+  assetRecentIds = [...packRecent, ...assetRecentIds.filter((id) => !packRecent.includes(id))].slice(0, 12);
+  syncPinnedRecent();
+  saveAssets();
+  renderGrid();
+  renderPanel(state.selected);
+  return true;
+};
+
+const loadPinnedAssets = () => {
+  try {
+    const raw = localStorage.getItem(PINNED_ASSET_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    assetPinnedIds = Array.isArray(parsed) ? parsed : [];
+  } catch (_err) {
+    assetPinnedIds = [];
+  }
+};
+
+const savePinnedAssets = () => {
+  try {
+    localStorage.setItem(PINNED_ASSET_KEY, JSON.stringify(assetPinnedIds));
+  } catch (_err) {}
+};
+
+const loadRecentAssets = () => {
+  try {
+    const raw = localStorage.getItem(RECENT_ASSET_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    assetRecentIds = Array.isArray(parsed) ? parsed : [];
+  } catch (_err) {
+    assetRecentIds = [];
+  }
+};
+
+const saveRecentAssets = () => {
+  try {
+    localStorage.setItem(RECENT_ASSET_KEY, JSON.stringify(assetRecentIds));
+  } catch (_err) {}
+};
+
+const syncPinnedRecent = () => {
+  const ids = new Set(state.assets.map((asset) => asset.id));
+  assetPinnedIds = assetPinnedIds.filter((id) => ids.has(id));
+  assetRecentIds = assetRecentIds.filter((id) => ids.has(id));
+  savePinnedAssets();
+  saveRecentAssets();
+};
+
+const isAssetPinned = (id) => assetPinnedIds.includes(id);
+
+const pinAsset = (id) => {
+  if (!id) return;
+  assetPinnedIds = [id, ...assetPinnedIds.filter((item) => item !== id)];
+  savePinnedAssets();
+};
+
+const unpinAsset = (id) => {
+  if (!id) return;
+  assetPinnedIds = assetPinnedIds.filter((item) => item !== id);
+  savePinnedAssets();
+};
+
+const touchRecentAsset = (asset) => {
+  if (!asset?.id) return;
+  assetRecentIds = assetRecentIds.filter((id) => id !== asset.id);
+  assetRecentIds.unshift(asset.id);
+  assetRecentIds = assetRecentIds.slice(0, 12);
+  saveRecentAssets();
+};
+
 const createDemoAsset = () => {
   const now = new Date().toISOString();
   const isPalette = state.assets.length % 2 === 0;
@@ -727,8 +1028,19 @@ export const openInWorld = (worldKey, payload = {}) => {
   return true;
 };
 
+const matchesAssetQuery = (asset, query) => {
+  const needle = String(query || "").trim();
+  if (!needle) return true;
+  const haystack = [
+    asset?.name,
+    asset?.type,
+    ...(asset?.tags || [])
+  ].join(" ");
+  return normalizeText(haystack).includes(needle);
+};
+
 const filterAssets = () => {
-  const query = normalizeText(elements.search?.value);
+  const query = normalizeText(elements.search?.value).trim();
   const typeFilter = elements.filter?.value || "all";
   return state.assets.filter((asset) => {
     const matchType = typeFilter === "all"
@@ -737,38 +1049,139 @@ const filterAssets = () => {
     if (!matchType) return false;
     const projectFilter = state.projectFilter || "";
     if (projectFilter && (asset.project || "") !== projectFilter) return false;
-    if (!query) return true;
-    const haystack = [
-      asset.name,
-      asset.type,
-      ...(asset.tags || [])
-    ].join(" ");
-    return normalizeText(haystack).includes(query);
+    return matchesAssetQuery(asset, query);
   });
+};
+
+const buildAssetSwatches = (asset, limit = 5) => {
+  const stops = getStopsFromAsset(asset)
+    .map((hex) => normalizeHexLoose(hex))
+    .filter(Boolean)
+    .slice(0, limit);
+  return stops.map((hex) =>
+    `<span class="tc-swatch" style="background:${hex};"></span>`
+  ).join("");
+};
+
+const renderAssetMiniCard = (asset, query) => {
+  const nameHtml = highlightHTML(asset?.name || "Không tên", query);
+  const typeLabel = escapeHTML(asset?.type || "");
+  const swatches = buildAssetSwatches(asset, 4);
+  const selected = state.assetMultiSelect
+    ? state.assetSelectedIds.has(asset.id)
+    : state.selected && state.selected.id === asset.id;
+  const selectedClass = selected ? " is-selected" : "";
+  return `
+    <button class="asset-mini${selectedClass}" data-asset-id="${escapeHTML(asset.id)}" type="button">
+      <div class="asset-mini__meta">${typeLabel}</div>
+      <div class="asset-mini__title">${nameHtml}</div>
+      <div class="asset-mini__swatches">${swatches}</div>
+    </button>
+  `;
+};
+
+const renderPinnedStrip = (query) => {
+  if (!elements.pinnedStrip || !elements.pinnedList) return;
+  const items = assetPinnedIds
+    .map((id) => state.assets.find((asset) => asset.id === id))
+    .filter((asset) => asset && matchesAssetQuery(asset, query));
+  elements.pinnedStrip.classList.toggle("hidden", items.length === 0);
+  elements.pinnedList.innerHTML = items.map((asset) => renderAssetMiniCard(asset, query)).join("");
+};
+
+const renderRecentStrip = (query) => {
+  if (!elements.recentStrip || !elements.recentList) return;
+  const items = assetRecentIds
+    .map((id) => state.assets.find((asset) => asset.id === id))
+    .filter((asset) => asset && matchesAssetQuery(asset, query));
+  elements.recentStrip.classList.toggle("hidden", items.length === 0);
+  elements.recentList.innerHTML = items.map((asset) => renderAssetMiniCard(asset, query)).join("");
+};
+
+const updateAssetActionBar = () => {
+  if (!elements.assetActionBar || !elements.assetSelectedCount) return;
+  const count = state.assetSelectedIds.size;
+  elements.assetSelectedCount.textContent = String(count);
+  elements.assetActionBar.classList.toggle("hidden", count === 0);
+};
+
+const clearAssetSelection = () => {
+  state.assetSelectedIds.clear();
+  state.assetLastSelectedIndex = null;
+  updateAssetActionBar();
+};
+
+const toggleAssetSelection = (assetId, card) => {
+  if (!assetId) return;
+  if (state.assetSelectedIds.has(assetId)) {
+    state.assetSelectedIds.delete(assetId);
+    card?.classList.remove("is-selected");
+  } else {
+    state.assetSelectedIds.add(assetId);
+    card?.classList.add("is-selected");
+  }
+  updateAssetActionBar();
+};
+
+const selectAssetRange = (start, end) => {
+  if (!state.assetRenderedIds.length) return;
+  const min = Math.min(start, end);
+  const max = Math.max(start, end);
+  for (let i = min; i <= max; i += 1) {
+    const id = state.assetRenderedIds[i];
+    if (id) state.assetSelectedIds.add(id);
+  }
+  renderGrid();
+  updateAssetActionBar();
+};
+
+const getSelectedAssets = () => {
+  const idSet = state.assetSelectedIds;
+  return state.assets.filter((asset) => idSet.has(asset.id));
+};
+
+const selectAssetCard = (asset) => {
+  state.selected = asset || null;
+  if (!asset) {
+    renderPanel(state.selected);
+    renderGrid();
+    return;
+  }
+  touchRecentAsset(asset);
+  renderPanel(state.selected);
+  renderGrid();
+  document.getElementById("assetPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
   const renderGrid = () => {
     if (!elements.grid) return;
+    const query = normalizeText(elements.search?.value).trim();
     const items = filterAssets();
+    state.assetRenderedIds = items.map((asset) => asset.id);
+    renderPinnedStrip(query);
+    renderRecentStrip(query);
     if (!items.length) {
       elements.grid.innerHTML = `<div class="tc-muted text-sm">Chưa có tài sản. Hãy tạo demo.</div>`;
+      updateAssetActionBar();
       return;
     }
-    elements.grid.innerHTML = items.map((asset) => {
-      const stops = getStopsFromAsset(asset);
-      const swatches = stops.slice(0, 5).map((hex) =>
-        `<span class="tc-swatch" style="background:${hex};"></span>`
-      ).join("");
+    elements.grid.innerHTML = items.map((asset, index) => {
+      const swatches = buildAssetSwatches(asset);
       const tags = (asset.tags || []).slice(0, 3).map((tag) =>
-        `<span class="tc-chip px-2 py-1 rounded-full text-xs">${tag}</span>`
+        `<span class="tc-chip px-2 py-1 rounded-full text-xs">${highlightHTML(tag, query)}</span>`
       ).join("");
-      const isSelected = state.selected && state.selected.id === asset.id ? " is-selected" : "";
+      const isSelected = state.assetMultiSelect
+        ? state.assetSelectedIds.has(asset.id)
+        : state.selected && state.selected.id === asset.id;
+      const selectedClass = isSelected ? " is-selected" : "";
+      const isPinned = isAssetPinned(asset.id);
+      const pinLabel = isPinned ? "Bỏ ghim" : "Ghim";
       return `
-        <button class="tc-card p-4 text-left space-y-3${isSelected}" data-asset-id="${asset.id}" type="button">
+        <article class="tc-card p-4 text-left space-y-3 asset-card${selectedClass}" data-asset-id="${escapeHTML(asset.id)}" data-asset-index="${index}" role="button" tabindex="0">
           <div class="flex items-start justify-between gap-3">
             <div>
-              <p class="text-xs uppercase tracking-[0.2em] tc-muted">${asset.type}</p>
-              <h3 class="font-semibold">${asset.name}</h3>
+              <p class="text-xs uppercase tracking-[0.2em] tc-muted">${escapeHTML(asset.type || "")}</p>
+              <h3 class="font-semibold">${highlightHTML(asset.name || "Không tên", query)}</h3>
             </div>
             <div class="flex flex-wrap gap-1">${tags}</div>
           </div>
@@ -777,15 +1190,17 @@ const filterAssets = () => {
             <details data-asset-menu class="asset-kebab">
               <summary data-asset-menu-toggle class="asset-kebab__btn tc-btn tc-chip px-2 py-1 text-xs cursor-pointer" aria-label="Tác vụ">⋯</summary>
               <div class="asset-kebab__panel rounded-lg backdrop-blur-md shadow-xl p-1 text-sm tc-chip">
-                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="use" data-asset-id="${asset.id}" type="button">Dùng</button>
-                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="rename" data-asset-id="${asset.id}" type="button">Đổi tên</button>
-                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="delete" data-asset-id="${asset.id}" type="button">Xóa</button>
+                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="use" data-asset-id="${escapeHTML(asset.id)}" type="button">Dùng</button>
+                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="pin" data-asset-id="${escapeHTML(asset.id)}" type="button">${pinLabel}</button>
+                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="rename" data-asset-id="${escapeHTML(asset.id)}" type="button">Đổi tên</button>
+                <button class="tc-btn tc-chip w-full justify-start px-3 py-2 text-xs" data-asset-action="delete" data-asset-id="${escapeHTML(asset.id)}" type="button">Xóa</button>
               </div>
             </details>
           </div>
-        </button>
+        </article>
       `;
     }).join("");
+    updateAssetActionBar();
   };
 
   const openNameModal = (asset, mode) => {
@@ -801,29 +1216,41 @@ const filterAssets = () => {
     setModalOpen(true);
   };
 
-  const saveNameModal = () => {
-    if (!state.nameModalAsset) return;
-    const name = elements.nameInput ? elements.nameInput.value.trim() : "";
-    if (!name) {
-      showToast("Vui lòng nhập tên tài sản.");
-      return;
-    }
-    const tagsRaw = elements.tagsInput ? elements.tagsInput.value : "";
-    const tags = tagsRaw
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean);
-    state.nameModalAsset.name = name;
-    state.nameModalAsset.tags = tags;
-    if (state.nameModalMode === "save") {
-      state.assets.unshift(state.nameModalAsset);
-    }
-    saveAssets();
-    renderGrid();
-    renderPanel(state.selected);
-    setModalOpen(false);
-    showToast(`Đã lưu ${name}.`);
-  };
+const saveNameModal = () => {
+  if (!state.nameModalAsset) return;
+  const name = elements.nameInput ? elements.nameInput.value.trim() : "";
+  if (!name) {
+    showToast("Vui lòng nhập tên tài sản.");
+    return;
+  }
+  const tagsRaw = elements.tagsInput ? elements.tagsInput.value : "";
+  const tags = tagsRaw
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+  const asset = state.nameModalAsset;
+  if (state.nameModalMode === "rename") {
+    pushHistory(asset);
+  }
+  asset.name = name;
+  asset.tags = tags;
+  ensureVersion(asset);
+  if (state.nameModalMode === "rename") {
+    asset.version = bumpVersion(asset.version);
+    asset.updatedAt = new Date().toISOString();
+  }
+  if (state.nameModalMode === "save") {
+    asset.updatedAt = new Date().toISOString();
+  }
+  if (state.nameModalMode === "save") {
+    state.assets.unshift(asset);
+  }
+  saveAssets();
+  renderGrid();
+  renderPanel(state.selected);
+  setModalOpen(false);
+  showToast(`Đã lưu ${name}.`);
+};
 
   const renderPanel = (asset) => {
   if (!elements.panel || !elements.panelEmpty) return;
@@ -838,15 +1265,25 @@ const filterAssets = () => {
   if (elements.panelType) elements.panelType.textContent = `Loại: ${asset.type}`;
   if (elements.panelNotes) elements.panelNotes.textContent = asset.notes || "";
   if (elements.panelTags) {
-    elements.panelTags.innerHTML = (asset.tags || []).map((tag) =>
-      `<span class="tc-chip px-2 py-1 rounded-full text-xs">${tag}</span>`
-    ).join("");
+    elements.panelTags.textContent = "";
+    (asset.tags || []).forEach((tag) => {
+      const span = document.createElement("span");
+      span.className = "tc-chip px-2 py-1 rounded-full text-xs";
+      span.textContent = tag;
+      elements.panelTags.appendChild(span);
+    });
   }
   if (elements.panelSwatches) {
-    const stops = getStopsFromAsset(asset);
-    elements.panelSwatches.innerHTML = stops.map((hex) =>
-      `<span class="tc-swatch" style="background:${hex};"></span>`
-    ).join("");
+    elements.panelSwatches.textContent = "";
+    const stops = getStopsFromAsset(asset)
+      .map((hex) => normalizeHexLoose(hex))
+      .filter(Boolean);
+    stops.forEach((hex) => {
+      const swatch = document.createElement("span");
+      swatch.className = "tc-swatch";
+      swatch.style.background = hex;
+      elements.panelSwatches.appendChild(swatch);
+    });
   }
   const worldKey = resolveWorldKey(asset);
     const isInLibrary = state.assets.some((item) => item.id === asset.id);
@@ -869,9 +1306,58 @@ const filterAssets = () => {
   if (elements.apply) {
     const canApply = Boolean(worldKey);
     elements.apply.disabled = !canApply;
-    elements.apply.textContent = canApply ? "Dùng từ Thư viện" : "Chưa hỗ trợ";
+    elements.apply.textContent = canApply ? "Dùng ngay" : "Chưa hỗ trợ";
     elements.apply.classList.toggle("opacity-60", !canApply);
     elements.apply.classList.toggle("cursor-not-allowed", !canApply);
+  }
+  if (elements.openWorld) {
+    const canOpen = Boolean(worldKey);
+    elements.openWorld.disabled = !canOpen;
+    elements.openWorld.classList.toggle("opacity-60", !canOpen);
+    elements.openWorld.classList.toggle("cursor-not-allowed", !canOpen);
+  }
+  if (elements.pinToggle) {
+    const pinned = isAssetPinned(asset.id);
+    elements.pinToggle.textContent = pinned ? "Bỏ ghim" : "Ghim";
+  }
+  if (elements.historyList) {
+    elements.historyList.textContent = "";
+    const history = Array.isArray(asset.history) ? asset.history : [];
+    if (!history.length) {
+      const empty = document.createElement("div");
+      empty.className = "tc-muted";
+      empty.textContent = "Chưa có lịch sử phiên bản.";
+      elements.historyList.appendChild(empty);
+    } else {
+      history.slice(0, 10).forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between gap-2 tc-chip px-2 py-2";
+
+        const meta = document.createElement("div");
+        meta.className = "flex flex-col";
+        const version = document.createElement("span");
+        version.className = "font-semibold";
+        version.textContent = entry.version || "—";
+        const time = document.createElement("span");
+        time.className = "tc-muted";
+        const date = entry.savedAt ? new Date(entry.savedAt) : null;
+        time.textContent = date && !Number.isNaN(date.getTime())
+          ? date.toLocaleString("vi-VN")
+          : "Không rõ thời gian";
+        meta.appendChild(version);
+        meta.appendChild(time);
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "tc-btn tc-chip px-2 py-1 text-xs";
+        button.textContent = "Khôi phục";
+        button.dataset.historyIndex = String(index);
+
+        row.appendChild(meta);
+        row.appendChild(button);
+        elements.historyList.appendChild(row);
+      });
+    }
   }
   const material = asset.profiles?.material;
   const materialLine = material
@@ -897,6 +1383,11 @@ const filterAssets = () => {
     const confirmed = window.confirm(`Xóa tài sản "${asset.name}" khỏi Thư viện?`);
     if (!confirmed) return;
     state.assets = state.assets.filter((item) => item.id !== asset.id);
+    assetPinnedIds = assetPinnedIds.filter((id) => id !== asset.id);
+    assetRecentIds = assetRecentIds.filter((id) => id !== asset.id);
+    state.assetSelectedIds.delete(asset.id);
+    savePinnedAssets();
+    saveRecentAssets();
     if (state.selected && state.selected.id === asset.id) {
       state.selected = null;
     }
@@ -906,18 +1397,58 @@ const filterAssets = () => {
     showToast(`Đã xóa tài sản ${asset.name}.`);
   };
 
-const applyAsset = (asset) => {
-  if (!asset) return;
+const openAssetInWorld = (asset, intent = "use") => {
+  if (!asset) return false;
   const worldKey = resolveWorldKey(asset);
-  if (!worldKey) return;
+  if (!worldKey) return false;
   const payload = {
     assetId: asset.id,
     projectId: asset.project || state.handoff?.projectId || "",
     from: HANDOFF_FROM,
-    intent: state.handoff?.intent || "use",
+    intent,
     shade: state.handoff?.shade || ""
   };
-  openInWorld(worldKey, payload);
+  touchRecentAsset(asset);
+  const label = WORLD_LABELS[worldKey] || worldKey;
+  showToast(`Đang mở ở World ${label}.`);
+  return openInWorld(worldKey, payload);
+};
+
+const applyAsset = (asset) => {
+  if (!asset) return;
+  const intent = state.handoff?.intent || "use";
+  openAssetInWorld(asset, intent);
+};
+
+const buildSharePack = (asset) => {
+  const payload = {
+    asset,
+    exportedAt: new Date().toISOString()
+  };
+  return `${SHARE_PREFIX}${encodeBase64(JSON.stringify(payload))}`;
+};
+
+const parseSharePack = (text) => {
+  const raw = String(text || "").trim();
+  if (!raw.startsWith(SHARE_PREFIX)) return null;
+  const payload = raw.slice(SHARE_PREFIX.length);
+  const decoded = decodeBase64(payload);
+  if (!decoded) return null;
+  try {
+    const parsed = JSON.parse(decoded);
+    if (!parsed?.asset) return null;
+    return parsed;
+  } catch (_err) {
+    return null;
+  }
+};
+
+const normalizeImportedAsset = (asset) => {
+  if (!asset) return null;
+  const cloned = cloneAsset(asset);
+  ensureVersion(cloned);
+  cloned.updatedAt = new Date().toISOString();
+  return cloned;
 };
 
 const copyText = (text) => {
@@ -966,6 +1497,40 @@ const publishToFeed = (asset) => {
   } catch (_err) {
     alert("Không thể chia sẻ.");
     return false;
+  }
+};
+
+const isTypingContext = (target) => {
+  if (!target) return false;
+  const tag = target.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+  return target.isContentEditable;
+};
+
+const focusActiveSearch = () => {
+  const isAssets = elements.tabAssets?.getAttribute("aria-selected") === "true";
+  const input = isAssets ? elements.search : elements.hexSearch;
+  if (!input) return;
+  if (input.hasAttribute("readonly")) input.removeAttribute("readonly");
+  input.focus();
+  if (input.value) input.select();
+};
+
+const handleSearchEscape = (event) => {
+  if (event.key !== "Escape") return;
+  const input = event.currentTarget;
+  const value = input.value || "";
+  if (value) {
+    input.value = "";
+    if (input === elements.search) {
+      renderGrid();
+    } else {
+      state.hexQuery = "";
+      resetHexList();
+      renderHexGrid();
+    }
+  } else {
+    input.blur();
   }
 };
 
@@ -1522,10 +2087,20 @@ const saveHexToLibrary = (entry) => {
 
 const bindEvents = () => {
   elements.search?.addEventListener("input", renderGrid);
+  elements.search?.addEventListener("keydown", handleSearchEscape);
   elements.filter?.addEventListener("change", renderGrid);
   elements.projectFilter?.addEventListener("change", () => {
     state.projectFilter = elements.projectFilter.value === "__all__" ? "" : elements.projectFilter.value;
     renderGrid();
+  });
+  elements.assetMultiSelect?.addEventListener("change", () => {
+    state.assetMultiSelect = elements.assetMultiSelect.checked;
+    if (!state.assetMultiSelect) {
+      clearAssetSelection();
+      renderGrid();
+      return;
+    }
+    updateAssetActionBar();
   });
   elements.createDemo?.addEventListener("click", () => {
     const asset = createDemoAsset();
@@ -1535,12 +2110,20 @@ const bindEvents = () => {
   });
   elements.tabAssets?.addEventListener("click", () => setActiveTab("assets"));
   elements.tabHex?.addEventListener("click", () => setActiveTab("hex"));
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "/") return;
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (isTypingContext(event.target)) return;
+    event.preventDefault();
+    focusActiveSearch();
+  });
   const onHexSearch = debounce(() => {
     state.hexQuery = elements.hexSearch?.value || "";
     resetHexList();
     renderHexGrid();
   }, 300);
   elements.hexSearch?.addEventListener("input", onHexSearch);
+  elements.hexSearch?.addEventListener("keydown", handleSearchEscape);
   elements.hexSearch?.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
     const hex = sanitizeHex(elements.hexSearch?.value || "");
@@ -1792,64 +2375,259 @@ const bindEvents = () => {
     if (Math.abs(delta) > 50) {
       stepFullscreen(delta < 0 ? 1 : -1);
     }
-    });
-    elements.grid?.addEventListener("click", (event) => {
-      const actionBtn = event.target.closest("[data-asset-action]");
-      if (actionBtn) {
-        event.preventDefault();
-        event.stopPropagation();
-        const id = actionBtn.dataset.assetId;
-        const action = actionBtn.dataset.assetAction;
-        const asset = state.assets.find((item) => item.id === id);
-        if (!asset) return;
-        if (action === "use") applyAsset(asset);
-        if (action === "rename") openNameModal(asset, "rename");
-        if (action === "delete") deleteAsset(asset);
-        const details = actionBtn.closest("details");
-        if (details) details.open = false;
-        return;
-      }
-      if (event.target.closest("[data-asset-menu]")) return;
-      const card = event.target.closest("[data-asset-id]");
-      if (!card) return;
-      const asset = state.assets.find((item) => item.id === card.dataset.assetId);
-      state.selected = asset || null;
-      renderPanel(state.selected);
+  });
+  const handleStripClick = (event) => {
+    const card = event.target.closest("[data-asset-id]");
+    if (!card) return;
+    const assetId = card.dataset.assetId;
+    const asset = state.assets.find((item) => item.id === assetId);
+    if (!asset) return;
+    if (state.assetMultiSelect) {
+      toggleAssetSelection(asset.id, card);
       renderGrid();
-      document.getElementById("assetPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-    elements.apply?.addEventListener("click", () => applyAsset(state.selected));
-    elements.share?.addEventListener("click", () => publishToFeed(state.selected));
-    elements.save?.addEventListener("click", () => {
-      if (!state.selected) return;
-      const exists = state.assets.some((item) => item.id === state.selected.id);
-      if (exists) {
-        showToast("Tài sản đã ở Thư viện.");
-        return;
+      return;
+    }
+    selectAssetCard(asset);
+  };
+  elements.pinnedList?.addEventListener("click", handleStripClick);
+  elements.recentList?.addEventListener("click", handleStripClick);
+  elements.grid?.addEventListener("click", (event) => {
+    const actionBtn = event.target.closest("[data-asset-action]");
+    if (actionBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      const id = actionBtn.dataset.assetId;
+      const action = actionBtn.dataset.assetAction;
+      const asset = state.assets.find((item) => item.id === id);
+      if (!asset) return;
+      if (action === "use") applyAsset(asset);
+      if (action === "pin") {
+        if (isAssetPinned(asset.id)) unpinAsset(asset.id);
+        else pinAsset(asset.id);
+        renderGrid();
+        renderPanel(state.selected);
       }
-      openNameModal(state.selected, "save");
+      if (action === "rename") openNameModal(asset, "rename");
+      if (action === "delete") deleteAsset(asset);
+      const details = actionBtn.closest("details");
+      if (details) details.open = false;
+      return;
+    }
+    if (event.target.closest("[data-asset-menu]")) return;
+    const card = event.target.closest("[data-asset-id]");
+    if (!card) return;
+    const assetId = card.dataset.assetId;
+    const asset = state.assets.find((item) => item.id === assetId);
+    if (!asset) return;
+    if (state.assetMultiSelect) {
+      const index = Number(card.dataset.assetIndex || -1);
+      if (event.shiftKey && state.assetLastSelectedIndex != null && index >= 0) {
+        selectAssetRange(state.assetLastSelectedIndex, index);
+      } else {
+        toggleAssetSelection(asset.id, card);
+      }
+      if (index >= 0) state.assetLastSelectedIndex = index;
+      return;
+    }
+    selectAssetCard(asset);
+  });
+  elements.grid?.addEventListener("keydown", (event) => {
+    if (isTypingContext(event.target)) return;
+    const card = event.target.closest(".asset-card");
+    if (!card) return;
+    if (event.key === "Escape") {
+      const openMenu = card.querySelector("details[open]");
+      if (openMenu) {
+        openMenu.open = false;
+        event.preventDefault();
+      }
+      return;
+    }
+    if (event.key !== "Enter" && event.key !== " ") return;
+    if (event.target.closest("button, summary, a, input, textarea, select")) return;
+    event.preventDefault();
+    const assetId = card.dataset.assetId;
+    const asset = state.assets.find((item) => item.id === assetId);
+    if (!asset) return;
+    if (state.assetMultiSelect) {
+      toggleAssetSelection(asset.id, card);
+      return;
+    }
+    selectAssetCard(asset);
+  });
+  elements.apply?.addEventListener("click", () => applyAsset(state.selected));
+  elements.openWorld?.addEventListener("click", () => {
+    if (!state.selected) return;
+    openAssetInWorld(state.selected, "open");
+  });
+  elements.pinToggle?.addEventListener("click", () => {
+    if (!state.selected) return;
+    if (isAssetPinned(state.selected.id)) {
+      unpinAsset(state.selected.id);
+      showToast("Đã bỏ ghim.");
+    } else {
+      pinAsset(state.selected.id);
+      showToast("Đã ghim.");
+    }
+    renderGrid();
+    renderPanel(state.selected);
+  });
+  elements.assetBulkPin?.addEventListener("click", () => {
+    const selected = Array.from(state.assetSelectedIds);
+    if (!selected.length) return;
+    assetPinnedIds = [...selected, ...assetPinnedIds.filter((id) => !state.assetSelectedIds.has(id))];
+    savePinnedAssets();
+    renderGrid();
+    showToast(`Đã ghim ${selected.length} tài sản.`);
+  });
+  elements.assetBulkUnpin?.addEventListener("click", () => {
+    const selected = Array.from(state.assetSelectedIds);
+    if (!selected.length) return;
+    assetPinnedIds = assetPinnedIds.filter((id) => !state.assetSelectedIds.has(id));
+    savePinnedAssets();
+    renderGrid();
+    showToast(`Đã bỏ ghim ${selected.length} tài sản.`);
+  });
+  elements.assetBulkExport?.addEventListener("click", () => {
+    const selectedAssets = getSelectedAssets();
+    if (!selectedAssets.length) return;
+    copyText(JSON.stringify(selectedAssets, null, 2)).then(() => {
+      showToast(`Đã sao chép ${selectedAssets.length} tài sản.`);
     });
-    elements.rename?.addEventListener("click", () => {
-      if (!state.selected) return;
-      openNameModal(state.selected, "rename");
+  });
+  elements.assetBulkDelete?.addEventListener("click", () => {
+    const selectedAssets = getSelectedAssets();
+    if (!selectedAssets.length) return;
+    if (!window.confirm(`Xóa ${selectedAssets.length} tài sản đã chọn?`)) return;
+    const selectedIds = new Set(state.assetSelectedIds);
+    state.assets = state.assets.filter((asset) => !selectedIds.has(asset.id));
+    assetPinnedIds = assetPinnedIds.filter((id) => !selectedIds.has(id));
+    assetRecentIds = assetRecentIds.filter((id) => !selectedIds.has(id));
+    if (state.selected && selectedIds.has(state.selected.id)) state.selected = null;
+    clearAssetSelection();
+    saveAssets();
+    savePinnedAssets();
+    saveRecentAssets();
+    renderGrid();
+      renderPanel(state.selected);
+      showToast(`Đã xóa ${selectedAssets.length} tài sản.`);
     });
-    elements.remove?.addEventListener("click", () => {
-      if (!state.selected) return;
-      deleteAsset(state.selected);
+  elements.syncExport?.addEventListener("click", () => {
+    downloadPack();
+    showToast("Đã xuất gói Thư viện.");
+  });
+  elements.syncImport?.addEventListener("click", async () => {
+    const file = elements.syncFile?.files?.[0];
+    if (!file) {
+      showToast("Vui lòng chọn gói Thư viện để nhập.");
+      return;
+    }
+    try {
+      const text = await file.text();
+      const pack = JSON.parse(text);
+      const mode = elements.syncMode?.value === "overwrite" ? "overwrite" : "merge";
+      const ok = importLibraryPack(pack, mode);
+      if (ok) {
+        showToast("Đã nhập gói Thư viện.");
+      } else {
+        showToast("Gói không hợp lệ hoặc không hỗ trợ.");
+      }
+    } catch (_err) {
+      showToast("Không thể đọc gói Thư viện.");
+    }
+  });
+  elements.shareImportOpen?.addEventListener("click", () => {
+    if (elements.shareInput) elements.shareInput.value = "";
+    setShareModalOpen(true);
+  });
+  elements.shareClose?.addEventListener("click", () => setShareModalOpen(false));
+  elements.shareCancel?.addEventListener("click", () => setShareModalOpen(false));
+  elements.shareModal?.addEventListener("click", (event) => {
+    if (event.target === elements.shareModal) setShareModalOpen(false);
+  });
+  elements.shareImport?.addEventListener("click", () => {
+    const text = elements.shareInput?.value || "";
+    const parsed = parseSharePack(text);
+    if (!parsed || !parsed.asset) {
+      showToast("Gói chia sẻ không hợp lệ.");
+      return;
+    }
+    const incoming = normalizeImportedAsset(parsed.asset);
+    if (!incoming?.id || !incoming?.type || !incoming?.name) {
+      showToast("Thiếu thông tin tài sản trong gói.");
+      return;
+    }
+    const exists = state.assets.find((item) => item.id === incoming.id);
+    if (exists) {
+      const ok = window.confirm("Tài sản đã tồn tại. Ghi đè không?");
+      if (!ok) {
+        incoming.id = `${incoming.id}_copy_${Date.now()}`;
+      } else {
+        const idx = state.assets.findIndex((item) => item.id === incoming.id);
+        if (idx !== -1) state.assets[idx] = incoming;
+      }
+    } else {
+      state.assets.unshift(incoming);
+    }
+    saveAssets();
+    renderGrid();
+    renderPanel(state.selected);
+    setShareModalOpen(false);
+    if (elements.shareInput) elements.shareInput.value = "";
+    showToast("Đã nhập gói chia sẻ.");
+  });
+  elements.sharePack?.addEventListener("click", () => {
+    if (!state.selected) return;
+    const packText = buildSharePack(state.selected);
+    copyText(packText).then(() => {
+      showToast("Đã sao chép gói chia sẻ.");
     });
-    elements.nameClose?.addEventListener("click", () => setModalOpen(false));
-    elements.nameCancel?.addEventListener("click", () => setModalOpen(false));
-    elements.nameModal?.addEventListener("click", (event) => {
-      if (event.target === elements.nameModal) setModalOpen(false);
-    });
-    elements.nameSave?.addEventListener("click", saveNameModal);
-    elements.copyText?.addEventListener("click", () => {
-      if (!elements.specText) return;
+  });
+  elements.share?.addEventListener("click", () => publishToFeed(state.selected));
+  elements.save?.addEventListener("click", () => {
+    if (!state.selected) return;
+    const exists = state.assets.some((item) => item.id === state.selected.id);
+    if (exists) {
+      showToast("Tài sản đã ở Thư viện.");
+      return;
+    }
+    openNameModal(state.selected, "save");
+  });
+  elements.rename?.addEventListener("click", () => {
+    if (!state.selected) return;
+    openNameModal(state.selected, "rename");
+  });
+  elements.remove?.addEventListener("click", () => {
+    if (!state.selected) return;
+    deleteAsset(state.selected);
+  });
+  elements.nameClose?.addEventListener("click", () => setModalOpen(false));
+  elements.nameCancel?.addEventListener("click", () => setModalOpen(false));
+  elements.nameModal?.addEventListener("click", (event) => {
+    if (event.target === elements.nameModal) setModalOpen(false);
+  });
+  elements.nameSave?.addEventListener("click", saveNameModal);
+  elements.copyText?.addEventListener("click", () => {
+    if (!elements.specText) return;
     copyText(elements.specText.textContent || "");
   });
   elements.copyJson?.addEventListener("click", () => {
     if (!elements.specJson) return;
     copyText(elements.specJson.textContent || "");
+  });
+  elements.historyList?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-history-index]");
+    if (!btn) return;
+    const index = Number(btn.dataset.historyIndex || -1);
+    if (Number.isNaN(index) || index < 0) return;
+    const asset = state.selected;
+    if (!asset || !Array.isArray(asset.history) || !asset.history[index]) return;
+    if (!window.confirm("Khôi phục phiên bản này?")) return;
+    restoreAssetVersion(asset, asset.history[index]);
+    saveAssets();
+    renderPanel(state.selected);
+    renderGrid();
+    showToast("Đã khôi phục phiên bản.");
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
@@ -1866,6 +2644,9 @@ const bindEvents = () => {
 state.assets = loadAssets();
 loadProjectPrefs();
 syncProjectFilter();
+loadPinnedAssets();
+loadRecentAssets();
+syncPinnedRecent();
 loadHexViewPreference();
 if (elements.hexSort?.value) state.hexSort = elements.hexSort.value;
 if (elements.hexLoadMode?.value) {

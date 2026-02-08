@@ -53,6 +53,11 @@
       outline: none;
       box-shadow: 0 0 0 3px rgba(0,0,0,.12), 0 0 0 6px var(--a1);
     }
+    .tc-btn.is-active{
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff;
+      border-color: transparent;
+    }
     .tc-btn-primary{
       background: linear-gradient(135deg, var(--a1), var(--a2));
       color: #fff;
@@ -100,6 +105,7 @@
       display: grid;
       place-items: center;
       overflow: hidden;
+      position: relative;
     }
     .tc-toast{
       position: fixed;
@@ -138,6 +144,11 @@
       flex-wrap: wrap;
       justify-content: center;
     }
+    .tc-swatch-share{
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
     .tc-swatch-btn{
       border: 1px solid var(--stroke);
       background: var(--glass);
@@ -158,6 +169,109 @@
       cursor: not-allowed;
       pointer-events: none;
     }
+    .ic-preview-canvas{
+      width: 100%;
+      height: auto;
+      display: block;
+      touch-action: none;
+    }
+    .ic-preview-placeholder{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .ic-loupe{
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.25);
+      background: rgba(0,0,0,0.4);
+      pointer-events: none;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 2;
+    }
+    .ic-loupe.is-visible{ display: flex; }
+    .ic-loupe canvas{
+      width: 90px;
+      height: 90px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .ic-loupe-label{
+      margin-top: 6px;
+      font-size: 10px;
+      color: #fff;
+      background: rgba(0,0,0,0.6);
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+    .ic-mockup-grid{
+      display: grid;
+      gap: 12px;
+    }
+    .ic-mockup-card{
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      overflow: hidden;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ic-mockup-label{
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 12px 0;
+    }
+    .ic-mockup-body{
+      flex: 1;
+      border-radius: 0.9rem;
+      margin: 0 12px 12px;
+      display: grid;
+      gap: 6px;
+      padding: 12px;
+    }
+    .ic-mockup-pill{
+      width: 72px;
+      height: 8px;
+      border-radius: 999px;
+    }
+    .ic-mockup-button{
+      width: 96px;
+      height: 26px;
+      border-radius: 999px;
+    }
+    .ic-mockup-poster{
+      display: grid;
+      gap: 8px;
+      place-items: center;
+      text-align: center;
+    }
+    .ic-mockup-fabric{
+      border-radius: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .ic-region{
+      position: absolute;
+      border: 2px dashed var(--a2);
+      background: rgba(0,0,0,0.15);
+      border-radius: 0.6rem;
+      pointer-events: none;
+      display: none;
+      z-index: 3;
+    }
+    .ic-region.is-visible{ display: block; }
     .sr-only{
       position: absolute;
       width: 1px;
@@ -220,6 +334,11 @@
             </div>
             <button id="btnSample" class="tc-btn tc-btn-primary px-4 py-2">Lấy mẫu màu</button>
           </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button id="btnRegion" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Khoanh vùng</button>
+            <button id="btnRegionClear" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Xoá vùng</button>
+            <span id="regionStatus" class="tc-muted text-xs">Chưa chọn vùng.</span>
+          </div>
           <div id="swatchGrid" class="flex flex-wrap gap-3"></div>
           <div class="flex flex-wrap gap-2">
             <button id="btnToPalette" class="tc-btn tc-chip px-4 py-2">Tạo Bảng phối màu</button>
@@ -228,10 +347,45 @@
             <button id="btnUseLibrary" class="tc-btn tc-chip px-4 py-2">Dùng từ Thư viện</button>
             <button id="btnShare" class="tc-btn tc-chip px-4 py-2">Chia sẻ</button>
           </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="btnCopyCss" class="tc-btn tc-chip px-4 py-2">Sao chép CSS vars</button>
+            <button id="btnCopyJson" class="tc-btn tc-chip px-4 py-2">Sao chép JSON tokens</button>
+            <button id="btnSharePalette" class="tc-btn tc-chip px-4 py-2">Sao chép link Palette</button>
+            <button id="btnShareGradient" class="tc-btn tc-chip px-4 py-2">Sao chép link Gradient</button>
+          </div>
           <p id="statusText" class="text-xs tc-muted"></p>
         </div>
-        <div class="tc-preview" id="imagePreview">
-          <div class="tc-muted text-sm">Ảnh xem trước</div>
+        <div class="space-y-4">
+          <div class="tc-preview" id="imagePreview">
+            <canvas id="imagePreviewCanvas" class="ic-preview-canvas" width="640" height="420"></canvas>
+            <div id="loupe" class="ic-loupe" aria-hidden="true">
+              <canvas id="loupeCanvas" width="90" height="90"></canvas>
+              <div id="loupeLabel" class="ic-loupe-label">#FFFFFF</div>
+            </div>
+            <div id="regionBox" class="ic-region" aria-hidden="true"></div>
+            <div id="imagePreviewPlaceholder" class="ic-preview-placeholder text-sm">Ảnh xem trước</div>
+          </div>
+          <div id="mockupGrid" class="ic-mockup-grid sm:grid sm:grid-cols-3">
+            <div class="ic-mockup-card" id="mockupUi">
+              <div class="ic-mockup-label">UI Card</div>
+              <div class="ic-mockup-body">
+                <div class="ic-mockup-pill" data-role="title"></div>
+                <div class="ic-mockup-pill" data-role="subtitle"></div>
+                <div class="ic-mockup-button" data-role="cta"></div>
+              </div>
+            </div>
+            <div class="ic-mockup-card" id="mockupPoster">
+              <div class="ic-mockup-label">Poster</div>
+              <div class="ic-mockup-body ic-mockup-poster">
+                <div class="ic-mockup-pill" data-role="poster-title"></div>
+                <div class="ic-mockup-pill" data-role="poster-sub"></div>
+              </div>
+            </div>
+            <div class="ic-mockup-card" id="mockupFabric">
+              <div class="ic-mockup-label">Vải</div>
+              <div class="ic-mockup-body ic-mockup-fabric"></div>
+            </div>
+          </div>
         </div>
       </div>
 
