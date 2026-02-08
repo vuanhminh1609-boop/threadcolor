@@ -1,7 +1,12 @@
 ﻿import { saveSearch, getSavedSearch, listSavedSearches, deleteSavedSearch } from "./library.js";
+import {
+  addSavedResult,
+  addToShoppingList,
+  toggleInStock,
+  migrateOldKeys
+} from "./scripts/threadvault_store.js";
 import { composeHandoff } from "./scripts/handoff.js";
-import { bootstrapIncomingHandoff, setWorkbenchContext } from "./scripts/workbench_context.js";
-import "./scripts/workbench_bridge.js";
+import { resolveIncoming } from "./scripts/workbench_context.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
 import {
   submitThread,
@@ -305,6 +310,8 @@ function hexToHsl([r, g, b]) {
 let threads = [];
 let isDataReady = false;
 let pendingHandoffHexes = null;
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
+const hasStrictIncoming = incomingHandoff && (incomingHandoff.source === "asset" || incomingHandoff.source === "buffer");
 let lastResults = null;
 let lastChosenHex = null;
 let lastMultiHexes = null;
@@ -318,6 +325,9 @@ let isAdminUser = false;
 let useVerifiedOnly = false;
 let verifiedThreads = [];
 let pendingSubmissions = [];
+
+migrateOldKeys();
+window.tcVaultActionHandler = "main";
 
 const telemetry = (() => {
   const endpoint = typeof window.TC_TELEMETRY_ENDPOINT === "string"
@@ -895,6 +905,9 @@ const brandFilterClear = document.getElementById("brandFilterClear");
 const brandFilterCount = document.getElementById("brandFilterCount");
 const btnFindNearest = document.getElementById("btnFindNearest");
 const colorPicker = document.getElementById("colorPicker");
+const sectionBrandGrid = document.getElementById("sectionBrandGrid");
+const btnToggleBrandGrid = document.getElementById("btnToggleBrandGrid");
+const brandGridOpenBadge = document.getElementById("brandGridOpenBadge");
 const codeInput = document.getElementById("codeInput");
 const btnFindByCode = document.getElementById("btnFindByCode");
 const imgInput = document.getElementById("imgInput");
@@ -927,6 +940,7 @@ const eyedropperFallback = document.getElementById("eyedropperFallback");
 const fallbackColorPicker = document.getElementById("fallbackColorPicker");
 const portalCtaWrap = document.getElementById("portalCtaWrap");
 const portalCta = document.getElementById("portalCta");
+let scrollToResultOnce = false;
 function getAuthApi() {
   return window.firebaseAuth || null;
 }
@@ -1023,8 +1037,9 @@ function loadThreads() {
     }
 
     renderResultState("ready");
-
-    restoreInspectorFromUrl();
+    if (!incomingHandoff?.hexes?.length || !hasStrictIncoming) {
+      restoreInspectorFromUrl();
+    }
   })
   .catch(() => {
     renderResultState("error");
@@ -1353,7 +1368,7 @@ function scheduleSearchMany(hexes) {
 function applyHexesFromHub(detail) {
   const hexes = normalizeHexList(detail?.hexes || []);
   if (!hexes.length) return;
-  setWorkbenchContext(hexes, { worldKey: "threadcolor", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(hexes, { worldKey: "threadcolor", source: detail?.source || "hex-apply" });
   if (!isDataReady) {
     pendingHandoffHexes = hexes;
     return;
@@ -1648,6 +1663,10 @@ function showGroupedResults(groups, chosenHex) {
   renderGroupedResults(groups, chosenHex, resultRenderLimit);
   bindProjectInput();
   updateHandoffLinks();
+  if (scrollToResultOnce) {
+    scrollToResultOnce = false;
+    document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function loadMoreResults() {
@@ -1922,6 +1941,31 @@ function handleResultContainerClick(e) {
     loadMoreResults();
     return;
   }
+  const vaultBtn = e.target.closest('[data-action="vault-buy"], [data-action="vault-stock"]');
+  if (vaultBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    const card = vaultBtn.closest(".result-item");
+    if (!card) return;
+    const item = {
+      hex: normalizeHex(card.dataset.hex || ""),
+      brand: card.dataset.brand || "",
+      code: card.dataset.code || "",
+      name: card.dataset.name || ""
+    };
+    if (!item.hex || !item.brand || !item.code) {
+      showToast("Thiếu thông tin màu để lưu.");
+      return;
+    }
+    if (vaultBtn.dataset.action === "vault-buy") {
+      addToShoppingList(item);
+      showToast("Đã thêm vào danh sách mua.");
+      return;
+    }
+    toggleInStock(item, 1);
+    showToast("Đã đánh dấu có trong kho.");
+    return;
+  }
   const pinBtn = e.target.closest('[data-action="pin-toggle"]');
   if (pinBtn) {
     e.preventDefault();
@@ -2007,6 +2051,26 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     showToast(t("tc.result.noDataSave", "Không có dữ liệu để lưu."));
     return;
   }
+  const localPayload = {
+    inputHex: cardHex,
+    project: currentProject || "",
+    results: currentRendered.slice(0, 20).map(t => ({
+      brand: t.brand,
+      code: t.code,
+      name: t.name,
+      hex: t.hex,
+      delta: t.delta
+    })),
+    topMatch: {
+      brand: cardBrand || "",
+      code: cardCode || "",
+      name: cardName || "",
+      hex: cardHex,
+      delta: Number.isFinite(Number(card?.dataset?.delta)) ? Number(card?.dataset?.delta) : null
+    },
+    createdAt: new Date().toISOString()
+  };
+  addSavedResult(localPayload);
   console.info("[save] card data", { hex: cardHex, brand: cardBrand, code: cardCode, name: cardName });
   showToast(t("tc.result.saving", "Đang lưu..."));
   const resetSaveBtn = (text = t("tc.result.save", "Lưu")) => {
@@ -2931,11 +2995,37 @@ if (deltaMethodSelect) {
 loadProjectPrefs();
 loadPins();
 
+if (btnToggleBrandGrid) {
+  btnToggleBrandGrid.setAttribute("aria-controls", "sectionBrandGrid");
+  const isOpen = sectionBrandGrid && !sectionBrandGrid.hasAttribute("hidden");
+  btnToggleBrandGrid.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  if (isOpen) {
+    brandGridOpenBadge?.removeAttribute("hidden");
+  } else {
+    brandGridOpenBadge?.setAttribute("hidden", "");
+  }
+  btnToggleBrandGrid.addEventListener("click", () => {
+    if (!sectionBrandGrid) return;
+    const willOpen = sectionBrandGrid.hasAttribute("hidden");
+    sectionBrandGrid.toggleAttribute("hidden");
+    btnToggleBrandGrid.setAttribute("aria-expanded", String(willOpen));
+    if (willOpen) {
+      brandGridOpenBadge?.removeAttribute("hidden");
+    } else {
+      brandGridOpenBadge?.setAttribute("hidden", "");
+    }
+    if (willOpen) {
+      sectionBrandGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+}
+
 btnFindNearest?.addEventListener("click", () => {
 
   if (!isDataReady) return alert("Dữ liệu chưa sẵn sàng");
 
   const hex = colorPicker.value;
+  scrollToResultOnce = true;
   telemetry.track("search_start");
   runSearch(hex);
 });
@@ -3068,12 +3158,10 @@ canvas?.addEventListener("click", e => {
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
 });
-
-bootstrapIncomingHandoff({
-  minColors: 1,
-  worldKey: "threadcolor",
-  applyFn: (hexes) => applyHexesFromHub({ hexes })
-});
+if (hasStrictIncoming && incomingHandoff?.hexes?.length) {
+  applyHexesFromHub({ hexes: incomingHandoff.hexes, source: incomingHandoff.source });
+  window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "threadcolor", source: incomingHandoff.source });
+}
 
 const initVaultTabs = () => {
   const savedPanel = document.getElementById("vaultTabSaved");
@@ -3097,13 +3185,14 @@ const initVaultTabs = () => {
   let initial = "saved";
   try {
     const param = new URLSearchParams(window.location.search).get("tab");
-    if (param === "stock" || param === "saved") initial = param;
+    if (param === "stock" || param === "saved" || param === "shopping") initial = param;
   } catch (_err) {}
   setActive(initial);
 };
 
 initVaultTabs();
   
+
 
 
 

@@ -1,7 +1,5 @@
 ﻿import { composeHandoff } from "../scripts/handoff.js";
-
-import { bootstrapIncomingHandoff, setWorkbenchContext } from "../scripts/workbench_context.js";
-import "../scripts/workbench_bridge.js";
+import { resolveIncoming } from "../scripts/workbench_context.js";
 
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
@@ -9,6 +7,8 @@ const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "palette";
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
+const hasStrictIncoming = incomingHandoff && (incomingHandoff.source === "asset" || incomingHandoff.source === "buffer");
 const THREAD_BRAND_PRIORITY = ["Gingko", "Ming Shyang", "Marathon", "DMC"];
 const KNOWLEDGE_URL = "../assets/knowledge/palette_knowledge_vi.json";
 
@@ -2445,6 +2445,7 @@ function getHashStops(key) {
 }
 
 function handleBackwardCompatibility() {
+  if (hasStrictIncoming) return false;
   const params = new URLSearchParams(window.location.search);
   const mode = params.get("mode");
   const hashStops = getHashStops("g");
@@ -2470,15 +2471,17 @@ async function loadPalettes() {
 
 function init() {
   if (handleBackwardCompatibility()) return;
-  const stops = getHashStops("p");
-  if (stops) {
-    state.hashPalette = {
-      id: "hash-palette",
-      ten: "Palette từ dải chuyển màu",
-      tags: ["từ hash"],
-      stops
-    };
-    state.selectedPaletteId = "hash-palette";
+  if (!hasStrictIncoming) {
+    const stops = getHashStops("p");
+    if (stops) {
+      state.hashPalette = {
+        id: "hash-palette",
+        ten: "Palette từ dải chuyển màu",
+        tags: ["từ hash"],
+        stops
+      };
+      state.selectedPaletteId = "hash-palette";
+    }
   }
   loadPalettes();
 
@@ -2598,7 +2601,7 @@ function applyHexesFromHub(detail) {
   const mode = detail?.mode === "append" ? "append" : "replace";
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (normalized.length < 2) return;
-  setWorkbenchContext(normalized, { worldKey: "palette", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(normalized, { worldKey: "palette", source: detail?.source || "hex-apply" });
   const baseStops = mode === "append"
     ? (getActivePalette()?.stops || [])
     : [];
@@ -2624,9 +2627,7 @@ function applyHexesFromHub(detail) {
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
 });
-
-bootstrapIncomingHandoff({
-  minColors: 2,
-  worldKey: "palette",
-  applyFn: (hexes) => applyHexesFromHub({ hexes, mode: "replace" })
-});
+if (hasStrictIncoming && incomingHandoff?.hexes?.length) {
+  applyHexesFromHub({ hexes: incomingHandoff.hexes, mode: "replace" });
+  window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "palette", source: incomingHandoff.source });
+}

@@ -1,12 +1,12 @@
 ﻿import { createSpec } from "./spec.js";
 import { composeHandoff } from "./handoff.js";
-import { bootstrapIncomingHandoff, setWorkbenchContext } from "./workbench_context.js";
-import "./workbench_bridge.js";
+import { resolveIncoming } from "./workbench_context.js";
 
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "imagecolor";
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
 
 const elements = {
   input: document.getElementById("imgInput"),
@@ -1035,7 +1035,7 @@ const applyHexesFromHub = (detail) => {
   const mode = detail?.mode === "append" ? "append" : "replace";
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length) return;
-  setWorkbenchContext(normalized, { worldKey: "imagecolor", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(normalized, { worldKey: "imagecolor", source: detail?.source || "hex-apply" });
   if (mode === "append" && state.palette.length) {
     const combined = [...state.palette, ...normalized];
     const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
@@ -1065,9 +1065,7 @@ bindEvents();
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
 });
-
-bootstrapIncomingHandoff({
-  minColors: 1,
-  worldKey: "imagecolor",
-  applyFn: (hexes) => applyHexesFromHub({ hexes, mode: "replace" })
-});
+if (incomingHandoff?.hexes?.length) {
+  applyHexesFromHub({ hexes: incomingHandoff.hexes, mode: "replace" });
+  window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "imagecolor", source: incomingHandoff.source });
+}

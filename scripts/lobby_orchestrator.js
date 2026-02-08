@@ -234,6 +234,35 @@
     const chip = frame.querySelector("[data-preview-chip]");
     const swatches = Array.from(frame.querySelectorAll("[data-preview-swatch]"));
     const pills = Array.from(frame.querySelectorAll("[data-preview-pill]"));
+    const ctaBtn = frame.querySelector("[data-preview-cta]");
+    const ctaTargets = {
+      ui: "./worlds/palette.html",
+      poster: "./worlds/gradient.html",
+      thread: "./worlds/threadcolor.html"
+    };
+
+    const getWorkbenchSwatches = () => {
+      const ctx = window.tcWorkbench?.getContext?.();
+      const list = Array.isArray(ctx?.hexes) ? ctx.hexes.filter(Boolean) : [];
+      if (!list.length) return null;
+      const swatchList = list.slice(0, 3);
+      while (swatchList.length < 3) {
+        swatchList.push(swatchList[swatchList.length - 1] || list[0]);
+      }
+      return swatchList;
+    };
+
+    const buildBufferUrl = (url) => {
+      const ctx = window.tcWorkbench?.getContext?.();
+      const hexes = Array.isArray(ctx?.hexes) ? ctx.hexes : [];
+      if (!hexes.length) return url;
+      const ensure = window.tcWorkbench?.ensureBufferFromHexes;
+      const append = window.tcWorkbench?.appendBufferToUrl;
+      if (typeof ensure !== "function" || typeof append !== "function") return url;
+      const bufferId = ensure(hexes, { source: "lobby-preview" });
+      if (!bufferId) return url;
+      return append(url, bufferId);
+    };
 
     const applyPreset = (key) => {
       const preset = previewPresets[key] || previewPresets.ui;
@@ -247,12 +276,21 @@
       frame.style.setProperty("--preview-chip", preset.chipBg);
       frame.style.setProperty("--preview-pill", preset.pillBg);
 
+      const overrideSwatches = getWorkbenchSwatches();
+      const activeSwatches = overrideSwatches || preset.swatches;
       swatches.forEach((swatch, idx) => {
-        swatch.style.background = preset.swatches[idx % preset.swatches.length];
+        const hex = activeSwatches[idx % activeSwatches.length];
+        swatch.style.background = hex;
+        swatch.dataset.hex = hex;
+        swatch.dataset.hexInspect = "click";
       });
       pills.forEach((pill, idx) => {
         pill.textContent = preset.pills[idx % preset.pills.length];
       });
+
+      if (ctaBtn) {
+        ctaBtn.dataset.previewTarget = ctaTargets[key] || ctaTargets.ui;
+      }
     };
 
     const setActiveTab = (key) => {
@@ -270,6 +308,14 @@
         setActiveTab(key);
       });
     });
+
+    if (ctaBtn) {
+      ctaBtn.addEventListener("click", () => {
+        const target = ctaBtn.dataset.previewTarget || ctaTargets.ui;
+        const nextUrl = buildBufferUrl(target);
+        window.location.href = nextUrl;
+      });
+    }
 
     setActiveTab("ui");
   };

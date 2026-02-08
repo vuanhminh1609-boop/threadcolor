@@ -81,6 +81,8 @@
 | Phối bù (complementary: phối lệch 180°) | Phối bù | Phối màu lệch 180° trên vòng màu để tạo tương phản mạnh. |
 | Phối tương tự (analogous: phối lệch ±30°) | Phối tương tự | Phối màu kề nhau trên vòng màu (±30°) để tạo cảm giác hài hoà. |
 | Sắc độ (tint/shade) | Sắc độ | Biến thể sáng hơn (tint) hoặc tối hơn (shade) của một màu gốc. |
+| Dải sắc độ (tone ramp) | Dải sắc độ | Chuỗi nhiều bước sáng–tối của một màu gốc để kiểm tra độ chuyển sắc. |
+| Màu tương tự (analogous) | Màu tương tự | Nhóm màu gần nhau trên vòng màu (±20° đến ±40°) để phối hài hoà. |
 | Tiêu chuẩn WCAG | Tiêu chuẩn WCAG | Chuẩn khả năng tiếp cận web, có khuyến nghị về tương phản màu. |
 | Vai trò màu (color roles) | Vai trò màu | Cách phân vai màu trong palette: nền/bề mặt/chữ/primary/accent để dùng nhất quán. |
 | Chấm điểm (scoring) | Chấm điểm | Cách đánh giá điểm số để xếp hạng gợi ý palette theo tiêu chí. |
@@ -92,6 +94,7 @@
 | Sửa tự động | Sửa tự động | Cơ chế tự điều chỉnh màu để đạt tiêu chí tối thiểu khi đầu vào chưa đạt. |
 | Mẫu gợi ý | Mẫu gợi ý | Bộ câu brief mẫu để chọn nhanh theo ngành hoặc mục tiêu. |
 | Ngăn kéo dưới | Ngăn kéo dưới | Hộp trượt từ cạnh dưới màn hình để chọn nội dung trên mobile. |
+| Giữ chạm (long-press) | Giữ chạm | Thao tác nhấn giữ ~300–500ms trên mobile để gọi hành động phụ. |
 | Độ chói tương đối (relative luminance) | Độ chói tương đối | Thước đo độ sáng chuẩn hoá của màu để phân loại và tính tương phản theo WCAG. |
 | Kho HEX | Kho HEX | Kho tra cứu tập trung cho mọi mã màu dạng #RRGGBB trong hệ sinh thái. |
 | Hồ sơ màu | Hồ sơ màu | Màn hiển thị chi tiết một màu: mã, chuyển đổi, gợi ý sử dụng và hành động liên quan. |
@@ -103,6 +106,7 @@
 | Chế độ in | Chế độ in | Cách hiển thị báo cáo tối ưu cho in ấn/PDF, loại bỏ UI không cần thiết. |
 | Lưu PDF từ trình duyệt | Lưu PDF từ trình duyệt | Dùng chức năng Print/Save as PDF của trình duyệt để xuất báo cáo. |
 | Hồ sơ HEX | Hồ sơ HEX | Màn chi tiết 1 mã HEX, hiển thị chuyển đổi màu, gợi ý và thao tác nhanh. |
+| Bảng thông tin HEX (HEX Inspector) | Bảng thông tin HEX | Bảng tra cứu nhanh cho một mã HEX: chuyển đổi màu, gợi ý gần nhất và hành động áp dụng. |
 | LCh | LCh | Biểu diễn Lab theo L* (độ sáng), C (độ rực), h (góc màu) để dễ so sánh trực quan. |
 | Contrast | Độ tương phản chữ/nền | Mức chênh sáng giữa chữ và nền; giúp chọn màu chữ dễ đọc. |
 | Carousel | Dải lướt ngang | Danh sách cuộn ngang để duyệt nhanh các gợi ý màu. |

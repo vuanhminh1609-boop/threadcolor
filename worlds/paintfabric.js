@@ -1,13 +1,12 @@
 ﻿import { composeHandoff } from "../scripts/handoff.js";
-
-import { bootstrapIncomingHandoff, setWorkbenchContext } from "../scripts/workbench_context.js";
-import "../scripts/workbench_bridge.js";
+import { resolveIncoming } from "../scripts/workbench_context.js";
 
 const STORAGE_KEY = "tc_paintfabric_assets";
 const ASSET_LIBRARY_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "paintfabric";
+const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
 const TEMPLATE_BASE = "../assets/material_scenes";
 const PAINT_CALC_KEY = "tc_paint_calc_v1";
 const TRIPTYCH_KEY = "tc_paintfabric_triptych_v1";
@@ -2029,7 +2028,7 @@ const applyHexesFromHub = (detail) => {
   const rawList = Array.isArray(detail?.hexes) ? detail.hexes : [];
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length || !elements.hex) return;
-  setWorkbenchContext(normalized, { worldKey: "paintfabric", source: "hex-apply" });
+  window.tcWorkbench?.setContext?.(normalized, { worldKey: "paintfabric", source: detail?.source || "hex-apply" });
   elements.hex.value = normalized[0];
   markPresetCustom();
   syncUI();
@@ -2039,9 +2038,7 @@ const applyHexesFromHub = (detail) => {
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);
 });
-
-bootstrapIncomingHandoff({
-  minColors: 1,
-  worldKey: "paintfabric",
-  applyFn: (hexes) => applyHexesFromHub({ hexes })
-});
+if (incomingHandoff?.hexes?.length) {
+  applyHexesFromHub({ hexes: incomingHandoff.hexes });
+  window.tcWorkbench?.setContext?.(incomingHandoff.hexes, { worldKey: "paintfabric", source: incomingHandoff.source });
+}
