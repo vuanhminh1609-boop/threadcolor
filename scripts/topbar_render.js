@@ -100,4 +100,12 @@
       </div>
     </header>
   `;
+
+  if (!document.getElementById("tc-hex-inspector-loader")) {
+    const script = document.createElement("script");
+    script.type = "module";
+    script.id = "tc-hex-inspector-loader";
+    script.src = `${basePath}scripts/hex_inspector.js`;
+    document.head.appendChild(script);
+  }
 })();

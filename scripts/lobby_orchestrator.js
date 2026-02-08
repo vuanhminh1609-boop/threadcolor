@@ -279,7 +279,10 @@
       const overrideSwatches = getWorkbenchSwatches();
       const activeSwatches = overrideSwatches || preset.swatches;
       swatches.forEach((swatch, idx) => {
-        swatch.style.background = activeSwatches[idx % activeSwatches.length];
+        const hex = activeSwatches[idx % activeSwatches.length];
+        swatch.style.background = hex;
+        swatch.dataset.hex = hex;
+        swatch.dataset.hexInspect = "click";
       });
       pills.forEach((pill, idx) => {
         pill.textContent = preset.pills[idx % preset.pills.length];
