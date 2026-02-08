@@ -477,8 +477,8 @@
     .brand-tile{
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      padding: 0.85rem 0.9rem;
+      gap: 0.35rem;
+      padding: 0.65rem 0.8rem;
       border-radius: 1rem;
       border: 1px solid var(--stroke);
       background: var(--glass);
@@ -486,7 +486,7 @@
       cursor: pointer;
       transition: transform .12s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
       box-shadow: 0 12px 26px rgba(0,0,0,.08);
-      min-height: 86px;
+      min-height: 68px;
     }
     .brand-tile:hover{
       transform: translateY(-1px);
@@ -510,14 +510,14 @@
     }
     .brand-tile-name{
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
     .brand-tile-meta{
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
       color: var(--muted);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
     }
     .tc-match{
       font-weight: 700;
@@ -1115,7 +1115,7 @@
       <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
         <h2 id="inspectorTitle" class="text-lg font-semibold text-gray-800">Bảng thông tin màu</h2>
         <button id="inspectorClose" class="p-2 rounded-full hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" aria-label="Đóng">
-          ?
+          &times;
         </button>
       </div>
       <div class="p-4 space-y-4 overflow-y-auto">
@@ -1200,7 +1200,7 @@
     <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
       <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
         <h3 class="text-lg font-semibold text-gray-800" data-i18n="tc.library.title">Kết quả đã lưu</h3>
-        <button id="libraryClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">?</button>
+        <button id="libraryClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500" aria-label="Đóng">&times;</button>
       </div>
       <div class="p-4">
         <div id="libraryList" class="space-y-3 text-sm text-gray-800">
@@ -1215,7 +1215,7 @@
     <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
       <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
         <h3 class="text-lg font-semibold text-gray-800">Đóng góp dữ liệu</h3>
-        <button id="contributeClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">?</button>
+        <button id="contributeClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500" aria-label="Đóng">&times;</button>
       </div>
       <div class="p-5 space-y-4 text-sm text-gray-800">
         <div class="space-y-1">
@@ -1253,7 +1253,7 @@
     <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
       <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
         <h3 class="text-lg font-semibold text-gray-800">Xác minh dữ liệu</h3>
-        <button id="verifyClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500">?</button>
+        <button id="verifyClose" class="p-2 rounded-full hover:bg-gray-100 text-gray-500" aria-label="Đóng">&times;</button>
       </div>
       <div class="p-5 space-y-3 text-sm text-gray-800">
         <div id="verifyList" class="space-y-3">
@@ -2300,8 +2300,6 @@
         if (!btn) return;
         const action = btn.dataset.action;
         if (!["compare-thread", "vault-stock", "vault-buy"].includes(action)) return;
-        event.preventDefault();
-        event.stopPropagation();
         const card = btn.closest(".result-item");
         if (!card) return;
         const item = {
@@ -2311,9 +2309,14 @@
           name: card.dataset.name || ""
         };
         if (action === "compare-thread") {
+          event.preventDefault();
+          event.stopPropagation();
           applyHexToSearch(item.hex, item.brand);
           return;
         }
+        if (window.tcVaultActionHandler === "main") return;
+        event.preventDefault();
+        event.stopPropagation();
         handleVaultAction(action === "vault-buy" ? "buy" : "stock", item);
       }, true);
     };

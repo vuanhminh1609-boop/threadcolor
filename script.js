@@ -1,4 +1,10 @@
 ﻿import { saveSearch, getSavedSearch, listSavedSearches, deleteSavedSearch } from "./library.js";
+import {
+  addSavedResult,
+  addToShoppingList,
+  toggleInStock,
+  migrateOldKeys
+} from "./scripts/threadvault_store.js";
 import { composeHandoff } from "./scripts/handoff.js";
 import { resolveIncoming } from "./scripts/workbench_context.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
@@ -319,6 +325,9 @@ let isAdminUser = false;
 let useVerifiedOnly = false;
 let verifiedThreads = [];
 let pendingSubmissions = [];
+
+migrateOldKeys();
+window.tcVaultActionHandler = "main";
 
 const telemetry = (() => {
   const endpoint = typeof window.TC_TELEMETRY_ENDPOINT === "string"
@@ -1924,6 +1933,31 @@ function handleResultContainerClick(e) {
     loadMoreResults();
     return;
   }
+  const vaultBtn = e.target.closest('[data-action="vault-buy"], [data-action="vault-stock"]');
+  if (vaultBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    const card = vaultBtn.closest(".result-item");
+    if (!card) return;
+    const item = {
+      hex: normalizeHex(card.dataset.hex || ""),
+      brand: card.dataset.brand || "",
+      code: card.dataset.code || "",
+      name: card.dataset.name || ""
+    };
+    if (!item.hex || !item.brand || !item.code) {
+      showToast("Thiếu thông tin màu để lưu.");
+      return;
+    }
+    if (vaultBtn.dataset.action === "vault-buy") {
+      addToShoppingList(item);
+      showToast("Đã thêm vào danh sách mua.");
+      return;
+    }
+    toggleInStock(item, 1);
+    showToast("Đã đánh dấu có trong kho.");
+    return;
+  }
   const pinBtn = e.target.closest('[data-action="pin-toggle"]');
   if (pinBtn) {
     e.preventDefault();
@@ -2009,6 +2043,26 @@ async function handleSaveCurrentEnhanced(saveBtn) {
     showToast(t("tc.result.noDataSave", "Không có dữ liệu để lưu."));
     return;
   }
+  const localPayload = {
+    inputHex: cardHex,
+    project: currentProject || "",
+    results: currentRendered.slice(0, 20).map(t => ({
+      brand: t.brand,
+      code: t.code,
+      name: t.name,
+      hex: t.hex,
+      delta: t.delta
+    })),
+    topMatch: {
+      brand: cardBrand || "",
+      code: cardCode || "",
+      name: cardName || "",
+      hex: cardHex,
+      delta: Number.isFinite(Number(card?.dataset?.delta)) ? Number(card?.dataset?.delta) : null
+    },
+    createdAt: new Date().toISOString()
+  };
+  addSavedResult(localPayload);
   console.info("[save] card data", { hex: cardHex, brand: cardBrand, code: cardCode, name: cardName });
   showToast(t("tc.result.saving", "Đang lưu..."));
   const resetSaveBtn = (text = t("tc.result.save", "Lưu")) => {
@@ -3097,13 +3151,14 @@ const initVaultTabs = () => {
   let initial = "saved";
   try {
     const param = new URLSearchParams(window.location.search).get("tab");
-    if (param === "stock" || param === "saved") initial = param;
+    if (param === "stock" || param === "saved" || param === "shopping") initial = param;
   } catch (_err) {}
   setActive(initial);
 };
 
 initVaultTabs();
   
+
 
 
 

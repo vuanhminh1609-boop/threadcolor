@@ -173,10 +173,14 @@
       <p class="mt-3 tc-muted" data-i18n="vault.desc">Trung tâm quản lý kho chỉ và bản lưu, đang hoàn thiện trải nghiệm.</p>
       <div class="mt-6 flex flex-wrap gap-2" role="tablist">
         <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" type="button" data-tab="saved" data-i18n="vault.tabSaved" aria-selected="true">Kết quả đã lưu</button>
+        <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" type="button" data-tab="shopping" data-i18n="vault.tabShopping" aria-selected="false">Danh sách mua</button>
         <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" type="button" data-tab="stock" data-i18n="vault.tabStock" aria-selected="false">Tồn kho</button>
       </div>
       <div class="mt-6">
         <section id="vaultTabSaved" data-tab-panel="saved">
+          <div id="vaultSavedEmpty" class="tc-muted text-sm">Chưa có kết quả đã lưu.</div>
+          <div id="vaultSavedList" class="grid gap-3 mt-4"></div>
+
           <div id="libraryOverlay" class="hidden"></div>
           <div id="libraryModal" class="hidden tc-card rounded-2xl border border-black/5 overflow-hidden">
             <div class="flex items-center justify-between px-5 py-4 border-b border-black/5">
@@ -187,6 +191,14 @@
               <div id="libraryList" class="space-y-3 text-sm"></div>
             </div>
           </div>
+        </section>
+        <section id="vaultTabShopping" data-tab-panel="shopping" class="hidden">
+          <div class="tc-card rounded-2xl p-4 flex flex-wrap gap-6 text-sm">
+            <div><span class="tc-muted">Tổng mục</span> <strong id="shoppingSummaryItems">0</strong></div>
+            <div><span class="tc-muted">Tổng số lượng</span> <strong id="shoppingSummaryQty">0</strong></div>
+          </div>
+          <div id="vaultShoppingEmpty" class="tc-muted text-sm mt-4">Chưa có danh sách mua.</div>
+          <div id="vaultShoppingList" class="grid gap-3 mt-4"></div>
         </section>
         <section id="vaultTabStock" data-tab-panel="stock" class="hidden">
           <div id="stockCta" class="tc-card rounded-2xl p-6 hidden">
@@ -305,7 +317,7 @@
   <script type="module" src="../auth.js"></script>
   <script type="module" src="../scripts/workbench_bridge.js"></script>
   <script type="module" src="../script.js"></script>
-  <script type="module" src="../stock.js"></script>
+  <script type="module" src="./threadvault.js"></script>
   
 
 <script type="module" src="../scripts/hex_hub.js"></script>
