@@ -1,6 +1,7 @@
 ﻿import { createSpec } from "./spec.js";
 import { composeHandoff } from "./handoff.js";
 import { resolveIncoming } from "./workbench_context.js";
+import { uploadImage, delete as deleteImage } from "./storage/storage_client.js";
 
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
@@ -63,6 +64,8 @@ const state = {
   workerReady: false,
   sampleToken: 0
 };
+
+let imageLoadSeq = 0;
 
 const setStatus = (message) => {
   if (!elements.status) return;
@@ -755,19 +758,42 @@ const readImageFile = (file) => {
 
 const handleFile = async (file) => {
   if (!file) return;
+  const loadSeq = imageLoadSeq + 1;
+  imageLoadSeq = loadSeq;
   try {
     state.imageName = file.name || "Ảnh";
     state.lockedHexes.clear();
-    const dataUrl = await readImageFile(file);
+    const stored = await uploadImage(file, {
+      sourceWorld: "imagecolor",
+      purpose: "preview",
+      name: state.imageName
+    });
+    let dataUrl = stored?.url || "";
+    let cleanup = () => {};
+    if (stored?.key) {
+      cleanup = () => {
+        void deleteImage(stored.key);
+      };
+    }
+    if (!dataUrl) {
+      dataUrl = await readImageFile(file);
+      cleanup = () => {};
+    }
     const img = new Image();
     img.onload = () => {
+      if (loadSeq !== imageLoadSeq) {
+        cleanup();
+        return;
+      }
       state.image = img;
       setPreview(dataUrl);
       clearRegion();
       drawPreviewImage(img);
       sampleImage();
+      cleanup();
     };
     img.onerror = () => {
+      cleanup();
       showToast("Không thể tải ảnh để xử lý.");
     };
     img.src = dataUrl;
@@ -776,21 +802,37 @@ const handleFile = async (file) => {
   }
 };
 
-const buildThumbnail = (palette) => {
-  if (!palette.length) return "";
+const captureCanvasImage = (canvas, type = "image/png") => new Promise((resolve) => {
+  if (!canvas) {
+    resolve(null);
+    return;
+  }
+  if (canvas.toBlob) {
+    canvas.toBlob((blob) => resolve(blob || null), type);
+    return;
+  }
+  try {
+    resolve(canvas.toDataURL(type));
+  } catch (_err) {
+    resolve(null);
+  }
+});
+
+const buildThumbnailCanvas = (palette) => {
+  if (!palette.length) return null;
   const canvas = document.createElement("canvas");
   const width = 180;
   const height = 120;
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
+  if (!ctx) return null;
   const step = width / palette.length;
   palette.forEach((hex, idx) => {
     ctx.fillStyle = hex;
     ctx.fillRect(idx * step, 0, step + 1, height);
   });
-  return canvas.toDataURL("image/png");
+  return canvas;
 };
 
 const buildCssVars = (palette) => {
@@ -822,12 +864,27 @@ const buildGradientShareLink = (palette) => {
   return url.toString();
 };
 
-const buildAssetSpec = () => {
+const buildAssetSpec = async () => {
   if (!state.palette.length) {
     return null;
   }
   const project = getCurrentProject();
-  const thumbnail = buildThumbnail(state.palette);
+  const thumbCanvas = buildThumbnailCanvas(state.palette);
+  const thumbPayload = await captureCanvasImage(thumbCanvas);
+  let thumbnail = "";
+  if (thumbPayload) {
+    try {
+      const storedThumb = await uploadImage(thumbPayload, {
+        sourceWorld: "imagecolor",
+        purpose: "palette-thumbnail",
+        paletteSize: state.palette.length,
+        sourceImage: state.imageName || ""
+      });
+      thumbnail = storedThumb?.key || "";
+    } catch (_err) {
+      thumbnail = "";
+    }
+  }
   const lockedHexes = getLockedList();
   const paletteSize = Number(elements.paletteSize?.value || state.palette.length);
   const createdAt = new Date().toISOString();
@@ -857,8 +914,8 @@ const buildAssetSpec = () => {
   });
 };
 
-const saveToLibrary = () => {
-  const spec = buildAssetSpec();
+const saveToLibrary = async () => {
+  const spec = await buildAssetSpec();
   if (!spec) {
     showToast("Chưa có bảng phối màu để lưu.");
     return;
@@ -927,7 +984,9 @@ const bindEvents = () => {
   });
   elements.btnToPalette?.addEventListener("click", toPaletteWorld);
   elements.btnToGradient?.addEventListener("click", toGradientWorld);
-  elements.btnSave?.addEventListener("click", saveToLibrary);
+  elements.btnSave?.addEventListener("click", () => {
+    void saveToLibrary();
+  });
   elements.btnUseLibrary?.addEventListener("click", () => {
     const payload = composeHandoff({
       from: HANDOFF_FROM,
@@ -937,12 +996,14 @@ const bindEvents = () => {
     window.location.href = `../worlds/library.html${payload}`;
   });
   elements.btnShare?.addEventListener("click", () => {
-    const spec = buildAssetSpec();
-    if (!spec) {
-      showToast("Chưa có bảng phối màu để chia sẻ.");
-      return;
-    }
-    publishToFeed(spec);
+    void (async () => {
+      const spec = await buildAssetSpec();
+      if (!spec) {
+        showToast("Chưa có bảng phối màu để chia sẻ.");
+        return;
+      }
+      publishToFeed(spec);
+    })();
   });
   elements.btnCopyCss?.addEventListener("click", async () => {
     if (!state.palette.length) return;

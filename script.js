@@ -8,6 +8,7 @@ import {
 import { composeHandoff } from "./scripts/handoff.js";
 import { resolveIncoming } from "./scripts/workbench_context.js";
 import { normalizeAndDedupeThreads } from "./data_normalize.js";
+import { uploadImage, delete as deleteImage } from "./scripts/storage/storage_client.js";
 import {
   submitThread,
   listPendingSubmissions,
@@ -941,6 +942,7 @@ const fallbackColorPicker = document.getElementById("fallbackColorPicker");
 const portalCtaWrap = document.getElementById("portalCtaWrap");
 const portalCta = document.getElementById("portalCta");
 let scrollToResultOnce = false;
+let canvasImageSeq = 0;
 function getAuthApi() {
   return window.firebaseAuth || null;
 }
@@ -3111,18 +3113,49 @@ copyAllBtn?.addEventListener("click", () => {
 });
 
 // Canvas pick
-imgInput?.addEventListener("change", e => {
+imgInput?.addEventListener("change", async e => {
   if (!canvas || !ctx) return;
   const file = e.target.files[0];
   if (!file) return;
+  const seq = canvasImageSeq + 1;
+  canvasImageSeq = seq;
+  let url = "";
+  let cleanup = () => {};
+  try {
+    const stored = await uploadImage(file, {
+      sourceWorld: "threadcolor",
+      purpose: "canvas-pick",
+      name: file.name || ""
+    });
+    if (stored?.url) {
+      url = stored.url;
+      if (stored.key) {
+        cleanup = () => {
+          void deleteImage(stored.key);
+        };
+      }
+    }
+  } catch (_err) {
+    url = "";
+  }
+  if (!url) {
+    url = URL.createObjectURL(file);
+    cleanup = () => URL.revokeObjectURL(url);
+  }
   const img = new Image();
-  const url = URL.createObjectURL(file);
   img.onload = () => {
+    if (seq !== canvasImageSeq) {
+      cleanup();
+      return;
+    }
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
+    cleanup();
+  };
+  img.onerror = () => {
+    cleanup();
   };
   img.src = url;
 });

@@ -1,4 +1,5 @@
 ﻿import { resolveIncoming, normalizeHexList } from "../scripts/workbench_context.js";
+import { uploadImage } from "../scripts/storage/storage_client.js";
 const BOARD_SIZE = 9;
 const COLORS = [
   "#ef4444",
@@ -295,6 +296,22 @@ function downloadCanvas(canvas, filename) {
   link.click();
   link.remove();
 }
+
+const captureCanvasImage = (canvas, type = "image/png") => new Promise((resolve) => {
+  if (!canvas) {
+    resolve(null);
+    return;
+  }
+  if (canvas.toBlob) {
+    canvas.toBlob((blob) => resolve(blob || null), type);
+    return;
+  }
+  try {
+    resolve(canvas.toDataURL(type));
+  } catch (_err) {
+    resolve(null);
+  }
+});
 
 function formatDateSeed(date = new Date()) {
   const year = date.getFullYear();
@@ -1575,11 +1592,24 @@ function closeLine98Endscreen() {
   el.end.setAttribute("aria-hidden", "true");
 }
 
-function saveLine98RunToLibrary(payload) {
+async function saveLine98RunToLibrary(payload) {
   const colors = getLineColors();
   const createdAt = new Date().toISOString();
   const canvas = buildLine98Canvas();
-  const thumbnail = canvas.toDataURL("image/png");
+  const snapshot = await captureCanvasImage(canvas, "image/png");
+  let thumbnail = "";
+  if (snapshot) {
+    try {
+      const stored = await uploadImage(snapshot, {
+        sourceWorld: "colorplay",
+        purpose: "line98-thumbnail",
+        game: "line98"
+      });
+      thumbnail = stored?.key || "";
+    } catch (_err) {
+      thumbnail = "";
+    }
+  }
   const asset = {
     id: `colorplay_line98_${Date.now()}`,
     type: "colorplay_run",
@@ -1643,9 +1673,9 @@ function handleLine98EndPng() {
   exportLine98Png();
 }
 
-function handleLine98EndSave() {
+async function handleLine98EndSave() {
   const payload = buildLine98RunPayload();
-  saveLine98RunToLibrary(payload);
+  await saveLine98RunToLibrary(payload);
 }
 
 function handleDailyChallenge() {
@@ -2426,11 +2456,24 @@ function closePillEndscreen() {
   pillEl.end.setAttribute("aria-hidden", "true");
 }
 
-function savePillRunToLibrary(payload) {
+async function savePillRunToLibrary(payload) {
   const colors = getPillColors();
   const createdAt = new Date().toISOString();
   const canvas = buildPillCanvas();
-  const thumbnail = canvas.toDataURL("image/png");
+  const snapshot = await captureCanvasImage(canvas, "image/png");
+  let thumbnail = "";
+  if (snapshot) {
+    try {
+      const stored = await uploadImage(snapshot, {
+        sourceWorld: "colorplay",
+        purpose: "pillstack-thumbnail",
+        game: "pillstack"
+      });
+      thumbnail = stored?.key || "";
+    } catch (_err) {
+      thumbnail = "";
+    }
+  }
   const asset = {
     id: `colorplay_pill_${Date.now()}`,
     type: "colorplay_run",
@@ -2491,9 +2534,9 @@ function handlePillEndPng() {
   exportPillPng();
 }
 
-function handlePillEndSave() {
+async function handlePillEndSave() {
   const payload = buildPillRunPayload();
-  savePillRunToLibrary(payload);
+  await savePillRunToLibrary(payload);
 }
 
 function handlePillGameOver() {
