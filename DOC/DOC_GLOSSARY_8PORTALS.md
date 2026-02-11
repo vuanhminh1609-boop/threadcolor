@@ -149,6 +149,10 @@
 | IndexedDB (kho dữ liệu cục bộ trình duyệt) | IndexedDB | Cơ chế lưu dữ liệu dạng kho trong trình duyệt, phù hợp lưu blob/ảnh và dữ liệu lớn theo phiên bản. |
 | Bộ chuyển đổi (adapter) | Bộ chuyển đổi | Lớp trung gian ánh xạ interface chung sang triển khai cụ thể để thay đổi backend mà không đập code. |
 | Nhà cung cấp lưu trữ (storage provider) | Nhà cung cấp lưu trữ | Thành phần triển khai cụ thể việc lưu/đọc/xoá ảnh (local, Firebase, R2) theo cùng interface. |
+| Tên chuẩn (Canonical) | Tên chuẩn | Tên gốc được chuẩn hoá để đối chiếu và gắn map thống nhất. |
+| Biệt danh thương hiệu (Signature) | Biệt danh thương hiệu | Tên gọi hiển thị thân thiện đại diện cho một nhóm màu theo chuẩn thương hiệu. |
+| Nhãn ngữ cảnh (Context Tag) | Nhãn ngữ cảnh | Chip mô tả bối cảnh phù hợp (UI/Poster/Thêu) dựa trên điểm số. |
+| Nhãn tin cậy ΔE | Nhãn tin cậy ΔE | Nhãn mô tả mức gần màu theo ΔE (Cực giống/Rất gần/Gần/Tham khảo/Xa). |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
 | Schema (khung dữ liệu chuẩn) | Schema (khung dữ liệu chuẩn) | Khung định nghĩa cấu trúc dữ liệu chuẩn để kiểm tra/đồng nhất. |

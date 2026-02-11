@@ -1,3 +1,6 @@
+import { buildPremiumHeaderModel } from "./color_naming.js";
+import { computeContextTags } from "./color_context_tags.js";
+
 const STYLE_ID = "tc-hexinspector-style";
 const OVERLAY_ID = "tc-hexinspector-overlay";
 const PANEL_ID = "tc-hexinspector-panel";
@@ -277,6 +280,15 @@ if (!window.__tcHexInspectorMounted) {
     return out;
   };
 
+  const normalizeContextMode = (value) => {
+    const raw = String(value || "").trim().toLowerCase();
+    if (!raw) return "";
+    if (raw.includes("ui")) return "UI";
+    if (raw.includes("poster")) return "Poster";
+    if (raw.includes("thêu") || raw.includes("theu") || raw.includes("thread")) return "Thêu";
+    return "";
+  };
+
   const ensureStyle = () => {
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement("style");
@@ -291,8 +303,11 @@ if (!window.__tcHexInspectorMounted) {
       .tc-hexinspector-body{padding:16px 18px;overflow:auto;display:flex;flex-direction:column;gap:16px;}
       .tc-hexinspector-hero{display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
       .tc-hexinspector-swatch{width:72px;height:72px;border-radius:16px;border:1px solid rgba(148,163,184,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
-      .tc-hexinspector-hero-info{display:flex;flex-direction:column;gap:4px;min-width:180px;}
+      .tc-hexinspector-hero-info{display:flex;flex-direction:column;gap:4px;min-width:0;}
       .tc-hexinspector-hex{font-weight:700;font-size:20px;}
+      .tc-hexinspector-line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+      .tc-hexinspector-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+      .tc-hexinspector-chip{padding:3px 8px;border-radius:999px;border:1px solid rgba(148,163,184,.22);font-size:10px;line-height:1.2;background:rgba(15,23,42,.6);color:#e2e8f0;}
       .tc-hexinspector-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;}
       .tc-hexinspector-btn{border-radius:12px;border:1px solid rgba(148,163,184,.22);background:rgba(15,23,42,.8);color:#f8fafc;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;}
       .tc-hexinspector-btn.primary{background:linear-gradient(135deg,#38bdf8,#6366f1);border-color:transparent;}
@@ -352,8 +367,9 @@ if (!window.__tcHexInspectorMounted) {
           <div class="tc-hexinspector-swatch" data-hexinspector-swatch></div>
           <div class="tc-hexinspector-hero-info">
             <div class="tc-hexinspector-hex" data-hexinspector-hex>#000000</div>
-            <div class="tc-hexinspector-sub" data-hexinspector-name>Tên gợi ý: --</div>
-            <div class="tc-hexinspector-sub" data-hexinspector-hint>Gợi ý gần nhất: --</div>
+            <div class="tc-hexinspector-sub tc-hexinspector-line" data-hexinspector-name>Tên gợi ý: --</div>
+            <div class="tc-hexinspector-sub tc-hexinspector-line" data-hexinspector-hint>Gần nhất: --</div>
+            <div class="tc-hexinspector-chips" data-hexinspector-chips></div>
           </div>
           <div class="tc-hexinspector-actions">
             <div class="tc-hexinspector-copy" data-hexinspector-copy>
@@ -430,6 +446,7 @@ if (!window.__tcHexInspectorMounted) {
   const hexLabel = overlay.querySelector("[data-hexinspector-hex]");
   const nameLabel = overlay.querySelector("[data-hexinspector-name]");
   const hintLabel = overlay.querySelector("[data-hexinspector-hint]");
+  const chipsWrap = overlay.querySelector("[data-hexinspector-chips]");
   const copyWrap = overlay.querySelector("[data-hexinspector-copy]");
   const copyToggle = overlay.querySelector("[data-action='copy-toggle']");
   const copyMenu = overlay.querySelector("[data-hexinspector-copy-menu]");
@@ -451,7 +468,8 @@ if (!window.__tcHexInspectorMounted) {
 
   let currentHex = null;
   let currentMetrics = null;
-  let lastNearestLine = "Gợi ý gần nhất: --";
+  let currentContextMode = "";
+  let lastNearestLine = "Gần nhất: Chưa có dữ liệu để đối chiếu";
   let threadsPromise = null;
   let longPressTimer = null;
   let suppressClickUntil = 0;
@@ -559,6 +577,17 @@ if (!window.__tcHexInspectorMounted) {
     });
   };
 
+  const renderChips = (wrap, chips) => {
+    if (!wrap) return;
+    clearChildren(wrap);
+    (chips || []).slice(0, 2).forEach((label) => {
+      const chip = document.createElement("span");
+      chip.className = "tc-hexinspector-chip";
+      chip.textContent = label;
+      wrap.appendChild(chip);
+    });
+  };
+
   const renderNearest = (items) => {
     clearChildren(nearestWrap);
     if (!items.length) return;
@@ -657,7 +686,7 @@ if (!window.__tcHexInspectorMounted) {
           `HSL: ${hslText}`,
           `HSV: ${hsvText}`,
           `Lab: ${labText}`,
-          lastNearestLine || "Gợi ý gần nhất: --"
+          lastNearestLine || "Gần nhất: Chưa có dữ liệu để đối chiếu"
         ].join("\n");
       default:
         return hex;
@@ -760,9 +789,11 @@ if (!window.__tcHexInspectorMounted) {
     if (hsvLabel) hsvLabel.textContent = `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`;
     if (labLabel) labLabel.textContent = `Lab ${lab.l}, ${lab.a}, ${lab.b}`;
     if (cmykLabel) cmykLabel.textContent = `C${cmyk.c}% M${cmyk.m}% Y${cmyk.y}% K${cmyk.k}%`;
-    if (nameLabel) nameLabel.textContent = `Tên gợi ý: ${guessHueName(hsl.h, hsl.s, hsl.l)}`;
-    lastNearestLine = "Gợi ý gần nhất: --";
+    const headerModel = buildPremiumHeaderModel({ hex, rgb, hsl, hsv, lab, nearest: null });
+    if (nameLabel) nameLabel.textContent = headerModel.toneLine;
+    lastNearestLine = headerModel.nearestLine;
     if (hintLabel) hintLabel.textContent = lastNearestLine;
+    renderChips(chipsWrap, computeContextTags({ hex, rgb, hsl, hsv, lab, nearest: null, mode: currentContextMode }));
 
     const ratioWhite = contrastRatio(rgb, { r: 255, g: 255, b: 255 });
     const ratioBlack = contrastRatio(rgb, { r: 0, g: 0, b: 0 });
@@ -787,15 +818,20 @@ if (!window.__tcHexInspectorMounted) {
     if (!nearest.length) {
       if (nearestStatus) nearestStatus.textContent = "Chưa có dữ liệu gợi ý.";
       clearChildren(nearestWrap);
-      lastNearestLine = "Gợi ý gần nhất: Chưa có dữ liệu.";
+      const fallbackModel = buildPremiumHeaderModel({ hex, rgb, hsl, hsv, lab, nearest: null });
+      lastNearestLine = fallbackModel.nearestLine;
       if (hintLabel) hintLabel.textContent = lastNearestLine;
+      renderChips(chipsWrap, computeContextTags({ hex, rgb, hsl, hsv, lab, nearest: null, mode: currentContextMode }));
       return;
     }
     if (nearestStatus) nearestStatus.textContent = "";
     renderNearest(nearest);
     const top = nearest[0];
-    lastNearestLine = `Gợi ý gần nhất: ${top.brand} ${top.code} — ${top.name || "Không tên"} · ΔE ${top.delta.toFixed(2)}`;
+    const nearestModel = buildPremiumHeaderModel({ hex, rgb, hsl, hsv, lab, nearest: top });
+    if (nameLabel) nameLabel.textContent = nearestModel.toneLine;
+    lastNearestLine = nearestModel.nearestLine;
     if (hintLabel) hintLabel.textContent = lastNearestLine;
+    renderChips(chipsWrap, computeContextTags({ hex, rgb, hsl, hsv, lab, nearest: top, mode: currentContextMode }));
   };
 
   const open = (hex, _meta) => {
@@ -804,6 +840,7 @@ if (!window.__tcHexInspectorMounted) {
     ensureStyle();
     if (!overlay.isConnected) document.body.appendChild(overlay);
     currentHex = normalized;
+    currentContextMode = normalizeContextMode(_meta?.mode || _meta?.context || _meta?.world || _meta?.source || "");
     setCopyMenuOpen(false);
     closeSwatchMenu();
     overlay.hidden = false;
