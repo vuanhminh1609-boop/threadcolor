@@ -15,14 +15,18 @@ const LINE98_NEXT_COUNT = 3;
 const BEST_SCORE_KEY = "tc_colorplay_best";
 const LINE98_SAVE_KEY = "tc_colorplay_line98_save_v1";
 const PILL_SAVE_KEY = "tc_colorplay_pill_save_v1";
+const SUDOKU_SAVE_KEY = "tc_colorplay_sudoku_save_v1";
 const COLORPLAY_SETTINGS_KEY = "tc_colorplay_settings_v1";
 const LINE98_LAST_KEY = "tc_colorplay_line98_last_v1";
 const PILL_LAST_KEY = "tc_colorplay_pill_last_v1";
+const SUDOKU_LAST_KEY = "tc_colorplay_sudoku_last_v1";
 const COLORPLAY_ASSET_KEY = "tc_asset_library_v1";
 const LINE98_DAILY_BEST_KEY = "tc_colorplay_line98_daily_best_v1";
 const COLORPLAY_ACHIEVEMENTS_KEY = "tc_colorplay_achievements_v1";
 const LINE98_SAVE_VERSION = 1;
 const PILL_SAVE_VERSION = 1;
+const SUDOKU_SAVE_VERSION = 1;
+const SUDOKU_BEST_KEY = "tc_colorplay_sudoku_best_v1";
 const HINT_COOLDOWN_MS = 5000;
 const PILL_WIDTH = 8;
 const PILL_HEIGHT = 16;
@@ -35,6 +39,18 @@ const PILL_COLORS = [
   "#f97316"
 ];
 const PILL_BEST_KEY = "tc_colorplay_pill_best_v1";
+const SUDOKU_COLORS = [
+  "#ef4444",
+  "#f97316",
+  "#facc15",
+  "#22c55e",
+  "#06b6d4",
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+  "#f59e0b"
+];
+const SUDOKU_SYMBOLS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const PILL_ORIENTS = [
   [{ dr: 0, dc: 0 }, { dr: 0, dc: 1 }],
   [{ dr: 0, dc: 0 }, { dr: 1, dc: 0 }],
@@ -52,13 +68,23 @@ let pillDropTimer = null;
 let pillEl = {};
 let pillControlCleanup = [];
 
+let sudokuRoot = null;
+let sudokuMounted = false;
+let sudokuTimer = null;
+let sudokuSaveTimer = null;
+let sudokuHintTimer = null;
+let sudokuStatusTimer = null;
+let sudokuEl = {};
+
 let lobbyCards = [];
 let lobbyTriggers = [];
 let lobbyLine98Mount = null;
 let lobbyPillMount = null;
+let lobbySudokuMount = null;
 let lobbyRoot = null;
 let line98ResumeRequested = false;
 let pillResumeRequested = false;
+let sudokuResumeRequested = false;
 let focusCard = null;
 let achievementListEl = null;
 let hintFrame = null;
@@ -75,6 +101,13 @@ const PILL_PRESETS = {
   easy: { label: "Chậm", dropMs: 700, colorCount: 4 },
   medium: { label: "Vừa", dropMs: 520, colorCount: 5 },
   hard: { label: "Nhanh", dropMs: 380, colorCount: 6 }
+};
+
+const SUDOKU_PRESETS = {
+  easy: { label: "Dễ", min: 42, max: 45 },
+  medium: { label: "Vừa", min: 34, max: 36 },
+  hard: { label: "Khó", min: 28, max: 30 },
+  expert: { label: "Siêu khó", min: 22, max: 26 }
 };
 
 const settings = {
@@ -138,6 +171,28 @@ const pillState = {
   customPalette: null
 };
 
+const sudokuState = {
+  difficulty: "easy",
+  colors: [...SUDOKU_COLORS],
+  solution: [],
+  current: [],
+  givens: [],
+  selectedColor: 0,
+  selectedCell: null,
+  eraseMode: false,
+  showSymbols: false,
+  mistakes: 0,
+  elapsedSeconds: 0,
+  elapsedBase: 0,
+  startedAt: null,
+  paused: false,
+  autoPaused: false,
+  gameOver: false,
+  hintCooldownUntil: 0,
+  lastMistakeAt: 0,
+  hintsLeft: null
+};
+
 function clampNumber(value, min, max) {
   const num = Number(value);
   if (Number.isNaN(num)) return min;
@@ -157,6 +212,28 @@ function getLinePreset(key) {
 
 function getPillPreset(key) {
   return PILL_PRESETS[key] || PILL_PRESETS.medium;
+}
+
+function getSudokuPreset(key) {
+  return SUDOKU_PRESETS[key] || SUDOKU_PRESETS.easy;
+}
+
+function getSudokuHintLimit(difficulty) {
+  switch (difficulty) {
+    case "medium":
+      return 3;
+    case "hard":
+      return 2;
+    case "expert":
+      return 1;
+    default:
+      return Infinity;
+  }
+}
+
+function getSudokuInitialHints(difficulty) {
+  const limit = getSudokuHintLimit(difficulty);
+  return Number.isFinite(limit) ? limit : null;
 }
 
 function loadSettings() {
@@ -530,6 +607,13 @@ function getPillElapsedMs() {
   return (pillState.elapsedMs || 0) + (Date.now() - pillState.startedAt);
 }
 
+function getSudokuElapsedSeconds() {
+  if (!sudokuState.startedAt) return sudokuState.elapsedSeconds || 0;
+  if (sudokuState.paused) return sudokuState.elapsedSeconds || 0;
+  const delta = Math.floor((Date.now() - sudokuState.startedAt) / 1000);
+  return (sudokuState.elapsedSeconds || 0) + delta;
+}
+
 function pauseLine98(isAuto = false) {
   if (state.paused || state.gameOver) return;
   state.elapsedMs = getLineElapsedMs();
@@ -566,6 +650,40 @@ function resumePill(isAuto = false) {
   pillState.startedAt = Date.now();
   startPillLoop();
   if (isAuto) showPillStatus("Đã tiếp tục.");
+}
+
+function startSudokuTimer() {
+  stopSudokuTimer();
+  sudokuTimer = window.setInterval(() => {
+    if (!sudokuMounted || sudokuState.paused || sudokuState.gameOver) return;
+    renderSudokuMetrics();
+  }, 1000);
+}
+
+function stopSudokuTimer() {
+  if (sudokuTimer) {
+    window.clearInterval(sudokuTimer);
+    sudokuTimer = null;
+  }
+}
+
+function pauseSudoku(isAuto = false) {
+  if (sudokuState.paused || sudokuState.gameOver) return;
+  sudokuState.elapsedSeconds = getSudokuElapsedSeconds();
+  sudokuState.startedAt = null;
+  sudokuState.paused = true;
+  sudokuState.autoPaused = isAuto;
+  stopSudokuTimer();
+  if (isAuto) showSudokuStatus("Tạm dừng do rời tab.");
+}
+
+function resumeSudoku(isAuto = false) {
+  if (!sudokuState.paused || sudokuState.gameOver) return;
+  sudokuState.paused = false;
+  sudokuState.autoPaused = false;
+  sudokuState.startedAt = Date.now();
+  startSudokuTimer();
+  if (isAuto) showSudokuStatus("Đã tiếp tục.");
 }
 
 function createEmptyBoard() {
@@ -738,6 +856,72 @@ function savePillLastRun(payload) {
   } catch (_err) {
     // ignore
   }
+}
+
+function formatSudokuDuration(seconds) {
+  return formatDuration(Math.max(0, Number(seconds) || 0) * 1000);
+}
+
+function formatSudokuLastRun(run) {
+  if (!run) return "--";
+  const preset = getSudokuPreset(run.difficulty);
+  const durationSec = Number(run.durationSec || 0);
+  const mistakes = Number(run.mistakes || 0);
+  const parts = [preset.label];
+  if (durationSec > 0) parts.push(formatSudokuDuration(durationSec));
+  if (mistakes > 0) parts.push(`${mistakes} lỗi`);
+  return parts.join(" · ");
+}
+
+function getSudokuLastRun() {
+  return safeParseJSON(localStorage.getItem(SUDOKU_LAST_KEY), null);
+}
+
+function saveSudokuLastRun(payload) {
+  if (!payload) return;
+  try {
+    localStorage.setItem(SUDOKU_LAST_KEY, JSON.stringify(payload));
+  } catch (_err) {
+    // ignore
+  }
+}
+
+function loadSudokuBestMap() {
+  const raw = safeParseJSON(localStorage.getItem(SUDOKU_BEST_KEY), {});
+  return raw && typeof raw === "object" ? raw : {};
+}
+
+function getSudokuBestOverall() {
+  const map = loadSudokuBestMap();
+  let best = null;
+  let bestDifficulty = "";
+  Object.keys(SUDOKU_PRESETS).forEach((key) => {
+    const value = Number(map[key]);
+    if (!Number.isFinite(value) || value <= 0) return;
+    if (best == null || value < best) {
+      best = value;
+      bestDifficulty = key;
+    }
+  });
+  if (best == null) return null;
+  return { seconds: best, difficulty: bestDifficulty };
+}
+
+function updateSudokuBest(seconds, difficulty) {
+  const presetKey = SUDOKU_PRESETS[difficulty] ? difficulty : "easy";
+  const map = loadSudokuBestMap();
+  const value = Math.max(1, Math.floor(Number(seconds) || 0));
+  const current = Number(map[presetKey]) || 0;
+  if (!current || value < current) {
+    map[presetKey] = value;
+    try {
+      localStorage.setItem(SUDOKU_BEST_KEY, JSON.stringify(map));
+    } catch (_err) {
+      // ignore
+    }
+    return true;
+  }
+  return false;
 }
 
 function snapshotState() {
@@ -2912,19 +3096,863 @@ function unmountPill() {
   pillEl = {};
 }
 
+function shuffleArray(list) {
+  const output = Array.isArray(list) ? list.slice() : [];
+  for (let i = output.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [output[i], output[j]] = [output[j], output[i]];
+  }
+  return output;
+}
+
+function randomInt(min, max) {
+  const low = Math.ceil(Number(min));
+  const high = Math.floor(Number(max));
+  if (!Number.isFinite(low) || !Number.isFinite(high)) return 0;
+  return Math.floor(Math.random() * (high - low + 1)) + low;
+}
+
+function normalizeSudokuValues(list, allowEmpty = false) {
+  if (!Array.isArray(list) || list.length !== 81) return null;
+  const output = [];
+  for (let i = 0; i < 81; i += 1) {
+    const value = list[i];
+    if (value == null) {
+      if (!allowEmpty) return null;
+      output.push(-1);
+      continue;
+    }
+    const num = Number(value);
+    if (!Number.isInteger(num)) return null;
+    if (num < 0 || num > 8) {
+      if (allowEmpty && num === -1) {
+        output.push(-1);
+        continue;
+      }
+      return null;
+    }
+    output.push(num);
+  }
+  return output;
+}
+
+function normalizeSudokuGivens(list) {
+  if (!Array.isArray(list) || list.length !== 81) return null;
+  return list.map((value) => Boolean(value));
+}
+
+function normalizeSudokuColors(list) {
+  if (!Array.isArray(list) || list.length !== 9) return [...SUDOKU_COLORS];
+  return list.map((value, index) => {
+    if (typeof value === "string" && value.trim()) return value;
+    return SUDOKU_COLORS[index] || "#94a3b8";
+  });
+}
+
+function readSudokuSave() {
+  const parsed = safeParseJSON(localStorage.getItem(SUDOKU_SAVE_KEY), null);
+  if (!parsed || parsed.version !== SUDOKU_SAVE_VERSION) return null;
+  const data = parsed.data || parsed.state;
+  if (!data) return null;
+  const difficulty = SUDOKU_PRESETS[data.difficulty] ? data.difficulty : sudokuState.difficulty;
+  const colors = normalizeSudokuColors(data.colors);
+  const solution = normalizeSudokuValues(data.solution, false);
+  const current = normalizeSudokuValues(data.current, true);
+  const givens = normalizeSudokuGivens(data.givens);
+  if (!solution || !current || !givens) return null;
+  return {
+    version: parsed.version,
+    savedAt: parsed.savedAt || "",
+    data: {
+      difficulty,
+      colors,
+      solution,
+      current,
+      givens,
+      elapsedSeconds: clampNumber(data.elapsedSeconds, 0, 3600 * 24),
+      mistakes: clampNumber(data.mistakes, 0, 9999),
+      selectedColor: clampNumber(data.selectedColor, 0, 8),
+      eraseMode: Boolean(data.eraseMode),
+      showSymbols: Boolean(data.showSymbols),
+      hintsLeft: Number.isFinite(data.hintsLeft) ? clampNumber(data.hintsLeft, 0, 99) : null
+    }
+  };
+}
+
+function hasSudokuSave() {
+  return Boolean(readSudokuSave());
+}
+
+function applySudokuSave(payload) {
+  if (!payload?.data) return false;
+  const data = payload.data;
+  sudokuState.difficulty = data.difficulty;
+  sudokuState.colors = [...data.colors];
+  sudokuState.solution = data.solution.slice();
+  sudokuState.current = data.current.slice();
+  sudokuState.givens = data.givens.map((value) => Boolean(value));
+  sudokuState.current = sudokuState.current.map((value, index) => (
+    sudokuState.givens[index] ? sudokuState.solution[index] : value
+  ));
+  sudokuState.selectedColor = Math.round(clampNumber(data.selectedColor ?? 0, 0, 8));
+  sudokuState.selectedCell = null;
+  sudokuState.eraseMode = Boolean(data.eraseMode);
+  sudokuState.showSymbols = Boolean(data.showSymbols);
+  sudokuState.mistakes = clampNumber(data.mistakes, 0, 9999);
+  sudokuState.elapsedSeconds = clampNumber(data.elapsedSeconds, 0, 3600 * 24);
+  sudokuState.startedAt = Date.now();
+  sudokuState.paused = false;
+  sudokuState.autoPaused = false;
+  sudokuState.gameOver = false;
+  sudokuState.hintCooldownUntil = 0;
+  sudokuState.lastMistakeAt = 0;
+  if (data.hintsLeft == null) {
+    sudokuState.hintsLeft = getSudokuInitialHints(sudokuState.difficulty);
+  } else if (Number.isFinite(data.hintsLeft)) {
+    sudokuState.hintsLeft = clampNumber(data.hintsLeft, 0, 99);
+  } else {
+    sudokuState.hintsLeft = getSudokuInitialHints(sudokuState.difficulty);
+  }
+  closeSudokuEndscreen();
+  if (sudokuEl.difficulty) sudokuEl.difficulty.value = sudokuState.difficulty;
+  renderSudokuBoard();
+  renderSudokuPalette();
+  renderSudokuMetrics();
+  updateSudokuControls();
+  startSudokuTimer();
+  showSudokuStatus("Đã khôi phục ván đang chơi.");
+  return true;
+}
+
+function saveSudokuProgress() {
+  if (!sudokuRoot) return;
+  if (sudokuState.gameOver) {
+    clearSudokuProgress();
+    return;
+  }
+  if (!sudokuState.current.length || !sudokuState.solution.length) return;
+  const payload = {
+    version: SUDOKU_SAVE_VERSION,
+    savedAt: new Date().toISOString(),
+    data: {
+      difficulty: sudokuState.difficulty,
+      colors: [...sudokuState.colors],
+      solution: sudokuState.solution.slice(),
+      current: sudokuState.current.slice(),
+      givens: sudokuState.givens.slice(),
+      elapsedSeconds: getSudokuElapsedSeconds(),
+      mistakes: sudokuState.mistakes,
+      selectedColor: sudokuState.selectedColor,
+      eraseMode: sudokuState.eraseMode,
+      showSymbols: sudokuState.showSymbols,
+      hintsLeft: sudokuState.hintsLeft
+    }
+  };
+  try {
+    localStorage.setItem(SUDOKU_SAVE_KEY, JSON.stringify(payload));
+  } catch (_err) {
+    // ignore
+  }
+  updateLobbyStats();
+}
+
+function clearSudokuProgress() {
+  try {
+    localStorage.removeItem(SUDOKU_SAVE_KEY);
+  } catch (_err) {
+    // ignore
+  }
+  updateLobbyStats();
+}
+
+function buildSudokuSummary(data = {}) {
+  const durationSec = Number(data.durationSec ?? getSudokuElapsedSeconds() ?? 0);
+  const mistakes = Number(data.mistakes ?? sudokuState.mistakes ?? 0);
+  const preset = getSudokuPreset(data.difficulty || sudokuState.difficulty);
+  const parts = [`Sudoku màu • ${preset.label}`];
+  if (durationSec > 0) parts.push(formatSudokuDuration(durationSec));
+  if (mistakes > 0) parts.push(`${mistakes} lỗi`);
+  return parts.join(" • ");
+}
+
+function openSudokuEndscreen(payload) {
+  if (!sudokuEl.end) return;
+  const summary = buildSudokuSummary(payload);
+  if (sudokuEl.endSummary) sudokuEl.endSummary.textContent = summary;
+  sudokuEl.end.classList.add("is-open");
+  sudokuEl.end.setAttribute("aria-hidden", "false");
+}
+
+function closeSudokuEndscreen() {
+  if (!sudokuEl.end) return;
+  sudokuEl.end.classList.remove("is-open");
+  sudokuEl.end.setAttribute("aria-hidden", "true");
+}
+
+function getSudokuColor(index) {
+  return sudokuState.colors[index] || SUDOKU_COLORS[index] || "#e2e8f0";
+}
+
+function hexToRgb(hex) {
+  if (typeof hex !== "string") return null;
+  const raw = hex.trim().replace("#", "");
+  if (raw.length !== 6 && raw.length !== 3) return null;
+  const normalized = raw.length === 3
+    ? raw.split("").map((ch) => ch + ch).join("")
+    : raw;
+  const intVal = Number.parseInt(normalized, 16);
+  if (!Number.isFinite(intVal)) return null;
+  return {
+    r: (intVal >> 16) & 255,
+    g: (intVal >> 8) & 255,
+    b: intVal & 255
+  };
+}
+
+function getSudokuTextColor(hex) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return "#111";
+  const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
+  return luminance > 0.6 ? "#111" : "#fff";
+}
+
+function computeSudokuConflicts(values) {
+  const conflicts = new Set();
+  if (!Array.isArray(values) || values.length !== 81) return conflicts;
+  const mark = (bucket, idx, value) => {
+    if (!bucket.has(value)) {
+      bucket.set(value, [idx]);
+      return;
+    }
+    const list = bucket.get(value);
+    list.push(idx);
+    list.forEach((item) => conflicts.add(item));
+  };
+  for (let row = 0; row < 9; row += 1) {
+    const bucket = new Map();
+    for (let col = 0; col < 9; col += 1) {
+      const idx = row * 9 + col;
+      const value = values[idx];
+      if (value < 0) continue;
+      mark(bucket, idx, value);
+    }
+  }
+  for (let col = 0; col < 9; col += 1) {
+    const bucket = new Map();
+    for (let row = 0; row < 9; row += 1) {
+      const idx = row * 9 + col;
+      const value = values[idx];
+      if (value < 0) continue;
+      mark(bucket, idx, value);
+    }
+  }
+  for (let boxRow = 0; boxRow < 3; boxRow += 1) {
+    for (let boxCol = 0; boxCol < 3; boxCol += 1) {
+      const bucket = new Map();
+      for (let row = 0; row < 3; row += 1) {
+        for (let col = 0; col < 3; col += 1) {
+          const r = boxRow * 3 + row;
+          const c = boxCol * 3 + col;
+          const idx = r * 9 + c;
+          const value = values[idx];
+          if (value < 0) continue;
+          mark(bucket, idx, value);
+        }
+      }
+    }
+  }
+  return conflicts;
+}
+
+function renderSudokuBoardShell() {
+  if (!sudokuEl.board) return;
+  sudokuEl.board.innerHTML = "";
+  sudokuEl.cells = [];
+  for (let row = 0; row < 9; row += 1) {
+    for (let col = 0; col < 9; col += 1) {
+      const idx = row * 9 + col;
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "tc-sudoku-cell";
+      cell.dataset.row = String(row);
+      cell.dataset.col = String(col);
+      cell.dataset.idx = String(idx);
+      cell.setAttribute("aria-label", `Ô hàng ${row + 1}, cột ${col + 1}`);
+      if (col === 2 || col === 5) cell.classList.add("block-right");
+      if (row === 2 || row === 5) cell.classList.add("block-bottom");
+      sudokuEl.board.appendChild(cell);
+      sudokuEl.cells.push(cell);
+    }
+  }
+}
+
+function renderSudokuBoard() {
+  if (!Array.isArray(sudokuEl.cells) || !sudokuEl.cells.length) return;
+  const conflicts = computeSudokuConflicts(sudokuState.current);
+  sudokuEl.cells.forEach((cell, idx) => {
+    const value = sudokuState.current[idx];
+    const isGiven = sudokuState.givens[idx];
+    cell.classList.toggle("is-given", isGiven);
+    cell.classList.toggle("is-conflict", conflicts.has(idx));
+    cell.classList.toggle("is-selected", sudokuState.selectedCell === idx);
+    if (value >= 0) {
+      const hex = getSudokuColor(value);
+      cell.style.background = hex;
+      if (sudokuState.showSymbols) {
+        cell.textContent = SUDOKU_SYMBOLS[value] || "";
+        cell.style.color = getSudokuTextColor(hex);
+        cell.style.textShadow = "0 1px 2px rgba(15, 23, 42, 0.25)";
+      } else {
+        cell.textContent = "";
+        cell.style.color = "";
+        cell.style.textShadow = "";
+      }
+    } else {
+      cell.style.background = "";
+      cell.textContent = "";
+      cell.style.color = "";
+      cell.style.textShadow = "";
+    }
+  });
+}
+
+function renderSudokuPalette() {
+  if (!sudokuEl.palette) return;
+  sudokuEl.palette.innerHTML = "";
+  sudokuState.colors.forEach((hex, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "tc-sudoku-color";
+    button.dataset.colorIndex = String(index);
+    button.style.background = hex;
+    if (sudokuState.showSymbols) {
+      button.textContent = SUDOKU_SYMBOLS[index] || "";
+      button.style.color = getSudokuTextColor(hex);
+      button.style.textShadow = "0 1px 2px rgba(15, 23, 42, 0.25)";
+    }
+    if (!sudokuState.eraseMode && sudokuState.selectedColor === index) {
+      button.classList.add("is-active");
+    }
+    button.setAttribute("aria-label", `Màu ${index + 1}`);
+    sudokuEl.palette.appendChild(button);
+  });
+}
+
+function renderSudokuMetrics() {
+  if (sudokuEl.time) sudokuEl.time.textContent = formatSudokuDuration(getSudokuElapsedSeconds());
+  if (sudokuEl.mistakes) sudokuEl.mistakes.textContent = String(sudokuState.mistakes);
+  if (sudokuEl.hint) {
+    const remaining = sudokuState.hintCooldownUntil - Date.now();
+    const hintsLeft = Number.isFinite(sudokuState.hintsLeft) ? Math.max(0, sudokuState.hintsLeft) : Infinity;
+    if (remaining > 0) {
+      sudokuEl.hint.disabled = true;
+      sudokuEl.hint.textContent = `Gợi ý (${Math.ceil(remaining / 1000)}s)`;
+    } else {
+      sudokuEl.hint.disabled = sudokuState.gameOver || hintsLeft <= 0;
+      sudokuEl.hint.textContent = Number.isFinite(hintsLeft)
+        ? `Gợi ý (còn ${hintsLeft})`
+        : "Gợi ý";
+    }
+  }
+}
+
+function updateSudokuControls() {
+  if (sudokuEl.erase) sudokuEl.erase.classList.toggle("is-active", sudokuState.eraseMode);
+  if (sudokuEl.symbols) sudokuEl.symbols.checked = sudokuState.showSymbols;
+  renderSudokuPalette();
+  renderSudokuMetrics();
+}
+
+function showSudokuStatus(message, duration = 1600) {
+  if (!sudokuEl.status) return;
+  if (sudokuStatusTimer) {
+    window.clearTimeout(sudokuStatusTimer);
+    sudokuStatusTimer = null;
+  }
+  sudokuEl.status.textContent = message || "";
+  if (!message) return;
+  sudokuStatusTimer = window.setTimeout(() => {
+    if (sudokuEl.status) sudokuEl.status.textContent = "";
+  }, duration);
+}
+
+function getSudokuCandidates(grid, index) {
+  const row = Math.floor(index / 9);
+  const col = index % 9;
+  const used = Array.from({ length: 9 }, () => false);
+  for (let c = 0; c < 9; c += 1) {
+    const value = grid[row * 9 + c];
+    if (value >= 0) used[value] = true;
+  }
+  for (let r = 0; r < 9; r += 1) {
+    const value = grid[r * 9 + col];
+    if (value >= 0) used[value] = true;
+  }
+  const boxRow = Math.floor(row / 3) * 3;
+  const boxCol = Math.floor(col / 3) * 3;
+  for (let r = 0; r < 3; r += 1) {
+    for (let c = 0; c < 3; c += 1) {
+      const value = grid[(boxRow + r) * 9 + (boxCol + c)];
+      if (value >= 0) used[value] = true;
+    }
+  }
+  const candidates = [];
+  for (let value = 0; value < 9; value += 1) {
+    if (!used[value]) candidates.push(value);
+  }
+  return candidates;
+}
+
+function countSudokuSolutions(board, limit = 2) {
+  const grid = board.slice();
+  let count = 0;
+  const search = () => {
+    if (count >= limit) return;
+    let bestIndex = -1;
+    let bestCandidates = null;
+    for (let i = 0; i < 81; i += 1) {
+      if (grid[i] >= 0) continue;
+      const candidates = getSudokuCandidates(grid, i);
+      if (!candidates.length) return;
+      if (!bestCandidates || candidates.length < bestCandidates.length) {
+        bestCandidates = candidates;
+        bestIndex = i;
+        if (candidates.length === 1) break;
+      }
+    }
+    if (bestIndex === -1) {
+      count += 1;
+      return;
+    }
+    for (let i = 0; i < bestCandidates.length; i += 1) {
+      grid[bestIndex] = bestCandidates[i];
+      search();
+      if (count >= limit) break;
+    }
+    grid[bestIndex] = -1;
+  };
+  search();
+  return count;
+}
+
+function generateSudokuSolution() {
+  const base = Array.from({ length: 9 }, (_, i) => i);
+  const pattern = (r, c) => (r * 3 + Math.floor(r / 3) + c) % 9;
+  const rows = shuffleArray([0, 1, 2]).flatMap((band) =>
+    shuffleArray([0, 1, 2]).map((row) => band * 3 + row)
+  );
+  const cols = shuffleArray([0, 1, 2]).flatMap((stack) =>
+    shuffleArray([0, 1, 2]).map((col) => stack * 3 + col)
+  );
+  const nums = shuffleArray(base);
+  const board = [];
+  rows.forEach((row) => {
+    cols.forEach((col) => {
+      board.push(nums[pattern(row, col)]);
+    });
+  });
+  return board;
+}
+
+function createSudokuPuzzle(difficulty) {
+  const preset = getSudokuPreset(difficulty);
+  const target = randomInt(preset.min, preset.max);
+  const maxAttempts = 1200;
+  const maxRegens = 6;
+  let fallback = null;
+  for (let regen = 0; regen < maxRegens; regen += 1) {
+    const solution = generateSudokuSolution();
+    const current = solution.slice();
+    let givensCount = 81;
+    const indices = shuffleArray(Array.from({ length: 81 }, (_, i) => i));
+    let attempts = 0;
+    while (givensCount > target && indices.length && attempts < maxAttempts) {
+      const idx = indices.pop();
+      const backup = current[idx];
+      current[idx] = -1;
+      if (countSudokuSolutions(current, 2) !== 1) {
+        current[idx] = backup;
+      } else {
+        givensCount -= 1;
+      }
+      attempts += 1;
+    }
+    const givens = current.map((value) => value >= 0);
+    if (givensCount <= target) {
+      return { solution, current, givens };
+    }
+    if (!fallback || givensCount < fallback.givensCount) {
+      fallback = { solution, current, givens, givensCount };
+    }
+  }
+  if (fallback) {
+    return { solution: fallback.solution, current: fallback.current, givens: fallback.givens };
+  }
+  const solution = generateSudokuSolution();
+  const current = solution.slice();
+  return { solution, current, givens: current.map((value) => value >= 0) };
+}
+
+function resetSudokuGame(forceDifficulty) {
+  const difficulty = SUDOKU_PRESETS[forceDifficulty] ? forceDifficulty : sudokuState.difficulty;
+  sudokuState.difficulty = difficulty;
+  sudokuState.colors = [...SUDOKU_COLORS];
+  const puzzle = createSudokuPuzzle(difficulty);
+  sudokuState.solution = puzzle.solution;
+  sudokuState.current = puzzle.current;
+  sudokuState.givens = puzzle.givens;
+  sudokuState.selectedColor = 0;
+  sudokuState.selectedCell = null;
+  sudokuState.eraseMode = false;
+  sudokuState.mistakes = 0;
+  sudokuState.elapsedSeconds = 0;
+  sudokuState.startedAt = Date.now();
+  sudokuState.paused = false;
+  sudokuState.autoPaused = false;
+  sudokuState.gameOver = false;
+  sudokuState.hintCooldownUntil = 0;
+  sudokuState.lastMistakeAt = 0;
+  sudokuState.hintsLeft = getSudokuInitialHints(difficulty);
+  closeSudokuEndscreen();
+  if (sudokuEl.difficulty) sudokuEl.difficulty.value = sudokuState.difficulty;
+  renderSudokuBoard();
+  renderSudokuPalette();
+  renderSudokuMetrics();
+  updateSudokuControls();
+  startSudokuTimer();
+  showSudokuStatus("Đã tạo ván mới.");
+  saveSudokuProgress();
+}
+
+function scheduleSudokuSave() {
+  if (sudokuSaveTimer) {
+    window.clearTimeout(sudokuSaveTimer);
+  }
+  sudokuSaveTimer = window.setTimeout(() => {
+    sudokuSaveTimer = null;
+    saveSudokuProgress();
+  }, 300);
+}
+
+function handleSudokuDifficultyChange(event) {
+  const value = event?.target?.value;
+  if (!SUDOKU_PRESETS[value]) return;
+  sudokuState.difficulty = value;
+  resetSudokuGame(value);
+}
+
+function handleSudokuPaletteClick(event) {
+  const button = event.target.closest("[data-color-index]");
+  if (!button || !sudokuMounted) return;
+  const index = Number(button.dataset.colorIndex);
+  if (!Number.isInteger(index) || index < 0 || index > 8) return;
+  sudokuState.selectedColor = index;
+  sudokuState.eraseMode = false;
+  updateSudokuControls();
+}
+
+function applySudokuValue(idx, nextValue) {
+  if (sudokuState.givens[idx]) {
+    renderSudokuBoard();
+    return;
+  }
+  if (sudokuState.current[idx] === nextValue) {
+    renderSudokuBoard();
+    return;
+  }
+  sudokuState.current[idx] = nextValue;
+  if (nextValue >= 0 && sudokuState.solution[idx] !== nextValue) {
+    sudokuState.mistakes += 1;
+    const now = Date.now();
+    if (now - sudokuState.lastMistakeAt > 1200) {
+      showSudokuStatus("Ô này chưa đúng.");
+      sudokuState.lastMistakeAt = now;
+    }
+  }
+  renderSudokuBoard();
+  renderSudokuMetrics();
+  scheduleSudokuSave();
+  checkSudokuWin();
+}
+
+function handleSudokuCellClick(event) {
+  const button = event.target.closest(".tc-sudoku-cell");
+  if (!button || !sudokuMounted) return;
+  if (sudokuState.gameOver || sudokuState.paused) return;
+  const idx = Number(button.dataset.idx);
+  if (!Number.isInteger(idx)) return;
+  sudokuState.selectedCell = idx;
+  const nextValue = sudokuState.eraseMode ? -1 : sudokuState.selectedColor;
+  applySudokuValue(idx, nextValue);
+}
+
+function handleSudokuEraseToggle() {
+  sudokuState.eraseMode = !sudokuState.eraseMode;
+  updateSudokuControls();
+  showSudokuStatus(sudokuState.eraseMode ? "Đang bật Xóa." : "Đã tắt Xóa.");
+}
+
+function handleSudokuSymbolsToggle(event) {
+  sudokuState.showSymbols = Boolean(event?.target?.checked);
+  renderSudokuBoard();
+  renderSudokuPalette();
+}
+
+function handleSudokuHint() {
+  if (!sudokuMounted || sudokuState.gameOver || sudokuState.paused) return;
+  if (Number.isFinite(sudokuState.hintsLeft) && sudokuState.hintsLeft <= 0) {
+    showSudokuStatus("Đã hết gợi ý.");
+    renderSudokuMetrics();
+    return;
+  }
+  const now = Date.now();
+  if (now < sudokuState.hintCooldownUntil) {
+    const remaining = Math.ceil((sudokuState.hintCooldownUntil - now) / 1000);
+    showSudokuStatus(`Gợi ý sẽ sẵn sàng sau ${remaining}s.`);
+    return;
+  }
+  const empties = [];
+  sudokuState.current.forEach((value, index) => {
+    if (value < 0) empties.push(index);
+  });
+  if (!empties.length) {
+    showSudokuStatus("Không còn ô trống.");
+    return;
+  }
+  const idx = empties[Math.floor(Math.random() * empties.length)];
+  sudokuState.current[idx] = sudokuState.solution[idx];
+  sudokuState.givens[idx] = true;
+  sudokuState.selectedCell = idx;
+  if (Number.isFinite(sudokuState.hintsLeft)) {
+    sudokuState.hintsLeft = Math.max(0, sudokuState.hintsLeft - 1);
+  }
+  sudokuState.hintCooldownUntil = now + HINT_COOLDOWN_MS;
+  showSudokuStatus("Đã gợi ý 1 ô.");
+  renderSudokuBoard();
+  renderSudokuMetrics();
+  scheduleSudokuSave();
+  checkSudokuWin();
+}
+
+function checkSudokuWin() {
+  if (!sudokuState.solution.length || !sudokuState.current.length) return false;
+  for (let i = 0; i < 81; i += 1) {
+    if (sudokuState.current[i] !== sudokuState.solution[i]) return false;
+  }
+  const durationSec = getSudokuElapsedSeconds();
+  sudokuState.elapsedSeconds = durationSec;
+  sudokuState.startedAt = null;
+  sudokuState.gameOver = true;
+  stopSudokuTimer();
+  const payload = {
+    durationSec,
+    difficulty: sudokuState.difficulty,
+    mistakes: sudokuState.mistakes
+  };
+  saveSudokuLastRun({
+    ...payload,
+    playedAt: new Date().toISOString()
+  });
+  updateSudokuBest(durationSec, sudokuState.difficulty);
+  clearSudokuProgress();
+  updateLobbyStats();
+  openSudokuEndscreen(payload);
+  showSudokuStatus("Hoàn thành.");
+  return true;
+}
+
+function handleSudokuNewGame() {
+  resetSudokuGame();
+}
+
+function handleSudokuEndClose() {
+  closeSudokuEndscreen();
+}
+
+function handleSudokuEndNew() {
+  closeSudokuEndscreen();
+  resetSudokuGame();
+}
+
+function handleSudokuKeydown(event) {
+  if (!sudokuMounted) return;
+  if (isTypingContext(event.target)) return;
+  if ((sudokuState.gameOver || sudokuState.paused) && event.key !== "Escape") return;
+  if (event.key >= "1" && event.key <= "9") {
+    event.preventDefault();
+    const index = Number(event.key) - 1;
+    if (Number.isInteger(index) && index >= 0 && index <= 8) {
+      sudokuState.selectedColor = index;
+      sudokuState.eraseMode = false;
+      if (Number.isInteger(sudokuState.selectedCell)) {
+        applySudokuValue(sudokuState.selectedCell, index);
+      } else {
+        updateSudokuControls();
+      }
+    }
+    return;
+  }
+  if (event.key === "Escape") {
+    event.preventDefault();
+    if (Number.isInteger(sudokuState.selectedCell)) {
+      sudokuState.selectedCell = null;
+      renderSudokuBoard();
+      showSudokuStatus("Đã bỏ chọn ô.");
+      return;
+    }
+    saveSudokuProgress();
+    setLobbyOpen("");
+    showToast("Đã đóng Sudoku màu.");
+  }
+}
+
+function mountSudoku(rootEl) {
+  if (!rootEl) return;
+  unmountSudoku();
+  sudokuRoot = rootEl;
+  sudokuRoot.innerHTML = `
+    <div class="tc-colorplay-game tc-sudoku-game">
+      <div class="tc-sudoku-hud">
+        <div class="tc-sudoku-metrics">
+          <div class="tc-sudoku-metric">
+            <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Thời gian</span>
+            <span data-sudoku="time" class="text-lg font-semibold">0:00</span>
+          </div>
+          <div class="tc-sudoku-metric">
+            <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Lỗi</span>
+            <span data-sudoku="mistakes" class="text-lg font-semibold">0</span>
+          </div>
+        </div>
+        <div class="tc-sudoku-controls">
+          <label class="tc-muted text-[10px] uppercase tracking-[0.2em]">Độ khó</label>
+          <select data-sudoku="difficulty" class="tc-input tc-colorplay-select">
+            <option value="easy">Dễ</option>
+            <option value="medium">Vừa</option>
+            <option value="hard">Khó</option>
+            <option value="expert">Siêu khó</option>
+          </select>
+          <button data-sudoku-action="new" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Ván mới</button>
+          <button data-sudoku-action="hint" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Gợi ý</button>
+          <button data-sudoku-action="erase" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Xóa</button>
+          <label class="tc-sudoku-toggle tc-muted">
+            <input type="checkbox" data-sudoku-action="symbols">
+            <span>Ký hiệu (1–9)</span>
+          </label>
+        </div>
+      </div>
+      <p data-sudoku="status" class="tc-sudoku-status tc-muted text-xs"></p>
+      <div data-sudoku="board" class="tc-sudoku-board" aria-label="Bàn Sudoku màu"></div>
+      <div data-sudoku="palette" class="tc-sudoku-palette" aria-label="Bảng màu Sudoku"></div>
+      <div data-sudoku-end class="tc-colorplay-end" aria-hidden="true">
+        <div class="tc-colorplay-end-card">
+          <div class="tc-colorplay-end-title">Hoàn thành</div>
+          <p data-sudoku-end-summary class="tc-muted text-xs"></p>
+          <div class="tc-colorplay-end-actions">
+            <button data-sudoku-end-action="close" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Đóng</button>
+            <button data-sudoku-end-action="new" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Ván mới</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  sudokuEl = {
+    board: sudokuRoot.querySelector('[data-sudoku="board"]'),
+    palette: sudokuRoot.querySelector('[data-sudoku="palette"]'),
+    time: sudokuRoot.querySelector('[data-sudoku="time"]'),
+    mistakes: sudokuRoot.querySelector('[data-sudoku="mistakes"]'),
+    difficulty: sudokuRoot.querySelector('[data-sudoku="difficulty"]'),
+    newGame: sudokuRoot.querySelector('[data-sudoku-action="new"]'),
+    hint: sudokuRoot.querySelector('[data-sudoku-action="hint"]'),
+    erase: sudokuRoot.querySelector('[data-sudoku-action="erase"]'),
+    symbols: sudokuRoot.querySelector('[data-sudoku-action="symbols"]'),
+    status: sudokuRoot.querySelector('[data-sudoku="status"]'),
+    end: sudokuRoot.querySelector("[data-sudoku-end]"),
+    endSummary: sudokuRoot.querySelector("[data-sudoku-end-summary]"),
+    endClose: sudokuRoot.querySelector('[data-sudoku-end-action="close"]'),
+    endNew: sudokuRoot.querySelector('[data-sudoku-end-action="new"]'),
+    cells: []
+  };
+
+  renderSudokuBoardShell();
+  renderSudokuPalette();
+  if (sudokuEl.symbols) sudokuEl.symbols.checked = sudokuState.showSymbols;
+  if (sudokuResumeRequested) {
+    const saved = readSudokuSave();
+    if (!saved || !applySudokuSave(saved)) {
+      resetSudokuGame();
+    }
+  } else {
+    resetSudokuGame();
+  }
+  sudokuResumeRequested = false;
+  sudokuEl.board?.addEventListener("click", handleSudokuCellClick);
+  sudokuEl.palette?.addEventListener("click", handleSudokuPaletteClick);
+  sudokuEl.newGame?.addEventListener("click", handleSudokuNewGame);
+  sudokuEl.hint?.addEventListener("click", handleSudokuHint);
+  sudokuEl.erase?.addEventListener("click", handleSudokuEraseToggle);
+  sudokuEl.symbols?.addEventListener("change", handleSudokuSymbolsToggle);
+  sudokuEl.difficulty?.addEventListener("change", handleSudokuDifficultyChange);
+  sudokuEl.endClose?.addEventListener("click", handleSudokuEndClose);
+  sudokuEl.endNew?.addEventListener("click", handleSudokuEndNew);
+  window.addEventListener("keydown", handleSudokuKeydown);
+  sudokuMounted = true;
+}
+
+function unmountSudoku() {
+  if (!sudokuRoot) return;
+  saveSudokuProgress();
+  sudokuEl.board?.removeEventListener("click", handleSudokuCellClick);
+  sudokuEl.palette?.removeEventListener("click", handleSudokuPaletteClick);
+  sudokuEl.newGame?.removeEventListener("click", handleSudokuNewGame);
+  sudokuEl.hint?.removeEventListener("click", handleSudokuHint);
+  sudokuEl.erase?.removeEventListener("click", handleSudokuEraseToggle);
+  sudokuEl.symbols?.removeEventListener("change", handleSudokuSymbolsToggle);
+  sudokuEl.difficulty?.removeEventListener("change", handleSudokuDifficultyChange);
+  sudokuEl.endClose?.removeEventListener("click", handleSudokuEndClose);
+  sudokuEl.endNew?.removeEventListener("click", handleSudokuEndNew);
+  window.removeEventListener("keydown", handleSudokuKeydown);
+  stopSudokuTimer();
+  if (sudokuSaveTimer) {
+    window.clearTimeout(sudokuSaveTimer);
+    sudokuSaveTimer = null;
+  }
+  if (sudokuHintTimer) {
+    window.clearTimeout(sudokuHintTimer);
+    sudokuHintTimer = null;
+  }
+  if (sudokuStatusTimer) {
+    window.clearTimeout(sudokuStatusTimer);
+    sudokuStatusTimer = null;
+  }
+  sudokuRoot.innerHTML = "";
+  sudokuRoot = null;
+  sudokuMounted = false;
+  sudokuEl = {};
+}
+
 function updateLobbyStats() {
   const lineBest = document.querySelector('[data-game-best="line98"]');
   if (lineBest) lineBest.textContent = String(loadBestScore());
   const pillBest = document.querySelector('[data-game-best="pillstack"]');
   if (pillBest) pillBest.textContent = String(loadPillBestScore());
+  const sudokuBest = document.querySelector('[data-game-best="colorsudoku"]');
+  if (sudokuBest) {
+    const best = getSudokuBestOverall();
+    sudokuBest.textContent = best ? formatSudokuDuration(best.seconds) : "0";
+  }
   const lineLast = document.querySelector('[data-game-last="line98"]');
   if (lineLast) lineLast.textContent = formatLastRun(getLine98LastRun());
   const pillLast = document.querySelector('[data-game-last="pillstack"]');
   if (pillLast) pillLast.textContent = formatLastRun(getPillLastRun());
+  const sudokuLast = document.querySelector('[data-game-last="colorsudoku"]');
+  if (sudokuLast) sudokuLast.textContent = formatSudokuLastRun(getSudokuLastRun());
   const lineResume = document.querySelector('[data-game-action="resume"][data-game="line98"]');
   if (lineResume) lineResume.classList.toggle("is-hidden", !hasLine98Save());
   const pillResume = document.querySelector('[data-game-action="resume"][data-game="pillstack"]');
   if (pillResume) pillResume.classList.toggle("is-hidden", !hasPillSave());
+  const sudokuResume = document.querySelector('[data-game-action="resume"][data-game="colorsudoku"]');
+  if (sudokuResume) sudokuResume.classList.toggle("is-hidden", !hasSudokuSave());
 }
 
 function setFocusMode(card, active) {
@@ -2977,6 +4005,11 @@ function setLobbyOpen(key) {
   } else {
     unmountPill();
   }
+  if (activeKey === "colorsudoku") {
+    mountSudoku(lobbySudokuMount);
+  } else {
+    unmountSudoku();
+  }
 }
 
 function initLobby() {
@@ -2985,6 +4018,7 @@ function initLobby() {
   lobbyRoot = document.querySelector(".tc-game-lobby");
   lobbyLine98Mount = document.querySelector('[data-game-mount="line98"]');
   lobbyPillMount = document.querySelector('[data-game-mount="pillstack"]');
+  lobbySudokuMount = document.querySelector('[data-game-mount="colorsudoku"]');
   achievementListEl = document.getElementById("colorplayAchievementList");
   renderAchievements();
 
@@ -2994,6 +4028,7 @@ function initLobby() {
       if (!key) return;
       if (key === "line98") line98ResumeRequested = false;
       if (key === "pillstack") pillResumeRequested = false;
+      if (key === "colorsudoku") sudokuResumeRequested = false;
       setLobbyOpen(key);
     });
   });
@@ -3016,6 +4051,13 @@ function initLobby() {
           return;
         }
         pillResumeRequested = true;
+      }
+      if (key === "colorsudoku") {
+        if (!hasSudokuSave()) {
+          showToast("Chưa có ván để tiếp tục.");
+          return;
+        }
+        sudokuResumeRequested = true;
       }
       setLobbyOpen(key);
     });
@@ -3043,11 +4085,14 @@ function handleVisibilityChange() {
   if (document.hidden) {
     if (line98Mounted) pauseLine98(true);
     if (pillMounted) pausePill(true);
+    if (sudokuMounted) pauseSudoku(true);
     saveLine98Progress();
     savePillProgress();
+    saveSudokuProgress();
   } else {
     if (line98Mounted && state.autoPaused) resumeLine98(true);
     if (pillMounted && pillState.autoPaused) resumePill(true);
+    if (sudokuMounted && sudokuState.autoPaused) resumeSudoku(true);
   }
 }
 
@@ -3055,6 +4100,7 @@ window.addEventListener("visibilitychange", handleVisibilityChange);
 window.addEventListener("beforeunload", () => {
   saveLine98Progress();
   savePillProgress();
+  saveSudokuProgress();
 });
 
 loadSettings();

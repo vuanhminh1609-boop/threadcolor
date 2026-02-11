@@ -63,6 +63,11 @@
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
 | Line 98 (trò chơi xếp bi theo hàng) | Line 98 | Trò chơi xếp bi theo hàng để tạo chuỗi màu liên tiếp và ghi điểm. |
+| Sudoku màu (biến thể Sudoku dùng màu thay số) | Sudoku màu | Biến thể Sudoku dùng màu thay số, mỗi hàng/cột/khối không trùng màu. |
+| Khối 3×3 (vùng con trong Sudoku) | Khối 3×3 | Vùng con 3×3 trong Sudoku, mỗi khối phải đủ 9 màu không trùng. |
+| Nghiệm duy nhất (Unique solution) | Nghiệm duy nhất | Bài Sudoku chỉ có một lời giải hợp lệ duy nhất. |
+| Siêu khó (Expert) | Siêu khó | Cấp độ khó cao nhất: ít gợi ý, đòi hỏi tập trung cao. |
+| Ký hiệu số (Number overlay) | Ký hiệu số | Lớp số 1–9 hiển thị trên ô màu để dễ đối chiếu. |
 | Thử thách mỗi ngày | Thử thách mỗi ngày | Chế độ chơi có đề/seed theo ngày để mọi người cùng chơi chung một thử thách. |
 | Seed (hạt giống ngẫu nhiên) | Seed | Giá trị khởi tạo ngẫu nhiên để tái lập cùng một kết quả khi cần. |
 | Bàn cờ 9×9 (lưới 9 hàng 9 cột) | Bàn cờ 9×9 | Lưới 9 hàng 9 cột dùng làm mặt chơi tiêu chuẩn. |
