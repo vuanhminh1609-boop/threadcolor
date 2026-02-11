@@ -78,6 +78,135 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
+    .tc-game-thumb-sudoku {
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(59, 130, 246, 0.25)),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 6px, transparent 6px, transparent 12px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 6px, transparent 6px, transparent 12px);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+    .tc-sudoku-game {
+      display: grid;
+      gap: 1rem;
+    }
+    .tc-sudoku-hud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tc-sudoku-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tc-sudoku-metric {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(255, 255, 255, 0.6);
+      display: grid;
+      gap: 0.2rem;
+      min-width: 90px;
+    }
+    .tc-sudoku-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .tc-sudoku-board {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 2px;
+      padding: 6px;
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.4);
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .tc-sudoku-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: 0.65rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #0f172a;
+      cursor: pointer;
+      transition: transform 0.08s ease, border-color 0.12s ease;
+    }
+    .tc-sudoku-cell.is-given {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+    .tc-sudoku-cell.is-conflict {
+      border-color: rgba(248, 113, 113, 0.9);
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.65) inset;
+    }
+    .tc-sudoku-cell.block-right {
+      box-shadow: inset -2px 0 0 rgba(148, 163, 184, 0.6);
+    }
+    .tc-sudoku-cell.block-bottom {
+      box-shadow: inset 0 -2px 0 rgba(148, 163, 184, 0.6);
+    }
+    .tc-sudoku-cell.block-right.block-bottom {
+      box-shadow:
+        inset -2px 0 0 rgba(148, 163, 184, 0.6),
+        inset 0 -2px 0 rgba(148, 163, 184, 0.6);
+    }
+    .tc-sudoku-cell.is-selected {
+      transform: scale(0.98);
+      border-color: rgba(56, 189, 248, 0.8);
+    }
+    .tc-sudoku-palette {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 0.4rem;
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .tc-sudoku-color {
+      aspect-ratio: 1 / 1;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .tc-sudoku-color.is-active::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 0.6rem;
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.35);
+    }
+    .tc-sudoku-status {
+      text-align: center;
+    }
+    .tc-sudoku-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      .tc-sudoku-controls {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body class="font-sans">
@@ -170,6 +299,44 @@
           </div>
           <div class="tc-game-card-body">
             <div class="tc-game-card-body-inner" data-game-mount="pillstack"></div>
+          </div>
+        </div>
+
+        <div class="tc-card tc-game-card" data-game-card="colorsudoku" aria-expanded="false">
+          <div class="tc-game-card-head">
+            <div class="tc-game-card-meta">
+              <div class="tc-game-thumb tc-game-thumb-sudoku" aria-hidden="true"></div>
+              <div>
+                <p class="tc-game-card-title">Game 3: Sudoku màu</p>
+                <p class="tc-muted text-xs mt-1">Điền 9 màu vào lưới 9×9. Mỗi hàng/cột/khối 3×3 không trùng màu.</p>
+                <div class="tc-game-card-stats">
+                  <div class="tc-game-card-stat">
+                    <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Kỷ lục</span>
+                    <strong data-game-best="colorsudoku">0</strong>
+                  </div>
+                  <div class="tc-game-card-stat">
+                    <span class="tc-muted text-[10px] uppercase tracking-[0.2em]">Ván gần nhất</span>
+                    <span data-game-last="colorsudoku" class="tc-muted text-xs">--</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tc-game-card-actions">
+              <button class="tc-btn tc-chip px-3 py-2 text-xs tc-game-resume is-hidden" type="button" data-game-action="resume" data-game="colorsudoku" aria-label="Tiếp tục">Tiếp tục</button>
+              <button class="tc-icon-btn tc-game-play" type="button" data-game-action="open" data-game="colorsudoku" data-tooltip="Chơi ngay" aria-label="Chơi ngay">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 6l10 6-10 6z" fill="currentColor"></path>
+                </svg>
+              </button>
+              <button class="tc-icon-btn tc-game-fullscreen" type="button" data-game-action="fullscreen" data-game="colorsudoku" data-tooltip="Toàn màn hình" aria-label="Toàn màn hình">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="tc-game-card-body">
+            <div class="tc-game-card-body-inner" data-game-mount="colorsudoku"></div>
           </div>
         </div>
       </div>

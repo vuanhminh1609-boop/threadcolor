@@ -63,6 +63,11 @@
 | ThreadVault | Thế giới Kho chỉ (ThreadVault) | Thế giới quản lý/bộ sưu tập chỉ và dữ liệu liên quan. |
 | Palette | Thế giới Bảng phối màu (Palette) | Thế giới phối nhiều màu rời thành một bảng màu dùng lại. |
 | Line 98 (trò chơi xếp bi theo hàng) | Line 98 | Trò chơi xếp bi theo hàng để tạo chuỗi màu liên tiếp và ghi điểm. |
+| Sudoku màu (biến thể Sudoku dùng màu thay số) | Sudoku màu | Biến thể Sudoku dùng màu thay số, mỗi hàng/cột/khối không trùng màu. |
+| Khối 3×3 (vùng con trong Sudoku) | Khối 3×3 | Vùng con 3×3 trong Sudoku, mỗi khối phải đủ 9 màu không trùng. |
+| Nghiệm duy nhất (Unique solution) | Nghiệm duy nhất | Bài Sudoku chỉ có một lời giải hợp lệ duy nhất. |
+| Siêu khó (Expert) | Siêu khó | Cấp độ khó cao nhất: ít gợi ý, đòi hỏi tập trung cao. |
+| Ký hiệu số (Number overlay) | Ký hiệu số | Lớp số 1–9 hiển thị trên ô màu để dễ đối chiếu. |
 | Thử thách mỗi ngày | Thử thách mỗi ngày | Chế độ chơi có đề/seed theo ngày để mọi người cùng chơi chung một thử thách. |
 | Seed (hạt giống ngẫu nhiên) | Seed | Giá trị khởi tạo ngẫu nhiên để tái lập cùng một kết quả khi cần. |
 | Bàn cờ 9×9 (lưới 9 hàng 9 cột) | Bàn cờ 9×9 | Lưới 9 hàng 9 cột dùng làm mặt chơi tiêu chuẩn. |
@@ -77,6 +82,8 @@
 | line-height (độ cao dòng) | line-height | Độ cao dòng chữ; dùng để tránh cắt phần đuôi chữ khi dòng quá thấp. |
 | chân chữ (phần nét chữ thò xuống dưới như g/y/p) | Chân chữ | Phần nét chữ thò xuống dưới dòng cơ sở (baseline), dễ bị cắt nếu line-height quá thấp. |
 | Tỷ lệ tương phản (contrast ratio) | Tỷ lệ tương phản | Mức chênh lệch sáng tối giữa 2 màu (chữ/nền); càng cao càng dễ đọc. |
+| Độ tương phản WCAG | Độ tương phản WCAG | Đánh giá mức tương phản chữ/nền theo chuẩn WCAG với ngưỡng AA/AAA cho chữ thường và chữ lớn. |
+| Tiết lộ dần (progressive disclosure) | Tiết lộ dần | Cách trình bày thông tin theo tầng: phần chính hiển thị trước, phần nâng cao ẩn để UI gọn. |
 | Quy tắc hài hoà màu (harmony rules) | Quy tắc hài hoà màu | Nguyên tắc phối màu trên vòng màu để tạo cảm giác cân bằng, dễ chịu. |
 | Phối bù (complementary: phối lệch 180°) | Phối bù | Phối màu lệch 180° trên vòng màu để tạo tương phản mạnh. |
 | Phối tương tự (analogous: phối lệch ±30°) | Phối tương tự | Phối màu kề nhau trên vòng màu (±30°) để tạo cảm giác hài hoà. |
@@ -144,6 +151,13 @@
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
 | Single source of truth | Nguồn chuẩn duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
 | LocalStorage (bộ nhớ cục bộ của trình duyệt) | LocalStorage | Bộ nhớ lưu cục bộ theo domain, giữ dữ liệu ngay cả khi tải lại trang. |
+| IndexedDB (kho dữ liệu cục bộ trình duyệt) | IndexedDB | Cơ chế lưu dữ liệu dạng kho trong trình duyệt, phù hợp lưu blob/ảnh và dữ liệu lớn theo phiên bản. |
+| Bộ chuyển đổi (adapter) | Bộ chuyển đổi | Lớp trung gian ánh xạ interface chung sang triển khai cụ thể để thay đổi backend mà không đập code. |
+| Nhà cung cấp lưu trữ (storage provider) | Nhà cung cấp lưu trữ | Thành phần triển khai cụ thể việc lưu/đọc/xoá ảnh (local, Firebase, R2) theo cùng interface. |
+| Tên chuẩn (Canonical) | Tên chuẩn | Tên gốc được chuẩn hoá để đối chiếu và gắn map thống nhất. |
+| Biệt danh thương hiệu (Signature) | Biệt danh thương hiệu | Tên gọi hiển thị thân thiện đại diện cho một nhóm màu theo chuẩn thương hiệu. |
+| Nhãn ngữ cảnh (Context Tag) | Nhãn ngữ cảnh | Chip mô tả bối cảnh phù hợp (UI/Poster/Thêu) dựa trên điểm số. |
+| Nhãn tin cậy ΔE | Nhãn tin cậy ΔE | Nhãn mô tả mức gần màu theo ΔE (Cực giống/Rất gần/Gần/Tham khảo/Xa). |
 | Máy trạng thái (state machine) | Máy trạng thái (state machine) | Quy tắc chuyển đổi trạng thái loading/ok/warning/error |
 | Data contract | Hợp đồng dữ liệu | Quy ước: file nào là gốc, file nào là sinh ra, schema, phiên bản, cách cập nhật. |
 | Schema (khung dữ liệu chuẩn) | Schema (khung dữ liệu chuẩn) | Khung định nghĩa cấu trúc dữ liệu chuẩn để kiểm tra/đồng nhất. |

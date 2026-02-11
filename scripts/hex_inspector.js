@@ -1,3 +1,6 @@
+import { buildPremiumHeaderModel } from "./color_naming.js";
+import { computeContextTags } from "./color_context_tags.js";
+
 const STYLE_ID = "tc-hexinspector-style";
 const OVERLAY_ID = "tc-hexinspector-overlay";
 const PANEL_ID = "tc-hexinspector-panel";
@@ -103,6 +106,45 @@ if (!window.__tcHexInspectorMounted) {
   const rgbToLab = (r, g, b) => {
     const xyz = rgbToXyz(r, g, b);
     return xyzToLab(xyz.x, xyz.y, xyz.z);
+  };
+
+  const rgbToCmyk = (r, g, b) => {
+    const rn = r / 255;
+    const gn = g / 255;
+    const bn = b / 255;
+    const k = 1 - Math.max(rn, gn, bn);
+    if (k >= 1) {
+      return { c: 0, m: 0, y: 0, k: 100 };
+    }
+    const c = (1 - rn - k) / (1 - k);
+    const m = (1 - gn - k) / (1 - k);
+    const y = (1 - bn - k) / (1 - k);
+    return {
+      c: Math.round(c * 100),
+      m: Math.round(m * 100),
+      y: Math.round(y * 100),
+      k: Math.round(k * 100)
+    };
+  };
+
+  const relativeLuminance = (rgb) => {
+    if (!rgb) return 0;
+    const toLinear = (v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    };
+    const r = toLinear(rgb.r);
+    const g = toLinear(rgb.g);
+    const b = toLinear(rgb.b);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+
+  const contrastRatio = (rgb1, rgb2) => {
+    const l1 = relativeLuminance(rgb1);
+    const l2 = relativeLuminance(rgb2);
+    const bright = Math.max(l1, l2);
+    const dark = Math.min(l1, l2);
+    return (bright + 0.05) / (dark + 0.05);
   };
 
   const deltaE76 = (lab1, lab2) => {
@@ -226,6 +268,27 @@ if (!window.__tcHexInspectorMounted) {
     return null;
   };
 
+  const uniqueHexes = (list) => {
+    const seen = new Set();
+    const out = [];
+    (list || []).forEach((value) => {
+      const hex = normalizeHex(value);
+      if (!hex || seen.has(hex)) return;
+      seen.add(hex);
+      out.push(hex);
+    });
+    return out;
+  };
+
+  const normalizeContextMode = (value) => {
+    const raw = String(value || "").trim().toLowerCase();
+    if (!raw) return "";
+    if (raw.includes("ui")) return "UI";
+    if (raw.includes("poster")) return "Poster";
+    if (raw.includes("thêu") || raw.includes("theu") || raw.includes("thread")) return "Thêu";
+    return "";
+  };
+
   const ensureStyle = () => {
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement("style");
@@ -240,8 +303,11 @@ if (!window.__tcHexInspectorMounted) {
       .tc-hexinspector-body{padding:16px 18px;overflow:auto;display:flex;flex-direction:column;gap:16px;}
       .tc-hexinspector-hero{display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
       .tc-hexinspector-swatch{width:72px;height:72px;border-radius:16px;border:1px solid rgba(148,163,184,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
-      .tc-hexinspector-hero-info{display:flex;flex-direction:column;gap:4px;min-width:180px;}
+      .tc-hexinspector-hero-info{display:flex;flex-direction:column;gap:4px;min-width:0;}
       .tc-hexinspector-hex{font-weight:700;font-size:20px;}
+      .tc-hexinspector-line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+      .tc-hexinspector-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+      .tc-hexinspector-chip{padding:3px 8px;border-radius:999px;border:1px solid rgba(148,163,184,.22);font-size:10px;line-height:1.2;background:rgba(15,23,42,.6);color:#e2e8f0;}
       .tc-hexinspector-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;}
       .tc-hexinspector-btn{border-radius:12px;border:1px solid rgba(148,163,184,.22);background:rgba(15,23,42,.8);color:#f8fafc;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;}
       .tc-hexinspector-btn.primary{background:linear-gradient(135deg,#38bdf8,#6366f1);border-color:transparent;}
@@ -259,6 +325,20 @@ if (!window.__tcHexInspectorMounted) {
       .tc-hexinspector-nearest .swatch{width:36px;height:36px;border-radius:10px;border:1px solid rgba(148,163,184,.24);}
       .tc-hexinspector-nearest .meta{display:flex;flex-direction:column;gap:2px;font-size:12px;}
       .tc-hexinspector-nearest .meta strong{font-size:12px;font-weight:600;}
+      .tc-hexinspector-copy{position:relative;display:inline-flex;align-items:center;}
+      .tc-hexinspector-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:190px;background:rgba(15,23,42,.98);border:1px solid rgba(148,163,184,.22);border-radius:12px;box-shadow:0 14px 32px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:2px;padding:6px;z-index:12;}
+      .tc-hexinspector-menu.is-flyout{position:fixed;right:auto;top:auto;z-index:4005;}
+      .tc-hexinspector-menu button{border:none;background:transparent;color:#e2e8f0;text-align:left;padding:6px 8px;border-radius:8px;font-size:12px;cursor:pointer;}
+      .tc-hexinspector-menu button:hover{background:rgba(148,163,184,.18);}
+      .tc-hexinspector-details{padding:10px 12px;border-radius:14px;border:1px solid rgba(148,163,184,.18);background:rgba(15,23,42,.4);display:flex;flex-direction:column;gap:10px;}
+      .tc-hexinspector-summary{list-style:none;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;color:#f8fafc;}
+      .tc-hexinspector-summary::-webkit-details-marker{display:none;}
+      .tc-hexinspector-contrast{padding:10px 12px;border-radius:14px;border:1px solid rgba(148,163,184,.18);background:rgba(15,23,42,.45);display:flex;flex-direction:column;gap:8px;}
+      .tc-hexinspector-contrast-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;}
+      .tc-hexinspector-badges{display:flex;flex-wrap:wrap;gap:4px;}
+      .tc-hexinspector-badge{padding:2px 6px;border-radius:999px;border:1px solid rgba(148,163,184,.25);font-size:10px;line-height:1.2;}
+      .tc-hexinspector-badge.pass{border-color:rgba(34,197,94,.5);color:#bbf7d0;background:rgba(34,197,94,.12);}
+      .tc-hexinspector-badge.fail{border-color:rgba(248,113,113,.45);color:#fecaca;background:rgba(248,113,113,.12);}
       @media (max-width: 640px){
         .tc-hexinspector-overlay{align-items:flex-end;}
         .tc-hexinspector-panel{width:100%;border-radius:18px 18px 0 0;max-height:90vh;}
@@ -287,20 +367,39 @@ if (!window.__tcHexInspectorMounted) {
           <div class="tc-hexinspector-swatch" data-hexinspector-swatch></div>
           <div class="tc-hexinspector-hero-info">
             <div class="tc-hexinspector-hex" data-hexinspector-hex>#000000</div>
-            <div class="tc-hexinspector-sub" data-hexinspector-name>Gợi ý gần nhất: --</div>
-            <div class="tc-hexinspector-sub" data-hexinspector-hint>Tên gợi ý theo sắc độ: --</div>
+            <div class="tc-hexinspector-sub tc-hexinspector-line" data-hexinspector-name>Tên gợi ý: --</div>
+            <div class="tc-hexinspector-sub tc-hexinspector-line" data-hexinspector-hint>Gần nhất: --</div>
+            <div class="tc-hexinspector-chips" data-hexinspector-chips></div>
           </div>
           <div class="tc-hexinspector-actions">
-            <button class="tc-hexinspector-btn" type="button" data-action="copy-hex">Copy HEX</button>
-            <button class="tc-hexinspector-btn" type="button" data-action="copy-rgb">Copy RGB</button>
+            <div class="tc-hexinspector-copy" data-hexinspector-copy>
+              <button class="tc-hexinspector-btn" type="button" data-action="copy-toggle" aria-haspopup="menu" aria-expanded="false">Sao chép</button>
+              <div class="tc-hexinspector-menu" data-hexinspector-copy-menu hidden>
+                <button type="button" data-copy="hex">HEX</button>
+                <button type="button" data-copy="rgb">RGB</button>
+                <button type="button" data-copy="hsl">HSL</button>
+                <button type="button" data-copy="hsv">HSV</button>
+                <button type="button" data-copy="lab">Lab</button>
+                <button type="button" data-copy="css">CSS token</button>
+                <button type="button" data-copy="tailwind">Tailwind</button>
+                <button type="button" data-copy="full">Khối đầy đủ</button>
+              </div>
+            </div>
             <button class="tc-hexinspector-btn primary" type="button" data-action="apply">Áp dụng</button>
           </div>
         </div>
-        <div class="tc-hexinspector-grid">
-          <div class="tc-hexinspector-metric"><span>RGB</span><strong data-hexinspector-rgb>rgb(0,0,0)</strong></div>
-          <div class="tc-hexinspector-metric"><span>HSL</span><strong data-hexinspector-hsl>HSL</strong></div>
-          <div class="tc-hexinspector-metric"><span>HSV</span><strong data-hexinspector-hsv>HSV</strong></div>
-          <div class="tc-hexinspector-metric"><span>Lab</span><strong data-hexinspector-lab>Lab</strong></div>
+        <div class="tc-hexinspector-contrast" data-hexinspector-contrast>
+          <div class="tc-hexinspector-section-title">Độ tương phản chữ</div>
+          <div class="tc-hexinspector-contrast-row">
+            <span class="tc-hexinspector-sub">Nền trắng</span>
+            <strong data-hexinspector-contrast-white>--</strong>
+            <div class="tc-hexinspector-badges" data-hexinspector-contrast-white-badges></div>
+          </div>
+          <div class="tc-hexinspector-contrast-row">
+            <span class="tc-hexinspector-sub">Nền đen</span>
+            <strong data-hexinspector-contrast-black>--</strong>
+            <div class="tc-hexinspector-badges" data-hexinspector-contrast-black-badges></div>
+          </div>
         </div>
         <div class="tc-hexinspector-section">
           <div class="tc-hexinspector-section-title">Dải sắc độ</div>
@@ -328,6 +427,16 @@ if (!window.__tcHexInspectorMounted) {
           <div class="tc-hexinspector-sub" data-hexinspector-nearest-status>Đang tải dữ liệu...</div>
           <div class="tc-hexinspector-list" data-hexinspector-nearest></div>
         </div>
+        <details class="tc-hexinspector-details" data-hexinspector-details>
+          <summary class="tc-hexinspector-summary">Chuyển đổi chi tiết</summary>
+          <div class="tc-hexinspector-grid">
+            <div class="tc-hexinspector-metric"><span>RGB</span><strong data-hexinspector-rgb>rgb(0,0,0)</strong></div>
+            <div class="tc-hexinspector-metric"><span>HSL</span><strong data-hexinspector-hsl>HSL</strong></div>
+            <div class="tc-hexinspector-metric"><span>HSV</span><strong data-hexinspector-hsv>HSV</strong></div>
+            <div class="tc-hexinspector-metric"><span>Lab</span><strong data-hexinspector-lab>Lab</strong></div>
+            <div class="tc-hexinspector-metric"><span>CMYK</span><strong data-hexinspector-cmyk>CMYK</strong></div>
+          </div>
+        </details>
       </div>
     </div>
   `;
@@ -337,10 +446,19 @@ if (!window.__tcHexInspectorMounted) {
   const hexLabel = overlay.querySelector("[data-hexinspector-hex]");
   const nameLabel = overlay.querySelector("[data-hexinspector-name]");
   const hintLabel = overlay.querySelector("[data-hexinspector-hint]");
+  const chipsWrap = overlay.querySelector("[data-hexinspector-chips]");
+  const copyWrap = overlay.querySelector("[data-hexinspector-copy]");
+  const copyToggle = overlay.querySelector("[data-action='copy-toggle']");
+  const copyMenu = overlay.querySelector("[data-hexinspector-copy-menu]");
   const rgbLabel = overlay.querySelector("[data-hexinspector-rgb]");
   const hslLabel = overlay.querySelector("[data-hexinspector-hsl]");
   const hsvLabel = overlay.querySelector("[data-hexinspector-hsv]");
   const labLabel = overlay.querySelector("[data-hexinspector-lab]");
+  const cmykLabel = overlay.querySelector("[data-hexinspector-cmyk]");
+  const contrastWhiteLabel = overlay.querySelector("[data-hexinspector-contrast-white]");
+  const contrastBlackLabel = overlay.querySelector("[data-hexinspector-contrast-black]");
+  const contrastWhiteBadges = overlay.querySelector("[data-hexinspector-contrast-white-badges]");
+  const contrastBlackBadges = overlay.querySelector("[data-hexinspector-contrast-black-badges]");
   const toneWrap = overlay.querySelector("[data-hexinspector-tone]");
   const analogousWrap = overlay.querySelector("[data-hexinspector-analogous]");
   const complementaryWrap = overlay.querySelector("[data-hexinspector-complementary]");
@@ -349,9 +467,15 @@ if (!window.__tcHexInspectorMounted) {
   const nearestStatus = overlay.querySelector("[data-hexinspector-nearest-status]");
 
   let currentHex = null;
+  let currentMetrics = null;
+  let currentContextMode = "";
+  let lastNearestLine = "Gần nhất: Chưa có dữ liệu để đối chiếu";
   let threadsPromise = null;
   let longPressTimer = null;
   let suppressClickUntil = 0;
+  let swatchMenu = null;
+  let swatchLongPressTimer = null;
+  let suppressSwatchClickUntil = 0;
 
   const readThreadCache = () => {
     try {
@@ -440,7 +564,7 @@ if (!window.__tcHexInspectorMounted) {
     btn.className = "tc-hexinspector-swatch-btn";
     btn.style.background = hex;
     btn.dataset.hex = hex;
-    btn.dataset.hexInspect = "click";
+    btn.dataset.hexinspectorSwatch = "1";
     btn.setAttribute("aria-label", hex);
     return btn;
   };
@@ -453,6 +577,17 @@ if (!window.__tcHexInspectorMounted) {
     });
   };
 
+  const renderChips = (wrap, chips) => {
+    if (!wrap) return;
+    clearChildren(wrap);
+    (chips || []).slice(0, 2).forEach((label) => {
+      const chip = document.createElement("span");
+      chip.className = "tc-hexinspector-chip";
+      chip.textContent = label;
+      wrap.appendChild(chip);
+    });
+  };
+
   const renderNearest = (items) => {
     clearChildren(nearestWrap);
     if (!items.length) return;
@@ -461,7 +596,6 @@ if (!window.__tcHexInspectorMounted) {
       row.type = "button";
       row.className = "tc-hexinspector-nearest";
       row.dataset.hex = item.hex;
-      row.dataset.hexInspect = "click";
 
       const swatch = document.createElement("span");
       swatch.className = "swatch";
@@ -487,20 +621,186 @@ if (!window.__tcHexInspectorMounted) {
     });
   };
 
+  const setCopyMenuOpen = (open) => {
+    if (!copyMenu || !copyToggle) return;
+    copyMenu.hidden = !open;
+    copyToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  const renderContrastBadges = (target, ratio) => {
+    if (!target) return;
+    clearChildren(target);
+    const items = [
+      { label: "AA thường", pass: ratio >= 4.5 },
+      { label: "AA lớn", pass: ratio >= 3 },
+      { label: "AAA thường", pass: ratio >= 7 },
+      { label: "AAA lớn", pass: ratio >= 4.5 }
+    ];
+    items.forEach((item) => {
+      const badge = document.createElement("span");
+      badge.className = `tc-hexinspector-badge ${item.pass ? "pass" : "fail"}`;
+      badge.textContent = item.label;
+      target.appendChild(badge);
+    });
+  };
+
+  const getMetrics = () => {
+    if (currentMetrics && currentMetrics.hex === currentHex) return currentMetrics;
+    if (!currentHex) return null;
+    const rgb = hexToRgb(currentHex);
+    if (!rgb) return null;
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+    const lab = rgbToLab(rgb.r, rgb.g, rgb.b);
+    const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+    return { hex: currentHex, rgb, hsl, hsv, lab, cmyk };
+  };
+
+  const buildCopyPayload = (type) => {
+    const metrics = getMetrics();
+    if (!metrics) return "";
+    const { hex, rgb, hsl, hsv, lab } = metrics;
+    const rgbText = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+    const hslText = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+    const hsvText = `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`;
+    const labText = `${lab.l}, ${lab.a}, ${lab.b}`;
+    switch (type) {
+      case "hex":
+        return hex;
+      case "rgb":
+        return rgbText;
+      case "hsl":
+        return hslText;
+      case "hsv":
+        return hsvText;
+      case "lab":
+        return labText;
+      case "css":
+        return `--sc-mau: ${hex};`;
+      case "tailwind":
+        return `bg-[${hex}] text-[${hex}] border-[${hex}]`;
+      case "full":
+        return [
+          `HEX: ${hex}`,
+          `RGB: ${rgbText}`,
+          `HSL: ${hslText}`,
+          `HSV: ${hsvText}`,
+          `Lab: ${labText}`,
+          lastNearestLine || "Gần nhất: Chưa có dữ liệu để đối chiếu"
+        ].join("\n");
+      default:
+        return hex;
+    }
+  };
+
+  const appendHexToBuffer = (hex) => {
+    const normalized = normalizeHex(hex);
+    if (!normalized) return;
+    const contextHexes = window.tcWorkbench?.getContext?.().hexes;
+    const base = Array.isArray(contextHexes) && contextHexes.length ? contextHexes : (currentHex ? [currentHex] : []);
+    const next = uniqueHexes([...base, normalized]).slice(0, 12);
+    window.dispatchEvent(new CustomEvent("tc:hex-apply", { detail: { hexes: next, mode: "append" } }));
+    if (window.tcWorkbench?.ensureBufferFromHexes && window.tcWorkbench?.appendBufferToUrl) {
+      const bufferId = window.tcWorkbench.ensureBufferFromHexes(next, { source: "hex-inspector" });
+      if (bufferId) {
+        const nextUrl = window.tcWorkbench.appendBufferToUrl(window.location.href, bufferId);
+        if (nextUrl) window.history.replaceState(null, "", nextUrl);
+      }
+    }
+  };
+
+  const getBasePath = () => {
+    const path = window.location.pathname || "";
+    return path.includes("/worlds/") || path.includes("/spaces/") ? "../" : "./";
+  };
+
+  const buildBufferUrl = (path, hexes, fallbackKey) => {
+    const cleaned = uniqueHexes(hexes);
+    const baseUrl = new URL(path, window.location.href).toString();
+    if (window.tcWorkbench?.ensureBufferFromHexes && window.tcWorkbench?.appendBufferToUrl) {
+      const bufferId = window.tcWorkbench.ensureBufferFromHexes(cleaned, { source: "hex-inspector" });
+      if (bufferId) {
+        return window.tcWorkbench.appendBufferToUrl(baseUrl, bufferId);
+      }
+    }
+    if (!cleaned.length) return baseUrl;
+    return `${baseUrl}${fallbackKey}${cleaned.join(",")}`;
+  };
+
+  const ensureSwatchMenu = () => {
+    if (swatchMenu) return swatchMenu;
+    swatchMenu = document.createElement("div");
+    swatchMenu.className = "tc-hexinspector-menu is-flyout";
+    swatchMenu.hidden = true;
+    swatchMenu.innerHTML = `
+      <button type="button" data-swatch-action="palette">Tạo palette nhanh</button>
+      <button type="button" data-swatch-action="gradient">Mở W2 Dải chuyển</button>
+    `;
+    swatchMenu.addEventListener("click", (event) => {
+      const action = event.target.closest("[data-swatch-action]")?.dataset.swatchAction;
+      if (!action) return;
+      const hex = swatchMenu?.dataset?.hex;
+      if (!hex) return;
+      const base = currentHex ? [currentHex, hex] : [hex];
+      const basePath = getBasePath();
+      const targetPath = action === "palette" ? `${basePath}worlds/palette.html` : `${basePath}worlds/gradient.html`;
+      const fallbackKey = action === "palette" ? "#p=" : "#g=";
+      const url = buildBufferUrl(targetPath, base, fallbackKey);
+      swatchMenu.hidden = true;
+      window.location.href = url;
+    });
+    document.body.appendChild(swatchMenu);
+    return swatchMenu;
+  };
+
+  const closeSwatchMenu = () => {
+    if (!swatchMenu) return;
+    swatchMenu.hidden = true;
+    swatchMenu.removeAttribute("data-hex");
+  };
+
+  const openSwatchMenu = (hex, x, y) => {
+    const menu = ensureSwatchMenu();
+    menu.dataset.hex = hex;
+    menu.hidden = false;
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+    const rect = menu.getBoundingClientRect();
+    const nextX = Math.min(x, window.innerWidth - rect.width - 8);
+    const nextY = Math.min(y, window.innerHeight - rect.height - 8);
+    menu.style.left = `${Math.max(8, nextX)}px`;
+    menu.style.top = `${Math.max(8, nextY)}px`;
+  };
+
   const updateInspector = async (hex) => {
     const rgb = hexToRgb(hex);
     if (!rgb) return;
     const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
     const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
     const lab = rgbToLab(rgb.r, rgb.g, rgb.b);
+    const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+
+    currentMetrics = { hex, rgb, hsl, hsv, lab, cmyk };
 
     if (mainSwatch) mainSwatch.style.background = hex;
     if (hexLabel) hexLabel.textContent = hex;
     if (rgbLabel) rgbLabel.textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-    if (hslLabel) hslLabel.textContent = `HSL ${hsl.h}° ${hsl.s}% ${hsl.l}%`;
-    if (hsvLabel) hsvLabel.textContent = `HSV ${hsv.h}° ${hsv.s}% ${hsv.v}%`;
+    if (hslLabel) hslLabel.textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+    if (hsvLabel) hsvLabel.textContent = `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`;
     if (labLabel) labLabel.textContent = `Lab ${lab.l}, ${lab.a}, ${lab.b}`;
-    if (hintLabel) hintLabel.textContent = `Tên gợi ý theo sắc độ: ${guessHueName(hsl.h, hsl.s, hsl.l)}`;
+    if (cmykLabel) cmykLabel.textContent = `C${cmyk.c}% M${cmyk.m}% Y${cmyk.y}% K${cmyk.k}%`;
+    const headerModel = buildPremiumHeaderModel({ hex, rgb, hsl, hsv, lab, nearest: null });
+    if (nameLabel) nameLabel.textContent = headerModel.toneLine;
+    lastNearestLine = headerModel.nearestLine;
+    if (hintLabel) hintLabel.textContent = lastNearestLine;
+    renderChips(chipsWrap, computeContextTags({ hex, rgb, hsl, hsv, lab, nearest: null, mode: currentContextMode }));
+
+    const ratioWhite = contrastRatio(rgb, { r: 255, g: 255, b: 255 });
+    const ratioBlack = contrastRatio(rgb, { r: 0, g: 0, b: 0 });
+    if (contrastWhiteLabel) contrastWhiteLabel.textContent = `${ratioWhite.toFixed(2)}:1`;
+    if (contrastBlackLabel) contrastBlackLabel.textContent = `${ratioBlack.toFixed(2)}:1`;
+    renderContrastBadges(contrastWhiteBadges, ratioWhite);
+    renderContrastBadges(contrastBlackBadges, ratioBlack);
 
     const darkSteps = [0.7, 0.55, 0.4, 0.25, 0.1].map((t) => mixHex(hex, "#000000", t));
     const lightSteps = [0.1, 0.25, 0.4, 0.55, 0.7].map((t) => mixHex(hex, "#FFFFFF", t));
@@ -518,15 +818,20 @@ if (!window.__tcHexInspectorMounted) {
     if (!nearest.length) {
       if (nearestStatus) nearestStatus.textContent = "Chưa có dữ liệu gợi ý.";
       clearChildren(nearestWrap);
-      if (nameLabel) nameLabel.textContent = "Gợi ý gần nhất: --";
+      const fallbackModel = buildPremiumHeaderModel({ hex, rgb, hsl, hsv, lab, nearest: null });
+      lastNearestLine = fallbackModel.nearestLine;
+      if (hintLabel) hintLabel.textContent = lastNearestLine;
+      renderChips(chipsWrap, computeContextTags({ hex, rgb, hsl, hsv, lab, nearest: null, mode: currentContextMode }));
       return;
     }
     if (nearestStatus) nearestStatus.textContent = "";
     renderNearest(nearest);
     const top = nearest[0];
-    if (nameLabel) {
-      nameLabel.textContent = `Gợi ý gần nhất: ${top.name || "Không tên"} (${top.brand} ${top.code}) – ΔE ${top.delta.toFixed(2)}`;
-    }
+    const nearestModel = buildPremiumHeaderModel({ hex, rgb, hsl, hsv, lab, nearest: top });
+    if (nameLabel) nameLabel.textContent = nearestModel.toneLine;
+    lastNearestLine = nearestModel.nearestLine;
+    if (hintLabel) hintLabel.textContent = lastNearestLine;
+    renderChips(chipsWrap, computeContextTags({ hex, rgb, hsl, hsv, lab, nearest: top, mode: currentContextMode }));
   };
 
   const open = (hex, _meta) => {
@@ -535,12 +840,17 @@ if (!window.__tcHexInspectorMounted) {
     ensureStyle();
     if (!overlay.isConnected) document.body.appendChild(overlay);
     currentHex = normalized;
+    currentContextMode = normalizeContextMode(_meta?.mode || _meta?.context || _meta?.world || _meta?.source || "");
+    setCopyMenuOpen(false);
+    closeSwatchMenu();
     overlay.hidden = false;
     updateInspector(normalized);
   };
 
   const close = () => {
     overlay.hidden = true;
+    setCopyMenuOpen(false);
+    closeSwatchMenu();
   };
 
   overlay.addEventListener("click", (event) => {
@@ -548,23 +858,91 @@ if (!window.__tcHexInspectorMounted) {
   });
 
   overlay.addEventListener("click", (event) => {
-    const btn = event.target.closest("[data-action]");
-    if (!btn) return;
-    const action = btn.dataset.action;
-    if (action === "close") {
-      close();
+    if (!panel.contains(event.target)) return;
+
+    if (copyMenu && !copyMenu.hidden && !event.target.closest("[data-hexinspector-copy]")) {
+      setCopyMenuOpen(false);
+    }
+    if (swatchMenu && !swatchMenu.hidden && !event.target.closest(".tc-hexinspector-menu")) {
+      closeSwatchMenu();
+    }
+
+    const copyItem = event.target.closest("[data-copy]");
+    if (copyItem) {
+      const payload = buildCopyPayload(copyItem.dataset.copy);
+      if (payload) copyText(payload);
+      setCopyMenuOpen(false);
       return;
     }
-    if (!currentHex) return;
-    if (action === "copy-hex") {
-      copyText(currentHex);
+
+    const btn = event.target.closest("[data-action]");
+    if (btn) {
+      const action = btn.dataset.action;
+      if (action === "close") {
+        close();
+        return;
+      }
+      if (action === "copy-toggle") {
+        setCopyMenuOpen(copyMenu?.hidden ?? true);
+        return;
+      }
+      if (!currentHex) return;
+      if (action === "apply") {
+        window.dispatchEvent(new CustomEvent("tc:hex-apply", { detail: { hexes: [currentHex], mode: "replace" } }));
+      }
+      return;
     }
-    if (action === "copy-rgb") {
-      const rgb = hexToRgb(currentHex);
-      if (rgb) copyText(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`);
+
+    const swatch = event.target.closest("[data-hexinspector-swatch]");
+    if (swatch) {
+      if (Date.now() < suppressSwatchClickUntil) return;
+      const hex = normalizeHex(swatch.dataset.hex);
+      if (hex) appendHexToBuffer(hex);
+      return;
     }
-    if (action === "apply") {
-      window.dispatchEvent(new CustomEvent("tc:hex-apply", { detail: { hexes: [currentHex], mode: "replace" } }));
+
+    const nearestRow = event.target.closest(".tc-hexinspector-nearest");
+    if (nearestRow) {
+      const hex = normalizeHex(nearestRow.dataset.hex);
+      if (hex) open(hex);
+    }
+  });
+
+  panel.addEventListener("contextmenu", (event) => {
+    const swatch = event.target.closest("[data-hexinspector-swatch]");
+    if (!swatch) return;
+    const hex = normalizeHex(swatch.dataset.hex);
+    if (!hex) return;
+    event.preventDefault();
+    event.stopPropagation();
+    suppressSwatchClickUntil = Date.now() + 400;
+    openSwatchMenu(hex, event.clientX, event.clientY);
+  });
+
+  panel.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse") return;
+    const swatch = event.target.closest("[data-hexinspector-swatch]");
+    if (!swatch) return;
+    const hex = normalizeHex(swatch.dataset.hex);
+    if (!hex) return;
+    if (swatchLongPressTimer) clearTimeout(swatchLongPressTimer);
+    swatchLongPressTimer = setTimeout(() => {
+      suppressSwatchClickUntil = Date.now() + 400;
+      openSwatchMenu(hex, event.clientX, event.clientY);
+    }, LONG_PRESS_MS);
+  });
+
+  panel.addEventListener("pointerup", () => {
+    if (swatchLongPressTimer) {
+      clearTimeout(swatchLongPressTimer);
+      swatchLongPressTimer = null;
+    }
+  });
+
+  panel.addEventListener("pointercancel", () => {
+    if (swatchLongPressTimer) {
+      clearTimeout(swatchLongPressTimer);
+      swatchLongPressTimer = null;
     }
   });
 
@@ -587,11 +965,28 @@ if (!window.__tcHexInspectorMounted) {
     }
   };
 
+  const isInsideInspector = (target) => {
+    if (overlay.hidden) return false;
+    if (panel && panel.contains(target)) return true;
+    if (swatchMenu && !swatchMenu.hidden && swatchMenu.contains(target)) return true;
+    return false;
+  };
+
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !overlay.hidden) close();
+    if (event.key !== "Escape" || overlay.hidden) return;
+    if (copyMenu && !copyMenu.hidden) {
+      setCopyMenuOpen(false);
+      return;
+    }
+    if (swatchMenu && !swatchMenu.hidden) {
+      closeSwatchMenu();
+      return;
+    }
+    close();
   });
 
   document.addEventListener("contextmenu", (event) => {
+    if (isInsideInspector(event.target)) return;
     const hex = extractHex(event.target);
     if (!hex) return;
     event.preventDefault();
@@ -599,7 +994,14 @@ if (!window.__tcHexInspectorMounted) {
   });
 
   document.addEventListener("click", (event) => {
+    if (copyMenu && !copyMenu.hidden && !event.target.closest("[data-hexinspector-copy]")) {
+      setCopyMenuOpen(false);
+    }
+    if (swatchMenu && !swatchMenu.hidden && !event.target.closest(".tc-hexinspector-menu")) {
+      closeSwatchMenu();
+    }
     if (Date.now() < suppressClickUntil) return;
+    if (isInsideInspector(event.target)) return;
     const trigger = event.target.closest('[data-hex-inspect="click"]');
     if (!trigger) return;
     const hex = extractHex(trigger);
@@ -610,6 +1012,7 @@ if (!window.__tcHexInspectorMounted) {
 
   document.addEventListener("pointerdown", (event) => {
     if (event.pointerType === "mouse") return;
+    if (isInsideInspector(event.target)) return;
     const hex = extractHex(event.target);
     if (!hex) return;
     if (longPressTimer) clearTimeout(longPressTimer);

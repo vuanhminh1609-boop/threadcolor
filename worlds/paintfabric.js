@@ -1,5 +1,6 @@
 ﻿import { composeHandoff } from "../scripts/handoff.js";
 import { resolveIncoming } from "../scripts/workbench_context.js";
+import { uploadImage, delete as deleteImage } from "../scripts/storage/storage_client.js";
 
 const STORAGE_KEY = "tc_paintfabric_assets";
 const ASSET_LIBRARY_KEY = "tc_asset_library_v1";
@@ -1499,6 +1500,22 @@ const downloadBlob = (data, filename, type) => {
   return true;
 };
 
+const captureCanvasImage = (canvas, type = "image/png") => new Promise((resolve) => {
+  if (!canvas) {
+    resolve(null);
+    return;
+  }
+  if (canvas.toBlob) {
+    canvas.toBlob((blob) => resolve(blob || null), type);
+    return;
+  }
+  try {
+    resolve(canvas.toDataURL(type));
+  } catch (_err) {
+    resolve(null);
+  }
+});
+
 const setPhotoStatus = (message) => {
   if (!elements.photoStatus) return;
   elements.photoStatus.textContent = message || "";
@@ -1632,12 +1649,34 @@ const renderPhotoPreview = () => {
   ctx.restore();
 };
 
-const handlePhotoFile = (file) => {
+const handlePhotoFile = async (file) => {
   if (!file) return;
-  const url = URL.createObjectURL(file);
+  let url = "";
+  let cleanup = () => {};
+  try {
+    const stored = await uploadImage(file, {
+      sourceWorld: HANDOFF_FROM,
+      purpose: "photo-preview",
+      imageName: file.name || ""
+    });
+    if (stored?.url) {
+      url = stored.url;
+      if (stored.key) {
+        cleanup = () => {
+          void deleteImage(stored.key);
+        };
+      }
+    }
+  } catch (_err) {
+    url = "";
+  }
+  if (!url) {
+    url = URL.createObjectURL(file);
+    cleanup = () => URL.revokeObjectURL(url);
+  }
   const img = new Image();
   img.onload = () => {
-    URL.revokeObjectURL(url);
+    cleanup();
     const maxSide = 1600;
     const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
     const width = Math.max(1, Math.round(img.width * scale));
@@ -1658,7 +1697,7 @@ const handlePhotoFile = (file) => {
     setPhotoStatus("Ảnh đã sẵn sàng. Hãy vẽ vùng cần tô.");
   };
   img.onerror = () => {
-    URL.revokeObjectURL(url);
+    cleanup();
     setPhotoStatus("Không thể đọc ảnh.");
   };
   img.src = url;
@@ -1715,9 +1754,22 @@ const endPhotoStroke = () => {
   schedulePhotoRender();
 };
 
-const buildPhotoMockAsset = () => {
+const buildPhotoMockAsset = async () => {
   if (!elements.photoCanvas || !photoState.imageLoaded) return null;
-  const dataUrl = elements.photoCanvas.toDataURL("image/png");
+  const snapshot = await captureCanvasImage(elements.photoCanvas, "image/png");
+  let previewPng = "";
+  if (snapshot) {
+    try {
+      const stored = await uploadImage(snapshot, {
+        sourceWorld: HANDOFF_FROM,
+        purpose: "photo-mock-preview",
+        imageName: photoState.imageName || ""
+      });
+      previewPng = stored?.key || "";
+    } catch (_err) {
+      previewPng = "";
+    }
+  }
   const settings = getPhotoSettings();
   const hex = normalizeHex(elements.hex?.value) || defaultHex;
   const now = new Date().toISOString();
@@ -1728,7 +1780,7 @@ const buildPhotoMockAsset = () => {
     name: `Mockup ${state.mode === "paint" ? "Sơn" : "Vải"} ${hex}`,
     tags: ["paintfabric", "mockup", state.mode],
     payload: {
-      previewPng: dataUrl,
+      previewPng,
       hex,
       blendMode: settings.blendMode,
       opacity: settings.opacity,
@@ -1746,12 +1798,12 @@ const buildPhotoMockAsset = () => {
   };
 };
 
-const handleSavePhotoMock = () => {
+const handleSavePhotoMock = async () => {
   if (!photoState.imageLoaded) {
     setPhotoStatus("Hãy tải ảnh trước khi lưu.");
     return;
   }
-  const asset = buildPhotoMockAsset();
+  const asset = await buildPhotoMockAsset();
   if (!asset) {
     setPhotoStatus("Không thể tạo asset.");
     return;
@@ -1797,7 +1849,9 @@ const initPhotoMode = () => {
   });
   elements.photoUndo?.addEventListener("click", restorePhotoUndo);
   elements.photoClear?.addEventListener("click", clearPhotoMask);
-  elements.photoSave?.addEventListener("click", handleSavePhotoMock);
+  elements.photoSave?.addEventListener("click", () => {
+    void handleSavePhotoMock();
+  });
 };
 
 const handleSave = () => {
