@@ -134,6 +134,7 @@
 | Dải màu (gamut) | Dải màu | Phạm vi màu thiết bị in có thể tái tạo; ngoài gamut sẽ bị lệch. |
 | Ý đồ chuyển đổi (intent) | Ý đồ chuyển đổi | Cách ưu tiên giữ màu/độ tương phản khi chuyển đổi giữa các profile màu. |
 | Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
+| Bộ đồng bộ Sắc thái | Bộ đồng bộ Sắc thái | Cơ chế đồng bộ Sắc thái giữa các trang bằng `localStorage` (`tc_world`), thuộc tính `data-world` trên thẻ `<html>` và sự kiện đồng bộ giữa tab. |
 | Thanh trên dính | Thanh trên dính | Topbar bám trên cùng khi cuộn để truy cập nhanh chức năng chính. |
 | Thu gọn theo cuộn | Thu gọn theo cuộn | Cơ chế giảm chiều cao/đệm của topbar khi người dùng cuộn xuống. |
 | Thanh trên thông minh | Thanh trên thông minh | Topbar tự ẩn khi cuộn xuống và hiện lại khi cuộn lên để tiết kiệm không gian. |
@@ -290,6 +291,9 @@
 | Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |
 | DEV flag / Logger | Cờ DEV / Logger | Cơ chế bật/tắt log theo môi trường để giữ console sạch ở production. |
 | Trạm thao tác nhanh | Trạm thao tác nhanh | Khu làm nhanh ngay tại sảnh, cho ra kết quả trước khi vào chi tiết. |
+| Phòng thử nhanh | Phòng thử nhanh | Khu vực cho người dùng xem thử cảm giác bảng phối màu lên từng bối cảnh trước khi mở World chi tiết. |
+| Áp phích (Poster – bối cảnh thiết kế dạng poster) | Áp phích | Bối cảnh thiết kế dạng poster, ưu tiên phân cấp thị giác rõ và điểm nhấn màu mạnh để truyền thông điệp chính. |
+| Nút kêu gọi (CTA – nút kêu gọi hành động) | Nút kêu gọi | Nút kêu gọi hành động chính trong giao diện, dùng màu nhấn để tăng khả năng chuyển đổi và điều hướng. |
 | action-first / navigate-second | action-first / navigate-second | Ưu tiên làm ra kết quả trước, điều hướng sâu sau khi cần. |
 | lazy-load | lazy-load | Chỉ tải tài nguyên khi cần để trang chính nhẹ và nhanh. |
 | Giả lập in | Giả lập in | Mô phỏng màu in ra từ CMYK để ước lượng hiển thị trên màn hình. |
@@ -602,7 +606,7 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | MutationObserver (bộ quan sát thay đổi DOM: theo dõi đổi thuộc tính) | MutationObserver | API theo dõi thay đổi DOM (thuộc tính/nút) để phản ứng khi trạng thái giao diện đổi. |
 | Phần đuôi chữ (descender) | Phần đuôi chữ | Phần nét của ký tự kéo xuống dưới baseline (như chữ g, y, p), cần đủ line-height để không bị cắt. |
 | Scope theo data-page (khoanh vùng CSS theo trang) | Scope theo data-page | Cách giới hạn CSS theo từng trang bằng thuộc tính `data-page` để tránh ảnh hưởng toàn site. |
-| Nền đa tầng (multi-layer background) | Nền đa tầng | Nền gồm nhiều lớp gradient chồng nhau để tạo chiều sâu thị giác. |
+| Nền đa tầng (multi-layer background) | Nền đa tầng | Nền gồm lớp `tone-canvas` và `tone-overlay` vẽ bằng `::before`/`::after`, giúp đổi đồng bộ theo Sắc thái và tạo chiều sâu thị giác. |
 | Chữ Neon (neon text) | Chữ Neon | Chữ dùng gradient và glow nhẹ để nổi bật nhưng vẫn giữ độ đọc rõ. |
 | Mini card (thẻ thông tin nhỏ) | Mini card | Thẻ thông tin nhỏ hiển thị gợi ý ngắn, giúp quét nhanh nội dung trong một cụm lớn. |
 | Spotlight (ánh sáng bám con trỏ khi hover) | Spotlight | Hiệu ứng vùng sáng bám điểm hover nhằm nhấn mạnh phần tử đang tương tác. |

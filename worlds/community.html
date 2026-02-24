@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html lang="vi">
+﻿<!DOCTYPE html>
+<html lang="vi" data-world="chrome">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Đang chuyển hướng...</title>
   <meta http-equiv="refresh" content="0; url=../spaces/community.html">
+  <link rel="stylesheet" href="../assets/tones.css">
   <link rel="stylesheet" href="../assets/site_base.css">
+  <script src="../scripts/topbar_behavior.js" defer></script>
   <style>
-    body{
-      background: var(--bg);
+    body {
       color: var(--text);
       min-height: 100vh;
       display: flex;
@@ -17,16 +18,32 @@
       padding: 24px;
       text-align: center;
     }
-    .tc-card{
+
+    .tc-card {
       background: var(--glass);
       border: 1px solid var(--stroke);
       border-radius: 1.25rem;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
       padding: 24px;
       max-width: 520px;
       width: 100%;
     }
-    .tc-btn{
+
+    .tc-title {
+      margin: 0;
+      font-size: 1.5rem;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .tc-desc {
+      margin: 0.55rem 0 0;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .tc-btn {
+      margin-top: 1.1rem;
       border-radius: 0.75rem;
       border: 1px solid var(--stroke);
       background: var(--glass);
@@ -44,15 +61,15 @@
 </head>
 <body>
   <main class="tc-card">
-    <h1 class="text-2xl font-semibold">Đang chuyển hướng…</h1>
-    <p class="mt-2 text-sm" style="color: var(--muted);">
-      Không gian Cộng đồng đã được chuyển sang vị trí mới.
-    </p>
-    <a class="tc-btn mt-5" href="../spaces/community.html">Tới Không gian Cộng đồng</a>
+    <h1 class="tc-title">Đang chuyển hướng...</h1>
+    <p class="tc-desc">Không gian Cộng đồng đã được chuyển sang vị trí mới.</p>
+    <a class="tc-btn" href="../spaces/community.html">Tới Không gian Cộng đồng</a>
   </main>
 
   <script>
-    window.location.replace("../spaces/community.html");
+    window.addEventListener("DOMContentLoaded", () => {
+      window.location.replace("../spaces/community.html");
+    });
   </script>
 </body>
 </html>

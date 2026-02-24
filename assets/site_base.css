@@ -7,34 +7,49 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-html[data-world] body:not([data-page="lobby"]) {
+:root {
+  --tc-tone-bg-inset: -18vmax;
+  --tc-tone-bg-before-opacity: 0.86;
+  --tc-tone-bg-before-blur: 20px;
+  --tc-tone-bg-before-duration: 24s;
+  --tc-tone-bg-after-opacity: 0.65;
+  --tc-tone-bg-after-blur: 26px;
+  --tc-tone-bg-after-duration: 28s;
+}
+
+html[data-world] body:not([data-page="lobby"]),
+body.tc-multiverse[data-page="lobby"] {
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
 }
 
 html[data-world] body:not([data-page="lobby"])::before,
-html[data-world] body:not([data-page="lobby"])::after {
+html[data-world] body:not([data-page="lobby"])::after,
+body.tc-multiverse[data-page="lobby"]::before,
+body.tc-multiverse[data-page="lobby"]::after {
   content: "";
   position: fixed;
-  inset: -18vmax;
+  inset: var(--tc-tone-bg-inset);
   pointer-events: none;
   z-index: -1;
 }
 
-html[data-world] body:not([data-page="lobby"])::before {
+html[data-world] body:not([data-page="lobby"])::before,
+body.tc-multiverse[data-page="lobby"]::before {
   background: var(--tone-canvas);
-  opacity: 0.78;
-  filter: blur(18px);
+  opacity: var(--tc-tone-bg-before-opacity);
+  filter: blur(var(--tc-tone-bg-before-blur));
   transform: translate3d(0, 0, 0);
-  animation: tc-bg-drift 26s ease-in-out infinite alternate;
+  animation: tc-bg-drift var(--tc-tone-bg-before-duration) ease-in-out infinite alternate;
 }
 
-html[data-world] body:not([data-page="lobby"])::after {
+html[data-world] body:not([data-page="lobby"])::after,
+body.tc-multiverse[data-page="lobby"]::after {
   background: var(--tone-overlay, transparent);
-  opacity: 0.55;
-  filter: blur(24px);
-  animation: tc-bg-drift-reverse 30s ease-in-out infinite alternate;
+  opacity: var(--tc-tone-bg-after-opacity);
+  filter: blur(var(--tc-tone-bg-after-blur));
+  animation: tc-bg-drift-reverse var(--tc-tone-bg-after-duration) ease-in-out infinite alternate;
 }
 
 .tc-shell {
@@ -43,36 +58,6 @@ html[data-world] body:not([data-page="lobby"])::after {
   margin: 0 auto;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-}
-
-body.tc-multiverse {
-  position: relative;
-  isolation: isolate;
-  overflow-x: hidden;
-}
-
-body.tc-multiverse[data-page="lobby"]::before,
-body.tc-multiverse[data-page="lobby"]::after {
-  content: "";
-  position: fixed;
-  inset: -18vmax;
-  pointer-events: none;
-  z-index: -1;
-}
-
-body.tc-multiverse[data-page="lobby"]::before {
-  background: var(--tone-canvas);
-  opacity: 0.86;
-  filter: blur(20px);
-  transform: translate3d(0, 0, 0);
-  animation: tc-bg-drift 24s ease-in-out infinite alternate;
-}
-
-body.tc-multiverse[data-page="lobby"]::after {
-  background: var(--tone-overlay, transparent);
-  opacity: 0.65;
-  filter: blur(26px);
-  animation: tc-bg-drift-reverse 28s ease-in-out infinite alternate;
 }
 
 @keyframes tc-bg-drift {
@@ -2710,8 +2695,10 @@ body[data-page="lobby"] .tc-qa-hex-input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.tc-multiverse::before,
-  body.tc-multiverse::after {
+  html[data-world] body:not([data-page="lobby"])::before,
+  html[data-world] body:not([data-page="lobby"])::after,
+  body.tc-multiverse[data-page="lobby"]::before,
+  body.tc-multiverse[data-page="lobby"]::after {
     animation: none;
   }
 

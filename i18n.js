@@ -100,6 +100,250 @@
         ctaHex: "Kho HEX",
         ctaJump: "Đi đến 8 cổng ngay"
       },
+      lobby: {
+        meta: {
+          title: "8Portal v4"
+        },
+        hero: {
+          kicker: "Sảnh điều phối",
+          lines: "Không gian|chuẩn hóa màu số",
+          line1: "Không gian",
+          line2: "chuẩn hóa màu số",
+          jumpLabel: "Đi nhanh",
+          jump: {
+            portals: "Sơ đồ 8 cổng",
+            roulette: "Vòng quay bảng phối màu",
+            forge: "Lò rèn dải màu",
+            gallery: "Bộ sưu tập sắc thái"
+          }
+        },
+        quick: {
+          title: "Trạm thao tác nhanh",
+          subtitle: "Làm nhanh ngay tại sảnh, sau đó mới mở chi tiết.",
+          live: "LIVE",
+          liveAria: "Đang hoạt động",
+          openDetail: "Mở chi tiết",
+          tabs: {
+            paste: "Dán màu",
+            thread: "Tra mã chỉ từ màu",
+            image: "Tra mã chỉ từ ảnh"
+          },
+          aurora: {
+            title: "Bảng phối nhanh",
+            copyColor1: "Sao chép màu 1",
+            copyColor2: "Sao chép màu 2",
+            copyColor3: "Sao chép màu 3",
+            copyColor4: "Sao chép màu 4",
+            copyColor5: "Sao chép màu 5",
+            copyColor6: "Sao chép màu 6",
+            chip: {
+              threadMap: "Bản đồ mã chỉ",
+              deltaE: "So khớp ΔE",
+              brandFilter: "Bộ lọc hãng"
+            },
+            suggestions: {
+              one: {
+                title: "Gợi ý #1",
+                desc: "Điểm nhấn mạnh"
+              },
+              two: {
+                title: "Gợi ý #2",
+                desc: "Hài hoà nền phụ"
+              },
+              three: {
+                title: "Gợi ý #3",
+                desc: "Tương phản chữ"
+              }
+            }
+          },
+          token: {
+            summary: "Token CSS (từ gợi ý phối)",
+            preset: "Preset",
+            tonePlaceholder: "Tên sắc thái tuỳ chỉnh…",
+            copyCss: "Sao chép CSS",
+            preview: "Xem trước sắc thái",
+            reset: "Hoàn tác",
+            previewBadge: "Đang xem trước",
+            saveLibrary: "Lưu vào Thư viện",
+            openLibrary: "Mở Thư viện",
+            copyToast: "Đã sao chép token CSS",
+            option: {
+              auto: "Tự động (khuyến nghị)",
+              complementary: "Bù 180°",
+              analogous: "Tương tự ±30°",
+              accent: "Nhấn tương phản"
+            }
+          },
+          paste: {
+            hexList: "Danh sách HEX",
+            placeholder: "#FFAA00, #123456\n#0F766E",
+            apply: "Áp dụng",
+            advancedSummary: "Mở tác vụ nhanh nâng cao",
+            actionRun: "Thực hiện",
+            cmyk: {
+              title: "Đổi CMYK ngay"
+            },
+            gradient: {
+              title: "Tạo dải ngay"
+            },
+            export: {
+              title: "Xuất token ngay"
+            }
+          },
+          thread: {
+            inputLabel: "Nhập HEX",
+            placeholder: "#FFAA00",
+            search: "Tra ngay",
+            open: "Mở chi tiết (Thêu)"
+          },
+          image: {
+            label: "Chọn ảnh",
+            pick: "Chọn ảnh",
+            analyze: "Phân tích",
+            previewAlt: "Xem trước ảnh đã chọn"
+          }
+        },
+        recent: {
+          title: "Gần đây / Ghim",
+          desc: "Theo dõi các Thế giới bạn vừa dùng hoặc ghim lại.",
+          clear: "Xoá gần đây",
+          pinnedTitle: "Mục ghim",
+          recentTitle: "Gần đây",
+          emptyPinned: "Chưa có mục ghim. Bấm ghim để giữ lại tối đa 3 mục.",
+          emptyRecent: "Chưa có lịch sử. Hãy chọn một tuyến mục tiêu để bắt đầu.",
+          pinAddAria: "Ghim",
+          pinRemoveAria: "Bỏ ghim",
+          worlds: {
+            threadcolor: {
+              label: "Thế giới màu thêu",
+              desc: "Tra mã chỉ từ ảnh/HEX"
+            },
+            palette: {
+              label: "Bảng phối màu",
+              desc: "Phối màu và kiểm tra tương phản"
+            },
+            gradient: {
+              label: "Dải chuyển màu",
+              desc: "Tạo dải chuyển và xuất token nhanh"
+            },
+            printcolor: {
+              label: "CMYK và in ấn",
+              desc: "Kiểm tra CMYK/TAC trước khi in"
+            },
+            library: {
+              label: "Thư viện màu",
+              desc: "Lưu và quản lý tài sản màu"
+            }
+          }
+        },
+        preview: {
+          title: "Xem thử nhanh",
+          desc: "Nhìn nhanh cách bảng phối lên Giao diện/Áp phích/Thêu.",
+          cta: "Mở chi tiết",
+          copyHexAria: "Sao chép mã HEX",
+          tabs: {
+            ui: "Giao diện",
+            poster: "Áp phích",
+            thread: "Thêu"
+          },
+          frame: {
+            ui: {
+              chip: "Mẫu bối cảnh",
+              title: "Bảng điều khiển sản phẩm",
+              desc: "Độ tương phản vừa đủ để đọc nhanh và tập trung.",
+              pill1: "Nút kêu gọi (CTA)",
+              pill2: "Nhấn",
+              pill3: "Nhẹ"
+            },
+            poster: {
+              chip: "Bố cục nổi bật",
+              title: "Áp phích chiến dịch",
+              desc: "Màu nổi bật để dẫn mắt vào thông điệp chính.",
+              pill1: "Tiêu đề",
+              pill2: "Nút kêu gọi (CTA)",
+              pill3: "Sự kiện"
+            },
+            thread: {
+              chip: "Mẫu vải thêu",
+              title: "Bảng màu thêu",
+              desc: "Tông dịu, dễ phối cho sản phẩm thủ công.",
+              pill1: "Nền",
+              pill2: "Hoa văn",
+              pill3: "Viền"
+            }
+          },
+          help: {
+            summary: "Vì sao có khối này trong Sảnh?",
+            effect: "Tác dụng: xem thử cảm giác bảng phối màu lên bối cảnh thực tế để quyết định nhanh trước khi vào Thế giới chi tiết.",
+            why: "Lý do đặt ở Sảnh: giúp người dùng chốt hướng phối màu ngay điểm vào trung tâm, giảm vòng lặp thử sai.",
+            routeUi: "Giao diện → mở Thế giới Bảng phối màu.",
+            routePoster: "Áp phích → mở Thế giới Dải chuyển màu.",
+            routeThread: "Thêu → mở Thế giới màu thêu."
+          }
+        },
+        portals: {
+          title: "8 Cổng SpaceColors",
+          desc: "Chọn cổng để bước vào một Thế giới sắc màu khác.",
+          cards: {
+            threadcolor: {
+              title: "Thế giới màu thêu (Thêu)",
+              desc: "Tra mã chỉ từ ảnh/HEX, so màu gần nhất, quản lý kho chỉ và đặt mua.",
+              cta: "Mở"
+            },
+            gradient: {
+              title: "Thế giới Dải chuyển màu (Gradient)",
+              desc: "Tạo dải chuyển màu, chỉnh góc và điểm neo, xuất CSS/Token nhanh.",
+              cta: "Mở"
+            },
+            palette: {
+              title: "Thế giới Bảng phối màu (Palette)",
+              desc: "Khám phá phối màu theo cảm xúc, lưu bộ sưu tập, xuất token/HEX.",
+              cta: "Mở"
+            },
+            printcolor: {
+              title: "Thế giới Màu in (CMYK)",
+              desc: "Đổi HEX → CMYK, theo dõi TAC, cảnh báo lệch in và xuất bảng cho nhà in.",
+              cta: "Mở"
+            },
+            library: {
+              title: "Thế giới Thư viện Tài sản Màu",
+              desc: "Lưu tài sản màu, lọc nhanh, xem nhanh và áp dụng sang Palette/Gradient.",
+              cta: "Mở"
+            },
+            paintfabric: {
+              title: "Thế giới màu Sơn&Vải",
+              desc: "Mô phỏng màu trên sơn/vải, điều chỉnh ánh sáng, lưu tài sản vật liệu.",
+              cta: "Mở"
+            },
+            imagecolor: {
+              title: "Thế giới Màu từ Ảnh",
+              desc: "Lấy màu chủ đạo từ ảnh, tạo palette/gradient và lưu nhanh.",
+              cta: "Mở"
+            },
+            colorplay: {
+              title: "Thế giới trò chơi màu",
+              desc: "Chơi Line 98, luyện mắt màu và tối ưu điểm số theo combo.",
+              cta: "Mở"
+            }
+          }
+        },
+        cmdk: {
+          label: "Bảng lệnh",
+          sub: "Tìm nhanh Thế giới và tuyến mục tiêu.",
+          hint: "Ctrl/⌘ + K",
+          searchLabel: "Tìm lệnh",
+          placeholder: "Gõ: thêu, gradient, palette, cmyk, thư viện…",
+          listAria: "Gợi ý bảng lệnh",
+          empty: "Không có gợi ý phù hợp."
+        },
+        toast: {
+          unpinned: "Đã bỏ ghim.",
+          pinLimit: "Chỉ ghim tối đa 3 mục.",
+          pinned: "Đã ghim mục này.",
+          clearedRecent: "Đã xoá gần đây.",
+          copied: "Đã sao chép!"
+        }
+      },
       portalHub: {
         title: "8 Cổng SpaceColors",
         desc: "Chọn cổng để bước vào một Thế giới sắc màu khác.",
@@ -243,6 +487,8 @@
           type: "Loại yêu cầu",
           email: "Email liên hệ (tuỳ chọn)",
           message: "Nội dung",
+          emailPlaceholder: "you@email.com",
+          messagePlaceholder: "Mô tả chi tiết, bước tái hiện...",
           send: "Gửi yêu cầu",
           fallback: "Không mở được mail, hãy sao chép nội dung và gửi tới spacecolor8portals@gmail.com.",
           type: {
@@ -279,13 +525,13 @@
         }
       },
       roulette: {
-        title: "Vòng quay dải màu",
+        title: "Vòng quay bảng phối màu",
         desc: "Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.",
         spin: "Quay màu",
         reset: "Đặt lại"
       },
       forge: {
-        title: "Lò rèn bảng màu",
+        title: "Lò rèn dải màu",
         desc: "Tuỳ chỉnh bộ màu nhấn để phù hợp với gu của bạn.",
         a1: { label: "Màu nhấn 1" },
         a2: { label: "Màu nhấn 2" },
