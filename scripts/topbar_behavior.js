@@ -5,6 +5,70 @@
   const WORLD_KEYS = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
   const STORAGE_KEY = "tc_world";
 
+  const normalizeWorldKey = (key) => {
+    const raw = typeof key === "string" ? key.trim().toLowerCase() : "";
+    return WORLD_KEYS.includes(raw) ? raw : null;
+  };
+
+  const readStoredWorld = () => {
+    try {
+      return normalizeWorldKey(localStorage.getItem(STORAGE_KEY));
+    } catch (_err) {
+      return null;
+    }
+  };
+
+  const getCurrentWorld = () => normalizeWorldKey(document.documentElement?.getAttribute("data-world"));
+
+  const dispatchWorldChanged = (world, source) => {
+    document.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world, source } }));
+  };
+
+  const setToneWorld = (key, options = {}) => {
+    const source = typeof options.source === "string" ? options.source : "sync";
+    const persist = options.persist !== false;
+    let next = normalizeWorldKey(key);
+    if (!next) {
+      next = readStoredWorld() || "chrome";
+    }
+
+    const prev = document.documentElement.getAttribute("data-world");
+    document.documentElement.setAttribute("data-world", next);
+
+    if (persist) {
+      try {
+        if (localStorage.getItem(STORAGE_KEY) !== next) {
+          localStorage.setItem(STORAGE_KEY, next);
+        }
+      } catch (_err) {}
+    }
+
+    if (prev !== next || options.forceDispatch === true) {
+      dispatchWorldChanged(next, source);
+    }
+
+    return next;
+  };
+
+  const syncToneWorld = (source = "init") => {
+    const stored = readStoredWorld();
+    return setToneWorld(stored || "chrome", { source, persist: true });
+  };
+
+  const bindToneStorageSync = () => {
+    window.addEventListener("storage", (event) => {
+      if (event.key !== STORAGE_KEY) return;
+      setToneWorld(event.newValue, { source: "storage", persist: false });
+    });
+  };
+
+  window.tcToneSync = {
+    keys: [...WORLD_KEYS],
+    storageKey: STORAGE_KEY,
+    getWorld: () => getCurrentWorld() || readStoredWorld() || "chrome",
+    setWorld: (key) => setToneWorld(key, { source: "api-write", persist: true })
+  };
+
   const bindAdminLink = () => {
     const adminLink = document.getElementById("portalAdminLink");
     if (!adminLink) return;
@@ -115,20 +179,9 @@
       return map;
     };
 
-    const applyWorld = (key) => {
-      const current = document.documentElement.dataset.world;
-      const next = WORLD_KEYS.includes(key)
-        ? key
-        : (WORLD_KEYS.includes(current) ? current : "origami");
-      const prev = document.documentElement.getAttribute("data-world");
-      document.documentElement.setAttribute("data-world", next);
-      try {
-        localStorage.setItem(STORAGE_KEY, next);
-      } catch (_err) {}
-      if (prev !== next) {
-        document.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world: next } }));
-      }
-      const label = getLabelMap().get(next);
+    const syncWorldLabel = () => {
+      const current = getCurrentWorld() || "chrome";
+      const label = getLabelMap().get(current);
       if (worldLabel && label) {
         const prefix = worldLabel.dataset?.prefix || "";
         worldLabel.textContent = prefix ? `${prefix}${label}` : label;
@@ -154,7 +207,8 @@
       const item = event.target.closest("[data-world]");
       if (!item || !worldMenu.contains(item)) return;
       event.preventDefault();
-      applyWorld(item.getAttribute("data-world"));
+      setToneWorld(item.getAttribute("data-world"), { source: "switcher", persist: true });
+      syncWorldLabel();
       setMenuOpen(false);
       worldBtn.focus();
     });
@@ -164,7 +218,8 @@
       galleryGrid.addEventListener("click", (event) => {
         const card = event.target.closest('[data-world-card="1"]');
         if (!card || !galleryGrid.contains(card)) return;
-        applyWorld(card.dataset.world);
+        setToneWorld(card.dataset.world, { source: "gallery", persist: true });
+        syncWorldLabel();
         if (worldMenu.dataset.open === "1") {
           setMenuOpen(false);
         }
@@ -174,7 +229,8 @@
         if (!card || !galleryGrid.contains(card) || document.activeElement !== card) return;
         if (event.key === "Enter" || event.key === " " || event.key === "Spacebar" || event.key === "Space") {
           event.preventDefault();
-          applyWorld(card.dataset.world);
+          setToneWorld(card.dataset.world, { source: "gallery", persist: true });
+          syncWorldLabel();
           if (worldMenu.dataset.open === "1") {
             setMenuOpen(false);
           }
@@ -215,24 +271,11 @@
       items[nextIndex]?.focus();
     });
 
-    let storedWorld = null;
-    try {
-      storedWorld = localStorage.getItem(STORAGE_KEY);
-    } catch (_err) {}
-    if (WORLD_KEYS.includes(storedWorld)) {
-      applyWorld(storedWorld);
-    } else {
-      applyWorld("chrome");
-    }
+    syncWorldLabel();
     setMenuOpen(false);
     worldMenu.dataset.open = "0";
     worldMenu.hidden = true;
-
-    window.addEventListener("storage", (event) => {
-      if (event.key === STORAGE_KEY && event.newValue) {
-        applyWorld(event.newValue);
-      }
-    });
+    document.addEventListener("tc-world-changed", syncWorldLabel);
   };
 
   const bindCommunityMenus = () => {
@@ -387,6 +430,8 @@
     window.addEventListener("resize", onScroll);
   };
 
+  syncToneWorld("init");
+  bindToneStorageSync();
   bindAdminLink();
   bindPortalMenu();
   bindToneSwitcher();

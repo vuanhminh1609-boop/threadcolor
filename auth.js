@@ -24,6 +24,7 @@ import {
 import {
   getFirestore,
   doc,
+  getDoc,
   setDoc,
   serverTimestamp,
   addDoc,
@@ -130,6 +131,10 @@ try {
     signInGoogle,
     signInFacebook,
     signOutUser,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp,
     addDoc,
     collection,
     getDocs,

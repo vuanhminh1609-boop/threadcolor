@@ -513,6 +513,9 @@ const setupAutofillTrap = (input) => {
   });
   window.setTimeout(clearIfAutofill, 500);
 };
+if (typeof window.setupAutofillTrap !== "function") {
+  window.setupAutofillTrap = setupAutofillTrap;
+}
 
 const closeBrandPopovers = () => {
   if (!brandFilters) return;
@@ -901,7 +904,7 @@ const brandFilters = document.getElementById("brandFilters");
 const verifiedOnlyToggle = document.getElementById("verifiedOnlyToggle");
 const brandSelectAll = document.getElementById("brandSelectAll");
 const brandClearAll = document.getElementById("brandClearAll");
-const brandFilterSearch = document.getElementById("brandFilterSearch");
+const brandFilterSearch = document.getElementById("scThreadBrandFilter");
 const brandFilterClear = document.getElementById("brandFilterClear");
 const brandFilterCount = document.getElementById("brandFilterCount");
 const btnFindNearest = document.getElementById("btnFindNearest");
@@ -1529,13 +1532,17 @@ function saveProjectPrefs(name) {
 }
 
 function bindProjectInput() {
-  const input = document.getElementById("projectInput");
-  const list = document.getElementById("projectList");
+  const input = document.getElementById("scProjectLabel");
+  const list = document.getElementById("scProjectLabelList");
   if (!input || !list) return;
   input.placeholder = t("tc.project.placeholder", "Nhập tên dự án");
   input.setAttribute("aria-label", t("tc.project.label", "Dự án"));
   input.value = currentProject || "";
   list.innerHTML = recentProjects.map(item => `<option value="${item}"></option>`).join("");
+  if (input.dataset.autofillTrapBound !== "1") {
+    setupAutofillTrap(input);
+    input.dataset.autofillTrapBound = "1";
+  }
   if (input.dataset.bound === "1") return;
   input.dataset.bound = "1";
   input.addEventListener("input", () => {
@@ -1602,9 +1609,29 @@ function renderGroupedResults(groups, chosenHex, limit) {
   const projectPlaceholder = t("tc.project.placeholder", "Nhập tên dự án");
   const projectBlock = `
     <div class="flex flex-wrap items-center gap-3 mb-4">
-      <label for="projectInput" class="text-sm tc-muted">${projectLabel}</label>
-      <input id="projectInput" class="tc-field text-sm" list="projectList" data-i18n-attr="placeholder:tc.project.placeholder" placeholder="${projectPlaceholder}">
-      <datalist id="projectList"></datalist>
+      <div class="tc-autofill-decoy" aria-hidden="true">
+        <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true">
+        <input type="password" autocomplete="new-password" tabindex="-1" aria-hidden="true">
+      </div>
+      <label for="scProjectLabel" class="text-sm tc-muted">${projectLabel}</label>
+      <input
+        id="scProjectLabel"
+        name="sc_project_label"
+        type="text"
+        class="tc-field text-sm"
+        list="scProjectLabelList"
+        inputmode="text"
+        autocomplete="new-password"
+        autocapitalize="none"
+        autocorrect="off"
+        spellcheck="false"
+        data-lpignore="true"
+        data-1p-ignore="true"
+        data-bwignore="true"
+        data-i18n-attr="placeholder:tc.project.placeholder"
+        placeholder="${projectPlaceholder}"
+      >
+      <datalist id="scProjectLabelList"></datalist>
     </div>
   `;
   let remaining = limit;
@@ -2619,7 +2646,8 @@ function startEyeDropper() {
 window.addEventListener("firebase-auth-ready", bindAuth);
 bindAuth();
 bindHandoffActions();
-window.setupAutofillTrap?.(codeInput);
+setupAutofillTrap(codeInput);
+setupAutofillTrap(brandFilterSearch);
 const clearBrandFilter = (shouldFocus = true) => {
   if (!brandFilterSearch) return;
   brandFilterSearch.value = "";

@@ -36,7 +36,7 @@
 | Token tương phản (bộ biến màu chữ theo sắc thái) | Token tương phản | Bộ biến màu chữ chính/phụ theo từng sắc thái để bảo đảm độ đọc rõ. |
 | Overlay nền (lớp hoạ tiết/ánh phủ trên nền chính) | Overlay nền | Lớp hoạ tiết/ánh phủ mỏng đặt trên nền chính để tạo chiều sâu nhưng vẫn nhẹ. |
 | Custom Tone (sắc thái tuỳ chỉnh do người dùng tạo) | Sắc thái tuỳ chỉnh | Sắc thái do người dùng tự lưu lại từ công cụ, có thể áp dụng/preview lại nhanh. |
-| Preset (thiết lập sẵn) | Preset | Gói thiết lập sẵn/mẫu có sẵn giúp chọn nhanh một cấu hình mà không phải chỉnh tay lại. |
+| Preset (thiết lập sẵn) | Preset | Thiết lập sẵn có thể lưu và dùng lại, giúp áp nhanh một cấu hình mà không phải chỉnh tay lại. |
 | Preset theo mục tiêu | Preset theo mục tiêu | Gói preset dựng theo bối cảnh/mục tiêu (ví dụ phòng ngủ, streetwear) để áp nhanh nhiều tham số. |
 | Màu đi kèm (Companion colors) | Màu đi kèm | Bộ màu phụ trợ đi kèm màu chính (viền/nhấn) để phối nhanh và giữ cân bằng. |
 | So sánh A/B | So sánh A/B | Chế độ đặt hai phương án màu cạnh nhau để so sánh nhanh. |
@@ -55,7 +55,13 @@
 | ThreadColor | Thế giới Màu thêu (ThreadColor) | Thế giới tra cứu/gợi ý màu chỉ. |
 | Lưới màu hãng | Lưới màu hãng | Lưới swatch theo từng hãng chỉ, sắp theo hue để chọn nhanh màu mục tiêu. |
 | Chuyển hãng theo mã | Chuyển hãng theo mã | Tìm mã tương đương ở hãng khác từ một mã chỉ gốc, kèm ΔE để so sánh. |
+| Tra ngược theo mã chỉ | Tra ngược theo mã chỉ | Tra cứu thông tin màu/chỉ từ mã chỉ đã biết để tìm đúng mã nguồn và dữ liệu liên quan. |
+| Chuẩn hoá mã | Chuẩn hoá mã | Làm sạch và thống nhất định dạng mã nhập (trim, gom khoảng trắng, viết hoa, tách tiền tố hãng) trước khi so khớp. |
+| Chỉ mục tra cứu | Chỉ mục tra cứu | Cấu trúc dữ liệu `Map` phục vụ tìm nhanh theo cặp `brandKey|codeKey` hoặc theo `codeKey` độc lập. |
 | Trích bảng màu tự động | Trích bảng màu tự động | Chức năng tự phân tích ảnh để lấy các màu chủ đạo và tỷ lệ xuất hiện. |
+| Trích xuất từ ảnh | Trích xuất từ ảnh | Tính năng lấy bảng phối màu từ hình ảnh bằng cách phân tích điểm ảnh và chọn ra các màu đại diện. |
+| Lượng tử hoá màu | Lượng tử hoá màu | Quá trình giảm số màu trong ảnh về một tập màu đại diện nhỏ hơn để xử lý nhanh và ổn định. |
+| Giảm kích thước ảnh | Giảm kích thước ảnh | Bước thu nhỏ ảnh (downscale) trước khi xử lý để giảm chi phí tính toán và tăng tốc phản hồi. |
 | K-means (thuật toán gom cụm tìm màu chủ đạo) | K-means | Thuật toán gom cụm dữ liệu màu thành các nhóm để tìm màu trung tâm đại diện. |
 | Clustering | Gom cụm | Kỹ thuật nhóm các điểm màu tương tự thành cụm để chọn màu đại diện. |
 | Histogram màu | Histogram màu | Bảng tần suất xuất hiện của màu (hoặc bin màu) trong ảnh. |
@@ -76,7 +82,7 @@
 | Dải thẳng (linear gradient) | Dải thẳng | Dải chuyển màu theo một hướng thẳng, thường dùng góc để xác định hướng. |
 | Dải tròn (radial gradient) | Dải tròn | Dải chuyển màu loang tròn từ tâm ra ngoài theo bán kính. |
 | Dải nón (conic gradient) | Dải nón | Dải chuyển màu theo vòng xoay quanh tâm, giống mặt đồng hồ. |
-| Nội suy (interpolation) | Nội suy | Cách pha trộn màu giữa các điểm neo để tạo chuyển màu mượt. |
+| Nội suy (interpolation: cách chuyển giữa các màu) | Nội suy | Cách chuyển giữa các màu thông qua pha trộn từng bước để dải chuyển mượt và liên tục. |
 | Hue (tông màu: góc màu trên vòng màu 0–360) | Hue | Tông màu biểu diễn góc trên vòng màu 0–360, dùng để nhóm và so sánh màu. |
 | Sort theo hue (sắp xếp theo tông màu) | Sort theo hue | Cách sắp xếp màu theo tông màu (hue) để các dải xanh/vàng/đỏ liền mạch, dễ quan sát. |
 | line-height (độ cao dòng) | line-height | Độ cao dòng chữ; dùng để tránh cắt phần đuôi chữ khi dòng quá thấp. |
@@ -92,6 +98,12 @@
 | Màu tương tự (analogous) | Màu tương tự | Nhóm màu gần nhau trên vòng màu (±20° đến ±40°) để phối hài hoà. |
 | Tiêu chuẩn WCAG | Tiêu chuẩn WCAG | Chuẩn khả năng tiếp cận web, có khuyến nghị về tương phản màu. |
 | Vai trò màu (color roles) | Vai trò màu | Cách phân vai màu trong palette: nền/bề mặt/chữ/primary/accent để dùng nhất quán. |
+| Phân vai màu | Phân vai màu | Thao tác gán vai trò cho từng màu trong bảng phối (nền/chữ/nhấn/viền) để áp dụng nhất quán vào giao diện thực tế. |
+| Ma trận tương phản | Ma trận tương phản | Bảng kiểm tra độ tương phản giữa nhiều cặp màu cùng lúc để phát hiện nhanh cặp đạt/chưa đạt chuẩn đọc. |
+| Token vai màu | Token vai màu | Tập biến CSS/JSON được xuất ra từ mapping vai màu để tái sử dụng nhất quán giữa giao diện, tài liệu thiết kế và code. |
+| Bình luận theo vai màu | Bình luận theo vai màu | Cơ chế gắn bình luận trực tiếp vào một vai màu cụ thể (nền/chữ/nhấn...) để trao đổi đúng ngữ cảnh. |
+| Chuỗi bình luận | Chuỗi bình luận | Nhóm trả lời nối tiếp quanh một bình luận gốc, giúp theo dõi mạch thảo luận theo từng vấn đề. |
+| Đã xử lý | Đã xử lý | Trạng thái đánh dấu một bình luận đã được giải quyết, không còn là việc mở trong phiên chỉnh sửa. |
 | Chấm điểm (scoring) | Chấm điểm | Cách đánh giá điểm số để xếp hạng gợi ý palette theo tiêu chí. |
 | Thuật toán kinh nghiệm (heuristic) | Thuật toán kinh nghiệm | Phép suy đoán dựa trên quy tắc kinh nghiệm để phân loại gần đúng, không cần ML. |
 | Heuristic (quy tắc chấm điểm nhanh) | Heuristic | Quy tắc chấm điểm nhanh để chọn phương án tốt nhất mà không cần tính toán nặng. |
@@ -134,6 +146,7 @@
 | Dải màu (gamut) | Dải màu | Phạm vi màu thiết bị in có thể tái tạo; ngoài gamut sẽ bị lệch. |
 | Ý đồ chuyển đổi (intent) | Ý đồ chuyển đổi | Cách ưu tiên giữ màu/độ tương phản khi chuyển đổi giữa các profile màu. |
 | Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
+| Bộ đồng bộ Sắc thái | Bộ đồng bộ Sắc thái | Cơ chế đồng bộ Sắc thái giữa các trang bằng `localStorage` (`tc_world`), thuộc tính `data-world` trên thẻ `<html>` và sự kiện đồng bộ giữa tab. |
 | Thanh trên dính | Thanh trên dính | Topbar bám trên cùng khi cuộn để truy cập nhanh chức năng chính. |
 | Thu gọn theo cuộn | Thu gọn theo cuộn | Cơ chế giảm chiều cao/đệm của topbar khi người dùng cuộn xuống. |
 | Thanh trên thông minh | Thanh trên thông minh | Topbar tự ẩn khi cuộn xuống và hiện lại khi cuộn lên để tiết kiệm không gian. |
@@ -191,6 +204,35 @@
 | Taxonomy (hệ phân loại) | Hệ phân loại | Khung phân loại có cấu trúc để nhóm dữ liệu theo chủ đề/thuộc tính. |
 | Asset (tài sản số) | Tài sản số | Mục dữ liệu đã chuẩn hoá để tái sử dụng (ví dụ: palette/gradient). |
 | Tài sản | Tài sản | Tên gọi ngắn cho asset; một mục dữ liệu chuẩn dùng lại trong các World. |
+| Library (kho lưu trữ tài sản màu của người dùng) | Thư viện | Kho lưu trữ tài sản màu theo tài khoản người dùng, hỗ trợ lưu, mở lại và tái sử dụng theo dự án. |
+| Palette preset (bảng phối màu đã lưu để dùng lại) | Preset bảng phối | Một bảng phối màu đã lưu kèm metadata (tên/tag/ghi chú/vai màu) để mở lại nhanh và áp dụng nhất quán. |
+| Team sync (chia sẻ và đồng bộ tài sản trong nhóm) | Đồng bộ team | Cơ chế chia sẻ, cập nhật và đồng bộ tài sản màu giữa các thành viên trong cùng một team. |
+| Role-based access control (quyền theo vai trò: owner/editor/viewer) | Phân quyền | Cơ chế kiểm soát thao tác theo vai trò trong team: chủ sở hữu, biên tập hoặc chỉ xem. |
+| Audit log (ghi vết hoạt động quan trọng) | Nhật ký kiểm toán | Bản ghi vết các hành động quan trọng như tạo, cập nhật, xoá, khoá để truy vết và kiểm tra. |
+| Team guideline (tiêu chuẩn màu của nhóm) | Hướng dẫn Team | Bộ tiêu chuẩn tương phản và giới hạn chỉnh màu do team định nghĩa để toàn nhóm dùng chung khi đánh giá và sửa bảng phối. |
+| Đề xuất tự động (gợi ý tự động để đạt tiêu chuẩn) | Đề xuất tự động | Cơ chế sinh 1–3 phương án chỉnh vai màu/tông sáng tối để đưa các cặp màu chưa đạt lên ngưỡng tiêu chuẩn đã chọn. |
+| Locked role (vai màu không được thay đổi) | Khóa vai | Danh sách vai màu bị cố định trong guideline; thuật toán đề xuất không được phép chỉnh các vai này. |
+| Keep hue (chỉ chỉnh độ sáng/tối để hạn chế phá nhận diện) | Giữ sắc độ | Tuỳ chọn giữ nguyên sắc màu (hue) và ưu tiên chỉ điều chỉnh sáng/tối nhằm giảm lệch nhận diện thương hiệu. |
+| Phê duyệt (approval: quy trình duyệt trước khi phát hành) | Phê duyệt | Quy trình kiểm tra và xác nhận preset trước khi cho phép phát hành dùng rộng trong Team. |
+| Chờ phê duyệt (in_review) | Chờ phê duyệt | Trạng thái preset đã gửi lên vòng duyệt và đang đợi người có quyền phê duyệt xử lý. |
+| Đã phê duyệt (approved) | Đã phê duyệt | Trạng thái preset đã qua bước duyệt, sẵn sàng cho chủ sở hữu phát hành. |
+| Đã phát hành (published) | Đã phát hành | Trạng thái preset đã được chủ sở hữu công bố chính thức để dùng trong workflow Team. |
+| Bản phát hành (release: bản chính thức được phát hành) | Bản phát hành | Bản snapshot chính thức của preset team tại thời điểm phát hành, dùng làm mốc tham chiếu ổn định cho toàn nhóm. |
+| Chữ ký phát hành (release signature: dấu xác thực bản phát hành) | Chữ ký phát hành | Dấu xác thực gắn với bản phát hành, gồm người ký, thời điểm ký và mã băm để kiểm tra tính toàn vẹn dữ liệu. |
+| Mã băm (hash: chuỗi kiểm tra tính toàn vẹn) | Mã băm | Chuỗi sinh từ thuật toán băm (ví dụ SHA-256) để phát hiện thay đổi dữ liệu và xác minh nội dung không bị sửa. |
+| Design token (thẻ thiết kế: biến chuẩn hoá dùng chung design/dev) | Design token | Biến thiết kế chuẩn hoá để đồng bộ màu sắc giữa thiết kế và mã nguồn, giúp tái sử dụng nhất quán trên nhiều nền tảng. |
+| Gói tokens (token bundle: tập file tokens xuất ra) | Gói tokens | Tập file xuất ra từ release gồm `tokens.json`, `tokens.css`, `tokens.meta.json` để dùng trực tiếp cho thiết kế và phát triển. |
+| Siêu dữ liệu (metadata: dữ liệu mô tả phiên bản, chữ ký, policy) | Siêu dữ liệu | Phần dữ liệu mô tả đi kèm token/release như team, releaseId, phiên bản, chữ ký, policy và dấu thời gian. |
+| Phòng chỉnh sửa (phòng cộng tác để cùng chỉnh bảng phối màu) | Phòng chỉnh sửa | Không gian cộng tác thời gian thực để nhiều thành viên cùng xem/chỉnh một bảng phối màu theo cùng trạng thái. |
+| Trạng thái phòng (dữ liệu palette/roles/preview/sim đang được đồng bộ) | Trạng thái phòng | Gói dữ liệu hiện tại của phòng cộng tác gồm bảng màu, phân vai, tab xem thử và mô phỏng thị giác, được đồng bộ cho mọi thành viên. |
+| Hiện diện (presence: trạng thái online/đang chỉnh của người dùng) | Hiện diện | Trạng thái thời gian thực của từng thành viên trong phòng, gồm online gần nhất và vị trí đang thao tác như ô màu hoặc vai màu. |
+| Nhóm ảnh đại diện (avatar stack: cụm avatar người tham gia) | Nhóm ảnh đại diện | Cụm avatar xếp chồng gọn trong thanh phòng để hiển thị nhanh ai đang online và tham gia chỉnh sửa. |
+| Phiên bản (rev: số phiên bản tăng dần của trạng thái) | Phiên bản | Số đếm tăng dần gắn với mỗi lần chốt trạng thái, dùng để phát hiện ghi đè và đồng bộ đúng thứ tự thay đổi. |
+| Xung đột (conflict: hai người sửa cùng lúc gây lệch phiên bản) | Xung đột | Tình huống nhiều người cùng sửa làm `baseRev` không khớp `currentRev`, cần dừng ghi và đồng bộ lại dữ liệu mới nhất. |
+| Giới hạn nhịp cập nhật (throttle: giảm tần suất ghi để mượt và tiết kiệm) | Giới hạn nhịp cập nhật | Cơ chế gom nhiều thay đổi liên tiếp trong khoảng thời gian ngắn trước khi ghi, giúp giao diện mượt và giảm số lần ghi Firestore. |
+| Lịch sử phiên bản (timeline các phiên bản để xem và khôi phục) | Lịch sử phiên bản | Dòng thời gian lưu các mốc trạng thái của phòng chỉnh sửa, cho phép theo dõi quá trình thay đổi theo thứ tự rev. |
+| Khôi phục phiên bản (restore: đưa trạng thái về phiên bản trước) | Khôi phục phiên bản | Thao tác đưa `state/current` quay về snapshot đã chọn bằng transaction và tạo rev mới để đồng bộ an toàn. |
+| Mốc phiên bản (snapshot được lưu lại) | Mốc phiên bản | Bản chụp trạng thái tại một thời điểm gồm palette, vai màu, tab xem thử và mô phỏng thị giác, dùng để xem lại hoặc khôi phục. |
 | Bản thông số | Bản thông số | Tập thông tin mô tả ngắn gọn kèm JSON để chia sẻ/áp dụng nhanh. |
 | Đặc tả tài sản màu (asset spec) | Đặc tả tài sản màu | Bộ quy tắc/schema để tạo, đọc và xác thực tài sản màu thống nhất toàn hệ. |
 | Lấy mẫu màu (color sampling) | Lấy mẫu màu | Trích xuất các màu tiêu biểu từ ảnh/dữ liệu để tạo bảng phối màu. |
@@ -236,6 +278,8 @@
 | Modal (hộp thoại phủ) | Modal (hộp thoại phủ) | Hộp nổi chặn nền để hiển thị thông tin/tác vụ. |
 | Ngữ cảnh chồng lớp (stacking context) | Ngữ cảnh chồng lớp (stacking context) | Cơ chế quyết định lớp trên/dưới khi có blur/transform. |
 | Lớp phủ (overlay layer) | Lớp phủ (overlay layer) | Lớp nổi như menu/popup phải nằm trên nội dung. |
+| Mồi Tự điền (decoy field: trường ẩn để hút AutoFill của trình duyệt) | Mồi Tự điền | Trường ẩn đặt ngoài viewport để trình duyệt ưu tiên AutoFill vào đó thay vì các ô nhập liệu nghiệp vụ. |
+| Tự điền Safari (Safari AutoFill: cơ chế Safari tự gợi ý điền email/tài khoản) | Tự điền Safari | Cơ chế Safari tự gợi ý điền email/tài khoản theo ngữ cảnh trường nhập, có thể gây điền sai ở các ô text thông thường. |
 | Nâng lớp theo trạng thái (is-open z-index) | Nâng lớp theo trạng thái (is-open z-index) | Kỹ thuật tăng z-index cho row đang mở menu. |
 | Mật độ UI | Mật độ UI | Độ thoáng giao diện (điều chỉnh khoảng cách/padding/gap). |
 | Menu thả xuống | Menu thả xuống | Bảng chọn mở ra khi bấm nút (dropdown menu). |
@@ -268,7 +312,7 @@
 | Hình vector (SVG) | Hình vector (SVG) | Ảnh dạng vector, phóng to không vỡ và nhẹ cho UI. |
 | Ảnh đa độ phân giải (srcset) | Ảnh đa độ phân giải (srcset) | Khai báo nhiều mức độ phân giải để trình duyệt tự chọn. |
 | Fallback (phương án dự phòng) | Fallback (phương án dự phòng) | Phương án dự phòng khi tài nguyên chính không dùng được. |
-| Lưu cục bộ | Lưu cục bộ | Lưu lựa chọn trên trình duyệt bằng localStorage. |
+| Lưu cục bộ | Lưu cục bộ | Cơ chế local-first: lưu trên trình duyệt (localStorage) trước khi đồng bộ tài khoản hoặc dịch vụ từ xa. |
 | Sự kiện tuỳ biến | Sự kiện tuỳ biến | CustomEvent để đồng bộ trạng thái giữa các khối UI. |
 | Worker | Tiến trình phụ | Chạy tác vụ nặng (tìm kiếm, lập chỉ mục) ngoài luồng chính để UI mượt. |
 | Main thread | Luồng chính | Luồng chạy UI; càng ít việc càng mượt. |
@@ -279,7 +323,7 @@
 | Debounce | Trễ có chủ đích | Chờ người dùng dừng gõ rồi mới tìm, tránh giật. |
 | Virtual list | Danh sách ảo | Chỉ render phần đang nhìn thấy để khỏi lag. |
 | Latency | Độ trễ | Thời gian chờ phản hồi. |
-| FAB | Nút nổi cố định (FAB) | Nút nổi cố định ở góc màn hình để mở nhanh tác vụ chính. |
+| Nút hành động nổi (FAB: nút nổi cố định góc màn hình) | Nút hành động nổi | Nút nổi cố định ở góc màn hình để mở nhanh tác vụ chính. |
 | Ô bẫy Password Manager | Ô bẫy Password Manager | Cặp ô nhập ẩn để trình quản lý mật khẩu bám vào, tránh bật popup trên ô tìm kiếm thật. |
 | Hash routing | Điều hướng bằng hash | Dùng phần sau dấu # trong URL để chuyển tab/trạng thái mà không tải lại trang. |
 | Vùng cuộn trong flex (min-h-0) | Vùng cuộn trong flex (min-h-0) | Thiết lập min-height: 0 cho phần tử flex để vùng cuộn hoạt động đúng và không bị đẩy ra ngoài. |
@@ -290,6 +334,11 @@
 | Tailwind CLI | Tailwind CLI | Công cụ dòng lệnh để build Tailwind CSS theo cấu hình. |
 | DEV flag / Logger | Cờ DEV / Logger | Cơ chế bật/tắt log theo môi trường để giữ console sạch ở production. |
 | Trạm thao tác nhanh | Trạm thao tác nhanh | Khu làm nhanh ngay tại sảnh, cho ra kết quả trước khi vào chi tiết. |
+| Phòng thử nhanh | Phòng thử nhanh | Khu vực cho người dùng xem thử cảm giác bảng phối màu lên từng bối cảnh trước khi mở World chi tiết. |
+| Xem thử theo bối cảnh | Xem thử theo bối cảnh | Khu vực xem dải chuyển màu lên các tình huống thật (giao diện, áp phích, thêu) để chốt nhanh trước khi xuất hoặc lưu. |
+| Bối cảnh (context: tình huống hiển thị) | Bối cảnh | Tình huống hiển thị cụ thể dùng để đánh giá cảm giác màu và độ tương phản trong mục đích sử dụng thực tế. |
+| Áp phích (Poster – bối cảnh thiết kế dạng poster) | Áp phích | Bối cảnh thiết kế dạng áp phích (poster), ưu tiên headline/subhead và điểm nhấn hành động rõ ràng trên nền màu. |
+| Nút kêu gọi (CTA – nút kêu gọi hành động) | Nút kêu gọi | Nút kêu gọi hành động chính trong giao diện, dùng màu nhấn để tăng khả năng chuyển đổi và điều hướng. |
 | action-first / navigate-second | action-first / navigate-second | Ưu tiên làm ra kết quả trước, điều hướng sâu sau khi cần. |
 | lazy-load | lazy-load | Chỉ tải tài nguyên khi cần để trang chính nhẹ và nhanh. |
 | Giả lập in | Giả lập in | Mô phỏng màu in ra từ CMYK để ước lượng hiển thị trên màn hình. |
@@ -324,8 +373,11 @@
 | Repo Doctor | Bác sĩ kho mã | Công cụ quét repo: lỗi gãy (BLOCK), cảnh báo (WARN), thông tin (INFO). |
 | Health Score | Điểm sức khoẻ | Điểm 0–100 phản ánh tình trạng repo theo quy tắc đã thống nhất. |
 | Trend 7 ngày | Xu hướng 7 ngày | Chuỗi điểm/đếm trong 7 ngày gần nhất để xem tiến hay lùi. |
-| Dải chuyển màu (gradient: chuyển màu liên tục) | Dải chuyển màu | Dải màu chuyển liên tục giữa nhiều màu theo một hướng. |
-| Điểm neo màu (color stop: điểm màu trên dải) | Điểm neo màu | Vị trí màu cụ thể trong gradient, xác định độ chuyển và tỉ lệ. |
+| Dải chuyển (gradient: chuyển màu) | Dải chuyển | Vùng màu chuyển liên tục giữa nhiều màu theo một hướng hoặc một quỹ đạo nhất định. |
+| Banding (vệt phân tầng màu khi dải chuyển không mượt) | Vệt phân tầng màu | Hiện tượng dải chuyển bị chia thành từng nấc rõ rệt khi chuyển sắc không mượt, thường do lượng tử hoá hoặc thiếu biến thiên màu. |
+| Hạt mịn (dither: nhiễu nhẹ để giảm thấy banding) | Hạt mịn | Lớp nhiễu rất nhẹ phủ lên preview để mắt bớt nhận ra vệt phân tầng màu, không làm thay đổi dữ liệu xuất. |
+| Điểm mượt | Điểm mượt | Điểm đánh giá độ mượt của dải chuyển theo thang 0–100; điểm càng cao thì nguy cơ banding càng thấp. |
+| Điểm neo màu (color stop: điểm màu trong dải chuyển) | Điểm neo màu | Điểm màu nằm trong dải chuyển, xác định vị trí %, độ chuyển và tỉ lệ pha màu. |
 | Token màu (biến màu dùng lại cho UI/thiết kế) | Token màu | Biến màu tái sử dụng trong thiết kế hoặc CSS, giúp thống nhất hệ màu. |
 | Token CSS (biến CSS dùng lại) | Token CSS | Biến CSS dùng lại để định nghĩa màu/thiết kế, dễ copy và áp dụng nhất quán. |
 | Remix (tạo biến thể từ mẫu có sẵn) | Tạo biến thể | Tạo biến thể màu mới bằng cách chỉnh sửa từ một dải gốc. |
@@ -535,6 +587,15 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Clipboard API (API sao chép vào bộ nhớ tạm) | Clipboard API | API trình duyệt cho phép ghi/đọc văn bản vào bộ nhớ tạm (clipboard). |
 | URL fragment (phần sau dấu #) | URL fragment | Phần sau dấu `#` trong URL, dùng để lưu trạng thái hoặc tham số trên client. |
 | Encode JSON (mã hóa JSON để nhúng vào link) | Encode JSON | Chuyển JSON thành chuỗi an toàn (encode) để nhúng vào URL hoặc fragment. |
+| Chia sẻ trạng thái | Chia sẻ trạng thái | Cơ chế tạo liên kết chứa dữ liệu hiện tại của công cụ để người khác mở lại đúng cấu hình đang xem. |
+| Link rút gọn | Link rút gọn | Đường dẫn ngắn dùng mã định danh để tra lại dữ liệu chia sẻ và mở đúng trạng thái đã lưu. |
+| ID chia sẻ | ID chia sẻ | Mã định danh ngắn (thường base62) dùng làm khoá tra cứu cho một bản chia sẻ trạng thái. |
+| Trạng thái (state: dữ liệu hiện tại của công cụ như góc, điểm neo, màu) | Trạng thái | Dữ liệu hiện tại của công cụ tại một thời điểm, gồm các tham số đang chỉnh như kiểu dải, góc, điểm neo và màu. |
+| Link chia sẻ trạng thái | Link chia sẻ trạng thái | Đường dẫn có chứa trạng thái đã mã hoá để người khác mở lại đúng y hệt cấu hình dải chuyển. |
+| Mã hoá URL (base64url: dạng mã hoá an toàn trong URL) | Mã hoá URL | Cách mã hoá dữ liệu thành chuỗi an toàn dùng trong URL (ví dụ base64url không có ký tự gây vỡ link). |
+| Nhập từ CSS | Nhập từ CSS | Tác vụ dán chuỗi CSS dải chuyển (như `linear-gradient(...)`) để hệ thống phân tích và áp dụng vào trạng thái hiện tại. |
+| Xuất đa định dạng | Xuất đa định dạng | Cách xuất một dải chuyển sang nhiều dạng khác nhau như CSS, biến CSS, token JSON hoặc chuỗi tiện dụng khác. |
+| Phân tích cú pháp (parse: chuyển chuỗi thành cấu trúc dữ liệu) | Phân tích cú pháp | Quá trình đọc chuỗi đầu vào và chuyển thành cấu trúc dữ liệu có thể xử lý bằng chương trình. |
 | Toast (thông báo nhỏ tự biến mất) | Toast | Thông báo ngắn xuất hiện tạm thời rồi tự ẩn để phản hồi thao tác. |
 | Tooltip (chú giải khi rê chuột) | Tooltip | Nhãn chú giải nhỏ xuất hiện khi rê chuột lên nút/biểu tượng để mô tả chức năng. |
 | Icon-only (nút chỉ có biểu tượng) | Icon-only | Kiểu nút chỉ hiển thị biểu tượng, không kèm chữ để tiết kiệm diện tích. |
@@ -563,8 +624,12 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Bảng màu 5 cột (five-column palette) | Bảng màu 5 cột | Bố cục 5 dải màu đứng cạnh nhau để xem nhanh một palette. |
 | Phím Space (phím cách) | Phím Space | Phím cách trên bàn phím, thường dùng làm thao tác nhanh (ví dụ đổi palette). |
 | Hue shift (dịch tông màu) | Hue shift | Thao tác xoay tông màu trên trục hue để dịch sắc thái toàn bảng màu. |
-| Undo/Redo (hoàn tác/làm lại) | Undo/Redo | Cặp thao tác hoàn tác bước trước và làm lại bước vừa hoàn tác trong lịch sử. |
+| Hoàn tác/Làm lại (Undo/Redo) | Hoàn tác/Làm lại | Cặp thao tác quay lại bước trước và thực hiện lại bước vừa hoàn tác trong lịch sử chỉnh sửa. |
 | Autosave | Autosave | Cơ chế tự lưu tiến trình/thiết lập theo nhịp để có thể tiếp tục khi quay lại. |
+| Mô phỏng mù màu | Mô phỏng mù màu | Chế độ hiển thị giả lập các dạng suy giảm thị giác màu để kiểm tra nhanh khả năng phân biệt và đọc nội dung. |
+| Mù đỏ–lục | Mù đỏ–lục | Dạng suy giảm cảm nhận màu deuteranopia, khiến người dùng khó phân biệt rõ các sắc đỏ và lục. |
+| Mù đỏ | Mù đỏ | Dạng suy giảm cảm nhận màu protanopia, làm thành phần đỏ bị giảm mạnh và dễ nhầm với màu tối hoặc lục. |
+| Mù xanh | Mù xanh | Dạng suy giảm cảm nhận màu tritanopia, khiến việc phân biệt nhóm xanh lam và vàng trở nên khó hơn. |
 | Chế độ hỗ trợ mù màu | Chế độ hỗ trợ mù màu | Chế độ hiển thị thêm hoa văn/ký hiệu để phân biệt màu khi thị lực màu bị hạn chế. |
 | Juicy (phản hồi đã tay) | Juicy | Hiệu ứng phản hồi “đã tay” (nhịp/âm/hiệu ứng) làm thao tác thấy sướng hơn. |
 | Soft drop (rơi nhanh) | Soft drop | Thao tác tăng tốc rơi tạm thời (thường giữ phím xuống) để điều khiển rơi nhanh hơn. |
@@ -602,7 +667,7 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | MutationObserver (bộ quan sát thay đổi DOM: theo dõi đổi thuộc tính) | MutationObserver | API theo dõi thay đổi DOM (thuộc tính/nút) để phản ứng khi trạng thái giao diện đổi. |
 | Phần đuôi chữ (descender) | Phần đuôi chữ | Phần nét của ký tự kéo xuống dưới baseline (như chữ g, y, p), cần đủ line-height để không bị cắt. |
 | Scope theo data-page (khoanh vùng CSS theo trang) | Scope theo data-page | Cách giới hạn CSS theo từng trang bằng thuộc tính `data-page` để tránh ảnh hưởng toàn site. |
-| Nền đa tầng (multi-layer background) | Nền đa tầng | Nền gồm nhiều lớp gradient chồng nhau để tạo chiều sâu thị giác. |
+| Nền đa tầng (multi-layer background) | Nền đa tầng | Nền gồm lớp `tone-canvas` và `tone-overlay` vẽ bằng `::before`/`::after`, giúp đổi đồng bộ theo Sắc thái và tạo chiều sâu thị giác. |
 | Chữ Neon (neon text) | Chữ Neon | Chữ dùng gradient và glow nhẹ để nổi bật nhưng vẫn giữ độ đọc rõ. |
 | Mini card (thẻ thông tin nhỏ) | Mini card | Thẻ thông tin nhỏ hiển thị gợi ý ngắn, giúp quét nhanh nội dung trong một cụm lớn. |
 | Spotlight (ánh sáng bám con trỏ khi hover) | Spotlight | Hiệu ứng vùng sáng bám điểm hover nhằm nhấn mạnh phần tử đang tương tác. |

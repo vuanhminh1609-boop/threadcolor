@@ -7,72 +7,64 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-html[data-world] body:not([data-page="lobby"]) {
+:root {
+  --tc-tone-bg-inset: -18vmax;
+  --tc-tone-bg-before-opacity: 0.86;
+  --tc-tone-bg-before-blur: 20px;
+  --tc-tone-bg-before-duration: 24s;
+  --tc-tone-bg-after-opacity: 0.65;
+  --tc-tone-bg-after-blur: 26px;
+  --tc-tone-bg-after-duration: 28s;
+  --tc-shell-max: 90rem;
+  --tc-shell-width: 96vw;
+  --tc-shell-px: 1.25rem;
+  --tc-shell-px-wide: 2.4rem;
+  --tc-shell-px-mobile: 1rem;
+}
+
+html[data-world] body:not([data-page="lobby"]),
+body.tc-multiverse[data-page="lobby"] {
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
 }
 
 html[data-world] body:not([data-page="lobby"])::before,
-html[data-world] body:not([data-page="lobby"])::after {
-  content: "";
-  position: fixed;
-  inset: -18vmax;
-  pointer-events: none;
-  z-index: -1;
-}
-
-html[data-world] body:not([data-page="lobby"])::before {
-  background: var(--tone-canvas);
-  opacity: 0.78;
-  filter: blur(18px);
-  transform: translate3d(0, 0, 0);
-  animation: tc-bg-drift 26s ease-in-out infinite alternate;
-}
-
-html[data-world] body:not([data-page="lobby"])::after {
-  background: var(--tone-overlay, transparent);
-  opacity: 0.55;
-  filter: blur(24px);
-  animation: tc-bg-drift-reverse 30s ease-in-out infinite alternate;
-}
-
-.tc-shell {
-  max-width: 90rem;
-  width: min(96vw, 90rem);
-  margin: 0 auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-}
-
-body.tc-multiverse {
-  position: relative;
-  isolation: isolate;
-  overflow-x: hidden;
-}
-
+html[data-world] body:not([data-page="lobby"])::after,
 body.tc-multiverse[data-page="lobby"]::before,
 body.tc-multiverse[data-page="lobby"]::after {
   content: "";
   position: fixed;
-  inset: -18vmax;
+  inset: var(--tc-tone-bg-inset);
   pointer-events: none;
   z-index: -1;
 }
 
+html[data-world] body:not([data-page="lobby"])::before,
 body.tc-multiverse[data-page="lobby"]::before {
   background: var(--tone-canvas);
-  opacity: 0.86;
-  filter: blur(20px);
+  opacity: var(--tc-tone-bg-before-opacity);
+  filter: blur(var(--tc-tone-bg-before-blur));
   transform: translate3d(0, 0, 0);
-  animation: tc-bg-drift 24s ease-in-out infinite alternate;
+  animation: tc-bg-drift var(--tc-tone-bg-before-duration) ease-in-out infinite alternate;
 }
 
+html[data-world] body:not([data-page="lobby"])::after,
 body.tc-multiverse[data-page="lobby"]::after {
   background: var(--tone-overlay, transparent);
-  opacity: 0.65;
-  filter: blur(26px);
-  animation: tc-bg-drift-reverse 28s ease-in-out infinite alternate;
+  opacity: var(--tc-tone-bg-after-opacity);
+  filter: blur(var(--tc-tone-bg-after-blur));
+  animation: tc-bg-drift-reverse var(--tc-tone-bg-after-duration) ease-in-out infinite alternate;
+}
+
+.tc-shell,
+.tc-topbar > .max-w-6xl,
+.tc-topbar > .tc-shell {
+  max-width: var(--tc-shell-max);
+  width: min(var(--tc-shell-width), var(--tc-shell-max));
+  margin: 0 auto;
+  padding-left: var(--tc-shell-px);
+  padding-right: var(--tc-shell-px);
 }
 
 @keyframes tc-bg-drift {
@@ -232,9 +224,11 @@ body[data-page="lobby"] .hero-letter:hover {
 }
 
 @media (min-width: 1280px) {
-  .tc-shell {
-    padding-left: 2.4rem;
-    padding-right: 2.4rem;
+  .tc-shell,
+  .tc-topbar > .max-w-6xl,
+  .tc-topbar > .tc-shell {
+    padding-left: var(--tc-shell-px-wide);
+    padding-right: var(--tc-shell-px-wide);
   }
 }
 
@@ -248,9 +242,11 @@ body[data-page="lobby"] .hero-letter:hover {
 }
 
 @media (max-width: 640px) {
-  .tc-shell {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .tc-shell,
+  .tc-topbar > .max-w-6xl,
+  .tc-topbar > .tc-shell {
+    padding-left: var(--tc-shell-px-mobile);
+    padding-right: var(--tc-shell-px-mobile);
   }
 }
 
@@ -749,15 +745,6 @@ body[data-page="lobby"][data-preview-theme="1"] .tc-aurora {
   top: 0;
   z-index: var(--z-topbar, 2000);
   overflow: visible;
-}
-
-.tc-topbar > .max-w-6xl,
-.tc-topbar > .tc-shell {
-  max-width: 90rem;
-  width: min(96vw, 90rem);
-  margin: 0 auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
 }
 
 .tc-topbar::after {
@@ -2710,8 +2697,10 @@ body[data-page="lobby"] .tc-qa-hex-input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.tc-multiverse::before,
-  body.tc-multiverse::after {
+  html[data-world] body:not([data-page="lobby"])::before,
+  html[data-world] body:not([data-page="lobby"])::after,
+  body.tc-multiverse[data-page="lobby"]::before,
+  body.tc-multiverse[data-page="lobby"]::after {
     animation: none;
   }
 

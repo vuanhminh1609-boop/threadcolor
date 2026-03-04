@@ -1,45 +1,70 @@
-﻿(() => {
+(() => {
   const RECENT_KEY = "lastVisitedWorlds";
   const PIN_KEY = "pinnedWorlds";
   const MAX_RECENT = 5;
   const MAX_PINNED = 3;
 
+  const t = (key, fallback = "", params) => {
+    const fn = window.tcI18n?.t;
+    if (typeof fn !== "function") return fallback;
+    const value = fn(key, fallback, params);
+    return typeof value === "string" && value ? value : fallback;
+  };
+
   const WORLD_META = {
     threadcolor: {
-      label: "Thế giới màu thêu",
-      desc: "Tra mã chỉ từ ảnh/HEX",
+      labelKey: "lobby.recent.worlds.threadcolor.label",
+      labelFallback: "Thế giới màu thêu",
+      descKey: "lobby.recent.worlds.threadcolor.desc",
+      descFallback: "Tra mã chỉ từ ảnh/HEX",
       url: "./worlds/threadcolor.html"
     },
     palette: {
-      label: "Bảng phối màu",
-      desc: "Phối màu & tương phản",
+      labelKey: "lobby.recent.worlds.palette.label",
+      labelFallback: "Bảng phối màu",
+      descKey: "lobby.recent.worlds.palette.desc",
+      descFallback: "Phối màu và kiểm tra tương phản",
       url: "./worlds/palette.html"
     },
     gradient: {
-      label: "Dải chuyển màu",
-      desc: "Token & xuất nhanh",
+      labelKey: "lobby.recent.worlds.gradient.label",
+      labelFallback: "Dải chuyển màu",
+      descKey: "lobby.recent.worlds.gradient.desc",
+      descFallback: "Tạo dải chuyển và xuất token nhanh",
       url: "./worlds/gradient.html"
     },
     printcolor: {
-      label: "CMYK & in ấn",
-      desc: "Kiểm tra CMYK/TAC",
+      labelKey: "lobby.recent.worlds.printcolor.label",
+      labelFallback: "CMYK và in ấn",
+      descKey: "lobby.recent.worlds.printcolor.desc",
+      descFallback: "Kiểm tra CMYK/TAC trước khi in",
       url: "./worlds/printcolor.html"
     },
     library: {
-      label: "Thư viện màu",
-      desc: "Lưu & quản trị",
+      labelKey: "lobby.recent.worlds.library.label",
+      labelFallback: "Thư viện màu",
+      descKey: "lobby.recent.worlds.library.desc",
+      descFallback: "Lưu và quản lý tài sản màu",
       url: "./worlds/library.html"
     }
   };
 
   const previewPresets = {
     ui: {
-      label: "UI",
-      title: "Bảng điều khiển sản phẩm",
-      desc: "Độ tương phản vừa đủ để đọc nhanh và tập trung.",
-      chip: "Trạng thái",
-      pills: ["CTA", "Nhấn", "Nhẹ"],
-      swatches: ["#0ea5e9", "#22c55e", "#f97316"],
+      labelKey: "lobby.preview.tabs.ui",
+      labelFallback: "Giao diện",
+      titleKey: "lobby.preview.frame.ui.title",
+      titleFallback: "Bảng điều khiển sản phẩm",
+      descKey: "lobby.preview.frame.ui.desc",
+      descFallback: "Độ tương phản vừa đủ để đọc nhanh và tập trung.",
+      chipKey: "lobby.preview.frame.ui.chip",
+      chipFallback: "Mẫu bối cảnh",
+      pillKeys: [
+        "lobby.preview.frame.ui.pill1",
+        "lobby.preview.frame.ui.pill2",
+        "lobby.preview.frame.ui.pill3"
+      ],
+      pillFallbacks: ["Nút kêu gọi (CTA)", "Nhấn", "Nhẹ"],
       bg: "linear-gradient(135deg, #0f172a, #1e293b)",
       ink: "#f8fafc",
       muted: "rgba(248, 250, 252, 0.75)",
@@ -47,34 +72,85 @@
       pillBg: "rgba(255, 255, 255, 0.15)"
     },
     poster: {
-      label: "Poster",
-      title: "Poster cảm hứng",
-      desc: "Gradient nổi bật để dẫn mắt vào thông điệp chính.",
-      chip: "Trưng bày",
-      pills: ["Tiêu đề", "CTA", "Sự kiện"],
-      swatches: ["#f472b6", "#facc15", "#38bdf8"],
+      labelKey: "lobby.preview.tabs.poster",
+      labelFallback: "Áp phích",
+      titleKey: "lobby.preview.frame.poster.title",
+      titleFallback: "Áp phích chiến dịch",
+      descKey: "lobby.preview.frame.poster.desc",
+      descFallback: "Màu nổi bật để dẫn mắt vào thông điệp chính.",
+      chipKey: "lobby.preview.frame.poster.chip",
+      chipFallback: "Bố cục nổi bật",
+      pillKeys: [
+        "lobby.preview.frame.poster.pill1",
+        "lobby.preview.frame.poster.pill2",
+        "lobby.preview.frame.poster.pill3"
+      ],
+      pillFallbacks: ["Tiêu đề", "Nút kêu gọi (CTA)", "Sự kiện"],
       bg: "linear-gradient(135deg, #be185d, #f97316)",
       ink: "#fff7ed",
-      muted: "rgba(255, 247, 237, 0.8)",
+      muted: "rgba(255, 247, 237, 0.82)",
       chipBg: "rgba(255, 255, 255, 0.2)",
       pillBg: "rgba(255, 255, 255, 0.18)"
     },
     thread: {
-      label: "Thêu",
-      title: "Bảng màu thêu",
-      desc: "Tông dịu, dễ phối cho sản phẩm thủ công.",
-      chip: "Chỉ thêu",
-      pills: ["Nền", "Hoa văn", "Viền"],
-      swatches: ["#c084fc", "#fda4af", "#34d399"],
+      labelKey: "lobby.preview.tabs.thread",
+      labelFallback: "Thêu",
+      titleKey: "lobby.preview.frame.thread.title",
+      titleFallback: "Bảng màu thêu",
+      descKey: "lobby.preview.frame.thread.desc",
+      descFallback: "Tông dịu, dễ phối cho sản phẩm thủ công.",
+      chipKey: "lobby.preview.frame.thread.chip",
+      chipFallback: "Mẫu vải thêu",
+      pillKeys: [
+        "lobby.preview.frame.thread.pill1",
+        "lobby.preview.frame.thread.pill2",
+        "lobby.preview.frame.thread.pill3"
+      ],
+      pillFallbacks: ["Nền", "Hoa văn", "Viền"],
       bg: "linear-gradient(135deg, #1f2937, #111827)",
       ink: "#f9fafb",
-      muted: "rgba(249, 250, 251, 0.75)",
+      muted: "rgba(249, 250, 251, 0.78)",
       chipBg: "rgba(255, 255, 255, 0.16)",
       pillBg: "rgba(255, 255, 255, 0.14)"
     }
   };
 
   const clampList = (list, max) => (Array.isArray(list) ? list.slice(0, max) : []);
+
+  const normalizeHex = (value) => {
+    if (!value) return null;
+    const raw = String(value).trim().replace(/^#/, "");
+    if (/^[\da-fA-F]{3}$/.test(raw)) {
+      return `#${raw.split("").map((char) => char + char).join("").toUpperCase()}`;
+    }
+    if (/^[\da-fA-F]{6}$/.test(raw)) {
+      return `#${raw.toUpperCase()}`;
+    }
+    return null;
+  };
+
+  const parseRgbToHex = (value) => {
+    const match = String(value || "").replace(/\s+/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
+    if (!match) return null;
+    const rgb = [Number(match[1]), Number(match[2]), Number(match[3])];
+    if (rgb.some((item) => Number.isNaN(item) || item < 0 || item > 255)) return null;
+    return `#${rgb.map((item) => item.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
+  };
+
+  const toHex = (value) => {
+    const normalized = normalizeHex(value);
+    if (normalized) return normalized;
+    return parseRgbToHex(value);
+  };
+
+  const getAccentSwatches = () => {
+    const styles = getComputedStyle(document.documentElement);
+    const swatches = ["--a1", "--a2", "--a3"]
+      .map((token) => toHex(styles.getPropertyValue(token)))
+      .filter(Boolean);
+    if (swatches.length === 3) return swatches;
+    return ["#C07A45", "#DDA26A", "#906A4B"];
+  };
 
   const readList = (key) => {
     try {
@@ -93,6 +169,32 @@
     } catch (_err) {
       // ignore
     }
+  };
+
+  const copyToClipboard = (text) => {
+    const value = String(text || "").trim();
+    if (!value) return Promise.resolve(false);
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(value).then(() => true);
+    }
+    return new Promise((resolve) => {
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      textarea.style.pointerEvents = "none";
+      document.body.appendChild(textarea);
+      textarea.select();
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (_err) {
+        copied = false;
+      }
+      textarea.remove();
+      resolve(copied);
+    });
   };
 
   const ensureToast = () => {
@@ -132,21 +234,21 @@
     if (index >= 0) {
       pinned.splice(index, 1);
       writeList(PIN_KEY, pinned);
-      showToast("Đã bỏ ghim.");
+      showToast(t("lobby.toast.unpinned", "Đã bỏ ghim."));
       return;
     }
     if (pinned.length >= MAX_PINNED) {
-      showToast("Chỉ ghim tối đa 3 mục.");
+      showToast(t("lobby.toast.pinLimit", "Chỉ ghim tối đa 3 mục."));
       return;
     }
     pinned.unshift(world);
     writeList(PIN_KEY, pinned);
-    showToast("Đã ghim mục này.");
+    showToast(t("lobby.toast.pinned", "Đã ghim mục này."));
   };
 
   const clearRecent = () => {
     writeList(RECENT_KEY, []);
-    showToast("Đã xoá gần đây.");
+    showToast(t("lobby.toast.clearedRecent", "Đã xoá gần đây."));
   };
 
   const renderRecentList = (list, wrapper, emptyEl, pinnedList) => {
@@ -174,10 +276,10 @@
       metaWrap.className = "tc-recent-meta";
       const name = document.createElement("div");
       name.className = "tc-recent-name";
-      name.textContent = meta.label;
+      name.textContent = t(meta.labelKey, meta.labelFallback);
       const desc = document.createElement("div");
       desc.className = "tc-recent-desc";
-      desc.textContent = meta.desc;
+      desc.textContent = t(meta.descKey, meta.descFallback);
 
       metaWrap.appendChild(name);
       metaWrap.appendChild(desc);
@@ -189,8 +291,13 @@
       pinBtn.className = "tc-icon-btn tc-recent-pin";
       pinBtn.dataset.action = "pin";
       pinBtn.dataset.world = world;
-      pinBtn.setAttribute("aria-label", pinnedList.includes(world) ? "Bỏ ghim" : "Ghim");
-      if (pinnedList.includes(world)) {
+      const isPinned = pinnedList.includes(world);
+      const pinLabel = isPinned
+        ? t("lobby.recent.pinRemoveAria", "Bỏ ghim")
+        : t("lobby.recent.pinAddAria", "Ghim");
+      pinBtn.setAttribute("aria-label", pinLabel);
+      pinBtn.setAttribute("title", pinLabel);
+      if (isPinned) {
         pinBtn.classList.add("is-active");
       }
       pinBtn.innerHTML = `
@@ -240,10 +347,11 @@
       poster: "./worlds/gradient.html",
       thread: "./worlds/threadcolor.html"
     };
+    let activeTab = "ui";
 
     const getWorkbenchSwatches = () => {
       const ctx = window.tcWorkbench?.getContext?.();
-      const list = Array.isArray(ctx?.hexes) ? ctx.hexes.filter(Boolean) : [];
+      const list = Array.isArray(ctx?.hexes) ? ctx.hexes.map((hex) => normalizeHex(hex)).filter(Boolean) : [];
       if (!list.length) return null;
       const swatchList = list.slice(0, 3);
       while (swatchList.length < 3) {
@@ -251,6 +359,8 @@
       }
       return swatchList;
     };
+
+    const getActiveSwatches = () => getWorkbenchSwatches() || getAccentSwatches();
 
     const buildBufferUrl = (url) => {
       const ctx = window.tcWorkbench?.getContext?.();
@@ -266,26 +376,28 @@
 
     const applyPreset = (key) => {
       const preset = previewPresets[key] || previewPresets.ui;
-      if (label) label.textContent = preset.label;
-      if (title) title.textContent = preset.title;
-      if (desc) desc.textContent = preset.desc;
-      if (chip) chip.textContent = preset.chip;
+      if (label) label.textContent = t(preset.labelKey, preset.labelFallback);
+      if (title) title.textContent = t(preset.titleKey, preset.titleFallback);
+      if (desc) desc.textContent = t(preset.descKey, preset.descFallback);
+      if (chip) chip.textContent = t(preset.chipKey, preset.chipFallback);
       frame.style.setProperty("--preview-bg", preset.bg);
       frame.style.setProperty("--preview-ink", preset.ink);
       frame.style.setProperty("--preview-muted", preset.muted);
       frame.style.setProperty("--preview-chip", preset.chipBg);
       frame.style.setProperty("--preview-pill", preset.pillBg);
 
-      const overrideSwatches = getWorkbenchSwatches();
-      const activeSwatches = overrideSwatches || preset.swatches;
+      const activeSwatches = getActiveSwatches();
       swatches.forEach((swatch, idx) => {
-        const hex = activeSwatches[idx % activeSwatches.length];
+        const hex = (activeSwatches[idx % activeSwatches.length] || "#000000").toUpperCase();
         swatch.style.background = hex;
         swatch.dataset.hex = hex;
         swatch.dataset.hexInspect = "click";
+        swatch.setAttribute("title", hex);
       });
       pills.forEach((pill, idx) => {
-        pill.textContent = preset.pills[idx % preset.pills.length];
+        const keyName = preset.pillKeys[idx % preset.pillKeys.length];
+        const fallback = preset.pillFallbacks[idx % preset.pillFallbacks.length];
+        pill.textContent = t(keyName, fallback);
       });
 
       if (ctaBtn) {
@@ -294,18 +406,29 @@
     };
 
     const setActiveTab = (key) => {
+      activeTab = previewPresets[key] ? key : "ui";
       tabs.forEach((btn) => {
-        const active = btn.dataset.previewTab === key;
+        const active = btn.dataset.previewTab === activeTab;
         btn.classList.toggle("is-active", active);
         btn.setAttribute("aria-selected", active ? "true" : "false");
       });
-      applyPreset(key);
+      applyPreset(activeTab);
     };
 
     tabs.forEach((btn) => {
       btn.addEventListener("click", () => {
         const key = btn.dataset.previewTab || "ui";
         setActiveTab(key);
+      });
+    });
+
+    swatches.forEach((swatch) => {
+      swatch.addEventListener("click", () => {
+        const hex = normalizeHex(swatch.dataset.hex || "");
+        if (!hex) return;
+        copyToClipboard(hex).finally(() => {
+          showToast(t("lobby.toast.copied", "Đã sao chép!"));
+        });
       });
     });
 
@@ -316,6 +439,16 @@
         window.location.href = nextUrl;
       });
     }
+
+    const refreshPreview = () => {
+      applyPreset(activeTab);
+    };
+    window.addEventListener("tc:hex-apply", refreshPreview);
+    window.addEventListener("focus", refreshPreview);
+    window.addEventListener("storage", (event) => {
+      if (event?.key && event.key !== "tc_workbench_context_v1") return;
+      refreshPreview();
+    });
 
     setActiveTab("ui");
   };

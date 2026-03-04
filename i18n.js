@@ -100,6 +100,250 @@
         ctaHex: "Kho HEX",
         ctaJump: "Đi đến 8 cổng ngay"
       },
+      lobby: {
+        meta: {
+          title: "8Portal v4"
+        },
+        hero: {
+          kicker: "Sảnh điều phối",
+          lines: "Không gian|chuẩn hóa màu số",
+          line1: "Không gian",
+          line2: "chuẩn hóa màu số",
+          jumpLabel: "Đi nhanh",
+          jump: {
+            portals: "Sơ đồ 8 cổng",
+            roulette: "Vòng quay bảng phối màu",
+            forge: "Lò rèn dải màu",
+            gallery: "Bộ sưu tập sắc thái"
+          }
+        },
+        quick: {
+          title: "Trạm thao tác nhanh",
+          subtitle: "Làm nhanh ngay tại sảnh, sau đó mới mở chi tiết.",
+          live: "LIVE",
+          liveAria: "Đang hoạt động",
+          openDetail: "Mở chi tiết",
+          tabs: {
+            paste: "Dán màu",
+            thread: "Tra mã chỉ từ màu",
+            image: "Tra mã chỉ từ ảnh"
+          },
+          aurora: {
+            title: "Bảng phối nhanh",
+            copyColor1: "Sao chép màu 1",
+            copyColor2: "Sao chép màu 2",
+            copyColor3: "Sao chép màu 3",
+            copyColor4: "Sao chép màu 4",
+            copyColor5: "Sao chép màu 5",
+            copyColor6: "Sao chép màu 6",
+            chip: {
+              threadMap: "Bản đồ mã chỉ",
+              deltaE: "So khớp ΔE",
+              brandFilter: "Bộ lọc hãng"
+            },
+            suggestions: {
+              one: {
+                title: "Gợi ý #1",
+                desc: "Điểm nhấn mạnh"
+              },
+              two: {
+                title: "Gợi ý #2",
+                desc: "Hài hoà nền phụ"
+              },
+              three: {
+                title: "Gợi ý #3",
+                desc: "Tương phản chữ"
+              }
+            }
+          },
+          token: {
+            summary: "Token CSS (từ gợi ý phối)",
+            preset: "Preset",
+            tonePlaceholder: "Tên sắc thái tuỳ chỉnh…",
+            copyCss: "Sao chép CSS",
+            preview: "Xem trước sắc thái",
+            reset: "Hoàn tác",
+            previewBadge: "Đang xem trước",
+            saveLibrary: "Lưu vào Thư viện",
+            openLibrary: "Mở Thư viện",
+            copyToast: "Đã sao chép token CSS",
+            option: {
+              auto: "Tự động (khuyến nghị)",
+              complementary: "Bù 180°",
+              analogous: "Tương tự ±30°",
+              accent: "Nhấn tương phản"
+            }
+          },
+          paste: {
+            hexList: "Danh sách HEX",
+            placeholder: "#FFAA00, #123456\n#0F766E",
+            apply: "Áp dụng",
+            advancedSummary: "Mở tác vụ nhanh nâng cao",
+            actionRun: "Thực hiện",
+            cmyk: {
+              title: "Đổi CMYK ngay"
+            },
+            gradient: {
+              title: "Tạo dải ngay"
+            },
+            export: {
+              title: "Xuất token ngay"
+            }
+          },
+          thread: {
+            inputLabel: "Nhập HEX",
+            placeholder: "#FFAA00",
+            search: "Tra ngay",
+            open: "Mở chi tiết (Thêu)"
+          },
+          image: {
+            label: "Chọn ảnh",
+            pick: "Chọn ảnh",
+            analyze: "Phân tích",
+            previewAlt: "Xem trước ảnh đã chọn"
+          }
+        },
+        recent: {
+          title: "Gần đây / Ghim",
+          desc: "Theo dõi các Thế giới bạn vừa dùng hoặc ghim lại.",
+          clear: "Xoá gần đây",
+          pinnedTitle: "Mục ghim",
+          recentTitle: "Gần đây",
+          emptyPinned: "Chưa có mục ghim. Bấm ghim để giữ lại tối đa 3 mục.",
+          emptyRecent: "Chưa có lịch sử. Hãy chọn một tuyến mục tiêu để bắt đầu.",
+          pinAddAria: "Ghim",
+          pinRemoveAria: "Bỏ ghim",
+          worlds: {
+            threadcolor: {
+              label: "Thế giới màu thêu",
+              desc: "Tra mã chỉ từ ảnh/HEX"
+            },
+            palette: {
+              label: "Bảng phối màu",
+              desc: "Phối màu và kiểm tra tương phản"
+            },
+            gradient: {
+              label: "Dải chuyển màu",
+              desc: "Tạo dải chuyển và xuất token nhanh"
+            },
+            printcolor: {
+              label: "CMYK và in ấn",
+              desc: "Kiểm tra CMYK/TAC trước khi in"
+            },
+            library: {
+              label: "Thư viện màu",
+              desc: "Lưu và quản lý tài sản màu"
+            }
+          }
+        },
+        preview: {
+          title: "Xem thử nhanh",
+          desc: "Nhìn nhanh cách bảng phối lên Giao diện/Áp phích/Thêu.",
+          cta: "Mở chi tiết",
+          copyHexAria: "Sao chép mã HEX",
+          tabs: {
+            ui: "Giao diện",
+            poster: "Áp phích",
+            thread: "Thêu"
+          },
+          frame: {
+            ui: {
+              chip: "Mẫu bối cảnh",
+              title: "Bảng điều khiển sản phẩm",
+              desc: "Độ tương phản vừa đủ để đọc nhanh và tập trung.",
+              pill1: "Nút kêu gọi (CTA)",
+              pill2: "Nhấn",
+              pill3: "Nhẹ"
+            },
+            poster: {
+              chip: "Bố cục nổi bật",
+              title: "Áp phích chiến dịch",
+              desc: "Màu nổi bật để dẫn mắt vào thông điệp chính.",
+              pill1: "Tiêu đề",
+              pill2: "Nút kêu gọi (CTA)",
+              pill3: "Sự kiện"
+            },
+            thread: {
+              chip: "Mẫu vải thêu",
+              title: "Bảng màu thêu",
+              desc: "Tông dịu, dễ phối cho sản phẩm thủ công.",
+              pill1: "Nền",
+              pill2: "Hoa văn",
+              pill3: "Viền"
+            }
+          },
+          help: {
+            summary: "Vì sao có khối này trong Sảnh?",
+            effect: "Tác dụng: xem thử cảm giác bảng phối màu lên bối cảnh thực tế để quyết định nhanh trước khi vào Thế giới chi tiết.",
+            why: "Lý do đặt ở Sảnh: giúp người dùng chốt hướng phối màu ngay điểm vào trung tâm, giảm vòng lặp thử sai.",
+            routeUi: "Giao diện → mở Thế giới Bảng phối màu.",
+            routePoster: "Áp phích → mở Thế giới Dải chuyển màu.",
+            routeThread: "Thêu → mở Thế giới màu thêu."
+          }
+        },
+        portals: {
+          title: "8 Cổng SpaceColors",
+          desc: "Chọn cổng để bước vào một Thế giới sắc màu khác.",
+          cards: {
+            threadcolor: {
+              title: "Thế giới màu thêu (Thêu)",
+              desc: "Tra mã chỉ từ ảnh/HEX, so màu gần nhất, quản lý kho chỉ và đặt mua.",
+              cta: "Mở"
+            },
+            gradient: {
+              title: "Thế giới Dải chuyển màu (Gradient)",
+              desc: "Tạo dải chuyển màu, chỉnh góc và điểm neo, xuất CSS/Token nhanh.",
+              cta: "Mở"
+            },
+            palette: {
+              title: "Thế giới Bảng phối màu (Palette)",
+              desc: "Khám phá phối màu theo cảm xúc, lưu bộ sưu tập, xuất token/HEX.",
+              cta: "Mở"
+            },
+            printcolor: {
+              title: "Thế giới Màu in (CMYK)",
+              desc: "Đổi HEX → CMYK, theo dõi TAC, cảnh báo lệch in và xuất bảng cho nhà in.",
+              cta: "Mở"
+            },
+            library: {
+              title: "Thế giới Thư viện Tài sản Màu",
+              desc: "Lưu tài sản màu, lọc nhanh, xem nhanh và áp dụng sang Palette/Gradient.",
+              cta: "Mở"
+            },
+            paintfabric: {
+              title: "Thế giới màu Sơn&Vải",
+              desc: "Mô phỏng màu trên sơn/vải, điều chỉnh ánh sáng, lưu tài sản vật liệu.",
+              cta: "Mở"
+            },
+            imagecolor: {
+              title: "Thế giới Màu từ Ảnh",
+              desc: "Lấy màu chủ đạo từ ảnh, tạo palette/gradient và lưu nhanh.",
+              cta: "Mở"
+            },
+            colorplay: {
+              title: "Thế giới trò chơi màu",
+              desc: "Chơi Line 98, luyện mắt màu và tối ưu điểm số theo combo.",
+              cta: "Mở"
+            }
+          }
+        },
+        cmdk: {
+          label: "Bảng lệnh",
+          sub: "Tìm nhanh Thế giới và tuyến mục tiêu.",
+          hint: "Ctrl/⌘ + K",
+          searchLabel: "Tìm lệnh",
+          placeholder: "Gõ: thêu, gradient, palette, cmyk, thư viện…",
+          listAria: "Gợi ý bảng lệnh",
+          empty: "Không có gợi ý phù hợp."
+        },
+        toast: {
+          unpinned: "Đã bỏ ghim.",
+          pinLimit: "Chỉ ghim tối đa 3 mục.",
+          pinned: "Đã ghim mục này.",
+          clearedRecent: "Đã xoá gần đây.",
+          copied: "Đã sao chép!"
+        }
+      },
       portalHub: {
         title: "8 Cổng SpaceColors",
         desc: "Chọn cổng để bước vào một Thế giới sắc màu khác.",
@@ -243,6 +487,8 @@
           type: "Loại yêu cầu",
           email: "Email liên hệ (tuỳ chọn)",
           message: "Nội dung",
+          emailPlaceholder: "you@email.com",
+          messagePlaceholder: "Mô tả chi tiết, bước tái hiện...",
           send: "Gửi yêu cầu",
           fallback: "Không mở được mail, hãy sao chép nội dung và gửi tới spacecolor8portals@gmail.com.",
           type: {
@@ -279,19 +525,657 @@
         }
       },
       roulette: {
-        title: "Vòng quay dải màu",
+        title: "Vòng quay bảng phối màu",
         desc: "Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.",
         spin: "Quay màu",
         reset: "Đặt lại"
       },
       forge: {
-        title: "Lò rèn bảng màu",
+        title: "Lò rèn dải màu",
         desc: "Tuỳ chỉnh bộ màu nhấn để phù hợp với gu của bạn.",
         a1: { label: "Màu nhấn 1" },
         a2: { label: "Màu nhấn 2" },
         a3: { label: "Màu nhấn 3" },
         preview: "Xem trước gradient",
         copy: "Sao chép CSS"
+      },
+      gradient: {
+        openHexHub: "Mở Kho HEX",
+        presets: {
+          title: "Preset dải chuyển",
+          hint: "Chọn nhanh mẫu dải chuyển để áp ngay.",
+          items: {
+            neon: "Neon",
+            ocean: "Đại dương",
+            ink: "Mực tàu",
+            sunset: "Hoàng hôn",
+            chrome: "Chrome",
+            crystal: "Pha lê",
+            forest: "Lá non",
+            ember: "Hổ phách"
+          }
+        },
+        myPresets: {
+          title: "Preset của tôi",
+          hint: "Lưu dải chuyển hiện tại để dùng lại nhanh ở lần sau.",
+          save: "Lưu thành preset",
+          empty: "Chưa có preset của bạn. Hãy lưu dải chuyển hiện tại để dùng lại nhanh.",
+          defaultName: "Preset {index}",
+          meta: "{count} điểm neo · cập nhật {updated}",
+          renamePrompt: "Nhập tên preset mới",
+          copyName: "{name} (bản sao)",
+          confirmDelete: "Bạn có chắc muốn xoá?",
+          actions: {
+            apply: "Áp dụng",
+            rename: "Đổi tên",
+            duplicate: "Nhân bản",
+            delete: "Xoá"
+          },
+          toast: {
+            saved: "Đã lưu thành preset.",
+            applied: "Đã áp dụng preset cá nhân.",
+            renamed: "Đã đổi tên preset.",
+            duplicated: "Đã nhân bản preset.",
+            deleted: "Đã xoá preset.",
+            renameEmpty: "Tên preset không được để trống.",
+            limitReached: "Đã đạt giới hạn {limit} preset.",
+            invalid: "Không thể lưu preset hiện tại.",
+            saveFailed: "Không thể lưu preset vào trình duyệt."
+          }
+        },
+        contextPreview: {
+          title: "Xem thử theo bối cảnh",
+          hint: "Áp dải chuyển hiện tại lên tình huống thật để chốt nhanh trước khi xuất.",
+          tabs: {
+            ui: "Giao diện",
+            poster: "Áp phích",
+            thread: "Thêu"
+          },
+          ui: {
+            badge: "Mẫu giao diện",
+            surface: "Bề mặt chính",
+            title: "Bảng điều khiển sản phẩm",
+            desc: "Xem nhanh độ nổi của dải chuyển trên card nội dung và thành phần thao tác.",
+            cta: "Nút kêu gọi",
+            badgeTag: "Nhãn nổi bật"
+          },
+          poster: {
+            badge: "Mẫu áp phích",
+            headline: "Bùng nổ cảm hứng sắc màu",
+            subhead: "Đánh giá nhanh mức tương phản giữa tiêu đề, mô tả và nút hành động trên nền dải chuyển.",
+            cta: "Đặt chỗ ngay"
+          },
+          thread: {
+            badge: "Mẫu thêu",
+            title: "Mảng chỉ trên nền vải",
+            desc: "Mô phỏng vải và đường chỉ nhẹ để quan sát cảm giác chuyển màu trong bối cảnh thủ công.",
+            cta: "Xem bảng chỉ"
+          }
+        },
+        banding: {
+          title: "Chấm banding",
+          hint: "Đánh giá nhanh nguy cơ vệt phân tầng trên dải chuyển hiện tại.",
+          scoreLabel: "Điểm mượt",
+          tooltipLabel: "Giải thích banding",
+          tooltipText: "Banding là vệt phân tầng màu khi dải chuyển không mượt.",
+          meta: "Đứng màu: {flatPct}% · Biến thiên thấp: {lowPct}%",
+          suggestion: "Gợi ý: thêm điểm neo quanh {pos}% ({color}).",
+          suggestionNone: "Hiện chưa cần thêm điểm neo giữa.",
+          suggestionMax: "Đã đủ số điểm neo tối đa, hãy chỉnh vị trí hoặc màu trước khi thêm mới.",
+          status: {
+            smooth: "Mượt",
+            risk: "Có nguy cơ banding",
+            high: "Dễ banding"
+          },
+          actions: {
+            addMidStop: "Thêm điểm neo giữa",
+            addDither: "Thêm hạt mịn (dither)",
+            removeDither: "Tắt hạt mịn (dither)"
+          },
+          toast: {
+            midStopAdded: "Đã thêm điểm neo giữa tại {pos}% ({color}).",
+            ditherOn: "Đã bật hạt mịn cho preview.",
+            ditherOff: "Đã tắt hạt mịn cho preview."
+          }
+        },
+        shareState: {
+          copyLink: "Sao chép link chia sẻ",
+          toast: {
+            copied: "Đã sao chép link!",
+            invalidLink: "Link chia sẻ không hợp lệ."
+          }
+        },
+        history: {
+          undo: "Hoàn tác",
+          redo: "Làm lại"
+        },
+        copy: {
+          menu: "Tùy chọn sao chép",
+          css: "Sao chép CSS",
+          token: "Sao chép token",
+          tailwind: "Sao chép Tailwind"
+        },
+        import: {
+          open: "Nhập từ CSS",
+          title: "Nhập từ CSS",
+          hint: "Dán chuỗi linear-gradient(...) để phân tích và áp dụng nhanh.",
+          inputLabel: "Dán CSS dải chuyển",
+          placeholder: "linear-gradient(90deg, #ff6b6b 0%, #ffd93d 50%, #6ee7b7 100%)",
+          apply: "Phân tích & áp dụng",
+          unsupported: "Không hỗ trợ cú pháp này. Hãy dùng linear-gradient(...) hợp lệ.",
+          applied: "Đã phân tích và áp dụng dải chuyển từ CSS."
+        },
+        exportMulti: {
+          title: "Xuất đa định dạng",
+          tabs: {
+            css: "CSS",
+            cssVars: "Biến CSS",
+            token: "Token",
+            tailwind: "Tailwind"
+          }
+        },
+        toast: {
+          copiedCss: "Đã sao chép CSS.",
+          copiedToken: "Đã sao chép token.",
+          copiedTokenPercent: "Đã sao chép token có %.",
+          copiedTailwind: "Đã sao chép Tailwind.",
+          copiedSvg: "Đã sao chép SVG gradient.",
+          copiedFallback: "Đã sao chép.",
+          copyFailed: "Không thể sao chép.",
+          svgFailed: "Không thể tạo SVG.",
+          svgCopyFailed: "Không thể sao chép SVG.",
+          undo: "Đã hoàn tác.",
+          redo: "Đã làm lại.",
+          presetApplied: "Đã áp dụng preset dải chuyển.",
+          savedLibrary: "Đã lưu vào Thư viện.",
+          saveFailed: "Không thể lưu tài sản.",
+          pasteCss: "Hãy dán CSS gradient trước khi nhập."
+        }
+      },
+      paletteTool: {
+        roles: {
+          title: "Phân vai màu",
+          hint: "Gán vai màu theo nền/chữ/nhấn để kiểm tra workflow thực tế.",
+          items: {
+            bg: "Nền",
+            surface: "Nền phụ",
+            text: "Chữ chính",
+            muted: "Chữ phụ",
+            accent: "Nhấn (CTA)"
+          },
+          option: "Màu {index} · {hex}",
+          reset: "Đặt lại"
+        },
+        matrix: {
+          title: "Ma trận tương phản",
+          hint: "Tỷ lệ tương phản càng cao càng dễ đọc.",
+          tooltip: "Tỷ lệ tương phản càng cao càng dễ đọc.",
+          tabs: {
+            checks: "Kiểm tra",
+            suggest: "Đề xuất"
+          },
+          rows: {
+            textBg: "Chữ chính / Nền",
+            mutedBg: "Chữ phụ / Nền",
+            textSurface: "Chữ chính / Nền phụ",
+            mutedSurface: "Chữ phụ / Nền phụ",
+            ctaAccent: "Chữ trên Nhấn (CTA)"
+          },
+          badge: {
+            aaa: "Đạt AAA",
+            aa: "Đạt AA",
+            fail: "Chưa đạt",
+            guideline: "Đạt theo Hướng dẫn Team"
+          },
+          actions: {
+            pickBW: "Ưu tiên chữ {color}",
+            pickBest: "Chọn màu palette dễ đọc nhất"
+          },
+          black: "Đen",
+          white: "Trắng",
+          guideline: {
+            title: "Hướng dẫn Team",
+            summary: "Hướng dẫn Team: {level} · chữ {size} · khóa vai: {locked} · tối đa {steps} bước",
+            noneLocked: "không khóa",
+            textSize: {
+              normal: "thường",
+              large: "lớn"
+            },
+            fields: {
+              targetLevel: "Mức chuẩn",
+              textSize: "Cỡ chữ",
+              maxAdjustSteps: "Số bước chỉnh tối đa",
+              preferKeepHue: "Giữ sắc độ (ưu tiên giữ hue)",
+              lockedRoles: "Khóa vai"
+            },
+            actions: {
+              resetDraft: "Đặt lại mặc định",
+              save: "Lưu Hướng dẫn Team"
+            },
+            hint: {
+              noTeam: "Chuyển sang phạm vi Team để dùng Hướng dẫn Team cho Ma trận tương phản.",
+              activeTeam: "Đang áp dụng chuẩn tương phản của Team hiện tại."
+            },
+            state: {
+              personal: "Đang dùng bộ mặc định cục bộ.",
+              editable: "Bạn có thể chỉnh và lưu Hướng dẫn Team.",
+              readonly: "Bạn chỉ có quyền xem Hướng dẫn Team."
+            },
+            toast: {
+              loadFailed: "Không thể tải Hướng dẫn Team.",
+              saveFailed: "Không thể lưu Hướng dẫn Team.",
+              saved: "Đã lưu Hướng dẫn Team.",
+              readonly: "Bạn chỉ có quyền xem Hướng dẫn Team.",
+              needTeam: "Hãy chọn Team trước khi lưu Hướng dẫn Team."
+            }
+          },
+          suggest: {
+            state: "Có {count} đề xuất tự động.",
+            allPass: "Palette hiện tại đã đạt Hướng dẫn Team.",
+            none: "Chưa tạo được đề xuất phù hợp với Hướng dẫn Team hiện tại.",
+            itemTitle: "Phương án {index} · {title}",
+            itemMeta: "{desc} · Giảm {fixed} cặp lỗi · Mức thay đổi {score}",
+            options: {
+              bwTitle: "Ưu tiên chữ đen/trắng",
+              bwDesc: "Đổi chữ sang đen hoặc trắng để đạt ngưỡng nhanh nhất.",
+              textLightTitle: "Tinh chỉnh chữ theo độ sáng",
+              textLightDesc: "Giữ nhận diện, chỉ chỉnh sáng/tối ở vai chữ để vượt ngưỡng.",
+              bgLightTitle: "Tinh chỉnh nền theo độ sáng",
+              bgLightDesc: "Điều chỉnh vai nền để giữ đọc tốt mà ít thay đổi nhất."
+            },
+            actions: {
+              preview: "Xem trước",
+              previewing: "Đang xem trước",
+              apply: "Áp dụng"
+            },
+            applyRevisionLabel: "Áp dụng đề xuất tương phản",
+            toast: {
+              noChange: "Không có thay đổi nào để áp dụng.",
+              applyRoomFailed: "Không thể đồng bộ đề xuất vào phòng.",
+              applied: "Đã áp dụng đề xuất tự động."
+            }
+          }
+        },
+        preview: {
+          title: "Xem thử theo bối cảnh",
+          tabs: {
+            ui: "Giao diện",
+            poster: "Áp phích"
+          },
+          cvd: {
+            label: "Mô phỏng mù màu",
+            modes: {
+              normal: "Bình thường",
+              deuteranopia: "Mù đỏ–lục",
+              protanopia: "Mù đỏ",
+              tritanopia: "Mù xanh",
+              grayscale: "Đơn sắc"
+            }
+          },
+          ui: {
+            header: "Khung giao diện sản phẩm",
+            title: "Tiêu đề nội dung",
+            body: "Mô phỏng card thật để nhìn rõ độ đọc của chữ và nút hành động.",
+            cta: "Nút kêu gọi",
+            badge: "Nhãn"
+          },
+          poster: {
+            title: "Áp phích giới thiệu bộ sưu tập",
+            body: "Kiểm tra mức nổi bật của tiêu đề, mô tả và CTA trong bối cảnh áp phích.",
+            cta: "Đăng ký ngay"
+          }
+        },
+        extract: {
+          title: "Trích xuất từ ảnh",
+          desc: "Chọn hoặc kéo thả ảnh để lấy bảng phối màu nhanh.",
+          cta: "Mở ảnh",
+          drop: {
+            text: "Thả ảnh vào đây hoặc bấm để chọn ảnh",
+            hint: "Hỗ trợ JPG, PNG, WebP. Ảnh sẽ được giảm kích thước tối đa 512px."
+          },
+          count: "Số màu trích xuất",
+          priority: {
+            label: "Ưu tiên",
+            vivid: "Ưu tiên màu rực",
+            soft: "Ưu tiên màu dịu"
+          },
+          extractAction: "Trích xuất palette",
+          resultTitle: "Palette đề xuất",
+          useAction: "Dùng palette này",
+          paletteName: "Palette từ ảnh",
+          meta: {
+            empty: "Chưa chọn ảnh.",
+            loading: "Đang chuẩn bị ảnh...",
+            ready: "Ảnh gốc {srcW}×{srcH} → xử lý {dstW}×{dstH}."
+          },
+          toast: {
+            invalidFile: "Vui lòng chọn tệp ảnh hợp lệ.",
+            needImage: "Hãy chọn ảnh trước khi trích xuất.",
+            failed: "Không thể trích xuất màu từ ảnh này.",
+            extracted: "Đã trích xuất {count} màu.",
+            emptyResult: "Chưa có palette để áp dụng.",
+            applied: "Đã áp dụng palette từ ảnh.",
+            tooSmall: "Ảnh quá nhỏ để trích xuất màu."
+          }
+        },
+        token: {
+          copy: "Sao chép token vai màu",
+          copied: "Đã sao chép token vai màu.",
+          copyFail: "Không thể sao chép token vai màu."
+        },
+        library: {
+          saveButton: "Lưu vào Thư viện",
+          useButton: "Dùng từ Thư viện",
+          fallbackName: "Preset bảng phối",
+          sectionTitle: "Từ Thư viện",
+          sectionDesc: "Preset bảng phối đã lưu theo tài khoản.",
+          refresh: "Tải lại",
+          openPage: "Mở trang Thư viện",
+          loading: "Đang tải preset từ Thư viện...",
+          needLogin: "Đăng nhập để xem preset từ Thư viện.",
+          empty: "Chưa có preset nào trong Thư viện.",
+          apply: "Áp dụng",
+          copyToken: "Sao chép token vai màu",
+          team: {
+            saveButton: "Lưu vào Thư viện Team",
+            scope: {
+              personal: "Cá nhân",
+              team: "Team"
+            },
+            noTeamOption: "Chưa có team",
+            current: "Đang xem team {team} · quyền {role}.",
+            needSelect: "Hãy chọn team để xem Thư viện Team.",
+            personalHint: "Đang xem thư viện cá nhân.",
+            empty: "Chưa có preset nào trong Thư viện Team.",
+            locked: "Đang khoá",
+            unlocked: "Đang mở",
+            roles: {
+              owner: "Chủ sở hữu",
+              approver: "Người phê duyệt",
+              editor: "Biên tập",
+              viewer: "Chỉ xem"
+            },
+            actions: {
+              update: "Cập nhật",
+              delete: "Xoá",
+              lock: "Khoá",
+              unlock: "Mở khoá"
+            },
+            confirmDelete: "Bạn có chắc muốn xoá preset team này?"
+          },
+          approval: {
+            status: {
+              draft: "Bản nháp",
+              in_review: "Chờ phê duyệt",
+              approved: "Đã phê duyệt",
+              published: "Đã phát hành",
+              changes_requested: "Yêu cầu chỉnh sửa",
+              rejected: "Từ chối"
+            },
+            actions: {
+              history: "Lịch sử phê duyệt",
+              submit: "Gửi phê duyệt",
+              approve: "Duyệt",
+              requestChanges: "Yêu cầu chỉnh sửa",
+              changes_requested: "Yêu cầu chỉnh sửa",
+              reject: "Từ chối",
+              publish: "Phát hành",
+              comment: "Bình luận",
+              update: "Cập nhật"
+            },
+            prompt: {
+              submit: "Nhập ghi chú gửi phê duyệt (tuỳ chọn):",
+              approve: "Nhập ghi chú duyệt (tuỳ chọn):",
+              requestChanges: "Nhập yêu cầu chỉnh sửa:",
+              reject: "Nhập lý do từ chối:"
+            },
+            modal: {
+              title: "Lịch sử phê duyệt · {name}",
+              loading: "Đang tải lịch sử phê duyệt...",
+              empty: "Chưa có lịch sử phê duyệt cho preset này.",
+              count: "Có {count} bản ghi phê duyệt.",
+              currentStatus: "Trạng thái hiện tại: {status}",
+              itemTitle: "{action} · {from} → {to}",
+              itemMeta: "{time} · {uid}",
+              commentLabel: "Bình luận phê duyệt",
+              commentPlaceholder: "Nhập bình luận cho vòng phê duyệt...",
+              readonlyComment: "Bạn đang ở chế độ chỉ xem.",
+              addComment: "Gửi bình luận"
+            },
+            toast: {
+              transitionDenied: "Bạn không có quyền thực hiện bước chuyển trạng thái này.",
+              updateFailed: "Không thể cập nhật trạng thái phê duyệt.",
+              readonly: "Bạn không có quyền ghi nhận xét phê duyệt.",
+              commentRequired: "Hãy nhập bình luận trước khi gửi.",
+              commentSent: "Đã gửi bình luận phê duyệt.",
+              statusChanged: "Đã chuyển trạng thái sang {status}.",
+              status: {
+                draft: "Bản nháp",
+                in_review: "Chờ phê duyệt",
+                approved: "Đã phê duyệt",
+                published: "Đã phát hành",
+                changes_requested: "Yêu cầu chỉnh sửa",
+                rejected: "Từ chối"
+              }
+            }
+          },
+          release: {
+            actions: {
+              viewSignature: "Xem chữ ký phát hành",
+              downloadBundle: "Tải gói tokens",
+              copyCssVars: "Sao chép CSS variables",
+              copySignature: "Sao chép mã băm chữ ký",
+              copyPolicyHash: "Sao chép mã băm chính sách"
+            },
+            modal: {
+              title: "Chữ ký phát hành · {name}",
+              loading: "Đang tải chữ ký phát hành...",
+              missing: "Chưa có dữ liệu chữ ký phát hành.",
+              status: "Bản phát hành đã ký đang có hiệu lực.",
+              releaseId: "Mã phát hành",
+              version: "Phiên bản",
+              signedBy: "Ký bởi",
+              signedAt: "Thời điểm ký",
+              signatureHash: "Mã băm chữ ký",
+              policyHash: "Mã băm chính sách"
+            },
+            toast: {
+              missing: "Preset này chưa có bản phát hành.",
+              loadFailed: "Không thể tải chữ ký phát hành.",
+              signFailed: "Không thể tạo chữ ký phát hành.",
+              releaseCreated: "Đã tạo bản phát hành có chữ ký.",
+              bundleMissing: "Không tìm thấy gói tokens cho bản phát hành này.",
+              copyCssOk: "Đã sao chép CSS variables.",
+              copyCssFail: "Không thể sao chép CSS variables.",
+              downloadBundleOk: "Đã tải gói tokens.",
+              downloadBundleFail: "Không thể tải gói tokens.",
+              copySignatureOk: "Đã sao chép mã băm chữ ký.",
+              copySignatureFail: "Không thể sao chép mã băm chữ ký.",
+              copyPolicyOk: "Đã sao chép mã băm chính sách.",
+              copyPolicyFail: "Không thể sao chép mã băm chính sách."
+            }
+          },
+          meta: {
+            noTag: "Không có tag",
+            updated: "Cập nhật: {time}",
+            updatedUnknown: "Chưa có thời gian cập nhật."
+          },
+          modal: {
+            title: "Lưu preset bảng phối",
+            titleUpdate: "Cập nhật preset bảng phối",
+            close: "Đóng",
+            name: "Tên preset",
+            namePlaceholder: "Ví dụ: Bộ màu landing tháng 3",
+            tags: "Nhãn",
+            tagsPlaceholder: "ui, thương hiệu, chiến dịch",
+            notes: "Ghi chú (tuỳ chọn)",
+            notesPlaceholder: "Mục tiêu sử dụng, bối cảnh...",
+            cancel: "Huỷ",
+            save: "Lưu preset"
+          },
+          toast: {
+            missingPalette: "Hãy chọn một bảng phối màu.",
+            loginToSave: "Cần đăng nhập để lưu vào Thư viện.",
+            loginToLoad: "Cần đăng nhập để tải preset từ Thư viện.",
+            nameRequired: "Hãy nhập tên preset.",
+            saved: "Đã lưu preset vào Thư viện.",
+            saveFailed: "Không thể lưu preset vào Thư viện.",
+            loadFailed: "Không thể tải preset từ Thư viện.",
+            loaded: "Đã áp dụng preset từ Thư viện.",
+            invalidPreset: "Preset trong Thư viện không hợp lệ.",
+            tokenCopied: "Đã sao chép token vai màu.",
+            tokenCopyFail: "Không thể sao chép token vai màu.",
+            noTeam: "Bạn chưa thuộc team nào.",
+            teamLoadFailed: "Không thể tải danh sách team.",
+            viewerReadOnly: "Bạn chỉ có quyền xem trong team này.",
+            teamSaved: "Đã lưu preset vào Thư viện Team.",
+            teamUpdated: "Đã cập nhật preset team.",
+            teamSaveFailed: "Không thể lưu preset vào Thư viện Team.",
+            teamDeleted: "Đã xoá preset team.",
+            teamDeleteFailed: "Không thể xoá preset team.",
+            teamLocked: "Đã khoá preset team.",
+            teamUnlocked: "Đã mở khoá preset team.",
+            teamLockFailed: "Không thể cập nhật trạng thái khoá."
+          }
+        },
+        shareState: {
+          copyLink: "Sao chép link chia sẻ",
+          copyShortLink: "Sao chép link rút gọn",
+          linkPaletteName: "Bảng phối màu từ link chia sẻ",
+          linkPaletteTag: "từ link chia sẻ",
+          toast: {
+            copied: "Đã sao chép link!",
+            copyFail: "Không thể sao chép link chia sẻ.",
+            invalidLink: "Link chia sẻ không hợp lệ.",
+            shortCopied: "Đã sao chép link rút gọn!",
+            shortCreateFail: "Không thể tạo link rút gọn.",
+            shortNotFound: "Không tìm thấy link rút gọn.",
+            shortInvalid: "Link rút gọn không hợp lệ.",
+            shortLoadFail: "Không thể tải link rút gọn."
+          }
+        },
+        room: {
+          barLabel: "Phòng chỉnh sửa",
+          fallbackName: "Phòng {id}",
+          roomPaletteName: "Bảng phối màu từ Phòng chỉnh sửa",
+          roomPaletteTag: "từ phòng chỉnh sửa",
+          presence: {
+            fallbackUser: "Thành viên",
+            empty: "Chưa có ai online",
+            onlineCount: "{count} online",
+            more: "Thêm {count} người đang online",
+            editingBy: "đang chỉnh bởi {name}"
+          },
+          revisions: {
+            title: "Lịch sử phiên bản",
+            desc: "Timeline các phiên bản để xem và khôi phục.",
+            create: "Tạo mốc phiên bản",
+            unknownTime: "Không rõ thời gian",
+            you: "Bạn",
+            restoredLabel: "Khôi phục từ rev {rev}",
+            confirmRestore: "Khôi phục phiên bản rev {rev}?",
+            state: {
+              idle: "Kết nối phòng để xem lịch sử phiên bản.",
+              loading: "Đang tải lịch sử phiên bản...",
+              saving: "Đang lưu mốc phiên bản...",
+              ready: "Danh sách phiên bản đã sẵn sàng.",
+              empty: "Chưa có mốc phiên bản.",
+              rateLimited: "Bạn vừa tạo mốc, thử lại sau vài giây.",
+              error: "Không thể tải lịch sử phiên bản."
+            },
+            item: {
+              title: "Rev {rev}",
+              titleWithLabel: "Rev {rev} · {label}",
+              meta: "{time} · bởi {uid}"
+            },
+            preview: {
+              title: "Rev {rev}",
+              titleWithLabel: "Rev {rev} · {label}",
+              meta: "{time} · bởi {uid}"
+            },
+            actions: {
+              view: "Xem",
+              restore: "Khôi phục"
+            },
+            toast: {
+              invalidState: "Trạng thái hiện tại chưa sẵn sàng để tạo mốc phiên bản.",
+              created: "Đã tạo mốc phiên bản.",
+              rateLimited: "Bạn vừa tạo mốc, thử lại sau vài giây.",
+              createFailed: "Không thể tạo mốc phiên bản.",
+              invalidSnapshot: "Phiên bản này không hợp lệ.",
+              restored: "Đã khôi phục phiên bản.",
+              restoreFailed: "Không thể khôi phục phiên bản."
+            }
+          },
+          comments: {
+            title: "Bình luận theo vai màu",
+            desc: "Mỗi bình luận gắn vào một vai màu để trao đổi chính xác.",
+            filterLabel: "Lọc theo vai",
+            filterAll: "Tất cả vai màu",
+            unresolved: "{count} chưa xử lý",
+            inputPlaceholder: "Nhập bình luận cho vai màu này...",
+            readonlyHint: "Bạn đang ở chế độ chỉ xem, không thể bình luận.",
+            submit: "Gửi bình luận",
+            cancelReply: "Huỷ trả lời",
+            replyingTo: "Đang trả lời: {role}",
+            emptyList: "Chưa có bình luận cho vai màu đang lọc.",
+            openForRole: "Bình luận",
+            openRoleTooltip: "Mở bình luận cho vai màu này",
+            needRoomHint: "Kết nối Phòng chỉnh sửa để bình luận.",
+            you: "Bạn",
+            meta: "{time} · bởi {name}",
+            resolvedMeta: "Đã xử lý bởi {name}",
+            state: {
+              idle: "Kết nối phòng để xem bình luận.",
+              loading: "Đang tải bình luận...",
+              posting: "Đang gửi bình luận...",
+              ready: "Đang hiển thị bình luận theo vai màu.",
+              empty: "Chưa có bình luận nào.",
+              error: "Không thể tải bình luận."
+            },
+            actions: {
+              reply: "Trả lời",
+              resolve: "Đã xử lý",
+              unresolve: "Mở lại"
+            },
+            toast: {
+              needRoom: "Hãy kết nối Phòng chỉnh sửa để dùng bình luận.",
+              readonly: "Bạn đang ở chế độ chỉ xem, không thể bình luận.",
+              empty: "Hãy nhập nội dung bình luận.",
+              pickRole: "Hãy chọn vai màu để bình luận.",
+              failed: "Không thể gửi bình luận.",
+              created: "Đã gửi bình luận.",
+              replied: "Đã gửi trả lời.",
+              resolved: "Đã đánh dấu xử lý.",
+              unresolved: "Đã mở lại bình luận.",
+              resolveFailed: "Không thể cập nhật trạng thái xử lý."
+            }
+          },
+          status: {
+            idle: "Chưa kết nối phòng.",
+            connecting: "Đang kết nối phòng...",
+            needLogin: "Cần đăng nhập để vào phòng.",
+            notFound: "Không tìm thấy phòng.",
+            inviteOnly: "Phòng chỉ cho người được mời.",
+            syncFail: "Mất kết nối đồng bộ phòng.",
+            waitingState: "Đang chờ trạng thái phòng...",
+            invalidState: "Trạng thái phòng không hợp lệ.",
+            viewer: "Đang đồng bộ thời gian thực (chỉ xem).",
+            editor: "Đang đồng bộ thời gian thực."
+          },
+          toast: {
+            invalidRoom: "Mã phòng không hợp lệ.",
+            needLogin: "Cần đăng nhập để vào Phòng chỉnh sửa.",
+            notFound: "Không tìm thấy Phòng chỉnh sửa.",
+            inviteOnly: "Phòng này chỉ cho người được mời.",
+            joinFailed: "Không thể tham gia phòng.",
+            syncFail: "Mất kết nối đồng bộ Phòng chỉnh sửa.",
+            syncUnavailable: "Không thể kết nối đồng bộ phòng.",
+            invalidState: "Trạng thái phòng không hợp lệ.",
+            viewerReadOnly: "Bạn đang ở chế độ chỉ xem của phòng.",
+            conflict: "Đã có thay đổi từ người khác..."
+          }
+        }
       },
       gallery: {
         title: "Bộ sưu tập sắc thái",
@@ -443,7 +1327,13 @@
           code: {
             title: "Tra ngược theo mã chỉ",
             placeholder: "Nhập mã (VD: DMC 310)",
-            action: "Tra cứu"
+            action: "Tra cứu",
+            empty: "Nhập mã chỉ để tra cứu.",
+            catalogNotReady: "Dữ liệu màu chưa sẵn sàng.",
+            notFound: "Không tìm thấy mã chỉ {query}.",
+            multipleTitle: "Mã {code} xuất hiện ở nhiều hãng. Hãy chọn một hãng để tra cứu.",
+            multipleHelper: "Chọn một hãng bên dưới để xem kết quả chính xác.",
+            chooseBrand: "Chọn hãng"
           }
         },
         inspector: {

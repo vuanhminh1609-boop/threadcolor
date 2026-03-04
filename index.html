@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>8Portal v4</title>
+  <title data-i18n="lobby.meta.title">8Portal v4</title>
   <link rel="stylesheet" href="assets/dist/tailwind.css">
   <link rel="stylesheet" href="./assets/tones.css">
   <link rel="stylesheet" href="./assets/site_base.css">
@@ -158,10 +158,10 @@
       <div class="tc-hero-surface">
         <div class="tc-hero-grid">
           <div class="tc-hero-copy">
-            <p class="text-xs uppercase tracking-[0.3em] tc-muted">Sảnh điều phối</p>
-            <h1 class="tc-neon-text tc-hero-title text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title" data-hero-lines="Không gian|chuẩn hóa màu số">
-              <span class="heroLine heroLine1">Không gian</span>
-              <span class="heroLine heroLine2">chuẩn hóa màu số</span>
+            <p class="text-xs uppercase tracking-[0.3em] tc-muted" data-i18n="lobby.hero.kicker">Sảnh điều phối</p>
+            <h1 class="tc-neon-text tc-hero-title text-4xl md:text-5xl font-bold mt-3" data-i18n="hero.title" data-i18n-attr="data-hero-lines:lobby.hero.lines" data-hero-lines="Không gian|chuẩn hóa màu số">
+              <span class="heroLine heroLine1" data-i18n="lobby.hero.line1">Không gian</span>
+              <span class="heroLine heroLine2" data-i18n="lobby.hero.line2">chuẩn hóa màu số</span>
             </h1>
             <p class="mt-4 tc-muted" data-i18n="hero.desc">Tra nhanh HEX/ảnh → ra mã chỉ gần nhất → tạo bảng phối & dải chuyển → lưu vào Thư viện. Chọn Thế giới ở thanh trên hoặc chọn 1 cổng bên dưới.</p>
             <div class="tc-hero-actions">
@@ -171,12 +171,12 @@
                 <button class="tc-btn tc-chip px-5 py-3" type="button" data-hexhub-open data-i18n="hero.ctaHex">Kho HEX</button>
               </div>
               <div>
-                <div class="text-xs uppercase tc-muted">Đi nhanh</div>
+                <div class="text-xs uppercase tc-muted" data-i18n="lobby.hero.jumpLabel">Đi nhanh</div>
                 <div class="mt-2 flex flex-wrap gap-2">
-                  <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="#portalHub">Sơ đồ 8 cổng</a>
-                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#rouletteHub">Vòng quay dải màu</a>
-                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#forgeHub">Lò rèn bảng màu</a>
-                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#galleryHub">Bộ sưu tập sắc thái</a>
+                  <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="#portalHub" data-i18n="lobby.hero.jump.portals">Sơ đồ 8 cổng</a>
+                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#rouletteHub" data-i18n="lobby.hero.jump.roulette">Vòng quay bảng phối màu</a>
+                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#forgeHub" data-i18n="lobby.hero.jump.forge">Lò rèn dải màu</a>
+                  <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#galleryHub" data-i18n="lobby.hero.jump.gallery">Bộ sưu tập sắc thái</a>
                 </div>
               </div>
             </div>
@@ -184,148 +184,148 @@
           <div class="tc-aurora" id="quickHub">
             <div class="tc-aurora-head">
               <div>
-                <h2 class="text-2xl font-semibold">Trạm thao tác nhanh</h2>
-                <p class="tc-aurora-subtitle">Làm nhanh ngay tại sảnh, sau đó mới mở chi tiết.</p>
+                <h2 class="text-2xl font-semibold" data-i18n="lobby.quick.title">Trạm thao tác nhanh</h2>
+                <p class="tc-aurora-subtitle" data-i18n="lobby.quick.subtitle">Làm nhanh ngay tại sảnh, sau đó mới mở chi tiết.</p>
               </div>
-              <span class="tc-qa-pill" id="qaHeroLive" aria-label="LIVE">LIVE</span>
+              <span class="tc-qa-pill" id="qaHeroLive" data-i18n="lobby.quick.live" data-i18n-attr="aria-label:lobby.quick.liveAria" aria-label="LIVE">LIVE</span>
             </div>
             <div class="tc-aurora-body">
               <div class="tc-qa-aurora" id="qaHeroCard">
                 <div class="tc-qa-aurora-head">
-                  <span class="tc-qa-aurora-title">Bảng phối nhanh</span>
+                  <span class="tc-qa-aurora-title" data-i18n="lobby.quick.aurora.title">Bảng phối nhanh</span>
                 </div>
                 <div class="tc-qa-swatch-grid" id="qaHeroSwatch">
-                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw1" aria-label="Sao chép màu 1">
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw1" data-i18n-attr="aria-label:lobby.quick.aurora.copyColor1" aria-label="Sao chép màu 1">
                     <span class="tc-qa-swatch" id="qaAuroraSw1" style="--swatch-color: var(--a1);" aria-hidden="true"></span>
                     <span class="tc-qa-swatch-hex" id="qaAuroraHex1">#C07A45</span>
                   </button>
-                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw2" aria-label="Sao chép màu 2">
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw2" data-i18n-attr="aria-label:lobby.quick.aurora.copyColor2" aria-label="Sao chép màu 2">
                     <span class="tc-qa-swatch" id="qaAuroraSw2" style="--swatch-color: var(--a2);" aria-hidden="true"></span>
                     <span class="tc-qa-swatch-hex" id="qaAuroraHex2">#DDA26A</span>
                   </button>
-                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw3" aria-label="Sao chép màu 3">
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw3" data-i18n-attr="aria-label:lobby.quick.aurora.copyColor3" aria-label="Sao chép màu 3">
                     <span class="tc-qa-swatch" id="qaAuroraSw3" style="--swatch-color: var(--a3);" aria-hidden="true"></span>
                     <span class="tc-qa-swatch-hex" id="qaAuroraHex3">#906A4B</span>
                   </button>
-                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw4" aria-label="Sao chép màu 4">
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw4" data-i18n-attr="aria-label:lobby.quick.aurora.copyColor4" aria-label="Sao chép màu 4">
                     <span class="tc-qa-swatch" id="qaAuroraSw4" style="--swatch-color: var(--a1);" aria-hidden="true"></span>
                     <span class="tc-qa-swatch-hex" id="qaAuroraHex4">#C07A45</span>
                   </button>
-                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw5" aria-label="Sao chép màu 5">
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw5" data-i18n-attr="aria-label:lobby.quick.aurora.copyColor5" aria-label="Sao chép màu 5">
                     <span class="tc-qa-swatch" id="qaAuroraSw5" style="--swatch-color: var(--a2);" aria-hidden="true"></span>
                     <span class="tc-qa-swatch-hex" id="qaAuroraHex5">#DDA26A</span>
                   </button>
-                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw6" aria-label="Sao chép màu 6">
+                  <button class="tc-qa-swatch-item" type="button" data-swatch-id="qaAuroraSw6" data-i18n-attr="aria-label:lobby.quick.aurora.copyColor6" aria-label="Sao chép màu 6">
                     <span class="tc-qa-swatch" id="qaAuroraSw6" style="--swatch-color: var(--a3);" aria-hidden="true"></span>
                     <span class="tc-qa-swatch-hex" id="qaAuroraHex6">#906A4B</span>
                   </button>
                 </div>
                 <div class="tc-qa-hex tc-qa-hex-row" id="qaHeroHex" aria-hidden="true"><span id="qaAuroraHexRow">#C07A45 · #DDA26A · #906A4B</span></div>
                 <div class="tc-qa-chips" id="qaHeroChips">
-                  <button class="tc-qa-chip" id="qaChipThreadMap" type="button">Bản đồ mã chỉ</button>
-                  <button class="tc-qa-chip" id="qaChipDeltaE" type="button">So khớp ΔE</button>
-                  <button class="tc-qa-chip" id="qaChipBrandFilter" type="button">Bộ lọc hãng</button>
+                  <button class="tc-qa-chip" id="qaChipThreadMap" type="button" data-i18n="lobby.quick.aurora.chip.threadMap">Bản đồ mã chỉ</button>
+                  <button class="tc-qa-chip" id="qaChipDeltaE" type="button" data-i18n="lobby.quick.aurora.chip.deltaE">So khớp ΔE</button>
+                  <button class="tc-qa-chip" id="qaChipBrandFilter" type="button" data-i18n="lobby.quick.aurora.chip.brandFilter">Bộ lọc hãng</button>
                 </div>
                 <div class="tc-qa-chip-hint hidden" id="qaChipHint" aria-live="polite"></div>
               <div class="tc-qa-top-grid" id="qaHeroTopGrid">
                 <div class="tc-qa-mini-card" id="qaHeroTop1">
                   <div class="tc-qa-mini-head">
-                    <div class="tc-qa-mini-title" id="qaAuroraSug1Title">Gợi ý #1</div>
+                    <div class="tc-qa-mini-title" id="qaAuroraSug1Title" data-i18n="lobby.quick.aurora.suggestions.one.title">Gợi ý #1</div>
                     <div class="tc-qa-sug-dots" aria-hidden="true">
                       <span class="tc-qa-sug-dot" id="qaAuroraSug1Dot1"></span>
                       <span class="tc-qa-sug-dot" id="qaAuroraSug1Dot2"></span>
                     </div>
                   </div>
-                  <div class="tc-qa-mini-desc tc-muted" id="qaAuroraSug1Sub">Điểm nhấn mạnh</div>
+                  <div class="tc-qa-mini-desc tc-muted" id="qaAuroraSug1Sub" data-i18n="lobby.quick.aurora.suggestions.one.desc">Điểm nhấn mạnh</div>
                 </div>
                 <div class="tc-qa-mini-card" id="qaHeroTop2">
                   <div class="tc-qa-mini-head">
-                    <div class="tc-qa-mini-title" id="qaAuroraSug2Title">Gợi ý #2</div>
+                    <div class="tc-qa-mini-title" id="qaAuroraSug2Title" data-i18n="lobby.quick.aurora.suggestions.two.title">Gợi ý #2</div>
                     <div class="tc-qa-sug-dots" aria-hidden="true">
                       <span class="tc-qa-sug-dot" id="qaAuroraSug2Dot1"></span>
                       <span class="tc-qa-sug-dot" id="qaAuroraSug2Dot2"></span>
                     </div>
                   </div>
-                  <div class="tc-qa-mini-desc tc-muted" id="qaAuroraSug2Sub">Hài hoà nền phụ</div>
+                  <div class="tc-qa-mini-desc tc-muted" id="qaAuroraSug2Sub" data-i18n="lobby.quick.aurora.suggestions.two.desc">Hài hoà nền phụ</div>
                 </div>
                 <div class="tc-qa-mini-card" id="qaHeroTop3">
                   <div class="tc-qa-mini-head">
-                    <div class="tc-qa-mini-title" id="qaAuroraSug3Title">Gợi ý #3</div>
+                    <div class="tc-qa-mini-title" id="qaAuroraSug3Title" data-i18n="lobby.quick.aurora.suggestions.three.title">Gợi ý #3</div>
                     <div class="tc-qa-sug-dots" aria-hidden="true">
                       <span class="tc-qa-sug-dot" id="qaAuroraSug3Dot1"></span>
                       <span class="tc-qa-sug-dot" id="qaAuroraSug3Dot2"></span>
                     </div>
                   </div>
-                  <div class="tc-qa-mini-desc tc-muted" id="qaAuroraSug3Sub">Tương phản chữ</div>
+                  <div class="tc-qa-mini-desc tc-muted" id="qaAuroraSug3Sub" data-i18n="lobby.quick.aurora.suggestions.three.desc">Tương phản chữ</div>
                 </div>
               </div>
               <details class="tc-qa-details tc-qa-token">
-                <summary class="tc-qa-summary">Token CSS (từ gợi ý phối)</summary>
+                <summary class="tc-qa-summary" data-i18n="lobby.quick.token.summary">Token CSS (từ gợi ý phối)</summary>
                 <div class="tc-qa-token-body">
-                  <label class="text-xs font-semibold tc-muted" for="qaAuroraTokenPreset">Preset</label>
+                  <label class="text-xs font-semibold tc-muted" for="qaAuroraTokenPreset" data-i18n="lobby.quick.token.preset">Preset</label>
                   <select id="qaAuroraTokenPreset" class="tc-input tc-qa-token-select">
-                    <option value="auto">Tự động (khuyến nghị)</option>
-                    <option value="complementary">Bù 180°</option>
-                    <option value="analogous">Tương tự ±30°</option>
-                    <option value="accent">Nhấn tương phản</option>
+                    <option value="auto" data-i18n="lobby.quick.token.option.auto">Tự động (khuyến nghị)</option>
+                    <option value="complementary" data-i18n="lobby.quick.token.option.complementary">Bù 180°</option>
+                    <option value="analogous" data-i18n="lobby.quick.token.option.analogous">Tương tự ±30°</option>
+                    <option value="accent" data-i18n="lobby.quick.token.option.accent">Nhấn tương phản</option>
                   </select>
                   <pre class="tc-qa-token-code"><code id="qaAuroraTokenCss"></code></pre>
-                  <input id="qaAuroraToneName" class="tc-input tc-qa-token-input" type="text" placeholder="Tên sắc thái tuỳ chỉnh…">
+                  <input id="qaAuroraToneName" class="tc-input tc-qa-token-input" type="text" data-i18n-attr="placeholder:lobby.quick.token.tonePlaceholder" placeholder="Tên sắc thái tuỳ chỉnh…">
                   <div class="flex flex-wrap items-center gap-2">
-                    <button id="qaAuroraCopyCss" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Sao chép CSS</button>
-                    <button id="qaAuroraPreviewTheme" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Xem trước sắc thái</button>
-                    <button id="qaAuroraResetTheme" class="tc-btn tc-chip px-3 py-2 text-xs hidden" type="button">Hoàn tác</button>
-                    <span id="qaAuroraPreviewBadge" class="tc-qa-preview-badge hidden">Đang xem trước</span>
+                    <button id="qaAuroraCopyCss" class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-i18n="lobby.quick.token.copyCss">Sao chép CSS</button>
+                    <button id="qaAuroraPreviewTheme" class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-i18n="lobby.quick.token.preview">Xem trước sắc thái</button>
+                    <button id="qaAuroraResetTheme" class="tc-btn tc-chip px-3 py-2 text-xs hidden" type="button" data-i18n="lobby.quick.token.reset">Hoàn tác</button>
+                    <span id="qaAuroraPreviewBadge" class="tc-qa-preview-badge hidden" data-i18n="lobby.quick.token.previewBadge">Đang xem trước</span>
                   </div>
                   <div class="flex flex-wrap items-center gap-2">
-                    <button id="qaAuroraSaveTone" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Lưu vào Thư viện</button>
-                    <a class="text-xs tc-muted underline" href="./worlds/library.html#tab=custom-tones">Mở Thư viện</a>
+                    <button id="qaAuroraSaveTone" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button" data-i18n="lobby.quick.token.saveLibrary">Lưu vào Thư viện</button>
+                    <a class="text-xs tc-muted underline" href="./worlds/library.html#tab=custom-tones" data-i18n="lobby.quick.token.openLibrary">Mở Thư viện</a>
                   </div>
-                  <div id="qaAuroraCopyToast" class="tc-qa-toast" role="status" aria-live="polite">Đã sao chép token CSS</div>
+                  <div id="qaAuroraCopyToast" class="tc-qa-toast" role="status" aria-live="polite" data-i18n="lobby.quick.token.copyToast">Đã sao chép token CSS</div>
                 </div>
               </details>
             </div>
               <div class="flex gap-2 overflow-x-auto pb-2" id="quickTabs" role="tablist">
-                <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="paste" role="tab" aria-selected="true">Dán màu</button>
-                <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="thread" role="tab" aria-selected="false">Tra mã chỉ từ màu</button>
-                <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="image" role="tab" aria-selected="false">Tra mã chỉ từ ảnh</button>
+                <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="paste" role="tab" aria-selected="true" data-i18n="lobby.quick.tabs.paste">Dán màu</button>
+                <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="thread" role="tab" aria-selected="false" data-i18n="lobby.quick.tabs.thread">Tra mã chỉ từ màu</button>
+                <button class="tc-btn tc-chip px-4 py-2 text-sm whitespace-nowrap" data-tab="image" role="tab" aria-selected="false" data-i18n="lobby.quick.tabs.image">Tra mã chỉ từ ảnh</button>
               </div>
               <div class="space-y-4" id="quickPanels">
                 <div data-panel="paste" role="tabpanel">
-                  <label class="text-sm font-semibold" for="qaPasteInput">Danh sách HEX</label>
-                  <textarea id="qaPasteInput" class="tc-input tc-qa-hex-input mt-2" rows="2" placeholder="#FFAA00, #123456
+                  <label class="text-sm font-semibold" for="qaPasteInput" data-i18n="lobby.quick.paste.hexList">Danh sách HEX</label>
+                  <textarea id="qaPasteInput" class="tc-input tc-qa-hex-input mt-2" rows="2" data-i18n-attr="placeholder:lobby.quick.paste.placeholder" placeholder="#FFAA00, #123456
 #0F766E"></textarea>
                   <div class="mt-3 flex flex-wrap gap-2">
-                    <button id="qaPasteApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Áp dụng</button>
+                    <button id="qaPasteApply" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button" data-i18n="lobby.quick.paste.apply">Áp dụng</button>
                   </div>
                   <div id="qaPasteSwatches" class="mt-4 flex flex-wrap gap-2"></div>
                   <details class="tc-qa-details mt-4">
-                    <summary class="tc-qa-summary">Mở tác vụ nhanh nâng cao</summary>
+                    <summary class="tc-qa-summary" data-i18n="lobby.quick.paste.advancedSummary">Mở tác vụ nhanh nâng cao</summary>
                     <div class="tc-qa-advanced mt-3 grid gap-3 lg:grid-cols-3">
                       <div class="tc-card p-3">
                         <div class="flex items-center justify-between">
-                          <h3 class="text-sm font-semibold">Đổi CMYK ngay</h3>
-                          <button id="qaPasteCmyk" class="tc-btn tc-chip px-3 py-1 text-xs" type="button">Thực hiện</button>
+                          <h3 class="text-sm font-semibold" data-i18n="lobby.quick.paste.cmyk.title">Đổi CMYK ngay</h3>
+                          <button id="qaPasteCmyk" class="tc-btn tc-chip px-3 py-1 text-xs" type="button" data-i18n="lobby.quick.paste.actionRun">Thực hiện</button>
                         </div>
                         <div id="qaPasteCmykOut" class="mt-3 text-xs tc-muted"></div>
-                        <a id="qaOpenCmyk" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/printcolor.html">Mở chi tiết</a>
+                        <a id="qaOpenCmyk" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/printcolor.html" data-i18n="lobby.quick.openDetail">Mở chi tiết</a>
                       </div>
                       <div class="tc-card p-3">
                         <div class="flex items-center justify-between">
-                          <h3 class="text-sm font-semibold">Tạo dải ngay</h3>
-                          <button id="qaPasteGradient" class="tc-btn tc-chip px-3 py-1 text-xs" type="button">Thực hiện</button>
+                          <h3 class="text-sm font-semibold" data-i18n="lobby.quick.paste.gradient.title">Tạo dải ngay</h3>
+                          <button id="qaPasteGradient" class="tc-btn tc-chip px-3 py-1 text-xs" type="button" data-i18n="lobby.quick.paste.actionRun">Thực hiện</button>
                         </div>
                         <div id="qaPasteGradientOut" class="mt-3 h-12 rounded-lg border border-[rgba(0,0,0,.12)]"></div>
-                        <a id="qaOpenGradient" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/gradient.html">Mở chi tiết</a>
+                        <a id="qaOpenGradient" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/gradient.html" data-i18n="lobby.quick.openDetail">Mở chi tiết</a>
                       </div>
                       <div class="tc-card p-3">
                         <div class="flex items-center justify-between">
-                          <h3 class="text-sm font-semibold">Xuất token ngay</h3>
-                          <button id="qaPasteExport" class="tc-btn tc-chip px-3 py-1 text-xs" type="button">Thực hiện</button>
+                          <h3 class="text-sm font-semibold" data-i18n="lobby.quick.paste.export.title">Xuất token ngay</h3>
+                          <button id="qaPasteExport" class="tc-btn tc-chip px-3 py-1 text-xs" type="button" data-i18n="lobby.quick.paste.actionRun">Thực hiện</button>
                         </div>
                         <pre id="qaPasteExportOut" class="mt-3 text-[11px] tc-muted whitespace-pre-wrap"></pre>
-                        <button id="qaPasteCopy" class="tc-btn tc-chip px-3 py-2 text-xs mt-2 hidden" type="button">Sao chép</button>
-                        <a id="qaOpenPalette" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-2 inline-flex hidden" href="./worlds/palette.html">Mở chi tiết</a>
+                        <button id="qaPasteCopy" class="tc-btn tc-chip px-3 py-2 text-xs mt-2 hidden" type="button" data-i18n="common.copy">Sao chép</button>
+                        <a id="qaOpenPalette" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-2 inline-flex hidden" href="./worlds/palette.html" data-i18n="lobby.quick.openDetail">Mở chi tiết</a>
                       </div>
                     </div>
                   </details>
@@ -333,116 +333,28 @@
               <div data-panel="thread" role="tabpanel" class="hidden">
                 <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
                 <input type="password" autocomplete="current-password" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
-                <label class="text-sm font-semibold" for="qaThreadHex">Nhập HEX</label>
+                <label class="text-sm font-semibold" for="qaThreadHex" data-i18n="lobby.quick.thread.inputLabel">Nhập HEX</label>
                 <div class="mt-2 flex flex-wrap gap-2 items-center">
-                  <input id="qaThreadHex" class="tc-input w-[180px]" type="search" name="quick_thread_query" autocomplete="new-password" inputmode="search" spellcheck="false" autocapitalize="none" placeholder="#FFAA00">
-                  <button id="qaThreadSearch" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Tra ngay</button>
+                  <input id="qaThreadHex" class="tc-input w-[180px]" type="search" name="quick_thread_query" autocomplete="new-password" inputmode="search" spellcheck="false" autocapitalize="none" data-i18n-attr="placeholder:lobby.quick.thread.placeholder" placeholder="#FFAA00">
+                  <button id="qaThreadSearch" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button" data-i18n="lobby.quick.thread.search">Tra ngay</button>
                 </div>
                 <ul id="qaThreadList" class="mt-4 space-y-2 text-sm"></ul>
-                <a id="qaThreadOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Thêu)</a>
+                <a id="qaThreadOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html" data-i18n="lobby.quick.thread.open">Mở chi tiết (Thêu)</a>
               </div>
               <div data-panel="image" role="tabpanel" class="hidden">
-                <label class="text-sm font-semibold">Chọn ảnh</label>
+                <label class="text-sm font-semibold" data-i18n="lobby.quick.image.label">Chọn ảnh</label>
                 <div class="mt-2 flex flex-wrap gap-2 items-center">
-                  <label class="tc-btn tc-chip px-4 py-2 text-sm" for="qaImageInput">Chọn ảnh</label>
+                  <label class="tc-btn tc-chip px-4 py-2 text-sm" for="qaImageInput" data-i18n="lobby.quick.image.pick">Chọn ảnh</label>
                   <input id="qaImageInput" type="file" accept="image/*" class="sr-only">
-                  <button id="qaImageAnalyze" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Phân tích</button>
+                  <button id="qaImageAnalyze" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button" data-i18n="lobby.quick.image.analyze">Phân tích</button>
                 </div>
-                <img id="qaImagePreview" class="tc-qa-image-preview hidden" alt="Xem trước ảnh đã chọn">
+                <img id="qaImagePreview" class="tc-qa-image-preview hidden" data-i18n-attr="alt:lobby.quick.image.previewAlt" alt="Xem trước ảnh đã chọn">
                 <div id="qaImageSwatches" class="mt-4 flex flex-wrap gap-2"></div>
                 <ul id="qaImageThreads" class="mt-4 space-y-2 text-sm"></ul>
-                <a id="qaImageOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html">Mở chi tiết (Thêu)</a>
+                <a id="qaImageOpen" class="tc-btn tc-btn-primary px-3 py-2 text-xs mt-3 inline-flex hidden" href="./worlds/threadcolor.html" data-i18n="lobby.quick.thread.open">Mở chi tiết (Thêu)</a>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="tc-shell pb-12" id="workflowRail">
-      <div class="tc-card p-6 md:p-8 tc-rail-surface">
-        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 class="text-2xl md:text-3xl font-semibold">Đường ray điều phối</h2>
-            <p class="tc-muted text-sm mt-2">Chọn từng bước để mở đúng Thế giới, không ép buộc.</p>
-          </div>
-          <span class="tc-chip px-3 py-2 rounded-full text-xs">Hướng dẫn nhanh</span>
-        </div>
-        <div class="tc-rail mt-6" data-workflow-rail>
-          <div class="tc-rail-tabs" role="tablist" aria-label="Đường ray điều phối" data-rail-tabs></div>
-          <div class="tc-rail-panel" id="workflowRailPanel" role="tabpanel" aria-live="polite" data-rail-panel>
-            <div class="tc-rail-panel-meta">
-              <span class="tc-rail-step" data-rail-step></span>
-              <span class="tc-rail-title" data-rail-title></span>
-            </div>
-            <p class="tc-rail-desc" data-rail-desc></p>
-            <div class="tc-rail-actions">
-              <a class="tc-btn tc-btn-primary px-4 py-2 text-sm" data-rail-primary></a>
-              <a class="tc-btn tc-chip px-4 py-2 text-sm" data-rail-secondary></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="tc-shell pb-12" id="goalRoutes">
-      <div class="tc-card p-6 md:p-8">
-        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 class="text-2xl md:text-3xl font-semibold">Chọn mục tiêu</h2>
-            <p class="tc-muted text-sm mt-2">Chọn tuyến hành động gọn nhất để đi thẳng vào mục tiêu.</p>
-          </div>
-          <span class="tc-chip px-3 py-2 rounded-full text-xs">Điều phối theo mục tiêu</span>
-        </div>
-        <div class="tc-goal-grid mt-6">
-          <article class="tc-goal-card" role="button" tabindex="0" data-route-card data-world="threadcolor" data-url="./worlds/threadcolor.html">
-            <div class="tc-goal-head">
-              <span class="tc-goal-tag">Ảnh/HEX</span>
-              <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="./worlds/threadcolor.html" data-world-link data-world="threadcolor">Chạy ngay</a>
-            </div>
-            <h3 class="tc-goal-title">Ảnh/HEX → Mã chỉ → Lưu</h3>
-            <div class="tc-goal-steps">
-              <span>Chọn ảnh hoặc dán HEX</span>
-              <span>Tra mã chỉ gần nhất</span>
-              <span>Lưu vào Thư viện</span>
-            </div>
-          </article>
-          <article class="tc-goal-card" role="button" tabindex="0" data-route-card data-world="palette" data-url="./worlds/palette.html">
-            <div class="tc-goal-head">
-              <span class="tc-goal-tag">Bảng phối</span>
-              <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="./worlds/palette.html" data-world-link data-world="palette">Chạy ngay</a>
-            </div>
-            <h3 class="tc-goal-title">Bảng phối → Tương phản → Preview → Xuất</h3>
-            <div class="tc-goal-steps">
-              <span>Chọn 5 màu chủ đạo</span>
-              <span>Kiểm tra tương phản</span>
-              <span>Preview & xuất nhanh</span>
-            </div>
-          </article>
-          <article class="tc-goal-card" role="button" tabindex="0" data-route-card data-world="gradient" data-url="./worlds/gradient.html">
-            <div class="tc-goal-head">
-              <span class="tc-goal-tag">Dải chuyển</span>
-              <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="./worlds/gradient.html" data-world-link data-world="gradient">Chạy ngay</a>
-            </div>
-            <h3 class="tc-goal-title">Dải chuyển → Token → Lưu</h3>
-            <div class="tc-goal-steps">
-              <span>Tạo dải chuyển màu</span>
-              <span>Xuất token CSS</span>
-              <span>Lưu vào Thư viện</span>
-            </div>
-          </article>
-          <article class="tc-goal-card" role="button" tabindex="0" data-route-card data-world="printcolor" data-url="./worlds/printcolor.html">
-            <div class="tc-goal-head">
-              <span class="tc-goal-tag">CMYK</span>
-              <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="./worlds/printcolor.html" data-world-link data-world="printcolor">Chạy ngay</a>
-            </div>
-            <h3 class="tc-goal-title">CMYK → Lưu</h3>
-            <div class="tc-goal-steps">
-              <span>Nhập HEX/RGB</span>
-              <span>Kiểm tra CMYK/TAC</span>
-              <span>Lưu báo cáo</span>
-            </div>
-          </article>
         </div>
       </div>
     </section>
@@ -452,21 +364,21 @@
         <div class="tc-card p-6 md:p-7 tc-recent-card">
           <div class="tc-section-head">
             <div>
-              <h2 class="text-2xl font-semibold">Gần đây / Ghim</h2>
-              <p class="tc-muted text-sm mt-1">Theo dõi các Thế giới bạn vừa dùng hoặc ghim lại.</p>
+              <h2 class="text-2xl font-semibold" data-i18n="lobby.recent.title">Gần đây / Ghim</h2>
+              <p class="tc-muted text-sm mt-1" data-i18n="lobby.recent.desc">Theo dõi các Thế giới bạn vừa dùng hoặc ghim lại.</p>
             </div>
-            <button class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-action="clear-recent">Xoá gần đây</button>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-action="clear-recent" data-i18n="lobby.recent.clear">Xoá gần đây</button>
           </div>
           <div class="tc-recent-grid mt-5">
             <div class="tc-recent-section">
-              <div class="tc-recent-title">Mục ghim</div>
+              <div class="tc-recent-title" data-i18n="lobby.recent.pinnedTitle">Mục ghim</div>
               <div class="tc-recent-list" data-recent-list="pinned"></div>
-              <div class="tc-recent-empty" data-recent-empty="pinned">Chưa có mục ghim. Bấm ghim để giữ lại tối đa 3 mục.</div>
+              <div class="tc-recent-empty" data-recent-empty="pinned" data-i18n="lobby.recent.emptyPinned">Chưa có mục ghim. Bấm ghim để giữ lại tối đa 3 mục.</div>
             </div>
             <div class="tc-recent-section">
-              <div class="tc-recent-title">Gần đây</div>
+              <div class="tc-recent-title" data-i18n="lobby.recent.recentTitle">Gần đây</div>
               <div class="tc-recent-list" data-recent-list="recent"></div>
-              <div class="tc-recent-empty" data-recent-empty="recent">Chưa có lịch sử. Hãy chọn một tuyến mục tiêu để bắt đầu.</div>
+              <div class="tc-recent-empty" data-recent-empty="recent" data-i18n="lobby.recent.emptyRecent">Chưa có lịch sử. Hãy chọn một tuyến mục tiêu để bắt đầu.</div>
             </div>
           </div>
         </div>
@@ -474,34 +386,46 @@
         <div class="tc-card p-6 md:p-7 tc-preview-card">
           <div class="tc-section-head">
             <div>
-              <h2 class="text-2xl font-semibold">Preview nhanh</h2>
-              <p class="tc-muted text-sm mt-1">Nhìn nhanh cách palette lên UI/Poster/Thêu.</p>
+              <h2 class="text-2xl font-semibold" data-i18n="lobby.preview.title">Xem thử nhanh</h2>
+              <p class="tc-muted text-sm mt-1" data-i18n="lobby.preview.desc">Nhìn nhanh cách bảng phối lên Giao diện/Áp phích/Thêu.</p>
             </div>
             <div class="tc-preview-tabs" role="tablist">
-              <button class="tc-preview-tab is-active" type="button" data-preview-tab="ui" role="tab" aria-selected="true">UI</button>
-              <button class="tc-preview-tab" type="button" data-preview-tab="poster" role="tab" aria-selected="false">Poster</button>
-              <button class="tc-preview-tab" type="button" data-preview-tab="thread" role="tab" aria-selected="false">Thêu</button>
+              <button class="tc-preview-tab is-active" type="button" data-preview-tab="ui" role="tab" aria-selected="true" data-i18n="lobby.preview.tabs.ui">Giao diện</button>
+              <button class="tc-preview-tab" type="button" data-preview-tab="poster" role="tab" aria-selected="false" data-i18n="lobby.preview.tabs.poster">Áp phích</button>
+              <button class="tc-preview-tab" type="button" data-preview-tab="thread" role="tab" aria-selected="false" data-i18n="lobby.preview.tabs.thread">Thêu</button>
             </div>
           </div>
           <div class="tc-preview-frame mt-5" data-preview-frame>
             <div class="tc-preview-header">
-              <span class="tc-preview-label" data-preview-label>UI</span>
-              <span class="tc-preview-chip" data-preview-chip>Trạng thái</span>
+              <span class="tc-preview-label" data-preview-label data-i18n="lobby.preview.tabs.ui">Giao diện</span>
+              <span class="tc-preview-chip" data-preview-chip data-i18n="lobby.preview.frame.ui.chip">Mẫu bối cảnh</span>
             </div>
-            <div class="tc-preview-title" data-preview-title>Bảng điều khiển sản phẩm</div>
-            <div class="tc-preview-desc" data-preview-desc>Độ tương phản vừa đủ để đọc nhanh và tập trung.</div>
+            <div class="tc-preview-title" data-preview-title data-i18n="lobby.preview.frame.ui.title">Bảng điều khiển sản phẩm</div>
+            <div class="tc-preview-desc" data-preview-desc data-i18n="lobby.preview.frame.ui.desc">Độ tương phản vừa đủ để đọc nhanh và tập trung.</div>
+            <details class="tc-preview-help">
+              <summary class="tc-preview-help-summary" data-i18n="lobby.preview.help.summary">Vì sao có khối này trong Sảnh?</summary>
+              <div class="tc-preview-help-body">
+                <p data-i18n="lobby.preview.help.effect">Tác dụng: xem thử cảm giác bảng phối màu lên bối cảnh thực tế để quyết định nhanh trước khi vào Thế giới chi tiết.</p>
+                <p data-i18n="lobby.preview.help.why">Lý do đặt ở Sảnh: giúp người dùng chốt hướng phối màu ngay điểm vào trung tâm, giảm vòng lặp thử sai.</p>
+                <ul class="tc-preview-help-list">
+                  <li data-i18n="lobby.preview.help.routeUi">Giao diện → mở Thế giới Bảng phối màu.</li>
+                  <li data-i18n="lobby.preview.help.routePoster">Áp phích → mở Thế giới Dải chuyển màu.</li>
+                  <li data-i18n="lobby.preview.help.routeThread">Thêu → mở Thế giới màu thêu.</li>
+                </ul>
+              </div>
+            </details>
             <div class="tc-preview-swatches">
-              <span class="tc-preview-swatch" data-preview-swatch></span>
-              <span class="tc-preview-swatch" data-preview-swatch></span>
-              <span class="tc-preview-swatch" data-preview-swatch></span>
+              <button class="tc-preview-swatch" type="button" data-preview-swatch data-i18n-attr="aria-label:lobby.preview.copyHexAria" aria-label="Sao chép mã HEX"></button>
+              <button class="tc-preview-swatch" type="button" data-preview-swatch data-i18n-attr="aria-label:lobby.preview.copyHexAria" aria-label="Sao chép mã HEX"></button>
+              <button class="tc-preview-swatch" type="button" data-preview-swatch data-i18n-attr="aria-label:lobby.preview.copyHexAria" aria-label="Sao chép mã HEX"></button>
             </div>
             <div class="tc-preview-footer">
-              <span class="tc-preview-pill" data-preview-pill>CTA</span>
-              <span class="tc-preview-pill" data-preview-pill>Nhấn</span>
-              <span class="tc-preview-pill" data-preview-pill>Nhẹ</span>
+              <span class="tc-preview-pill" data-preview-pill data-i18n="lobby.preview.frame.ui.pill1">Nút kêu gọi (CTA)</span>
+              <span class="tc-preview-pill" data-preview-pill data-i18n="lobby.preview.frame.ui.pill2">Nhấn</span>
+              <span class="tc-preview-pill" data-preview-pill data-i18n="lobby.preview.frame.ui.pill3">Nhẹ</span>
             </div>
             <div class="mt-4 flex justify-end">
-              <button class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button" data-preview-cta>Mở chi tiết</button>
+              <button class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button" data-preview-cta data-i18n="lobby.preview.cta">Mở chi tiết</button>
             </div>
           </div>
         </div>
@@ -512,66 +436,66 @@
     <section class="tc-shell pb-12" id="portalHub">
       <div class="flex items-end justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-semibold">8 Cổng SpaceColors</h2>
-          <p class="tc-muted text-sm mt-1">Chọn cổng để bước vào một Thế giới sắc màu khác.</p>
+          <h2 class="text-2xl font-semibold" data-i18n="lobby.portals.title">8 Cổng SpaceColors</h2>
+          <p class="tc-muted text-sm mt-1" data-i18n="lobby.portals.desc">Chọn cổng để bước vào một Thế giới sắc màu khác.</p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold">Thế giới màu thêu (Thêu)</h3>
-            <p class="tc-muted text-sm mt-2">Tra mã chỉ từ ảnh/HEX, so màu gần nhất, quản lý kho chỉ và đặt mua.</p>
+            <h3 class="font-semibold" data-i18n="lobby.portals.cards.threadcolor.title">Thế giới màu thêu (Thêu)</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.threadcolor.desc">Tra mã chỉ từ ảnh/HEX, so màu gần nhất, quản lý kho chỉ và đặt mua.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/threadcolor.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/threadcolor.html" data-i18n="lobby.portals.cards.threadcolor.cta">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold">Thế giới Dải chuyển màu (Gradient)</h3>
-            <p class="tc-muted text-sm mt-2">Tạo dải chuyển màu, chỉnh góc & điểm neo, xuất CSS/Token nhanh.</p>
+            <h3 class="font-semibold" data-i18n="lobby.portals.cards.gradient.title">Thế giới Dải chuyển màu (Gradient)</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.gradient.desc">Tạo dải chuyển màu, chỉnh góc & điểm neo, xuất CSS/Token nhanh.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/gradient.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/gradient.html" data-i18n="lobby.portals.cards.gradient.cta">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold">Thế giới Bảng phối màu (Palette)</h3>
-            <p class="tc-muted text-sm mt-2">Khám phá phối màu theo cảm xúc, lưu bộ sưu tập, xuất token/HEX.</p>
+            <h3 class="font-semibold" data-i18n="lobby.portals.cards.palette.title">Thế giới Bảng phối màu (Palette)</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.palette.desc">Khám phá phối màu theo cảm xúc, lưu bộ sưu tập, xuất token/HEX.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/palette.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/palette.html" data-i18n="lobby.portals.cards.palette.cta">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold">Thế giới Màu in (CMYK)</h3>
-            <p class="tc-muted text-sm mt-2">Đổi HEX → CMYK, theo dõi TAC, cảnh báo lệch in và xuất bảng cho nhà in.</p>
+            <h3 class="font-semibold" data-i18n="lobby.portals.cards.printcolor.title">Thế giới Màu in (CMYK)</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.printcolor.desc">Đổi HEX → CMYK, theo dõi TAC, cảnh báo lệch in và xuất bảng cho nhà in.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/printcolor.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/printcolor.html" data-i18n="lobby.portals.cards.printcolor.cta">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold mt-3">Thế giới Thư viện Tài sản Màu</h3>
-            <p class="tc-muted text-sm mt-2">Lưu tài sản màu, lọc nhanh, xem nhanh và áp dụng sang Palette/Gradient.</p>
+            <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.library.title">Thế giới Thư viện Tài sản Màu</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.library.desc">Lưu tài sản màu, lọc nhanh, xem nhanh và áp dụng sang Palette/Gradient.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/library.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/library.html" data-i18n="lobby.portals.cards.library.cta">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold mt-3">Thế giới màu Sơn&Vải</h3>
-            <p class="tc-muted text-sm mt-2">Mô phỏng màu trên sơn/vải, điều chỉnh ánh sáng, lưu tài sản vật liệu.</p>
+            <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.paintfabric.title">Thế giới màu Sơn&Vải</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.paintfabric.desc">Mô phỏng màu trên sơn/vải, điều chỉnh ánh sáng, lưu tài sản vật liệu.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/paintfabric.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/paintfabric.html" data-i18n="lobby.portals.cards.paintfabric.cta">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold mt-3">Thế giới Màu từ Ảnh</h3>
-            <p class="tc-muted text-sm mt-2">Lấy màu chủ đạo từ ảnh, tạo palette/gradient và lưu nhanh.</p>
+            <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.imagecolor.title">Thế giới Màu từ Ảnh</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.imagecolor.desc">Lấy màu chủ đạo từ ảnh, tạo palette/gradient và lưu nhanh.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/imagecolor.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/imagecolor.html" data-i18n="lobby.portals.cards.imagecolor.cta">Mở</a>
         </div>
         <div class="tc-card p-5 flex flex-col gap-4 h-full">
           <div class="flex-1">
-            <h3 class="font-semibold mt-3">Thế giới trò chơi màu</h3>
-            <p class="tc-muted text-sm mt-2">Chơi Line 98, luyện mắt màu và tối ưu điểm số theo combo.</p>
+            <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.colorplay.title">Thế giới trò chơi màu</h3>
+            <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.colorplay.desc">Chơi Line 98, luyện mắt màu và tối ưu điểm số theo combo.</p>
           </div>
-          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/colorplay.html">Mở</a>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/colorplay.html" data-i18n="lobby.portals.cards.colorplay.cta">Mở</a>
         </div>
       </div>
     </section>
@@ -580,7 +504,7 @@
     <section class="tc-shell pb-12" id="rouletteHub">
       <div class="flex items-end justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-semibold" data-i18n="roulette.title">Vòng quay dải màu</h2>
+          <h2 class="text-2xl font-semibold" data-i18n="roulette.title">Vòng quay bảng phối màu</h2>
           <p class="tc-muted text-sm mt-1" data-i18n="roulette.desc">Chọn ngẫu nhiên một bộ màu nhấn để khám phá nhanh.</p>
         </div>
       </div>
@@ -603,7 +527,7 @@
     <section class="tc-shell pb-12" id="forgeHub">
       <div class="flex items-end justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-semibold" data-i18n="forge.title">Lò rèn bảng màu</h2>
+          <h2 class="text-2xl font-semibold" data-i18n="forge.title">Lò rèn dải màu</h2>
           <p class="tc-muted text-sm mt-1" data-i18n="forge.desc">Tuỳ chỉnh bộ màu nhấn để phù hợp với gu của bạn.</p>
         </div>
       </div>
@@ -614,21 +538,21 @@
               <div class="text-sm font-semibold" data-i18n="forge.a1.label">Màu nhấn 1</div>
               <div class="tc-muted text-xs mt-1" data-accent-value="a1">--</div>
             </div>
-            <input id="forgeA1" type="color" class="tc-color-input" value="#000000" aria-label="Màu nhấn 1">
+            <input id="forgeA1" type="color" class="tc-color-input" value="#000000" data-i18n-attr="aria-label:forge.a1.label" aria-label="Màu nhấn 1">
           </div>
           <div class="flex items-center justify-between gap-3">
             <div>
               <div class="text-sm font-semibold" data-i18n="forge.a2.label">Màu nhấn 2</div>
               <div class="tc-muted text-xs mt-1" data-accent-value="a2">--</div>
             </div>
-            <input id="forgeA2" type="color" class="tc-color-input" value="#000000" aria-label="Màu nhấn 2">
+            <input id="forgeA2" type="color" class="tc-color-input" value="#000000" data-i18n-attr="aria-label:forge.a2.label" aria-label="Màu nhấn 2">
           </div>
           <div class="flex items-center justify-between gap-3">
             <div>
               <div class="text-sm font-semibold" data-i18n="forge.a3.label">Màu nhấn 3</div>
               <div class="tc-muted text-xs mt-1" data-accent-value="a3">--</div>
             </div>
-            <input id="forgeA3" type="color" class="tc-color-input" value="#000000" aria-label="Màu nhấn 3">
+            <input id="forgeA3" type="color" class="tc-color-input" value="#000000" data-i18n-attr="aria-label:forge.a3.label" aria-label="Màu nhấn 3">
           </div>
         </div>
         <div>
@@ -659,9 +583,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="nebula">Tinh vân Neon</h3>
+            <h3 class="font-semibold" data-world-label="nebula" data-i18n="worlds.nebula.label">Tinh vân</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="nebula">Sâu và huyền ảo, phù hợp điểm nhấn sang.</p>
+          <p class="tc-muted text-sm" data-world-desc="nebula" data-i18n="worlds.nebula.desc">Tinh vân huyền ảo, ánh tím xanh sâu thẳm.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5 space-y-3" data-world-card="1" data-world="ocean" role="button" tabindex="0" aria-label="Kích hoạt sắc thái: Đại dương Ngọc" style="--tone-1:#1AA7C8;--tone-2:#1F8FB6;--tone-3:#58D2E0;">
@@ -673,9 +597,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="ocean">Đại dương Ngọc</h3>
+            <h3 class="font-semibold" data-world-label="ocean" data-i18n="worlds.ocean.label">Đại dương</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="ocean">Trong và mát, tạo cảm giác sạch cho giao diện.</p>
+          <p class="tc-muted text-sm" data-world-desc="ocean" data-i18n="worlds.ocean.desc">Đại dương mát lạnh, cảm giác trong trẻo.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5 space-y-3" data-world-card="1" data-world="ink" role="button" tabindex="0" aria-label="Kích hoạt sắc thái: Mực tàu Tối giản" style="--tone-1:#D7DDE6;--tone-2:#8B97AB;--tone-3:#5B6678;">
@@ -687,9 +611,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="ink">Mực tàu Tối giản</h3>
+            <h3 class="font-semibold" data-world-label="ink" data-i18n="worlds.ink.label">Mực tàu</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="ink">Đậm và sạch, hợp layout tối giản cao cấp.</p>
+          <p class="tc-muted text-sm" data-world-desc="ink" data-i18n="worlds.ink.desc">Tối giản, mực tàu và độ sâu.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5 space-y-3" data-world-card="1" data-world="origami" role="button" tabindex="0" aria-label="Kích hoạt sắc thái: Origami Kem" style="--tone-1:#C07A45;--tone-2:#DDA26A;--tone-3:#906A4B;">
@@ -701,9 +625,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="origami">Origami Kem</h3>
+            <h3 class="font-semibold" data-world-label="origami" data-i18n="worlds.origami.label">Origami</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="origami">Ấm nhẹ và mềm, thân thiện cho trang điều phối.</p>
+          <p class="tc-muted text-sm" data-world-desc="origami" data-i18n="worlds.origami.desc">Giấy gấp, ấm áp và nhẹ nhàng.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5 space-y-3" data-world-card="1" data-world="arcade" role="button" tabindex="0" aria-label="Kích hoạt sắc thái: Arcade Synthwave" style="--tone-1:#FF5EC9;--tone-2:#7A5CFF;--tone-3:#32E6B1;">
@@ -715,9 +639,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="arcade">Arcade Synthwave</h3>
+            <h3 class="font-semibold" data-world-label="arcade" data-i18n="worlds.arcade.label">Arcade</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="arcade">Nê-on táo bạo, nổi bật cho CTA và nhịp nhanh.</p>
+          <p class="tc-muted text-sm" data-world-desc="arcade" data-i18n="worlds.arcade.desc">Neon năng lượng, nhịp nhanh.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5 space-y-3" data-world-card="1" data-world="dunes" role="button" tabindex="0" aria-label="Kích hoạt sắc thái: Đồi cát Hoàng hôn" style="--tone-1:#D39A50;--tone-2:#E4B575;--tone-3:#B47238;">
@@ -729,9 +653,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="dunes">Đồi cát Hoàng hôn</h3>
+            <h3 class="font-semibold" data-world-label="dunes" data-i18n="worlds.dunes.label">Đồi cát</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="dunes">Ấm sâu như hoàng hôn, hợp khối nội dung dài.</p>
+          <p class="tc-muted text-sm" data-world-desc="dunes" data-i18n="worlds.dunes.desc">Sa mạc, nắng vàng, yên tĩnh.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5 space-y-3" data-world-card="1" data-world="chrome" role="button" tabindex="0" aria-label="Kích hoạt sắc thái: Chrome Sang" style="--tone-1:#4B8CFF;--tone-2:#9AA7BA;--tone-3:#121927;">
@@ -743,9 +667,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="chrome">Chrome Sang</h3>
+            <h3 class="font-semibold" data-world-label="chrome" data-i18n="worlds.chrome.label">Chrome</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="chrome">Lạnh, sắc và chuẩn xác theo chất liệu kim loại.</p>
+          <p class="tc-muted text-sm" data-world-desc="chrome" data-i18n="worlds.chrome.desc">Kim loại sáng, chuẩn xác, sạch.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
         <div class="tc-card p-5 space-y-3" data-world-card="1" data-world="circuit" role="button" tabindex="0" aria-label="Kích hoạt sắc thái: Pha lê Hologram" style="--tone-1:#28C76F;--tone-2:#1FAA57;--tone-3:#85F0B1;">
@@ -757,9 +681,9 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="tc-dot"></span>
-            <h3 class="font-semibold" data-world-label="circuit">Pha lê Hologram</h3>
+            <h3 class="font-semibold" data-world-label="circuit" data-i18n="worlds.circuit.label">Mạch điện</h3>
           </div>
-          <p class="tc-muted text-sm" data-world-desc="circuit">Xanh pha lê công nghệ, sáng và tươi sạch.</p>
+          <p class="tc-muted text-sm" data-world-desc="circuit" data-i18n="worlds.circuit.desc">Mạch điện, xanh lục kỹ thuật.</p>
           <span class="text-xs inline-block tc-muted" data-i18n="gallery.activate">Kích hoạt</span>
         </div>
       </div>
@@ -939,12 +863,12 @@
             </label>
             <label class="block text-xs">
               <span class="tc-muted" data-i18n="support.form.email">Email liên hệ (tuỳ chọn)</span>
-              <input id="supportEmail" type="email" class="tc-input w-full mt-2" placeholder="you@email.com">
+              <input id="supportEmail" type="email" class="tc-input w-full mt-2" data-i18n-attr="placeholder:support.form.emailPlaceholder" placeholder="you@email.com">
             </label>
           </div>
           <label class="block text-xs mt-3">
             <span class="tc-muted" data-i18n="support.form.message">Nội dung</span>
-            <textarea id="supportMessage" class="tc-input w-full mt-2 min-h-[120px]" placeholder="Mô tả chi tiết, bước tái hiện..."></textarea>
+            <textarea id="supportMessage" class="tc-input w-full mt-2 min-h-[120px]" data-i18n-attr="placeholder:support.form.messagePlaceholder" placeholder="Mô tả chi tiết, bước tái hiện..."></textarea>
           </label>
           <div class="mt-4 flex flex-wrap items-center gap-3">
             <button id="supportSend" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button" data-i18n="support.form.send">Gửi yêu cầu</button>
@@ -960,15 +884,15 @@
     <div class="tc-cmdk-panel" role="document">
       <div class="tc-cmdk-head">
         <div>
-          <p class="tc-cmdk-label">Bảng lệnh</p>
-          <p class="tc-cmdk-sub">Tìm nhanh Thế giới và tuyến mục tiêu.</p>
+          <p class="tc-cmdk-label" data-i18n="lobby.cmdk.label">Bảng lệnh</p>
+          <p class="tc-cmdk-sub" data-i18n="lobby.cmdk.sub">Tìm nhanh Thế giới và tuyến mục tiêu.</p>
         </div>
-        <span class="tc-cmdk-hint">Ctrl/⌘ + K</span>
+        <span class="tc-cmdk-hint" data-i18n="lobby.cmdk.hint">Ctrl/⌘ + K</span>
       </div>
-      <label class="sr-only" for="cmdkInput">Tìm lệnh</label>
-      <input id="cmdkInput" class="tc-input tc-cmdk-input" type="search" autocomplete="off" placeholder="Gõ: thêu, gradient, palette, cmyk, thư viện…">
-      <ul id="cmdkList" class="tc-cmdk-list" role="listbox" aria-label="Gợi ý bảng lệnh"></ul>
-      <div id="cmdkEmpty" class="tc-cmdk-empty hidden">Không có gợi ý phù hợp.</div>
+      <label class="sr-only" for="cmdkInput" data-i18n="lobby.cmdk.searchLabel">Tìm lệnh</label>
+      <input id="cmdkInput" class="tc-input tc-cmdk-input" type="search" autocomplete="off" data-i18n-attr="placeholder:lobby.cmdk.placeholder" placeholder="Gõ: thêu, gradient, palette, cmyk, thư viện…">
+      <ul id="cmdkList" class="tc-cmdk-list" role="listbox" data-i18n-attr="aria-label:lobby.cmdk.listAria" aria-label="Gợi ý bảng lệnh"></ul>
+      <div id="cmdkEmpty" class="tc-cmdk-empty hidden" data-i18n="lobby.cmdk.empty">Không có gợi ý phù hợp.</div>
     </div>
   </div>
 
@@ -980,7 +904,6 @@
   <script src="./scripts/support_hub.js" defer></script>
   <script src="./scripts/hero_fx.js" defer></script>
   <script src="./scripts/lobby_orchestrator.js" defer></script>
-  <script src="./scripts/workflow_rail.js" defer></script>
   <script src="./scripts/command_palette.js" defer></script>
   <script>
     (() => {

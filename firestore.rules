@@ -1,8 +1,692 @@
-rules_version = '2';
+﻿rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
       return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function teamRole(teamId) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/teams/$(teamId)/members/$(request.auth.uid))
+          ? get(/databases/$(database)/documents/teams/$(teamId)/members/$(request.auth.uid)).data.role
+          : "";
+    }
+
+    function isTeamMember(teamId) {
+      return teamRole(teamId) in ["owner", "approver", "editor", "viewer"];
+    }
+
+    function canWriteTeam(teamId) {
+      return teamRole(teamId) in ["owner", "editor"];
+    }
+
+    function canApproveTeam(teamId) {
+      return teamRole(teamId) in ["owner", "approver"];
+    }
+
+    function canCommentTeamApproval(teamId) {
+      return teamRole(teamId) in ["owner", "approver", "editor"];
+    }
+
+    function canWriteTeamAudit(teamId) {
+      return teamRole(teamId) in ["owner", "approver", "editor"];
+    }
+
+    function roomRole(roomId) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/w3_rooms/$(roomId)/members/$(request.auth.uid))
+          ? get(/databases/$(database)/documents/w3_rooms/$(roomId)/members/$(request.auth.uid)).data.role
+          : "";
+    }
+
+    function isRoomMember(roomId) {
+      return roomRole(roomId) in ["owner", "editor", "viewer"];
+    }
+
+    function canWriteRoom(roomId) {
+      return roomRole(roomId) in ["owner", "editor"];
+    }
+
+    function roomShareMode(roomId) {
+      return exists(/databases/$(database)/documents/w3_rooms/$(roomId))
+        ? get(/databases/$(database)/documents/w3_rooms/$(roomId)).data.shareMode
+        : "";
+    }
+
+    function hasOnlyRoomStateFields(data) {
+      return data.keys().hasOnly([
+        "v",
+        "type",
+        "colors",
+        "roles",
+        "preview",
+        "sim",
+        "rev",
+        "updatedAt",
+        "updatedByUid"
+      ]);
+    }
+
+    function hasRequiredRoomStateFields(data) {
+      return data.keys().hasAll([
+        "v",
+        "colors",
+        "roles",
+        "preview",
+        "sim",
+        "rev",
+        "updatedByUid"
+      ]);
+    }
+
+    function isValidRoomState(data) {
+      return hasOnlyRoomStateFields(data) &&
+        hasRequiredRoomStateFields(data) &&
+        data.v == 1 &&
+        data.colors is list &&
+        data.colors.size() >= 2 &&
+        data.colors.size() <= 7 &&
+        data.roles is map &&
+        data.preview is string &&
+        data.sim is string &&
+        data.rev is int &&
+        data.rev >= 0 &&
+        data.updatedByUid == request.auth.uid &&
+        (!data.keys().hasAny(["type"]) || data.type == "palette") &&
+        (!data.keys().hasAny(["updatedAt"]) || data.updatedAt is timestamp);
+    }
+
+    function isValidRoomRevisionSnapshot(data) {
+      return data is map &&
+        data.keys().hasOnly([
+          "v",
+          "type",
+          "colors",
+          "roles",
+          "preview",
+          "sim"
+        ]) &&
+        data.keys().hasAll([
+          "v",
+          "colors",
+          "roles",
+          "preview",
+          "sim"
+        ]) &&
+        data.v == 1 &&
+        data.colors is list &&
+        data.colors.size() >= 2 &&
+        data.colors.size() <= 7 &&
+        data.roles is map &&
+        data.preview is string &&
+        data.sim is string &&
+        (!data.keys().hasAny(["type"]) || data.type == "palette");
+    }
+
+    function isValidRoomRevision(data) {
+      return data.keys().hasOnly([
+          "snapshot",
+          "createdAt",
+          "createdByUid",
+          "rev",
+          "label",
+          "diff"
+        ]) &&
+        data.keys().hasAll([
+          "snapshot",
+          "createdAt",
+          "createdByUid",
+          "rev"
+        ]) &&
+        isValidRoomRevisionSnapshot(data.snapshot) &&
+        data.createdAt is timestamp &&
+        data.createdByUid == request.auth.uid &&
+        data.rev is int &&
+        data.rev >= 0 &&
+        (!data.keys().hasAny(["label"]) || (data.label is string && data.label.size() <= 80)) &&
+        (!data.keys().hasAny(["diff"]) || data.diff is map);
+    }
+
+    function isValidRoomPresence(data, uid) {
+      return data.keys().hasOnly([
+          "displayName",
+          "activePaletteIndex",
+          "activeRoleKey",
+          "activePanel",
+          "lastSeenAt"
+        ]) &&
+        data.keys().hasAll([
+          "displayName",
+          "activePaletteIndex",
+          "activeRoleKey",
+          "activePanel",
+          "lastSeenAt"
+        ]) &&
+        data.displayName is string &&
+        data.displayName.size() > 0 &&
+        data.displayName.size() <= 120 &&
+        (data.activePaletteIndex == null ||
+          (data.activePaletteIndex is int && data.activePaletteIndex >= 0 && data.activePaletteIndex <= 6)) &&
+        (data.activeRoleKey is string) &&
+        (data.activeRoleKey == "" || data.activeRoleKey in ["bg", "surface", "text", "muted", "accent"]) &&
+        data.activePanel is string &&
+        data.activePanel.size() <= 24 &&
+        data.lastSeenAt is timestamp &&
+        request.auth.uid == uid;
+    }
+
+    function isValidRoomCommentTargetKey(value) {
+      return value in ["bg", "surface", "text", "muted", "accent"];
+    }
+
+    function hasOnlyRoomCommentFields(data) {
+      return data.keys().hasOnly([
+        "targetType",
+        "targetKey",
+        "threadRootId",
+        "parentId",
+        "message",
+        "createdByUid",
+        "createdByName",
+        "createdAt",
+        "resolved",
+        "resolvedByUid",
+        "resolvedByName",
+        "resolvedAt"
+      ]);
+    }
+
+    function hasRequiredRoomCommentFields(data) {
+      return data.keys().hasAll([
+        "targetType",
+        "targetKey",
+        "threadRootId",
+        "message",
+        "createdByUid",
+        "createdByName",
+        "createdAt",
+        "resolved"
+      ]);
+    }
+
+    function isValidRoomCommentShape(data) {
+      return hasOnlyRoomCommentFields(data) &&
+        hasRequiredRoomCommentFields(data) &&
+        data.targetType == "role" &&
+        data.targetKey is string &&
+        isValidRoomCommentTargetKey(data.targetKey) &&
+        data.threadRootId is string &&
+        data.threadRootId.size() > 0 &&
+        data.threadRootId.size() <= 80 &&
+        (!data.keys().hasAny(["parentId"]) || (data.parentId is string && data.parentId.size() <= 80)) &&
+        data.message is string &&
+        data.message.size() > 0 &&
+        data.message.size() <= 600 &&
+        data.createdByUid is string &&
+        data.createdByUid.size() > 0 &&
+        data.createdByUid.size() <= 128 &&
+        data.createdByName is string &&
+        data.createdByName.size() > 0 &&
+        data.createdByName.size() <= 120 &&
+        data.createdAt is timestamp &&
+        data.resolved is bool &&
+        (!data.keys().hasAny(["resolvedByUid"]) || (data.resolvedByUid is string && data.resolvedByUid.size() <= 128)) &&
+        (!data.keys().hasAny(["resolvedByName"]) || (data.resolvedByName is string && data.resolvedByName.size() <= 120)) &&
+        (!data.keys().hasAny(["resolvedAt"]) || data.resolvedAt == null || data.resolvedAt is timestamp);
+    }
+
+    function isValidRoomCommentCreate(data) {
+      return isValidRoomCommentShape(data) &&
+        data.createdByUid == request.auth.uid &&
+        data.resolved == false &&
+        !data.keys().hasAny(["resolvedByUid", "resolvedByName", "resolvedAt"]);
+    }
+
+    function isValidRoomCommentUpdate(before, after) {
+      return isValidRoomCommentShape(after) &&
+        before.targetType == after.targetType &&
+        before.targetKey == after.targetKey &&
+        before.threadRootId == after.threadRootId &&
+        before.parentId == after.parentId &&
+        before.message == after.message &&
+        before.createdByUid == after.createdByUid &&
+        before.createdByName == after.createdByName &&
+        before.createdAt == after.createdAt &&
+        (
+          (after.resolved == true &&
+            after.resolvedByUid == request.auth.uid &&
+            after.resolvedByName is string &&
+            after.resolvedByName.size() > 0 &&
+            after.resolvedByName.size() <= 120 &&
+            after.resolvedAt is timestamp) ||
+          (after.resolved == false &&
+            after.resolvedByUid == "" &&
+            after.resolvedByName == "" &&
+            after.resolvedAt == null)
+        );
+    }
+
+    function isValidApprovalStatus(status) {
+      return status in [
+        "draft",
+        "in_review",
+        "approved",
+        "published",
+        "changes_requested",
+        "rejected"
+      ];
+    }
+
+    function teamPaletteStatus(data) {
+      return data.keys().hasAny(["status"]) && isValidApprovalStatus(data.status)
+        ? data.status
+        : "draft";
+    }
+
+    function canSetTeamPaletteStatusByRole(role, fromStatus, toStatus) {
+      return (role == "owner" &&
+          isValidApprovalStatus(toStatus) &&
+          (toStatus != "published" || fromStatus == "approved")) ||
+        (role == "editor" &&
+          (
+            (toStatus == fromStatus && fromStatus in ["draft", "changes_requested", "rejected"]) ||
+            (toStatus == "in_review" && fromStatus in ["draft", "changes_requested", "rejected"]) ||
+            (toStatus == "draft" && fromStatus in ["changes_requested", "rejected", "in_review"])
+          )) ||
+        (role == "approver" &&
+          (
+            (toStatus == "approved" && fromStatus == "in_review") ||
+            (toStatus == "changes_requested" && fromStatus in ["in_review", "approved"]) ||
+            (toStatus == "rejected" && fromStatus in ["in_review", "changes_requested"]) ||
+            (toStatus == "in_review" && fromStatus in ["changes_requested", "rejected"])
+          ));
+    }
+
+    function palettePublishedReleaseId(data) {
+      return data.keys().hasAny(["publishedReleaseId"]) ? data.publishedReleaseId : "";
+    }
+
+    function hasValidPublishedReleaseId(data) {
+      return (!data.keys().hasAny(["publishedReleaseId"]) ||
+        (data.publishedReleaseId is string && data.publishedReleaseId.size() <= 160));
+    }
+
+    function isApproverPaletteContentUnchanged(before, after) {
+      return after.colors == before.colors &&
+        after.roles == before.roles &&
+        after.name == before.name &&
+        after.tags == before.tags &&
+        after.notes == before.notes &&
+        after.preview == before.preview &&
+        after.sim == before.sim &&
+        after.visionMode == before.visionMode &&
+        after.sourceWorld == before.sourceWorld &&
+        after.version == before.version &&
+        after.createdByUid == before.createdByUid &&
+        (!before.keys().hasAny(["createdAt"]) || after.createdAt == before.createdAt) &&
+        (!before.keys().hasAny(["locked"]) || after.locked == before.locked) &&
+        (!before.keys().hasAny(["lockedByUid"]) || after.lockedByUid == before.lockedByUid) &&
+        (!before.keys().hasAny(["lockedAt"]) || after.lockedAt == before.lockedAt) &&
+        palettePublishedReleaseId(after) == palettePublishedReleaseId(before);
+    }
+
+    function isValidTeamPaletteUpdateByRole(teamId, before, after) {
+      let role = teamRole(teamId);
+      let fromStatus = teamPaletteStatus(before);
+      let toStatus = teamPaletteStatus(after);
+      return (role == "owner" &&
+          canSetTeamPaletteStatusByRole(role, fromStatus, toStatus) &&
+          (toStatus != "published" || (palettePublishedReleaseId(after) is string && palettePublishedReleaseId(after).size() > 0))) ||
+        (role == "editor" &&
+          canSetTeamPaletteStatusByRole(role, fromStatus, toStatus) &&
+          palettePublishedReleaseId(after) == palettePublishedReleaseId(before)) ||
+        (role == "approver" &&
+          canSetTeamPaletteStatusByRole(role, fromStatus, toStatus) &&
+          isApproverPaletteContentUnchanged(before, after));
+    }
+
+    function hasOnlyPaletteFields(data) {
+      return data.keys().hasOnly([
+        "colors",
+        "roles",
+        "name",
+        "tags",
+        "notes",
+        "preview",
+        "sim",
+        "visionMode",
+        "sourceWorld",
+        "createdAt",
+        "updatedAt",
+        "createdByUid",
+        "updatedByUid",
+        "version",
+        "status",
+        "publishedReleaseId",
+        "locked",
+        "lockedByUid",
+        "lockedAt"
+      ]);
+    }
+
+    function hasRequiredPaletteFields(data) {
+      return data.keys().hasAll([
+        "colors",
+        "roles",
+        "name",
+        "tags",
+        "notes",
+        "preview",
+        "sim",
+        "visionMode",
+        "sourceWorld",
+        "updatedAt",
+        "updatedByUid",
+        "version",
+        "status"
+      ]);
+    }
+
+    function isValidPaletteShape(data) {
+      return hasOnlyPaletteFields(data) &&
+        hasRequiredPaletteFields(data) &&
+        data.version == 1 &&
+        data.name is string &&
+        data.tags is list &&
+        data.notes is string &&
+        data.colors is list &&
+        data.colors.size() >= 2 &&
+        data.colors.size() <= 7 &&
+        data.roles is map &&
+        data.preview is string &&
+        data.sim is string &&
+        data.visionMode is string &&
+        data.sourceWorld == "palette" &&
+        isValidApprovalStatus(data.status) &&
+        data.updatedByUid == request.auth.uid &&
+        hasValidPublishedReleaseId(data) &&
+        (!data.keys().hasAny(["locked"]) || data.locked is bool) &&
+        (!data.keys().hasAny(["lockedByUid"]) || data.lockedByUid is string);
+    }
+
+    function isValidTeamAudit(data, teamId) {
+      return data.keys().hasOnly([
+        "event",
+        "paletteId",
+        "actorUid",
+        "teamId",
+        "sourceWorld",
+        "locked",
+        "statusFrom",
+        "statusTo",
+        "approvalAction",
+        "comment",
+        "at"
+      ]) &&
+      data.event in [
+        "create",
+        "update",
+        "delete",
+        "lock",
+        "approval_submit",
+        "approval_approve",
+        "approval_changes_requested",
+        "approval_reject",
+        "approval_publish",
+        "approval_comment"
+      ] &&
+      data.paletteId is string &&
+      data.actorUid == request.auth.uid &&
+      data.teamId == teamId &&
+      data.sourceWorld == "palette" &&
+      (!data.keys().hasAny(["locked"]) || data.locked is bool) &&
+      (!data.keys().hasAny(["statusFrom"]) || isValidApprovalStatus(data.statusFrom)) &&
+      (!data.keys().hasAny(["statusTo"]) || isValidApprovalStatus(data.statusTo)) &&
+      (!data.keys().hasAny(["approvalAction"]) || (data.approvalAction is string && data.approvalAction.size() <= 40)) &&
+      (!data.keys().hasAny(["comment"]) || (data.comment is string && data.comment.size() <= 500));
+    }
+
+    function isValidTeamGuideline(data) {
+      return data.keys().hasOnly([
+          "targetLevel",
+          "textSize",
+          "lockedRoles",
+          "preferKeepHue",
+          "maxAdjustSteps",
+          "updatedAt",
+          "updatedByUid"
+        ]) &&
+        data.keys().hasAll([
+          "targetLevel",
+          "textSize",
+          "lockedRoles",
+          "preferKeepHue",
+          "maxAdjustSteps"
+        ]) &&
+        data.targetLevel in ["AA", "AAA"] &&
+        data.textSize in ["normal", "large"] &&
+        data.lockedRoles is list &&
+        data.lockedRoles.size() <= 5 &&
+        data.preferKeepHue is bool &&
+        data.maxAdjustSteps is int &&
+        data.maxAdjustSteps >= 1 &&
+        data.maxAdjustSteps <= 40 &&
+        (!data.keys().hasAny(["updatedAt"]) || data.updatedAt is timestamp) &&
+        (!data.keys().hasAny(["updatedByUid"]) || data.updatedByUid == request.auth.uid);
+    }
+
+    function isValidTeamApprovalEvent(data, teamId) {
+      let role = teamRole(teamId);
+      return data.keys().hasOnly([
+          "paletteId",
+          "action",
+          "fromStatus",
+          "toStatus",
+          "comment",
+          "actorUid",
+          "actorRole",
+          "teamId",
+          "createdAt"
+        ]) &&
+        data.keys().hasAll([
+          "paletteId",
+          "action",
+          "fromStatus",
+          "toStatus",
+          "actorUid",
+          "actorRole",
+          "teamId",
+          "createdAt"
+        ]) &&
+        data.paletteId is string &&
+        data.paletteId.size() > 0 &&
+        data.paletteId.size() <= 160 &&
+        data.action in ["submit", "approve", "changes_requested", "reject", "publish", "comment"] &&
+        isValidApprovalStatus(data.fromStatus) &&
+        isValidApprovalStatus(data.toStatus) &&
+        (!data.keys().hasAny(["comment"]) || (data.comment is string && data.comment.size() <= 500)) &&
+        data.actorUid == request.auth.uid &&
+        data.actorRole == role &&
+        data.teamId == teamId &&
+        data.createdAt is timestamp &&
+        (
+          (data.action == "comment" &&
+            role in ["owner", "approver", "editor"] &&
+            data.fromStatus == data.toStatus) ||
+          (data.action == "submit" &&
+            role in ["owner", "editor"] &&
+            data.toStatus == "in_review" &&
+            canSetTeamPaletteStatusByRole(role, data.fromStatus, data.toStatus)) ||
+          (data.action == "approve" &&
+            role in ["owner", "approver"] &&
+            data.toStatus == "approved" &&
+            canSetTeamPaletteStatusByRole(role, data.fromStatus, data.toStatus)) ||
+          (data.action == "changes_requested" &&
+            role in ["owner", "approver"] &&
+            data.toStatus == "changes_requested" &&
+            canSetTeamPaletteStatusByRole(role, data.fromStatus, data.toStatus)) ||
+          (data.action == "reject" &&
+            role in ["owner", "approver"] &&
+            data.toStatus == "rejected" &&
+            canSetTeamPaletteStatusByRole(role, data.fromStatus, data.toStatus)) ||
+          (data.action == "publish" &&
+            role == "owner" &&
+            data.toStatus == "published" &&
+            canSetTeamPaletteStatusByRole(role, data.fromStatus, data.toStatus))
+        );
+    }
+
+    function isHexHash64(value) {
+      return value is string && value.matches("^[0-9a-f]{64}$");
+    }
+
+    function isValidTeamReleaseSnapshot(data) {
+      return data is map &&
+        data.keys().hasOnly([
+          "colors",
+          "roles",
+          "name",
+          "tags",
+          "notes",
+          "preview",
+          "sim",
+          "visionMode",
+          "sourceWorld",
+          "version"
+        ]) &&
+        data.keys().hasAll([
+          "colors",
+          "roles",
+          "name",
+          "tags",
+          "notes",
+          "preview",
+          "sim",
+          "visionMode",
+          "sourceWorld",
+          "version"
+        ]) &&
+        data.colors is list &&
+        data.colors.size() >= 2 &&
+        data.colors.size() <= 7 &&
+        data.roles is map &&
+        data.name is string &&
+        data.tags is list &&
+        data.notes is string &&
+        data.preview is string &&
+        data.sim is string &&
+        data.visionMode is string &&
+        data.sourceWorld == "palette" &&
+        data.version == 1;
+    }
+
+    function isValidTeamReleaseMeta(data, releaseId, teamId, presetId) {
+      return data is map &&
+        data.keys().hasOnly([
+          "version",
+          "releaseId",
+          "presetId",
+          "teamId",
+          "signedByUid",
+          "signedAtMs",
+          "sourceWorld"
+        ]) &&
+        data.keys().hasAll([
+          "version",
+          "releaseId",
+          "presetId",
+          "teamId",
+          "signedByUid",
+          "signedAtMs",
+          "sourceWorld"
+        ]) &&
+        data.version is int &&
+        data.version >= 1 &&
+        data.releaseId == releaseId &&
+        data.presetId == presetId &&
+        data.teamId == teamId &&
+        data.signedByUid == request.auth.uid &&
+        data.signedAtMs is int &&
+        data.signedAtMs > 0 &&
+        data.sourceWorld == "palette";
+    }
+
+    function isValidTeamTokenBundle(data) {
+      return data is map &&
+        data.keys().hasOnly([
+          "formatVersion",
+          "tokensJson",
+          "tokensCss",
+          "tokensMetaJson",
+          "generatedAt",
+          "generatedAtMs"
+        ]) &&
+        data.keys().hasAll([
+          "formatVersion",
+          "tokensJson",
+          "tokensCss",
+          "tokensMetaJson",
+          "generatedAt",
+          "generatedAtMs"
+        ]) &&
+        data.formatVersion is string &&
+        data.formatVersion.size() > 0 &&
+        data.formatVersion.size() <= 20 &&
+        data.tokensJson is string &&
+        data.tokensJson.size() > 0 &&
+        data.tokensJson.size() <= 350000 &&
+        data.tokensCss is string &&
+        data.tokensCss.size() > 0 &&
+        data.tokensCss.size() <= 120000 &&
+        data.tokensMetaJson is string &&
+        data.tokensMetaJson.size() > 0 &&
+        data.tokensMetaJson.size() <= 120000 &&
+        data.generatedAt is timestamp &&
+        data.generatedAtMs is int &&
+        data.generatedAtMs > 0;
+    }
+
+    function isValidTeamReleaseDoc(data, teamId, releaseId) {
+      return data.keys().hasOnly([
+          "presetId",
+          "status",
+          "snapshot",
+          "releaseMeta",
+          "signatureHash",
+          "policyHash",
+          "tokenBundle",
+          "signedByUid",
+          "signedAt",
+          "sourceWorld"
+        ]) &&
+        data.keys().hasAll([
+          "presetId",
+          "status",
+          "snapshot",
+          "releaseMeta",
+          "signatureHash",
+          "policyHash",
+          "tokenBundle",
+          "signedByUid",
+          "signedAt",
+          "sourceWorld"
+        ]) &&
+        data.presetId is string &&
+        data.presetId.size() > 0 &&
+        data.presetId.size() <= 160 &&
+        data.status == "published" &&
+        isValidTeamReleaseSnapshot(data.snapshot) &&
+        isValidTeamReleaseMeta(data.releaseMeta, releaseId, teamId, data.presetId) &&
+        isHexHash64(data.signatureHash) &&
+        isHexHash64(data.policyHash) &&
+        isValidTeamTokenBundle(data.tokenBundle) &&
+        data.signedByUid == request.auth.uid &&
+        data.signedAt is timestamp &&
+        data.sourceWorld == "palette";
     }
 
     match /verifiedThreads/{docId} {
@@ -29,6 +713,74 @@ service cloud.firestore {
       match /savedSearches/{docId} {
         allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
       }
+
+      match /library_palettes/{paletteId} {
+        allow read, delete: if request.auth != null && request.auth.uid == uid;
+        allow create, update: if
+          request.auth != null &&
+          request.auth.uid == uid &&
+          request.resource.data.version == 1 &&
+          request.resource.data.name is string &&
+          request.resource.data.tags is list &&
+          request.resource.data.notes is string &&
+          request.resource.data.colors is list &&
+          request.resource.data.colors.size() >= 2 &&
+          request.resource.data.colors.size() <= 7 &&
+          request.resource.data.roles is map;
+      }
+    }
+
+    match /teams/{teamId} {
+      allow read: if isTeamMember(teamId);
+      allow create, update, delete: if false;
+
+      match /members/{uid} {
+        allow read: if isTeamMember(teamId);
+        allow create, update, delete: if false;
+      }
+
+      match /color_guidelines/{docId} {
+        allow read: if isTeamMember(teamId);
+        allow create, update: if
+          docId == "current" &&
+          canWriteTeam(teamId) &&
+          isValidTeamGuideline(request.resource.data);
+        allow delete: if false;
+      }
+
+      match /library_palettes/{paletteId} {
+        allow read: if isTeamMember(teamId);
+        allow create: if
+          canWriteTeam(teamId) &&
+          isValidPaletteShape(request.resource.data) &&
+          request.resource.data.keys().hasAll(["createdAt", "createdByUid"]) &&
+          request.resource.data.createdByUid == request.auth.uid &&
+          canSetTeamPaletteStatusByRole(teamRole(teamId), "draft", request.resource.data.status);
+        allow update: if
+          (canWriteTeam(teamId) || canApproveTeam(teamId)) &&
+          isValidPaletteShape(request.resource.data) &&
+          request.resource.data.createdByUid is string &&
+          isValidTeamPaletteUpdateByRole(teamId, resource.data, request.resource.data);
+        allow delete: if canWriteTeam(teamId);
+      }
+
+      match /approvals/{approvalId} {
+        allow read: if isTeamMember(teamId);
+        allow create: if isValidTeamApprovalEvent(request.resource.data, teamId);
+        allow update, delete: if false;
+      }
+
+      match /releases/{releaseId} {
+        allow read: if isTeamMember(teamId);
+        allow create: if teamRole(teamId) == "owner" && isValidTeamReleaseDoc(request.resource.data, teamId, releaseId);
+        allow update, delete: if false;
+      }
+
+      match /audit/{eventId} {
+        allow read: if isTeamMember(teamId);
+        allow create: if canWriteTeamAudit(teamId) && isValidTeamAudit(request.resource.data, teamId);
+        allow update, delete: if false;
+      }
     }
 
     match /feedback/{docId} {
@@ -40,6 +792,72 @@ service cloud.firestore {
     match /admins/{uid} {
       allow read: if isAdmin();
       allow write: if false;
+    }
+
+    match /w3_share_links/{shareId} {
+      allow read: if true;
+      allow create: if
+        shareId.matches("^[0-9A-Za-z]{8,10}$") &&
+        request.resource.data.v == 1 &&
+        request.resource.data.source == "palette" &&
+        request.resource.data.payload is string &&
+        request.resource.data.payload.size() >= 8 &&
+        request.resource.data.payload.size() <= 4096;
+      allow update, delete: if false;
+    }
+
+    match /w3_rooms/{roomId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if false;
+
+      match /members/{uid} {
+        allow read: if isSignedIn() && (isRoomMember(roomId) || request.auth.uid == uid);
+        allow create, update: if
+          isSignedIn() &&
+          request.auth.uid == uid &&
+          roomShareMode(roomId) == "publicLink" &&
+          request.resource.data.keys().hasOnly(["uid", "role", "joinedAt", "updatedAt"]) &&
+          request.resource.data.uid == request.auth.uid &&
+          request.resource.data.role == "viewer";
+        allow delete: if false;
+      }
+
+      match /state/{docId} {
+        allow read: if isRoomMember(roomId);
+        allow create, update: if
+          docId == "current" &&
+          canWriteRoom(roomId) &&
+          isValidRoomState(request.resource.data);
+        allow delete: if false;
+      }
+
+      match /revisions/{revId} {
+        allow read: if isRoomMember(roomId);
+        allow create: if
+          canWriteRoom(roomId) &&
+          isValidRoomRevision(request.resource.data);
+        allow update, delete: if false;
+      }
+
+      match /presence/{uid} {
+        allow read: if isRoomMember(roomId);
+        allow create, update: if
+          isSignedIn() &&
+          isRoomMember(roomId) &&
+          isValidRoomPresence(request.resource.data, uid);
+        allow delete: if false;
+      }
+
+      match /comments/{commentId} {
+        allow read: if isRoomMember(roomId);
+        allow create: if
+          canWriteRoom(roomId) &&
+          isValidRoomCommentCreate(request.resource.data);
+        allow update: if
+          canWriteRoom(roomId) &&
+          isValidRoomCommentUpdate(resource.data, request.resource.data);
+        allow delete: if false;
+      }
     }
 
     // Các collection nhạy cảm chỉ cho phép truy cập từ server (Admin SDK).

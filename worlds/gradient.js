@@ -3,12 +3,60 @@ import { resolveIncoming } from "../scripts/workbench_context.js";
 
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
+const HISTORY_LIMIT = 80;
+const BANDING_SAMPLE_COUNT = 256;
+const SHARE_STATE_VERSION = 1;
 const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
+const MY_PRESET_STORAGE_KEY = "sc_w2_presets_v1";
+const MY_PRESET_LIMIT = 200;
 const HANDOFF_FROM = "gradient";
+const VALID_GRADIENT_TYPES = new Set(["linear", "radial", "conic"]);
 const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
 const hasStrictIncoming = incomingHandoff && (incomingHandoff.source === "asset" || incomingHandoff.source === "buffer");
+const GRADIENT_PRESETS = [
+  {
+    key: "neon",
+    angle: 118,
+    stops: ["#ff4fd8", "#7f5cff", "#30e8bf"]
+  },
+  {
+    key: "ocean",
+    angle: 128,
+    stops: ["#0f6ba8", "#15a5cf", "#73d8f3"]
+  },
+  {
+    key: "ink",
+    angle: 140,
+    stops: ["#111827", "#334155", "#cbd5e1"]
+  },
+  {
+    key: "sunset",
+    angle: 118,
+    stops: ["#ff7b00", "#ff3d81", "#5f27cd"]
+  },
+  {
+    key: "chrome",
+    angle: 132,
+    stops: ["#1d2738", "#6f7f98", "#d8e1ee"]
+  },
+  {
+    key: "crystal",
+    angle: 132,
+    stops: ["#67e8f9", "#60a5fa", "#a78bfa"]
+  },
+  {
+    key: "forest",
+    angle: 120,
+    stops: ["#14532d", "#22c55e", "#86efac"]
+  },
+  {
+    key: "ember",
+    angle: 130,
+    stops: ["#451a03", "#d97706", "#facc15"]
+  }
+];
 
 const state = {
   stops: [
@@ -18,20 +66,38 @@ const state = {
   ],
   angle: 90,
   type: "linear",
-  samples: []
+  samples: [],
+  myPresets: []
 };
+const EXPORT_FORMATS = ["css", "vars", "token", "tailwind"];
+const CONTEXT_PREVIEW_TABS = ["ui", "poster", "thread"];
+let exportFormatActive = "css";
+let contextPreviewActiveTab = "ui";
+let previewDitherEnabled = false;
+let latestBandingAnalysis = null;
 
 let stopDragIndex = null;
 let stopDragPointerId = null;
 let stopDragMoved = false;
 let stopSuppressClick = false;
+let stopDragHistorySnapshot = null;
 let stopPopoverIndex = null;
 let stopPopoverEl = null;
 let sampleDetailOpen = false;
 let sampleDetailBodyOverflow = "";
+let angleHistorySnapshot = null;
+let importPanelOpen = false;
+let importPanelBodyOverflow = "";
+const historyState = {
+  undo: [],
+  redo: []
+};
 
 const el = {
   preview: document.getElementById("gradientPreview"),
+  presetRail: document.getElementById("gradientPresetRail"),
+  myPresetRail: document.getElementById("gradientMyPresetRail"),
+  savePresetBtn: document.getElementById("gradientSavePreset"),
   angleRange: document.getElementById("gradientAngle"),
   angleInput: document.getElementById("gradientAngleInput"),
   angleValue: document.getElementById("gradientAngleValue"),
@@ -39,10 +105,16 @@ const el = {
   typeSelect: document.getElementById("gradientType"),
   stopsWrap: document.getElementById("gradientStops"),
   stopBar: document.getElementById("gradientStopBar"),
+  undoBtn: document.getElementById("gradientUndo"),
+  redoBtn: document.getElementById("gradientRedo"),
   addStop: document.getElementById("gradientAdd"),
   randomStop: document.getElementById("gradientRandom"),
   exportBtn: document.getElementById("gradientExport"),
+  copyShareLinkBtn: document.getElementById("gradientCopyShareLink"),
+  copyCssOptionBtn: document.getElementById("gradientCopyCssOption"),
   copyTokenBtn: document.getElementById("gradientCopyToken"),
+  copyTailwindBtn: document.getElementById("gradientCopyTailwind"),
+  copyMenu: document.getElementById("gradientCopyMenu"),
   toPalette: document.getElementById("gradientToPalette"),
   samplesWrap: document.getElementById("gradientSamples"),
   saveLibrary: document.getElementById("gradientSaveLibrary"),
@@ -51,13 +123,42 @@ const el = {
   exportSvg: document.getElementById("gradientExportSvg"),
   exportToken: document.getElementById("gradientExportToken"),
   importInput: document.getElementById("gradientImportInput"),
-  importBtn: document.getElementById("gradientImportBtn"),
+  importApplyBtn: document.getElementById("gradientImportApply"),
+  openImportPanelBtn: document.getElementById("gradientOpenImportPanel"),
+  importPanel: document.getElementById("gradientImportPanel"),
   exportMenu: document.getElementById("gradientExportMenu"),
+  exportCode: document.getElementById("gradientExportCode"),
+  exportCodeCopy: document.getElementById("gradientExportCodeCopy"),
+  exportTabCss: document.getElementById("gradientExportTabCss"),
+  exportTabVars: document.getElementById("gradientExportTabVars"),
+  exportTabToken: document.getElementById("gradientExportTabToken"),
+  exportTabTailwind: document.getElementById("gradientExportTabTailwind"),
+  contextTabUi: document.getElementById("gradientContextTabUi"),
+  contextTabPoster: document.getElementById("gradientContextTabPoster"),
+  contextTabThread: document.getElementById("gradientContextTabThread"),
+  contextPanelUi: document.getElementById("gradientContextPanelUi"),
+  contextPanelPoster: document.getElementById("gradientContextPanelPoster"),
+  contextPanelThread: document.getElementById("gradientContextPanelThread"),
+  contextSurfaceUi: document.getElementById("gradientContextSurfaceUi"),
+  contextSurfacePoster: document.getElementById("gradientContextSurfacePoster"),
+  contextSurfaceThread: document.getElementById("gradientContextSurfaceThread"),
+  bandingScore: document.getElementById("gradientBandingScore"),
+  bandingStatus: document.getElementById("gradientBandingStatus"),
+  bandingMeta: document.getElementById("gradientBandingMeta"),
+  bandingSuggestion: document.getElementById("gradientBandingSuggestion"),
+  addMidStopBtn: document.getElementById("gradientAddMidStop"),
+  toggleDitherBtn: document.getElementById("gradientToggleDither"),
   sampleDetail: document.getElementById("gradientSampleDetail"),
   sampleDetailBody: document.getElementById("gradientSampleDetailBody"),
   sampleDetailTitle: document.getElementById("gradientSampleDetailTitle"),
   sampleDetailSubtitle: document.getElementById("gradientSampleDetailSubtitle")
 };
+
+function t(key, fallback = "", params) {
+  const translate = window.tcI18n?.t;
+  if (typeof translate !== "function") return fallback;
+  return translate(key, fallback, params);
+}
 
 function normalizeHex(input) {
   if (!input) return null;
@@ -136,6 +237,87 @@ function migrateStops(rawStops) {
   }));
 }
 
+function cloneStops(stops) {
+  return migrateStops(stops).map((stop) => ({
+    hex: stop.hex,
+    pos: clampNumber(stop.pos ?? 0, 0, 100),
+    alpha: Number.isFinite(stop.alpha) ? clampNumber(stop.alpha, 0, 1) : undefined
+  }));
+}
+
+function captureStateSnapshot() {
+  return {
+    stops: cloneStops(state.stops),
+    angle: clampNumber(state.angle, 0, 360),
+    type: state.type === "radial" || state.type === "conic" ? state.type : "linear"
+  };
+}
+
+function areSnapshotsEqual(left, right) {
+  if (!left || !right) return false;
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function syncHistoryButtons() {
+  if (el.undoBtn) {
+    el.undoBtn.disabled = historyState.undo.length === 0;
+    el.undoBtn.setAttribute("aria-disabled", historyState.undo.length === 0 ? "true" : "false");
+  }
+  if (el.redoBtn) {
+    el.redoBtn.disabled = historyState.redo.length === 0;
+    el.redoBtn.setAttribute("aria-disabled", historyState.redo.length === 0 ? "true" : "false");
+  }
+}
+
+function recordHistory(beforeSnapshot) {
+  if (!beforeSnapshot) return false;
+  const afterSnapshot = captureStateSnapshot();
+  if (areSnapshotsEqual(beforeSnapshot, afterSnapshot)) return false;
+  historyState.undo.push(beforeSnapshot);
+  if (historyState.undo.length > HISTORY_LIMIT) {
+    historyState.undo.shift();
+  }
+  historyState.redo = [];
+  syncHistoryButtons();
+  return true;
+}
+
+function applySnapshot(snapshot) {
+  if (!snapshot) return;
+  state.stops = cloneStops(snapshot.stops);
+  state.type = snapshot.type === "radial" || snapshot.type === "conic" ? snapshot.type : "linear";
+  if (el.typeSelect) el.typeSelect.value = state.type;
+  if (el.angleRange) el.angleRange.value = String(clampNumber(snapshot.angle, 0, 360));
+  if (el.angleInput) el.angleInput.value = String(clampNumber(snapshot.angle, 0, 360));
+  state.angle = clampNumber(snapshot.angle, 0, 360);
+  renderStops();
+  schedulePreview();
+}
+
+function runUndo() {
+  if (!historyState.undo.length) return;
+  const previous = historyState.undo.pop();
+  historyState.redo.push(captureStateSnapshot());
+  if (historyState.redo.length > HISTORY_LIMIT) {
+    historyState.redo.shift();
+  }
+  applySnapshot(previous);
+  syncHistoryButtons();
+  showToast(t("gradient.toast.undo", "Đã hoàn tác."));
+}
+
+function runRedo() {
+  if (!historyState.redo.length) return;
+  const next = historyState.redo.pop();
+  historyState.undo.push(captureStateSnapshot());
+  if (historyState.undo.length > HISTORY_LIMIT) {
+    historyState.undo.shift();
+  }
+  applySnapshot(next);
+  syncHistoryButtons();
+  showToast(t("gradient.toast.redo", "Đã làm lại."));
+}
+
 function buildGradientStops(stops) {
   const list = migrateStops(stops).slice().sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
   if (!list.length) return "#000 0%";
@@ -186,6 +368,41 @@ function exportTokenBlock(stops = state.stops) {
 
 function exportTokenString(stops = state.stops) {
   return gradientCss(stops);
+}
+
+function exportTailwindString(stops = state.stops) {
+  return `bg-[${gradientCss(stops).replace(/\s+/g, "_")}]`;
+}
+
+function exportCssGradientText(stops = state.stops) {
+  return gradientCss(stops);
+}
+
+function exportCssVarsText(stops = state.stops) {
+  const gradientValue = gradientCss(stops);
+  return `:root {\n  --sc-gradient-1: ${gradientValue};\n}\n\n.bg-demo {\n  background-image: var(--sc-gradient-1);\n}\n`;
+}
+
+function exportTokenJsonText(stops = state.stops) {
+  const payload = {
+    type: state.type,
+    angleDeg: clampNumber(state.angle, 0, 360),
+    stops: migrateStops(stops)
+      .slice()
+      .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0))
+      .map((stop) => ({
+        color: (stop.hex || "").toUpperCase(),
+        pos: clampNumber(Math.round(stop.pos ?? 0), 0, 100)
+      }))
+  };
+  return JSON.stringify(payload, null, 2);
+}
+
+function getExportFormatText(format = exportFormatActive) {
+  if (format === "vars") return exportCssVarsText();
+  if (format === "token") return exportTokenJsonText();
+  if (format === "tailwind") return exportTailwindString();
+  return exportCssGradientText();
 }
 
 function exportSvg(stopsInput = state.stops) {
@@ -260,6 +477,42 @@ function parseColorToken(token) {
   return null;
 }
 
+function normalizeParsedStops(rawStops) {
+  if (!Array.isArray(rawStops) || !rawStops.length) return [];
+  const allMissingPos = rawStops.every((stop) => !Number.isFinite(stop?.pos));
+  const withPositions = allMissingPos
+    ? rawStops.map((stop, index) => ({
+        ...stop,
+        pos: Math.round((index / Math.max(1, rawStops.length - 1)) * 100)
+      }))
+    : rawStops;
+  return migrateStops(withPositions)
+    .map((stop) => ({
+      hex: normalizeHex(stop.hex) || randomHex(),
+      pos: clampNumber(stop.pos ?? 0, 0, 100),
+      alpha: Number.isFinite(stop.alpha) ? clampNumber(stop.alpha, 0, 1) : undefined
+    }))
+    .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
+}
+
+function reduceStopsToLimit(stops, limit = MAX_STOPS) {
+  const list = normalizeParsedStops(stops);
+  if (list.length <= limit) return list;
+  const total = list.length;
+  const picked = [];
+  for (let i = 0; i < limit; i += 1) {
+    const idx = Math.round((i * (total - 1)) / Math.max(1, limit - 1));
+    if (!picked.includes(idx)) picked.push(idx);
+  }
+  if (!picked.includes(0)) picked.unshift(0);
+  if (!picked.includes(total - 1)) picked.push(total - 1);
+  for (let i = 1; i < total - 1 && picked.length < limit; i += 1) {
+    if (!picked.includes(i)) picked.push(i);
+  }
+  picked.sort((a, b) => a - b);
+  return picked.slice(0, limit).map((idx) => ({ ...list[idx] }));
+}
+
 function parseLinearGradient(text) {
   const match = text.match(/linear-gradient\s*\((.+)\)\s*$/i);
   if (!match) return null;
@@ -269,7 +522,9 @@ function parseLinearGradient(text) {
   let startIndex = 0;
   const first = args[0];
   if (/deg/i.test(first)) {
-    angle = clampNumber(parseFloat(first), 0, 360);
+    const parsedAngle = parseFloat(first);
+    if (!Number.isFinite(parsedAngle)) return null;
+    angle = clampNumber(parsedAngle, 0, 360);
     startIndex = 1;
   } else if (/^to\s+/i.test(first)) {
     const map = {
@@ -280,9 +535,15 @@ function parseLinearGradient(text) {
       "to bottom right": 135,
       "to bottom left": 225,
       "to top right": 45,
-      "to top left": 315
+      "to top left": 315,
+      "to right top": 45,
+      "to right bottom": 135,
+      "to left top": 315,
+      "to left bottom": 225
     };
-    angle = map[first.trim().toLowerCase()] ?? 90;
+    const direction = first.trim().toLowerCase();
+    if (!Object.prototype.hasOwnProperty.call(map, direction)) return null;
+    angle = map[direction];
     startIndex = 1;
   }
   const stops = args.slice(startIndex).map((token) => {
@@ -294,27 +555,32 @@ function parseLinearGradient(text) {
     return { hex: colorInfo.hex, pos, alpha: colorInfo.alpha };
   }).filter(Boolean);
   if (stops.length < MIN_STOPS) return null;
+  const normalizedStops = normalizeParsedStops(stops);
+  const reducedStops = reduceStopsToLimit(normalizedStops, MAX_STOPS);
+  if (reducedStops.length < MIN_STOPS) return null;
   return {
     type: "linear",
     angle,
-    stops: migrateStops(stops)
+    stops: reducedStops
   };
 }
 
 function applyImportedGradient(raw) {
   const parsed = parseLinearGradient(raw);
   if (!parsed) {
-    showToast("Chưa hỗ trợ định dạng này. Hãy dùng linear-gradient có %.");
+    showToast(t("gradient.import.unsupported", "Không hỗ trợ cú pháp này. Hãy dùng linear-gradient(...) hợp lệ."));
     return;
   }
+  const beforeSnapshot = captureStateSnapshot();
   state.type = parsed.type;
   state.angle = parsed.angle;
   state.stops = parsed.stops;
   if (el.typeSelect) el.typeSelect.value = state.type;
   renderStops();
   schedulePreview();
-  applyAngle(state.angle);
-  showToast("Đã nhập gradient từ CSS.");
+  applyAngle(state.angle, { record: false });
+  recordHistory(beforeSnapshot);
+  showToast(t("gradient.import.applied", "Đã phân tích và áp dụng dải chuyển từ CSS."));
 }
 function showToast(message) {
   let toast = document.getElementById("gradientToast");
@@ -444,6 +710,667 @@ function renderPreview() {
   if (el.angleValue) {
     el.angleValue.textContent = `${state.angle}°`;
   }
+  renderExportFormatPreview();
+  renderContextPreview();
+  renderBandingPanel();
+  renderPreviewDither();
+}
+
+function getContextPreviewPairs() {
+  return [
+    { key: "ui", tab: el.contextTabUi, panel: el.contextPanelUi },
+    { key: "poster", tab: el.contextTabPoster, panel: el.contextPanelPoster },
+    { key: "thread", tab: el.contextTabThread, panel: el.contextPanelThread }
+  ];
+}
+
+function renderContextTabs() {
+  const pairs = getContextPreviewPairs();
+  pairs.forEach((entry) => {
+    if (!entry.tab || !entry.panel) return;
+    const active = contextPreviewActiveTab === entry.key;
+    entry.tab.classList.toggle("is-active", active);
+    entry.tab.setAttribute("aria-selected", active ? "true" : "false");
+    entry.tab.setAttribute("tabindex", active ? "0" : "-1");
+    entry.panel.hidden = !active;
+    entry.panel.setAttribute("aria-hidden", active ? "false" : "true");
+  });
+}
+
+function setContextPreviewTab(nextTab) {
+  contextPreviewActiveTab = CONTEXT_PREVIEW_TABS.includes(nextTab) ? nextTab : "ui";
+  renderContextTabs();
+}
+
+function renderContextPreview() {
+  const gradient = gradientCss();
+  if (el.contextSurfaceUi) {
+    el.contextSurfaceUi.style.backgroundImage = gradient;
+  }
+  if (el.contextSurfacePoster) {
+    el.contextSurfacePoster.style.backgroundImage = gradient;
+  }
+  if (el.contextSurfaceThread) {
+    const patternLight = "repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 2px, rgba(255, 255, 255, 0) 2px 9px)";
+    const patternDark = "repeating-linear-gradient(-45deg, rgba(15, 23, 42, 0.2) 0 1px, rgba(15, 23, 42, 0) 1px 8px)";
+    el.contextSurfaceThread.style.backgroundImage = `${patternLight}, ${patternDark}, ${gradient}`;
+  }
+}
+
+function getBandingStops() {
+  return cloneStops(state.stops)
+    .slice()
+    .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
+}
+
+function interpolateRgbAtPos(stops, pos) {
+  const list = Array.isArray(stops) ? stops : [];
+  if (!list.length) return { r: 0, g: 0, b: 0 };
+  const clampedPos = clampNumber(pos, 0, 100);
+  let left = list[0];
+  let right = list[list.length - 1];
+  for (let i = 0; i < list.length; i += 1) {
+    const stop = list[i];
+    if ((stop.pos ?? 0) <= clampedPos) left = stop;
+    if ((stop.pos ?? 0) >= clampedPos) {
+      right = stop;
+      break;
+    }
+  }
+  const leftRgb = hexToRgb(left.hex) || { r: 0, g: 0, b: 0 };
+  const rightRgb = hexToRgb(right.hex) || leftRgb;
+  if (left === right) return leftRgb;
+  const span = (right.pos ?? 0) - (left.pos ?? 0);
+  const ratio = span === 0 ? 0 : clampNumber((clampedPos - (left.pos ?? 0)) / span, 0, 1);
+  return {
+    r: leftRgb.r + (rightRgb.r - leftRgb.r) * ratio,
+    g: leftRgb.g + (rightRgb.g - leftRgb.g) * ratio,
+    b: leftRgb.b + (rightRgb.b - leftRgb.b) * ratio
+  };
+}
+
+function quantizeRgb(rgb) {
+  return {
+    r: clampNumber(Math.round(rgb.r ?? 0), 0, 255),
+    g: clampNumber(Math.round(rgb.g ?? 0), 0, 255),
+    b: clampNumber(Math.round(rgb.b ?? 0), 0, 255)
+  };
+}
+
+function getBandingStatusKey(score) {
+  if (score >= 72) return "gradient.banding.status.smooth";
+  if (score >= 45) return "gradient.banding.status.risk";
+  return "gradient.banding.status.high";
+}
+
+function analyzeBanding(stopsInput = state.stops) {
+  const stops = cloneStops(stopsInput)
+    .slice()
+    .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
+  if (stops.length < MIN_STOPS) {
+    return {
+      score: 0,
+      flatRatio: 1,
+      lowRatio: 1,
+      statusKey: "gradient.banding.status.high",
+      suggestion: null
+    };
+  }
+  const sampleCount = BANDING_SAMPLE_COUNT;
+  const samples = [];
+  for (let i = 0; i < sampleCount; i += 1) {
+    const pos = (i / Math.max(1, sampleCount - 1)) * 100;
+    samples.push({
+      pos,
+      rgb: interpolateRgbAtPos(stops, pos)
+    });
+  }
+  const quantized = samples.map((sample) => ({
+    pos: sample.pos,
+    rgb: quantizeRgb(sample.rgb)
+  }));
+
+  let flatSegments = 0;
+  let lowSegments = 0;
+  let longestFlatRun = 0;
+  let currentFlatRun = 0;
+  const segmentMetrics = [];
+  for (let i = 1; i < quantized.length; i += 1) {
+    const prev = quantized[i - 1].rgb;
+    const curr = quantized[i].rgb;
+    const delta = Math.abs(curr.r - prev.r) + Math.abs(curr.g - prev.g) + Math.abs(curr.b - prev.b);
+    if (delta === 0) {
+      flatSegments += 1;
+      currentFlatRun += 1;
+      longestFlatRun = Math.max(longestFlatRun, currentFlatRun);
+    } else {
+      currentFlatRun = 0;
+    }
+    if (delta <= 2) lowSegments += 1;
+    segmentMetrics.push({
+      index: i,
+      delta
+    });
+  }
+
+  const totalSegments = Math.max(1, quantized.length - 1);
+  const flatRatio = flatSegments / totalSegments;
+  const lowRatio = lowSegments / totalSegments;
+  const longestFlatRatio = longestFlatRun / totalSegments;
+  const stopBonus = clampNumber((stops.length - 2) * 0.03, 0, 0.12);
+  const riskRaw = flatRatio * 0.62 + lowRatio * 0.28 + longestFlatRatio * 0.1;
+  const risk = clampNumber(riskRaw - stopBonus, 0, 1);
+  const score = clampNumber(Math.round((1 - risk) * 100), 0, 100);
+
+  segmentMetrics.sort((a, b) => (a.delta - b.delta) || (a.index - b.index));
+  let suggestion = null;
+  for (let i = 0; i < segmentMetrics.length; i += 1) {
+    const metric = segmentMetrics[i];
+    const pos = clampNumber(((metric.index - 0.5) / Math.max(1, sampleCount - 1)) * 100, 0, 100);
+    const nearestDistance = stops.reduce((min, stop) => {
+      return Math.min(min, Math.abs((stop.pos ?? 0) - pos));
+    }, Number.POSITIVE_INFINITY);
+    if (nearestDistance < 2.4) continue;
+    const rgb = interpolateRgbAtPos(stops, pos);
+    suggestion = {
+      pos: Math.round(pos * 10) / 10,
+      hex: rgbToHex(rgb.r, rgb.g, rgb.b).toUpperCase()
+    };
+    break;
+  }
+
+  return {
+    score,
+    flatRatio,
+    lowRatio,
+    statusKey: getBandingStatusKey(score),
+    suggestion
+  };
+}
+
+function renderBandingPanel() {
+  latestBandingAnalysis = analyzeBanding(state.stops);
+  const analysis = latestBandingAnalysis;
+  if (!analysis) return;
+
+  if (el.bandingScore) {
+    el.bandingScore.textContent = String(analysis.score);
+  }
+  if (el.bandingStatus) {
+    el.bandingStatus.textContent = t(analysis.statusKey, "Mượt");
+    el.bandingStatus.dataset.level = analysis.statusKey;
+  }
+  if (el.bandingMeta) {
+    el.bandingMeta.textContent = t(
+      "gradient.banding.meta",
+      "Đứng màu: {flatPct}% · Biến thiên thấp: {lowPct}%",
+      {
+        flatPct: Math.round(analysis.flatRatio * 100),
+        lowPct: Math.round(analysis.lowRatio * 100)
+      }
+    );
+  }
+  if (el.bandingSuggestion) {
+    if (analysis.suggestion && state.stops.length < MAX_STOPS) {
+      el.bandingSuggestion.textContent = t(
+        "gradient.banding.suggestion",
+        "Gợi ý: thêm điểm neo quanh {pos}% ({color}).",
+        {
+          pos: analysis.suggestion.pos,
+          color: analysis.suggestion.hex
+        }
+      );
+    } else if (state.stops.length >= MAX_STOPS) {
+      el.bandingSuggestion.textContent = t(
+        "gradient.banding.suggestionMax",
+        "Đã đủ số điểm neo tối đa, hãy chỉnh vị trí/màu trước khi thêm mới."
+      );
+    } else {
+      el.bandingSuggestion.textContent = t(
+        "gradient.banding.suggestionNone",
+        "Hiện chưa cần thêm điểm neo giữa."
+      );
+    }
+  }
+  if (el.addMidStopBtn) {
+    const canAdd = Boolean(analysis.suggestion) && state.stops.length < MAX_STOPS;
+    el.addMidStopBtn.disabled = !canAdd;
+    el.addMidStopBtn.setAttribute("aria-disabled", canAdd ? "false" : "true");
+  }
+  if (el.toggleDitherBtn) {
+    el.toggleDitherBtn.textContent = previewDitherEnabled
+      ? t("gradient.banding.actions.removeDither", "Tắt hạt mịn (dither)")
+      : t("gradient.banding.actions.addDither", "Thêm hạt mịn (dither)");
+  }
+}
+
+function renderPreviewDither() {
+  const targets = [el.preview, el.contextSurfaceUi, el.contextSurfacePoster, el.contextSurfaceThread];
+  targets.forEach((node) => {
+    if (!node) return;
+    node.classList.toggle("tc-dither-on", previewDitherEnabled);
+  });
+}
+
+function addSuggestedMidStop() {
+  if (!latestBandingAnalysis?.suggestion || state.stops.length >= MAX_STOPS) return;
+  const beforeSnapshot = captureStateSnapshot();
+  const index = insertStopAt(latestBandingAnalysis.suggestion.pos, latestBandingAnalysis.suggestion.hex);
+  if (index == null) return;
+  renderStops();
+  schedulePreview();
+  openStopPopover(index);
+  recordHistory(beforeSnapshot);
+  showToast(t(
+    "gradient.banding.toast.midStopAdded",
+    "Đã thêm điểm neo giữa tại {pos}% ({color}).",
+    {
+      pos: latestBandingAnalysis.suggestion.pos,
+      color: latestBandingAnalysis.suggestion.hex
+    }
+  ));
+}
+
+function togglePreviewDither() {
+  previewDitherEnabled = !previewDitherEnabled;
+  renderPreviewDither();
+  renderBandingPanel();
+  showToast(previewDitherEnabled
+    ? t("gradient.banding.toast.ditherOn", "Đã bật hạt mịn cho preview.")
+    : t("gradient.banding.toast.ditherOff", "Đã tắt hạt mịn cho preview."));
+}
+
+function setExportFormat(format) {
+  if (!EXPORT_FORMATS.includes(format)) {
+    exportFormatActive = "css";
+    return;
+  }
+  exportFormatActive = format;
+}
+
+function renderExportFormatPreview() {
+  const tabMap = {
+    css: el.exportTabCss,
+    vars: el.exportTabVars,
+    token: el.exportTabToken,
+    tailwind: el.exportTabTailwind
+  };
+  EXPORT_FORMATS.forEach((format) => {
+    const tab = tabMap[format];
+    if (!tab) return;
+    const active = format === exportFormatActive;
+    tab.classList.toggle("is-active", active);
+    tab.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  if (el.exportCode) {
+    el.exportCode.textContent = getExportFormatText(exportFormatActive);
+  }
+}
+
+function buildPresetStops(preset) {
+  if (!preset) return [];
+  const source = Array.isArray(preset.stops) ? preset.stops : [];
+  const cleaned = source.map((hex, idx) => ({
+    hex: normalizeHex(hex) || randomHex(),
+    pos: Math.round((idx / Math.max(1, source.length - 1)) * 100)
+  }));
+  return cloneStops(cleaned);
+}
+
+function applyPreset(preset) {
+  if (!preset) return;
+  const presetStops = buildPresetStops(preset);
+  if (!presetStops.length) return;
+  const beforeSnapshot = captureStateSnapshot();
+  closeStopPopover();
+  state.stops = presetStops;
+  state.type = preset.type === "radial" || preset.type === "conic" ? preset.type : "linear";
+  if (el.typeSelect) el.typeSelect.value = state.type;
+  state.angle = clampNumber(preset.angle ?? 90, 0, 360);
+  if (el.angleRange) el.angleRange.value = String(state.angle);
+  if (el.angleInput) el.angleInput.value = String(state.angle);
+  renderStops();
+  schedulePreview();
+  recordHistory(beforeSnapshot);
+  showToast(t("gradient.toast.presetApplied", "Đã áp dụng preset dải chuyển."));
+}
+
+function renderPresetRail() {
+  if (!el.presetRail) return;
+  el.presetRail.innerHTML = "";
+  GRADIENT_PRESETS.forEach((preset) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "tc-btn tc-chip px-3 py-2 text-sm tc-gradient-preset";
+    const label = t(`gradient.presets.items.${preset.key}`, preset.key);
+    button.setAttribute("aria-label", label);
+    const swatch = document.createElement("span");
+    swatch.className = "tc-gradient-preset-swatch";
+    swatch.style.background = gradientCss(buildPresetStops(preset), preset.angle ?? 90, preset.type || "linear");
+    const text = document.createElement("span");
+    text.textContent = label;
+    button.appendChild(swatch);
+    button.appendChild(text);
+    button.addEventListener("click", () => {
+      applyPreset(preset);
+    });
+    el.presetRail.appendChild(button);
+  });
+}
+
+function normalizeGradientType(type) {
+  return VALID_GRADIENT_TYPES.has(type) ? type : "linear";
+}
+
+function normalizePresetName(input, fallback = "") {
+  const value = String(input ?? "").replace(/\s+/g, " ").trim();
+  if (!value) return fallback;
+  return value.slice(0, 80);
+}
+
+function createMyPresetId() {
+  const randomPart = Math.random().toString(36).slice(2, 8);
+  return `w2preset_${Date.now()}_${randomPart}`;
+}
+
+function buildDefaultMyPresetName(index = 1) {
+  const safeIndex = Math.max(1, Number(index) || 1);
+  return t("gradient.myPresets.defaultName", "Preset {index}", { index: safeIndex });
+}
+
+function serializeStopsForMyPreset(stopsInput = state.stops) {
+  return migrateStops(stopsInput)
+    .slice()
+    .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0))
+    .map((stop) => ({
+      color: (normalizeHex(stop.hex) || "#000000").toUpperCase(),
+      pos: clampNumber(Math.round(stop.pos ?? 0), 0, 100)
+    }));
+}
+
+function normalizeMyPresetStops(stopsInput) {
+  const normalized = normalizeParsedStops(migrateStops(stopsInput));
+  const reduced = reduceStopsToLimit(normalized, MAX_STOPS);
+  return reduced
+    .slice()
+    .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0))
+    .map((stop) => ({
+      color: (normalizeHex(stop.hex) || "#000000").toUpperCase(),
+      pos: clampNumber(Math.round(stop.pos ?? 0), 0, 100)
+    }));
+}
+
+function toStateStopsFromMyPreset(preset) {
+  const source = Array.isArray(preset?.stops) ? preset.stops : [];
+  return cloneStops(source.map((stop) => ({
+    hex: stop?.color || stop?.hex,
+    pos: stop?.pos
+  })));
+}
+
+function sanitizeMyPreset(rawPreset, index = 0) {
+  if (!rawPreset || typeof rawPreset !== "object") return null;
+  const stops = normalizeMyPresetStops(rawPreset.stops);
+  if (stops.length < MIN_STOPS) return null;
+  const now = new Date().toISOString();
+  const createdAt = typeof rawPreset.createdAt === "string" && rawPreset.createdAt.trim()
+    ? rawPreset.createdAt
+    : now;
+  const updatedAt = typeof rawPreset.updatedAt === "string" && rawPreset.updatedAt.trim()
+    ? rawPreset.updatedAt
+    : createdAt;
+  return {
+    id: typeof rawPreset.id === "string" && rawPreset.id.trim() ? rawPreset.id.trim() : createMyPresetId(),
+    name: normalizePresetName(rawPreset.name, buildDefaultMyPresetName(index + 1)),
+    type: normalizeGradientType(rawPreset.type),
+    angleDeg: clampNumber(rawPreset.angleDeg ?? rawPreset.angle ?? 90, 0, 360),
+    stops,
+    createdAt,
+    updatedAt
+  };
+}
+
+function saveMyPresetsToStorage() {
+  try {
+    localStorage.setItem(MY_PRESET_STORAGE_KEY, JSON.stringify(state.myPresets));
+    return true;
+  } catch (_err) {
+    return false;
+  }
+}
+
+function loadMyPresetsFromStorage() {
+  try {
+    const raw = localStorage.getItem(MY_PRESET_STORAGE_KEY);
+    if (!raw) {
+      state.myPresets = [];
+      return;
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      state.myPresets = [];
+      return;
+    }
+    const usedIds = new Set();
+    const cleaned = [];
+    parsed.forEach((item, index) => {
+      if (cleaned.length >= MY_PRESET_LIMIT) return;
+      const normalized = sanitizeMyPreset(item, index);
+      if (!normalized) return;
+      while (usedIds.has(normalized.id)) {
+        normalized.id = createMyPresetId();
+      }
+      usedIds.add(normalized.id);
+      cleaned.push(normalized);
+    });
+    state.myPresets = cleaned;
+    if (cleaned.length !== parsed.length) {
+      saveMyPresetsToStorage();
+    }
+  } catch (_err) {
+    state.myPresets = [];
+  }
+}
+
+function ensureMyPresetCapacity() {
+  if (state.myPresets.length < MY_PRESET_LIMIT) return true;
+  showToast(t("gradient.myPresets.toast.limitReached", "Đã đạt giới hạn {limit} preset.", {
+    limit: MY_PRESET_LIMIT
+  }));
+  return false;
+}
+
+function formatPresetDate(isoStamp) {
+  if (!isoStamp) return "";
+  const stamp = new Date(isoStamp);
+  if (Number.isNaN(stamp.getTime())) return "";
+  return stamp.toLocaleDateString("vi-VN");
+}
+
+function renderMyPresetRail() {
+  if (!el.myPresetRail) return;
+  el.myPresetRail.innerHTML = "";
+  if (!state.myPresets.length) {
+    const empty = document.createElement("p");
+    empty.className = "tc-my-preset-empty";
+    empty.textContent = t(
+      "gradient.myPresets.empty",
+      "Chưa có preset của bạn. Hãy lưu dải chuyển hiện tại để dùng lại nhanh."
+    );
+    el.myPresetRail.appendChild(empty);
+    return;
+  }
+  state.myPresets.forEach((preset) => {
+    const card = document.createElement("article");
+    card.className = "tc-my-preset-card";
+
+    const name = document.createElement("p");
+    name.className = "tc-my-preset-name";
+    name.textContent = preset.name;
+    card.appendChild(name);
+
+    const meta = document.createElement("p");
+    meta.className = "tc-my-preset-meta";
+    const updated = formatPresetDate(preset.updatedAt) || "--";
+    meta.textContent = t(
+      "gradient.myPresets.meta",
+      "{count} điểm neo · cập nhật {updated}",
+      { count: preset.stops.length, updated }
+    );
+    card.appendChild(meta);
+
+    const preview = document.createElement("div");
+    preview.className = "tc-my-preset-preview";
+    preview.style.background = gradientCss(
+      toStateStopsFromMyPreset(preset),
+      clampNumber(preset.angleDeg ?? 90, 0, 360),
+      normalizeGradientType(preset.type)
+    );
+    card.appendChild(preview);
+
+    const actions = document.createElement("div");
+    actions.className = "tc-my-preset-actions";
+
+    const applyBtn = document.createElement("button");
+    applyBtn.type = "button";
+    applyBtn.className = "tc-btn tc-btn-primary px-3 py-1 text-xs";
+    applyBtn.textContent = t("gradient.myPresets.actions.apply", "Áp dụng");
+    applyBtn.addEventListener("click", () => {
+      applyMyPreset(preset.id);
+    });
+    actions.appendChild(applyBtn);
+
+    const renameBtn = document.createElement("button");
+    renameBtn.type = "button";
+    renameBtn.className = "tc-btn tc-chip px-3 py-1 text-xs";
+    renameBtn.textContent = t("gradient.myPresets.actions.rename", "Đổi tên");
+    renameBtn.addEventListener("click", () => {
+      renameMyPreset(preset.id);
+    });
+    actions.appendChild(renameBtn);
+
+    const duplicateBtn = document.createElement("button");
+    duplicateBtn.type = "button";
+    duplicateBtn.className = "tc-btn tc-chip px-3 py-1 text-xs";
+    duplicateBtn.textContent = t("gradient.myPresets.actions.duplicate", "Nhân bản");
+    duplicateBtn.addEventListener("click", () => {
+      duplicateMyPreset(preset.id);
+    });
+    actions.appendChild(duplicateBtn);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "tc-btn tc-chip px-3 py-1 text-xs";
+    deleteBtn.textContent = t("gradient.myPresets.actions.delete", "Xoá");
+    deleteBtn.addEventListener("click", () => {
+      deleteMyPreset(preset.id);
+    });
+    actions.appendChild(deleteBtn);
+
+    card.appendChild(actions);
+    el.myPresetRail.appendChild(card);
+  });
+}
+
+function saveCurrentAsMyPreset() {
+  if (!ensureMyPresetCapacity()) return;
+  const now = new Date().toISOString();
+  const candidate = sanitizeMyPreset({
+    id: createMyPresetId(),
+    name: buildDefaultMyPresetName(state.myPresets.length + 1),
+    type: state.type,
+    angleDeg: state.angle,
+    stops: serializeStopsForMyPreset(),
+    createdAt: now,
+    updatedAt: now
+  }, state.myPresets.length);
+  if (!candidate) {
+    showToast(t("gradient.myPresets.toast.invalid", "Không thể lưu preset hiện tại."));
+    return;
+  }
+  state.myPresets.unshift(candidate);
+  const ok = saveMyPresetsToStorage();
+  renderMyPresetRail();
+  showToast(ok
+    ? t("gradient.myPresets.toast.saved", "Đã lưu thành preset.")
+    : t("gradient.myPresets.toast.saveFailed", "Không thể lưu preset vào trình duyệt."));
+}
+
+function applyMyPreset(presetId) {
+  const preset = state.myPresets.find((item) => item.id === presetId);
+  if (!preset) return;
+  const nextStops = toStateStopsFromMyPreset(preset);
+  if (nextStops.length < MIN_STOPS) return;
+  const beforeSnapshot = captureStateSnapshot();
+  closeStopPopover();
+  state.stops = nextStops;
+  state.type = normalizeGradientType(preset.type);
+  state.angle = clampNumber(preset.angleDeg ?? 90, 0, 360);
+  if (el.typeSelect) el.typeSelect.value = state.type;
+  if (el.angleRange) el.angleRange.value = String(state.angle);
+  if (el.angleInput) el.angleInput.value = String(state.angle);
+  renderStops();
+  schedulePreview();
+  recordHistory(beforeSnapshot);
+  showToast(t("gradient.myPresets.toast.applied", "Đã áp dụng preset cá nhân."));
+}
+
+function renameMyPreset(presetId) {
+  const preset = state.myPresets.find((item) => item.id === presetId);
+  if (!preset) return;
+  const nextNameRaw = window.prompt(
+    t("gradient.myPresets.renamePrompt", "Nhập tên preset mới"),
+    preset.name
+  );
+  if (nextNameRaw == null) return;
+  const nextName = normalizePresetName(nextNameRaw, "");
+  if (!nextName) {
+    showToast(t("gradient.myPresets.toast.renameEmpty", "Tên preset không được để trống."));
+    return;
+  }
+  preset.name = nextName;
+  preset.updatedAt = new Date().toISOString();
+  const ok = saveMyPresetsToStorage();
+  renderMyPresetRail();
+  showToast(ok
+    ? t("gradient.myPresets.toast.renamed", "Đã đổi tên preset.")
+    : t("gradient.myPresets.toast.saveFailed", "Không thể lưu preset vào trình duyệt."));
+}
+
+function duplicateMyPreset(presetId) {
+  if (!ensureMyPresetCapacity()) return;
+  const preset = state.myPresets.find((item) => item.id === presetId);
+  if (!preset) return;
+  const now = new Date().toISOString();
+  const duplicated = sanitizeMyPreset({
+    ...preset,
+    id: createMyPresetId(),
+    name: t("gradient.myPresets.copyName", "{name} (bản sao)", { name: preset.name }),
+    createdAt: now,
+    updatedAt: now
+  }, state.myPresets.length);
+  if (!duplicated) return;
+  state.myPresets.unshift(duplicated);
+  const ok = saveMyPresetsToStorage();
+  renderMyPresetRail();
+  showToast(ok
+    ? t("gradient.myPresets.toast.duplicated", "Đã nhân bản preset.")
+    : t("gradient.myPresets.toast.saveFailed", "Không thể lưu preset vào trình duyệt."));
+}
+
+function deleteMyPreset(presetId) {
+  const preset = state.myPresets.find((item) => item.id === presetId);
+  if (!preset) return;
+  const shouldDelete = window.confirm(
+    t("gradient.myPresets.confirmDelete", "Bạn có chắc muốn xoá?")
+  );
+  if (!shouldDelete) return;
+  state.myPresets = state.myPresets.filter((item) => item.id !== presetId);
+  const ok = saveMyPresetsToStorage();
+  renderMyPresetRail();
+  showToast(ok
+    ? t("gradient.myPresets.toast.deleted", "Đã xoá preset.")
+    : t("gradient.myPresets.toast.saveFailed", "Không thể lưu preset vào trình duyệt."));
 }
 
 function getStopBarPercent(clientX) {
@@ -508,10 +1435,12 @@ function ensureStopPopover() {
       showToast("Cần tối thiểu 2 stop.");
       return;
     }
+    const beforeSnapshot = captureStateSnapshot();
     state.stops.splice(stopPopoverIndex, 1);
     closeStopPopover();
     renderStops();
     schedulePreview();
+    recordHistory(beforeSnapshot);
   });
   popover.addEventListener("input", (event) => {
     if (stopPopoverIndex == null) return;
@@ -598,20 +1527,27 @@ function toggleStopPopover(index, handle) {
   openStopPopover(index, handle);
 }
 
-function applyStopHex(index, value) {
+function applyStopHex(index, value, options = {}) {
+  const { record = true } = options;
   if (!state.stops[index]) return;
   const normalized = normalizeHex(value);
   if (!normalized) return;
+  if (state.stops[index].hex === normalized) return;
+  const beforeSnapshot = record ? captureStateSnapshot() : null;
   state.stops[index].hex = normalized;
   updateStopHandle(index);
   updateStopInputs(index);
   syncStopPopover(index);
   schedulePreview();
+  if (record) recordHistory(beforeSnapshot);
 }
 
-function applyStopPos(index, value) {
+function applyStopPos(index, value, options = {}) {
+  const { record = true } = options;
   if (!state.stops[index]) return;
   const nextPos = clampNumber(value, 0, 100);
+  if (Math.abs((state.stops[index].pos ?? 0) - nextPos) < 0.01) return;
+  const beforeSnapshot = record ? captureStateSnapshot() : null;
   state.stops[index].pos = nextPos;
   updateStopHandle(index);
   updateStopInputs(index, { posOnly: true });
@@ -620,6 +1556,7 @@ function applyStopPos(index, value) {
     positionStopPopover(index);
   }
   schedulePreview();
+  if (record) recordHistory(beforeSnapshot);
 }
 
 function pickStopColor(pos) {
@@ -737,10 +1674,12 @@ function renderStops() {
       removeBtn.type = "button";
       removeBtn.textContent = "Xóa";
       removeBtn.addEventListener("click", () => {
+        const beforeSnapshot = captureStateSnapshot();
         state.stops.splice(index, 1);
         closeStopPopover();
         renderStops();
         schedulePreview();
+        recordHistory(beforeSnapshot);
       });
       row.appendChild(removeBtn);
     }
@@ -765,11 +1704,13 @@ function handleStopBarClick(event) {
   }
   const pos = getStopBarPercent(event.clientX);
   const hex = pickStopColor(pos);
+  const beforeSnapshot = captureStateSnapshot();
   const index = insertStopAt(pos, hex);
   if (index == null) return;
   renderStops();
   schedulePreview();
   openStopPopover(index);
+  recordHistory(beforeSnapshot);
 }
 
 function handleStopPointerDown(event) {
@@ -781,6 +1722,7 @@ function handleStopPointerDown(event) {
   if (Number.isNaN(stopDragIndex) || stopDragIndex < 0) return;
   stopDragPointerId = event.pointerId;
   stopDragMoved = false;
+  stopDragHistorySnapshot = captureStateSnapshot();
   handle.setPointerCapture(event.pointerId);
   closeStopPopover();
 }
@@ -792,7 +1734,7 @@ function handleStopPointerMove(event) {
   const pos = getStopBarPercent(event.clientX);
   const current = state.stops[stopDragIndex]?.pos ?? 0;
   if (Math.abs(pos - current) > 0.1) stopDragMoved = true;
-  applyStopPos(stopDragIndex, pos);
+  applyStopPos(stopDragIndex, pos, { record: false });
 }
 
 function handleStopPointerUp(event) {
@@ -800,9 +1742,13 @@ function handleStopPointerUp(event) {
   if (event.pointerId !== stopDragPointerId) return;
   const handle = getStopHandle(stopDragIndex);
   if (handle) handle.releasePointerCapture(event.pointerId);
-  if (stopDragMoved) stopSuppressClick = true;
+  if (stopDragMoved) {
+    stopSuppressClick = true;
+    recordHistory(stopDragHistorySnapshot);
+  }
   stopDragIndex = null;
   stopDragPointerId = null;
+  stopDragHistorySnapshot = null;
 }
 
 function handleStopOutsideClick(event) {
@@ -1002,6 +1948,27 @@ function closeSampleDetail() {
   sampleDetailOpen = false;
 }
 
+function openImportPanel() {
+  if (!el.importPanel) return;
+  el.importPanel.classList.remove("hidden");
+  el.importPanel.setAttribute("aria-hidden", "false");
+  importPanelOpen = true;
+  importPanelBodyOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+  window.setTimeout(() => {
+    el.importInput?.focus();
+  }, 40);
+}
+
+function closeImportPanel() {
+  if (!el.importPanel) return;
+  el.importPanel.classList.add("hidden");
+  el.importPanel.setAttribute("aria-hidden", "true");
+  importPanelOpen = false;
+  document.body.style.overflow = importPanelBodyOverflow;
+  importPanelBodyOverflow = "";
+}
+
 function initSampleDetail() {
   const overlay = ensureSampleDetailOverlay();
   if (!overlay || overlay.dataset.ready === "1") return;
@@ -1018,25 +1985,171 @@ function initSampleDetail() {
   });
 }
 
-function applyAngle(value) {
+function applyAngle(value, options = {}) {
+  const { record = true } = options;
   const next = clampNumber(value, 0, 360);
+  if (next === state.angle) {
+    if (el.angleRange) el.angleRange.value = String(next);
+    if (el.angleInput) el.angleInput.value = String(next);
+    schedulePreview();
+    return;
+  }
+  const beforeSnapshot = record ? captureStateSnapshot() : null;
   state.angle = next;
   if (el.angleRange) el.angleRange.value = String(next);
   if (el.angleInput) el.angleInput.value = String(next);
   schedulePreview();
+  if (record) recordHistory(beforeSnapshot);
 }
 
-function getStopsFromHash() {
-  const hash = (window.location.hash || "").replace("#", "");
-  if (!hash) return null;
-  const params = new URLSearchParams(hash);
-  const raw = params.get("g");
-  if (!raw) return null;
-  const stops = raw.split(",").map((s) => normalizeHex(s)).filter(Boolean);
-  if (stops.length >= MIN_STOPS && stops.length <= MAX_STOPS) {
-    return migrateStops(stops);
+function encodeBase64Url(text) {
+  if (typeof text !== "string" || !text) return "";
+  try {
+    if (typeof window?.btoa === "function") {
+      const bytes = unescape(encodeURIComponent(text));
+      return window.btoa(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+  } catch (_err) {
+    // fallback below
+  }
+  try {
+    if (typeof Buffer !== "undefined") {
+      return Buffer.from(text, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+  } catch (_err) {
+    // ignore
+  }
+  return "";
+}
+
+function decodeBase64Url(payload) {
+  if (!payload) return null;
+  const base = String(payload).replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base + "=".repeat((4 - (base.length % 4)) % 4);
+  try {
+    if (typeof window?.atob === "function") {
+      const raw = window.atob(padded);
+      const encoded = Array.from(raw)
+        .map((char) => `%${char.charCodeAt(0).toString(16).padStart(2, "0")}`)
+        .join("");
+      return decodeURIComponent(encoded);
+    }
+  } catch (_err) {
+    // fallback below
+  }
+  try {
+    if (typeof Buffer !== "undefined") {
+      return Buffer.from(padded, "base64").toString("utf8");
+    }
+  } catch (_err) {
+    // ignore
   }
   return null;
+}
+
+function buildShareStatePayload(snapshot = captureStateSnapshot()) {
+  const stops = cloneStops(snapshot.stops)
+    .slice()
+    .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0))
+    .map((stop) => ({
+      c: (normalizeHex(stop.hex) || "#000000").toUpperCase(),
+      p: Math.round(clampNumber(stop.pos ?? 0, 0, 100) * 100) / 100
+    }));
+  return {
+    v: SHARE_STATE_VERSION,
+    type: normalizeGradientType(snapshot.type),
+    angleDeg: Math.round(clampNumber(snapshot.angle ?? 90, 0, 360) * 100) / 100,
+    stops
+  };
+}
+
+function encodeShareStateHashValue() {
+  try {
+    const payload = buildShareStatePayload();
+    const encoded = encodeBase64Url(JSON.stringify(payload));
+    return encoded ? `v${SHARE_STATE_VERSION}.${encoded}` : "";
+  } catch (_err) {
+    return "";
+  }
+}
+
+function parseShareStatePayload(payload) {
+  if (!payload || typeof payload !== "object") return null;
+  if (Number(payload.v) !== SHARE_STATE_VERSION) return null;
+  const type = normalizeGradientType(payload.type);
+  const angle = Number(payload.angleDeg);
+  if (!Number.isFinite(angle)) return null;
+  if (!Array.isArray(payload.stops)) return null;
+  if (payload.stops.length < MIN_STOPS || payload.stops.length > MAX_STOPS) return null;
+  const rawStops = payload.stops.map((stop) => {
+    if (!stop || typeof stop !== "object") return null;
+    const hex = normalizeHex(stop.c);
+    const pos = Number(stop.p);
+    if (!hex || !Number.isFinite(pos)) return null;
+    return {
+      hex,
+      pos: clampNumber(pos, 0, 100)
+    };
+  });
+  if (rawStops.some((stop) => !stop)) return null;
+  const stops = cloneStops(rawStops)
+    .slice()
+    .sort((a, b) => (a.pos ?? 0) - (b.pos ?? 0));
+  if (stops.length < MIN_STOPS || stops.length > MAX_STOPS) return null;
+  return {
+    type,
+    angle: clampNumber(angle, 0, 360),
+    stops
+  };
+}
+
+function parseHashGradientState(rawValue) {
+  const raw = String(rawValue || "").trim();
+  if (!raw) return { snapshot: null, invalid: false };
+  const prefix = `v${SHARE_STATE_VERSION}.`;
+  if (raw.startsWith(prefix)) {
+    const encoded = raw.slice(prefix.length);
+    const json = decodeBase64Url(encoded);
+    if (!json) return { snapshot: null, invalid: true };
+    try {
+      const parsed = JSON.parse(json);
+      const snapshot = parseShareStatePayload(parsed);
+      return snapshot ? { snapshot, invalid: false } : { snapshot: null, invalid: true };
+    } catch (_err) {
+      return { snapshot: null, invalid: true };
+    }
+  }
+  if (/^v\d+\./i.test(raw)) {
+    return { snapshot: null, invalid: true };
+  }
+  const stops = raw.split(",").map((item) => normalizeHex(item)).filter(Boolean);
+  if (stops.length >= MIN_STOPS && stops.length <= MAX_STOPS) {
+    return {
+      snapshot: {
+        type: "linear",
+        angle: 90,
+        stops: migrateStops(stops)
+      },
+      invalid: false
+    };
+  }
+  return { snapshot: null, invalid: true };
+}
+
+function getGradientStateFromHash() {
+  const hash = (window.location.hash || "").replace("#", "");
+  if (!hash) return { snapshot: null, invalid: false };
+  const params = new URLSearchParams(hash);
+  const raw = params.get("g");
+  if (!raw) return { snapshot: null, invalid: false };
+  return parseHashGradientState(raw);
+}
+
+function buildShareLinkUrl() {
+  const encoded = encodeShareStateHashValue();
+  if (!encoded) return "";
+  const base = String(window.location.href || "").split("#")[0];
+  return `${base}#g=${encoded}`;
 }
 
 async function loadSamples() {
@@ -1051,13 +2164,42 @@ async function loadSamples() {
 }
 
 function initEvents() {
-  el.angleRange?.addEventListener("input", () => applyAngle(el.angleRange.value));
-  el.angleInput?.addEventListener("input", () => applyAngle(el.angleInput.value));
+  const beginAngleHistory = () => {
+    if (!angleHistorySnapshot) {
+      angleHistorySnapshot = captureStateSnapshot();
+    }
+  };
+  const commitAngleHistory = () => {
+    if (!angleHistorySnapshot) return;
+    recordHistory(angleHistorySnapshot);
+    angleHistorySnapshot = null;
+  };
+
+  el.angleRange?.addEventListener("pointerdown", beginAngleHistory);
+  el.angleRange?.addEventListener("input", () => {
+    beginAngleHistory();
+    applyAngle(el.angleRange.value, { record: false });
+  });
+  el.angleRange?.addEventListener("change", commitAngleHistory);
+  el.angleRange?.addEventListener("pointerup", commitAngleHistory);
+  el.angleRange?.addEventListener("blur", commitAngleHistory);
+
+  el.angleInput?.addEventListener("focus", beginAngleHistory);
+  el.angleInput?.addEventListener("input", () => {
+    beginAngleHistory();
+    applyAngle(el.angleInput.value, { record: false });
+  });
+  el.angleInput?.addEventListener("change", commitAngleHistory);
+  el.angleInput?.addEventListener("blur", commitAngleHistory);
+
   el.resetAngle?.addEventListener("click", () => applyAngle(90));
   el.typeSelect?.addEventListener("change", () => {
     const next = el.typeSelect.value || "linear";
+    if (next === state.type) return;
+    const beforeSnapshot = captureStateSnapshot();
     state.type = next;
     schedulePreview();
+    recordHistory(beforeSnapshot);
   });
   el.stopBar?.addEventListener("click", handleStopBarClick);
   el.stopBar?.addEventListener("pointerdown", handleStopPointerDown);
@@ -1067,44 +2209,100 @@ function initEvents() {
     if (stopPopoverIndex != null) positionStopPopover(stopPopoverIndex);
   });
   document.addEventListener("click", handleStopOutsideClick);
+  el.undoBtn?.addEventListener("click", runUndo);
+  el.redoBtn?.addEventListener("click", runRedo);
 
   el.addStop?.addEventListener("click", () => {
     if (state.stops.length >= MAX_STOPS) return;
+    const beforeSnapshot = captureStateSnapshot();
     const lastPos = state.stops[state.stops.length - 1]?.pos ?? 100;
     const nextIndex = insertStopAt(clampNumber(lastPos + 10, 0, 100), randomHex());
     if (nextIndex == null) return;
     renderStops();
     schedulePreview();
+    recordHistory(beforeSnapshot);
   });
   el.randomStop?.addEventListener("click", () => {
+    const beforeSnapshot = captureStateSnapshot();
     state.stops = state.stops.map((stop, idx) => ({
       hex: randomHex(),
       pos: Number.isFinite(stop.pos) ? stop.pos : Math.round((idx / Math.max(1, state.stops.length - 1)) * 100)
     }));
     renderStops();
     schedulePreview();
+    recordHistory(beforeSnapshot);
   });
-  if (el.exportBtn) el.exportBtn.textContent = "Sao chép CSS";
+  el.savePresetBtn?.addEventListener("click", () => {
+    saveCurrentAsMyPreset();
+  });
+  el.addMidStopBtn?.addEventListener("click", () => {
+    addSuggestedMidStop();
+  });
+  el.toggleDitherBtn?.addEventListener("click", () => {
+    togglePreviewDither();
+  });
+  [
+    { key: "ui", tab: el.contextTabUi },
+    { key: "poster", tab: el.contextTabPoster },
+    { key: "thread", tab: el.contextTabThread }
+  ].forEach((entry) => {
+    entry.tab?.addEventListener("click", () => {
+      setContextPreviewTab(entry.key);
+    });
+  });
+  el.copyShareLinkBtn?.addEventListener("click", async () => {
+    const shareUrl = buildShareLinkUrl();
+    if (!shareUrl) {
+      showToast(t("gradient.toast.copyFailed", "Không thể sao chép."));
+      return;
+    }
+    const ok = await copyText(shareUrl);
+    showToast(ok
+      ? t("gradient.shareState.toast.copied", "Đã sao chép link!")
+      : t("gradient.toast.copyFailed", "Không thể sao chép."));
+  });
   el.exportBtn?.addEventListener("click", async () => {
     const ok = await copyText(exportCssProperty());
-    showToast(ok ? "Đã sao chép CSS." : "Không thể sao chép.");
+    showToast(ok ? t("gradient.toast.copiedCss", "Đã sao chép CSS.") : t("gradient.toast.copyFailed", "Không thể sao chép."));
+  });
+  el.copyCssOptionBtn?.addEventListener("click", async () => {
+    const ok = await copyText(exportCssProperty());
+    showToast(ok ? t("gradient.toast.copiedCss", "Đã sao chép CSS.") : t("gradient.toast.copyFailed", "Không thể sao chép."));
+    if (el.copyMenu) el.copyMenu.open = false;
   });
   el.copyTokenBtn?.addEventListener("click", async () => {
     const ok = await copyText(exportTokenBlock());
-    showToast(ok ? "Đã sao chép token." : "Không thể sao chép.");
+    showToast(ok ? t("gradient.toast.copiedToken", "Đã sao chép token.") : t("gradient.toast.copyFailed", "Không thể sao chép."));
+    if (el.copyMenu) el.copyMenu.open = false;
+  });
+  el.copyTailwindBtn?.addEventListener("click", async () => {
+    const ok = await copyText(exportTailwindString());
+    showToast(ok ? t("gradient.toast.copiedTailwind", "Đã sao chép Tailwind.") : t("gradient.toast.copyFailed", "Không thể sao chép."));
+    if (el.copyMenu) el.copyMenu.open = false;
+  });
+  [el.exportTabCss, el.exportTabVars, el.exportTabToken, el.exportTabTailwind].forEach((tab) => {
+    tab?.addEventListener("click", () => {
+      const format = tab.getAttribute("data-export-tab") || "css";
+      setExportFormat(format);
+      renderExportFormatPreview();
+    });
+  });
+  el.exportCodeCopy?.addEventListener("click", async () => {
+    const ok = await copyText(getExportFormatText(exportFormatActive));
+    showToast(ok ? t("gradient.toast.copiedFallback", "Đã sao chép.") : t("gradient.toast.copyFailed", "Không thể sao chép."));
   });
   el.exportToken?.addEventListener("click", async () => {
     const ok = await copyText(exportTokenString());
-    showToast(ok ? "Đã sao chép token có %." : "Không thể sao chép token.");
+    showToast(ok ? t("gradient.toast.copiedTokenPercent", "Đã sao chép token có %.") : t("gradient.toast.copyFailed", "Không thể sao chép token."));
   });
   el.exportSvg?.addEventListener("click", async () => {
     const svg = exportSvg();
     if (!svg) {
-      showToast("Không thể tạo SVG.");
+      showToast(t("gradient.toast.svgFailed", "Không thể tạo SVG."));
       return;
     }
     const ok = await copyText(svg);
-    showToast(ok ? "Đã sao chép SVG gradient." : "Không thể sao chép SVG.");
+    showToast(ok ? t("gradient.toast.copiedSvg", "Đã sao chép SVG gradient.") : t("gradient.toast.svgCopyFailed", "Không thể sao chép SVG."));
   });
   el.toPalette?.addEventListener("click", () => {
     const stops = migrateStops(state.stops).map((stop) => stop.hex).join(",");
@@ -1114,7 +2312,7 @@ function initEvents() {
   el.saveLibrary?.addEventListener("click", () => {
     const asset = buildGradientAsset();
     const ok = addAssetToLibrary(asset);
-    showToast(ok ? "Đã lưu vào Thư viện." : "Không thể lưu tài sản.");
+    showToast(ok ? t("gradient.toast.savedLibrary", "Đã lưu vào Thư viện.") : t("gradient.toast.saveFailed", "Không thể lưu tài sản."));
   });
   el.useLibrary?.addEventListener("click", () => {
     const payload = composeHandoff({
@@ -1128,19 +2326,50 @@ function initEvents() {
     publishToFeed(buildGradientAsset());
   });
 
-  el.importBtn?.addEventListener("click", () => {
+  el.openImportPanelBtn?.addEventListener("click", () => {
+    openImportPanel();
+  });
+  el.importApplyBtn?.addEventListener("click", () => {
     const raw = el.importInput?.value || "";
     if (!raw.trim()) {
-      showToast("Hãy dán CSS gradient trước khi nhập.");
+      showToast(t("gradient.toast.pasteCss", "Hãy dán CSS gradient trước khi nhập."));
       return;
     }
     applyImportedGradient(raw.trim());
+    closeImportPanel();
+  });
+  el.importPanel?.addEventListener("click", (event) => {
+    if (event.target.closest("[data-gradient-import-close]")) {
+      closeImportPanel();
+    }
+  });
+
+  window.addEventListener("keydown", (event) => {
+    const isUndo = (event.ctrlKey || event.metaKey) && !event.shiftKey && event.key.toLowerCase() === "z";
+    const isRedo = (event.ctrlKey || event.metaKey) && (event.key.toLowerCase() === "y" || (event.shiftKey && event.key.toLowerCase() === "z"));
+    if (isUndo) {
+      event.preventDefault();
+      runUndo();
+      return;
+    }
+    if (isRedo) {
+      event.preventDefault();
+      runRedo();
+      return;
+    }
+    if (event.key === "Escape" && importPanelOpen) {
+      event.preventDefault();
+      closeImportPanel();
+    }
   });
 
   document.addEventListener("click", (event) => {
-    if (!el.exportMenu?.open) return;
-    if (event.target.closest("#gradientExportMenu")) return;
-    el.exportMenu.open = false;
+    if (el.copyMenu?.open && !event.target.closest("#gradientCopyMenu")) {
+      el.copyMenu.open = false;
+    }
+    if (el.exportMenu?.open && !event.target.closest("#gradientExportMenu")) {
+      el.exportMenu.open = false;
+    }
   });
 }
 
@@ -1150,6 +2379,27 @@ function applyHexesFromHub(detail) {
   const normalized = rawList.map((hex) => normalizeHex(hex)).filter(Boolean);
   if (!normalized.length) return;
   window.tcWorkbench?.setContext?.(normalized, { worldKey: "gradient", source: detail?.source || "hex-apply" });
+  if (normalized.length === 1) {
+    const pickedHex = normalized[0];
+    if (stopPopoverIndex != null && state.stops[stopPopoverIndex]) {
+      applyStopHex(stopPopoverIndex, pickedHex);
+      return;
+    }
+    const beforeSnapshot = captureStateSnapshot();
+    const addedIndex = insertStopAt(50, pickedHex);
+    if (addedIndex != null) {
+      renderStops();
+      schedulePreview();
+      openStopPopover(addedIndex);
+      recordHistory(beforeSnapshot);
+      return;
+    }
+    if (state.stops.length) {
+      const fallbackIndex = Math.floor((state.stops.length - 1) / 2);
+      applyStopHex(fallbackIndex, pickedHex);
+    }
+    return;
+  }
   const baseStops = mode === "append" ? migrateStops(state.stops) : [];
   const combined = [...baseStops, ...normalized.map((hex) => ({ hex }))];
   const unique = combined.filter((stop, idx) => {
@@ -1168,27 +2418,41 @@ function applyHexesFromHub(detail) {
     while (next.length < MIN_STOPS) next.push({ hex: next[next.length - 1].hex });
   }
   if (next.length >= MIN_STOPS) {
+    const beforeSnapshot = captureStateSnapshot();
     state.stops = migrateStops(next);
     renderStops();
     schedulePreview();
+    recordHistory(beforeSnapshot);
   }
 }
 
 function init() {
+  let invalidShareHash = false;
   if (!hasStrictIncoming) {
-    const hashStops = getStopsFromHash();
-    if (hashStops) {
-      state.stops = hashStops;
+    const hashState = getGradientStateFromHash();
+    invalidShareHash = Boolean(hashState?.invalid);
+    if (hashState?.snapshot) {
+      state.type = normalizeGradientType(hashState.snapshot.type);
+      state.angle = clampNumber(hashState.snapshot.angle ?? 90, 0, 360);
+      state.stops = cloneStops(hashState.snapshot.stops);
     }
   }
   state.stops = migrateStops(state.stops);
+  loadMyPresetsFromStorage();
   if (el.typeSelect) el.typeSelect.value = state.type;
+  renderPresetRail();
+  renderMyPresetRail();
   renderStops();
+  setContextPreviewTab(contextPreviewActiveTab);
   schedulePreview();
-  applyAngle(state.angle);
+  applyAngle(state.angle, { record: false });
+  syncHistoryButtons();
   loadSamples();
   initEvents();
   initSampleDetail();
+  if (invalidShareHash) {
+    showToast(t("gradient.shareState.toast.invalidLink", "Link chia sẻ không hợp lệ."));
+  }
 }
 
 init();
