@@ -31,6 +31,1084 @@
       border-radius: 999px;
       border: 1px solid var(--stroke);
     }
+    .tc-role-grid{
+      display: grid;
+      gap: .55rem;
+    }
+    .tc-role-row{
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) minmax(220px, auto);
+      align-items: center;
+      gap: .55rem;
+    }
+    .tc-role-swatch{
+      width: 1.1rem;
+      height: 1.1rem;
+      border-radius: .45rem;
+      border: 1px solid var(--stroke);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
+    }
+    .tc-role-label{
+      font-size: .78rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      flex-wrap: wrap;
+    }
+    .tc-role-controls{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: .45rem;
+    }
+    .tc-contrast-list{
+      display: grid;
+      gap: .5rem;
+    }
+    .tc-contrast-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      padding: .52rem .6rem;
+      border-radius: .75rem;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.42);
+    }
+    .tc-contrast-meta{
+      min-width: 0;
+      display: grid;
+      gap: .12rem;
+    }
+    .tc-contrast-badge{
+      font-size: .68rem;
+      font-weight: 700;
+      padding: .2rem .5rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .tc-contrast-badge.is-aaa{
+      background: rgba(34,197,94,.18);
+      border-color: rgba(34,197,94,.35);
+      color: #166534;
+    }
+    .tc-contrast-badge.is-aa{
+      background: rgba(59,130,246,.18);
+      border-color: rgba(59,130,246,.35);
+      color: #1d4ed8;
+    }
+    .tc-contrast-badge.is-fail{
+      background: rgba(239,68,68,.16);
+      border-color: rgba(239,68,68,.35);
+      color: #b91c1c;
+    }
+    .tc-contrast-actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: -.1rem;
+    }
+    .tc-preview-tabs{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+    .tc-matrix-guideline{
+      border: 1px solid rgba(148,163,184,.32);
+      border-radius: .82rem;
+      padding: .55rem;
+      background: rgba(255,255,255,.38);
+      display: grid;
+      gap: .45rem;
+    }
+    .tc-matrix-guideline__title{
+      margin: 0;
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-matrix-guideline__hint,
+    .tc-matrix-guideline__state{
+      margin: 0;
+      font-size: .67rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .tc-matrix-guideline__grid{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .45rem;
+    }
+    .tc-matrix-guideline__field{
+      display: grid;
+      gap: .22rem;
+      min-width: 0;
+    }
+    .tc-matrix-guideline__field--inline{
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: .45rem;
+    }
+    .tc-matrix-guideline__label{
+      margin: 0;
+      font-size: .66rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .tc-matrix-guideline__locked{
+      display: grid;
+      gap: .3rem;
+    }
+    .tc-matrix-guideline__chips{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+    .tc-matrix-guideline__chip{
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      border: 1px solid rgba(148,163,184,.34);
+      border-radius: 999px;
+      padding: .2rem .48rem;
+      background: rgba(255,255,255,.62);
+      font-size: .64rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .tc-matrix-guideline__chip input{
+      width: .72rem;
+      height: .72rem;
+      margin: 0;
+    }
+    .tc-matrix-guideline__actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+    .tc-preview-vision{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .55rem;
+      flex-wrap: wrap;
+    }
+    .tc-preview-vision .tc-input{
+      min-width: 190px;
+    }
+    .tc-preview-stage{
+      display: grid;
+      gap: .6rem;
+      transform: translateZ(0);
+    }
+    .tc-preview-stage[data-vision="normal"]{
+      filter: none;
+      -webkit-filter: none;
+    }
+    .tc-preview-stage[data-vision="deuteranopia"]{
+      filter: url(#tc-cvd-deuteranopia);
+      -webkit-filter: url(#tc-cvd-deuteranopia);
+    }
+    .tc-preview-stage[data-vision="protanopia"]{
+      filter: url(#tc-cvd-protanopia);
+      -webkit-filter: url(#tc-cvd-protanopia);
+    }
+    .tc-preview-stage[data-vision="tritanopia"]{
+      filter: url(#tc-cvd-tritanopia);
+      -webkit-filter: url(#tc-cvd-tritanopia);
+    }
+    .tc-preview-stage[data-vision="grayscale"]{
+      filter: url(#tc-cvd-grayscale);
+      -webkit-filter: url(#tc-cvd-grayscale);
+    }
+    .tc-context-ui{
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      overflow: hidden;
+    }
+    .tc-context-ui-head{
+      font-size: .74rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      padding: .58rem .75rem;
+    }
+    .tc-context-ui-body{
+      padding: .75rem;
+      display: grid;
+      gap: .5rem;
+    }
+    .tc-context-cta{
+      border: 0;
+      width: fit-content;
+      border-radius: .65rem;
+      padding: .45rem .75rem;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+    .tc-context-badge{
+      width: fit-content;
+      border-radius: 999px;
+      padding: .2rem .58rem;
+      font-size: .68rem;
+      font-weight: 700;
+      border: 1px solid var(--stroke);
+    }
+    .tc-context-poster{
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      padding: .95rem;
+      display: grid;
+      gap: .62rem;
+    }
+    .tc-image-drop{
+      position: relative;
+      display: grid;
+      gap: .35rem;
+      border: 1px dashed var(--stroke);
+      border-radius: .9rem;
+      padding: .85rem .9rem;
+      background: rgba(255,255,255,.34);
+      transition: border-color .16s ease, background-color .16s ease, transform .16s ease;
+      cursor: pointer;
+    }
+    .tc-image-drop strong{
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .tc-image-drop span{
+      font-size: .7rem;
+      color: var(--text-muted);
+    }
+    .tc-image-drop.is-dragover{
+      border-color: var(--a1);
+      background: rgba(14,165,233,.11);
+      transform: translateY(-1px);
+    }
+    .tc-image-meta{
+      min-height: 1.15rem;
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+    .tc-image-result{
+      border: 1px solid var(--stroke);
+      border-radius: .85rem;
+      background: rgba(255,255,255,.3);
+      padding: .7rem;
+      display: grid;
+      gap: .6rem;
+    }
+    .tc-image-swatches{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+      gap: .45rem;
+    }
+    .tc-image-swatch{
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--stroke);
+      border-radius: .62rem;
+      min-height: 38px;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,.9);
+      text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    }
+    .tc-image-result-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .55rem;
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+    .tc-library-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .tc-library-actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+    .tc-library-mode{
+      display: grid;
+      gap: .5rem;
+      margin-top: .55rem;
+    }
+    .tc-library-mode-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      align-items: center;
+    }
+    .tc-library-seg{
+      display: inline-flex;
+      gap: .38rem;
+      padding: .25rem;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.26);
+    }
+    .tc-library-seg-btn{
+      border: 0;
+      border-radius: 999px;
+      padding: .3rem .7rem;
+      font-size: .73rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+    }
+    .tc-library-seg-btn.is-active{
+      color: #fff;
+      background: linear-gradient(120deg, var(--a1), var(--a2));
+    }
+    .tc-library-team-picker{
+      min-width: 220px;
+    }
+    .tc-library-role{
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+    .tc-library-grid{
+      display: grid;
+      gap: .75rem;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .tc-library-card{
+      border: 1px solid var(--stroke);
+      border-radius: .95rem;
+      background: rgba(255,255,255,.38);
+      padding: .7rem;
+      display: grid;
+      gap: .55rem;
+    }
+    .tc-library-card__head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .tc-library-meta{
+      font-size: .68rem;
+      color: var(--text-muted);
+    }
+    .tc-approval-badge{
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.45);
+      background: rgba(241,245,249,.82);
+      color: #334155;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+      padding: .18rem .5rem;
+      white-space: nowrap;
+    }
+    .tc-approval-badge.is-draft{
+      background: rgba(241,245,249,.9);
+      border-color: rgba(148,163,184,.45);
+      color: #334155;
+    }
+    .tc-approval-badge.is-in_review{
+      background: rgba(219,234,254,.9);
+      border-color: rgba(59,130,246,.4);
+      color: #1d4ed8;
+    }
+    .tc-approval-badge.is-approved{
+      background: rgba(220,252,231,.9);
+      border-color: rgba(22,163,74,.4);
+      color: #166534;
+    }
+    .tc-approval-badge.is-published{
+      background: rgba(250,245,255,.92);
+      border-color: rgba(124,58,237,.42);
+      color: #6d28d9;
+    }
+    .tc-approval-badge.is-changes_requested{
+      background: rgba(254,249,195,.92);
+      border-color: rgba(202,138,4,.42);
+      color: #854d0e;
+    }
+    .tc-approval-badge.is-rejected{
+      background: rgba(254,226,226,.9);
+      border-color: rgba(239,68,68,.45);
+      color: #991b1b;
+    }
+    .tc-library-swatches{
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .38rem;
+    }
+    .tc-library-swatch{
+      height: 26px;
+      border-radius: .52rem;
+      border: 1px solid var(--stroke);
+    }
+    .tc-library-modal{
+      position: fixed;
+      inset: 0;
+      z-index: 95;
+    }
+    .tc-library-modal[aria-hidden="true"]{
+      display: none;
+    }
+    .tc-library-modal__backdrop{
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, .6);
+    }
+    .tc-library-modal__dialog{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(560px, calc(100% - 1.25rem));
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      padding: 1rem;
+      display: grid;
+      gap: .7rem;
+    }
+    .tc-library-modal__grid{
+      display: grid;
+      gap: .6rem;
+    }
+    .tc-library-modal__actions{
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .tc-approval-modal{
+      position: fixed;
+      inset: 0;
+      z-index: 97;
+    }
+    .tc-approval-modal[aria-hidden="true"]{
+      display: none;
+    }
+    .tc-approval-modal__backdrop{
+      position: absolute;
+      inset: 0;
+      background: rgba(15,23,42,.55);
+    }
+    .tc-approval-modal__dialog{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(680px, calc(100% - 1.2rem));
+      max-height: calc(100% - 1.6rem);
+      overflow: auto;
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      padding: .95rem;
+      display: grid;
+      gap: .55rem;
+    }
+    .tc-approval-modal__head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .tc-approval-modal__title{
+      margin: 0;
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-approval-modal__status,
+    .tc-approval-modal__state{
+      margin: 0;
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+    .tc-approval-modal__list{
+      display: grid;
+      gap: .45rem;
+      max-height: min(44vh, 320px);
+      overflow: auto;
+      padding-right: .15rem;
+    }
+    .tc-approval-modal__item{
+      border: 1px solid rgba(148,163,184,.32);
+      border-radius: .75rem;
+      background: rgba(255,255,255,.54);
+      padding: .52rem;
+      display: grid;
+      gap: .2rem;
+    }
+    .tc-approval-modal__item-title{
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-approval-modal__item-meta{
+      margin: 0;
+      font-size: .66rem;
+      color: var(--text-muted);
+    }
+    .tc-approval-modal__item-comment{
+      margin: .18rem 0 0;
+      font-size: .7rem;
+      line-height: 1.4;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .tc-approval-modal__composer{
+      display: grid;
+      gap: .38rem;
+      padding-top: .28rem;
+      border-top: 1px dashed rgba(148,163,184,.38);
+    }
+    .tc-approval-modal__label{
+      margin: 0;
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tc-approval-modal__actions{
+      display: flex;
+      justify-content: flex-end;
+      gap: .45rem;
+      flex-wrap: wrap;
+    }
+    .tc-release-modal{
+      position: fixed;
+      inset: 0;
+      z-index: 98;
+    }
+    .tc-release-modal[aria-hidden="true"]{
+      display: none;
+    }
+    .tc-release-modal__backdrop{
+      position: absolute;
+      inset: 0;
+      background: rgba(15,23,42,.55);
+    }
+    .tc-release-modal__dialog{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(680px, calc(100% - 1.2rem));
+      max-height: calc(100% - 1.6rem);
+      overflow: auto;
+      border-radius: 1rem;
+      border: 1px solid var(--stroke);
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      padding: .95rem;
+      display: grid;
+      gap: .55rem;
+    }
+    .tc-release-modal__head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .tc-release-modal__title{
+      margin: 0;
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-release-modal__state{
+      margin: 0;
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+    .tc-release-modal__grid{
+      margin: 0;
+      display: grid;
+      gap: .45rem;
+    }
+    .tc-release-modal__row{
+      border: 1px solid rgba(148,163,184,.32);
+      border-radius: .75rem;
+      background: rgba(255,255,255,.54);
+      padding: .52rem;
+      display: grid;
+      gap: .2rem;
+    }
+    .tc-release-modal__row dt{
+      margin: 0;
+      font-size: .66rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .tc-release-modal__row dd{
+      margin: 0;
+      font-size: .72rem;
+      color: var(--text);
+      font-weight: 700;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .tc-release-modal__actions{
+      display: flex;
+      justify-content: flex-end;
+      gap: .45rem;
+      flex-wrap: wrap;
+    }
+    .tc-room-bar{
+      margin-top: .7rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .65rem;
+      flex-wrap: wrap;
+      border: 1px solid var(--stroke);
+      border-radius: .95rem;
+      padding: .62rem .78rem;
+      background: rgba(255,255,255,.4);
+      box-shadow: 0 10px 24px rgba(15,23,42,.08);
+    }
+    .tc-room-bar.is-readonly{
+      border-color: rgba(14,165,233,.35);
+      background: rgba(14,165,233,.09);
+    }
+    .tc-room-bar__lead{
+      min-width: 0;
+      display: grid;
+      gap: .15rem;
+    }
+    .tc-room-bar__label{
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .tc-room-bar__title{
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text);
+      word-break: break-word;
+    }
+    .tc-room-bar__status{
+      font-size: .74rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+    .tc-room-bar__tail{
+      display: grid;
+      justify-items: end;
+      gap: .3rem;
+      min-width: 0;
+    }
+    .tc-room-bar__presence{
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: .45rem;
+      min-height: 1.5rem;
+    }
+    .tc-room-presence-empty{
+      font-size: .7rem;
+      color: var(--text-muted);
+    }
+    .tc-avatar-stack{
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0;
+    }
+    .tc-avatar-chip{
+      width: 1.45rem;
+      height: 1.45rem;
+      border-radius: 999px;
+      border: 1.5px solid rgba(255,255,255,.8);
+      margin-left: -.3rem;
+      display: inline-grid;
+      place-items: center;
+      font-size: .63rem;
+      font-weight: 700;
+      color: #0f172a;
+      background: linear-gradient(130deg, rgba(255,255,255,.94), rgba(186,230,253,.94));
+      box-shadow: 0 4px 10px rgba(15,23,42,.12);
+    }
+    .tc-avatar-chip:first-child{
+      margin-left: 0;
+    }
+    .tc-avatar-chip.is-more{
+      color: #e2e8f0;
+      background: rgba(15,23,42,.72);
+      border-color: rgba(255,255,255,.55);
+    }
+    .tc-avatar-chip.is-self{
+      outline: 2px solid rgba(14,165,233,.52);
+      outline-offset: -1px;
+    }
+    .tc-swatch{
+      position: relative;
+      overflow: hidden;
+    }
+    .tc-role-row{
+      position: relative;
+    }
+    .tc-presence-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      border-radius: 999px;
+      border: 1px solid rgba(14,165,233,.38);
+      background: rgba(14,165,233,.16);
+      color: #0c4a6e;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      padding: .18rem .42rem;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+    .tc-presence-badge.is-hidden{
+      display: none;
+    }
+    .tc-presence-badge--swatch{
+      position: absolute;
+      left: .34rem;
+      top: .34rem;
+      background: rgba(15,23,42,.64);
+      border-color: rgba(255,255,255,.38);
+      color: rgba(255,255,255,.95);
+      max-width: calc(100% - .68rem);
+    }
+    .tc-presence-badge--role{
+      vertical-align: middle;
+      max-width: min(62%, 240px);
+    }
+    .tc-room-disabled{
+      pointer-events: none;
+      opacity: .58;
+      filter: saturate(.72);
+      user-select: none;
+    }
+    .tc-room-layout{
+      margin-top: .75rem;
+      display: grid;
+      gap: .85rem;
+      align-items: start;
+    }
+    .tc-room-layout-main{
+      min-width: 0;
+      display: grid;
+      gap: .85rem;
+    }
+    .tc-room-timeline{
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      background: rgba(255,255,255,.46);
+      box-shadow: 0 14px 30px rgba(15,23,42,.10);
+      padding: .78rem;
+      display: grid;
+      gap: .62rem;
+      min-width: 0;
+    }
+    .tc-room-timeline-head{
+      display: grid;
+      gap: .45rem;
+    }
+    .tc-room-timeline-head p{
+      margin: 0;
+    }
+    .tc-room-timeline__title{
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-room-timeline__desc{
+      font-size: .7rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .tc-room-timeline__state{
+      font-size: .7rem;
+      color: var(--text-muted);
+      min-height: 1rem;
+    }
+    .tc-room-timeline-list{
+      display: grid;
+      gap: .5rem;
+      max-height: min(45vh, 360px);
+      overflow: auto;
+      padding-right: .15rem;
+    }
+    .tc-room-revision-item{
+      border: 1px solid rgba(148,163,184,.35);
+      border-radius: .8rem;
+      background: rgba(255,255,255,.62);
+      padding: .52rem;
+      display: grid;
+      gap: .32rem;
+    }
+    .tc-room-revision-item.is-active{
+      border-color: rgba(14,165,233,.45);
+      box-shadow: inset 0 0 0 1px rgba(14,165,233,.18);
+    }
+    .tc-room-revision-item__title{
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .tc-room-revision-item__meta{
+      margin: 0;
+      font-size: .66rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .tc-room-revision-item__actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .38rem;
+    }
+    .tc-room-revision-preview{
+      border: 1px solid rgba(148,163,184,.35);
+      border-radius: .8rem;
+      background: rgba(255,255,255,.64);
+      padding: .55rem;
+      display: grid;
+      gap: .25rem;
+    }
+    .tc-room-revision-preview__title{
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-room-revision-preview__meta{
+      margin: 0;
+      font-size: .65rem;
+      color: var(--text-muted);
+    }
+    .tc-room-revision-preview__swatches{
+      margin-top: .1rem;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: .25rem;
+    }
+    .tc-room-revision-swatch{
+      display: inline-block;
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: .45rem;
+      border: 1px solid rgba(148,163,184,.4);
+    }
+    .tc-role-comment-btn{
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      min-height: 30px;
+    }
+    .tc-role-comment-btn__icon{
+      width: .85rem;
+      height: .85rem;
+      display: inline-grid;
+      place-items: center;
+    }
+    .tc-role-comment-btn__icon svg{
+      width: 100%;
+      height: 100%;
+    }
+    .tc-role-comment-btn__badge{
+      min-width: 1rem;
+      height: 1rem;
+      border-radius: 999px;
+      padding: 0 .28rem;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(239,68,68,.18);
+      border: 1px solid rgba(239,68,68,.4);
+      color: #991b1b;
+      font-size: .62rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .tc-room-comment{
+      margin-top: .28rem;
+      border-top: 1px dashed rgba(148,163,184,.35);
+      padding-top: .62rem;
+      display: grid;
+      gap: .55rem;
+    }
+    .tc-room-comment-top{
+      display: grid;
+      gap: .4rem;
+    }
+    .tc-room-comment-headline{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: .45rem;
+      flex-wrap: wrap;
+    }
+    .tc-room-comment-badge{
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid rgba(239,68,68,.38);
+      background: rgba(239,68,68,.14);
+      color: #991b1b;
+      font-size: .62rem;
+      font-weight: 700;
+      line-height: 1.2;
+      padding: .2rem .52rem;
+    }
+    .tc-room-comment-badge.is-hidden{
+      display: none;
+    }
+    .tc-room-comment-filter{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .tc-room-comment-filter .tc-input{
+      min-width: 180px;
+    }
+    .tc-room-comment-state{
+      font-size: .68rem;
+      color: var(--text-muted);
+      min-height: .92rem;
+    }
+    .tc-room-comment-reply-banner{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .45rem;
+      padding: .45rem .5rem;
+      border: 1px dashed rgba(59,130,246,.45);
+      border-radius: .65rem;
+      background: rgba(59,130,246,.08);
+      font-size: .68rem;
+      color: #1d4ed8;
+    }
+    .tc-room-comment-list{
+      display: grid;
+      gap: .48rem;
+      max-height: min(34vh, 290px);
+      overflow: auto;
+      padding-right: .15rem;
+    }
+    .tc-room-comment-empty{
+      margin: 0;
+      font-size: .68rem;
+      color: var(--text-muted);
+      padding: .42rem .1rem;
+    }
+    .tc-room-comment-thread{
+      border: 1px solid rgba(148,163,184,.35);
+      border-radius: .72rem;
+      background: rgba(255,255,255,.66);
+      padding: .5rem;
+      display: grid;
+      gap: .3rem;
+    }
+    .tc-room-comment-thread.is-resolved{
+      opacity: .78;
+      background: rgba(241,245,249,.72);
+    }
+    .tc-room-comment-head{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: .38rem;
+      flex-wrap: wrap;
+    }
+    .tc-room-comment-role{
+      font-size: .66rem;
+      font-weight: 700;
+      color: var(--text);
+      border-radius: 999px;
+      border: 1px solid rgba(14,165,233,.34);
+      background: rgba(14,165,233,.12);
+      padding: .14rem .44rem;
+      line-height: 1.15;
+    }
+    .tc-room-comment-meta{
+      margin: 0;
+      font-size: .64rem;
+      color: var(--text-muted);
+      line-height: 1.25;
+    }
+    .tc-room-comment-message{
+      margin: 0;
+      font-size: .7rem;
+      line-height: 1.4;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .tc-room-comment-actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .34rem;
+    }
+    .tc-room-comment-replies{
+      border-top: 1px dashed rgba(148,163,184,.3);
+      margin-top: .2rem;
+      padding-top: .3rem;
+      display: grid;
+      gap: .3rem;
+    }
+    .tc-room-comment-reply{
+      border: 1px solid rgba(148,163,184,.28);
+      border-radius: .6rem;
+      background: rgba(255,255,255,.5);
+      padding: .36rem .42rem;
+      display: grid;
+      gap: .2rem;
+    }
+    .tc-room-comment-resolved{
+      margin: .1rem 0 0;
+      font-size: .64rem;
+      color: #166534;
+      font-weight: 600;
+    }
+    .tc-room-comment-composer{
+      display: grid;
+      gap: .4rem;
+    }
+    .tc-room-comment-composer textarea{
+      min-height: 72px;
+      resize: vertical;
+    }
+    .tc-room-comment-composer.is-disabled{
+      opacity: .72;
+    }
+    .tc-room-comment-composer-actions{
+      display: flex;
+      justify-content: flex-end;
+      gap: .38rem;
+    }
     #portalMenu[data-open="0"],
     #worldMenu[data-open="0"]{ display: none; }
     #portalMenu,
@@ -56,21 +1134,25 @@
     #worldMenu .tc-world-item:hover{ background: rgba(255,255,255,.10); }
     #worldMenu .tc-world-item:active{ transform: translateY(1px); }
     @media (max-width: 520px) {
-      .tc-topbar > .max-w-6xl {
+      .tc-topbar > .max-w-6xl,
+      .tc-topbar > .tc-shell {
         flex-wrap: wrap;
         row-gap: 8px;
         column-gap: 8px;
       }
-      .tc-topbar > .max-w-6xl > :nth-child(1) {
+      .tc-topbar > .max-w-6xl > :nth-child(1),
+      .tc-topbar > .tc-shell > :nth-child(1) {
         order: 1;
         min-width: 0;
       }
-      .tc-topbar > .max-w-6xl > :nth-child(2) {
+      .tc-topbar > .max-w-6xl > :nth-child(2),
+      .tc-topbar > .tc-shell > :nth-child(2) {
         order: 3;
         flex: 1 1 100%;
         min-width: 0;
       }
-      .tc-topbar > .max-w-6xl > :nth-child(3) {
+      .tc-topbar > .max-w-6xl > :nth-child(3),
+      .tc-topbar > .tc-shell > :nth-child(3) {
         order: 2;
         margin-left: auto;
       }
@@ -92,6 +1174,58 @@
       .tc-topbar button {
         min-height: 40px;
       }
+      .tc-role-row{
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+      }
+      .tc-role-controls{
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+      }
+      .tc-matrix-guideline__grid{
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .tc-library-modal__dialog{
+        top: auto;
+        bottom: .75rem;
+        transform: translateX(-50%);
+      }
+      .tc-approval-modal__dialog{
+        top: auto;
+        bottom: .75rem;
+        transform: translateX(-50%);
+        max-height: calc(100% - 1rem);
+      }
+      .tc-release-modal__dialog{
+        top: auto;
+        bottom: .75rem;
+        transform: translateX(-50%);
+        max-height: calc(100% - 1rem);
+      }
+      .tc-room-bar__status{
+        text-align: left;
+      }
+      .tc-room-bar__tail{
+        justify-items: start;
+      }
+      .tc-room-bar__presence{
+        justify-content: flex-start;
+      }
+      .tc-room-layout{
+        gap: .7rem;
+      }
+      .tc-room-timeline{
+        order: -1;
+      }
+    }
+    @media (min-width: 1260px){
+      .tc-room-layout{
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+      }
+      .tc-room-timeline{
+        position: sticky;
+        top: calc(var(--topbar-h, 64px) + .75rem);
+      }
     }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -105,10 +1239,46 @@
 </head>
 <body class="font-sans">
         <div id="tcTopbarMount"></div>
+  <svg class="sr-only" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="tc-cvd-deuteranopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0.625 0.375 0     0 0
+          0.700 0.300 0     0 0
+          0.000 0.300 0.700 0 0
+          0.000 0.000 0.000 1 0
+        "/>
+      </filter>
+      <filter id="tc-cvd-protanopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0.56667 0.43333 0       0 0
+          0.55833 0.44167 0       0 0
+          0.00000 0.24167 0.75833 0 0
+          0.00000 0.00000 0.00000 1 0
+        "/>
+      </filter>
+      <filter id="tc-cvd-tritanopia" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0.95000 0.05000 0.00000 0 0
+          0.00000 0.43333 0.56667 0 0
+          0.00000 0.47500 0.52500 0 0
+          0.00000 0.00000 0.00000 1 0
+        "/>
+      </filter>
+      <filter id="tc-cvd-grayscale" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0.2126 0.7152 0.0722 0 0
+          0.2126 0.7152 0.0722 0 0
+          0.2126 0.7152 0.0722 0 0
+          0.0000 0.0000 0.0000 1 0
+        "/>
+      </filter>
+    </defs>
+  </svg>
 
 
 
-  <main class="mx-auto max-w-6xl px-4 pt-10 pb-16">
+  <main class="tc-shell pt-10 pb-16">
     <section class="tc-palette-shell">
       <header class="tc-palette-header">
         <div class="tc-palette-header-main">
@@ -127,11 +1297,23 @@
         </div>
         <div class="tc-palette-header-actions">
           <button id="paletteSaveLibrary" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Lưu vào Thư viện</button>
+          <button id="paletteSaveTeamLibrary" class="tc-btn tc-chip px-4 py-2 text-sm hidden" type="button">Lưu vào Thư viện Team</button>
           <button id="paletteUseLibrary" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Dùng từ Thư viện</button>
           <button id="paletteShare" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chia sẻ</button>
         </div>
       </header>
-
+      <section id="paletteRoomBar" class="tc-room-bar hidden" aria-live="polite">
+        <div class="tc-room-bar__lead">
+          <p id="paletteRoomLabel" class="tc-room-bar__label">Phòng chỉnh sửa</p>
+          <p id="paletteRoomName" class="tc-room-bar__title">Đang chuẩn bị...</p>
+        </div>
+        <div class="tc-room-bar__tail">
+          <p id="paletteRoomStatus" class="tc-room-bar__status">Đang chuẩn bị kết nối phòng...</p>
+          <div id="paletteRoomPresence" class="tc-room-bar__presence"></div>
+        </div>
+      </section>
+      <div class="tc-room-layout">
+        <div class="tc-room-layout-main">
       <section class="tc-palette-zone" id="paletteStyleHub">
         <div class="tc-palette-zone-head">
           <h2 class="tc-palette-zone-title">Phong cách tạo palette</h2>
@@ -279,6 +1461,58 @@
               <p class="tc-muted text-xs mt-3">Mẹo: chạm vào màu trong hàng khoá để giữ 1-2 màu khi ngẫu nhiên.</p>
             </div>
           </details>
+
+          <details class="tc-palette-card tc-palette-card--toggle" id="paletteImageCard">
+            <summary class="tc-palette-card-head">
+              <div>
+                <p class="tc-palette-card-title" id="paletteImageTitle"></p>
+                <p class="tc-palette-card-desc" id="paletteImageDesc"></p>
+              </div>
+              <button class="tc-palette-card-cta" type="button" id="paletteImageCta"></button>
+            </summary>
+            <div class="tc-palette-card-body">
+              <div class="grid gap-3 lg:grid-cols-[1.05fr_0.95fr]">
+                <div class="space-y-2">
+                  <label id="paletteImageDrop" class="tc-image-drop" for="paletteImageInput">
+                    <strong id="paletteImageDropText"></strong>
+                    <span id="paletteImageDropHint"></span>
+                    <input id="paletteImageInput" type="file" accept="image/*" class="sr-only">
+                  </label>
+                  <p id="paletteImageMeta" class="tc-image-meta"></p>
+                </div>
+                <div class="space-y-3">
+                  <div class="grid gap-2 sm:grid-cols-2">
+                    <div>
+                      <label id="paletteImageCountLabel" class="text-xs font-semibold"></label>
+                      <select id="paletteImageCount" class="tc-input text-sm w-full mt-1">
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5" selected>5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label id="paletteImagePriorityLabel" class="text-xs font-semibold"></label>
+                      <select id="paletteImagePriority" class="tc-input text-sm w-full mt-1">
+                        <option value="vivid"></option>
+                        <option value="soft"></option>
+                      </select>
+                    </div>
+                  </div>
+                  <button id="paletteImageExtract" class="tc-btn tc-btn-primary px-3 py-2 text-sm" type="button"></button>
+                  <div id="paletteImageResult" class="tc-image-result hidden">
+                    <div class="tc-image-result-head">
+                      <span id="paletteImageResultTitle"></span>
+                    </div>
+                    <div id="paletteImageSwatches" class="tc-image-swatches"></div>
+                    <button id="paletteImageUse" class="tc-btn tc-chip px-3 py-2 text-sm" type="button"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 
@@ -308,6 +1542,33 @@
           </div>
         </div>
         <div id="paletteGrid" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </section>
+
+      <section class="tc-palette-zone" id="paletteLibraryHub">
+        <div class="tc-library-head">
+          <div>
+            <h2 class="tc-palette-zone-title" id="paletteLibraryTitle">Từ Thư viện</h2>
+            <p class="tc-muted text-sm" id="paletteLibraryDesc">Preset bảng phối đã lưu theo tài khoản.</p>
+            <div class="tc-library-mode">
+              <div class="tc-library-mode-row">
+                <div class="tc-library-seg" id="paletteLibraryScopeSeg" role="group" aria-label="Phạm vi thư viện">
+                  <button id="paletteScopePersonal" class="tc-library-seg-btn is-active" type="button">Cá nhân</button>
+                  <button id="paletteScopeTeam" class="tc-library-seg-btn" type="button">Team</button>
+                </div>
+                <select id="paletteTeamSelect" class="tc-input text-xs tc-library-team-picker" disabled>
+                  <option value="">Chưa có team</option>
+                </select>
+              </div>
+              <div id="paletteTeamRoleHint" class="tc-library-role">Đang xem thư viện cá nhân.</div>
+            </div>
+          </div>
+          <div class="tc-library-actions">
+            <button id="paletteLibraryRefresh" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Tải lại</button>
+            <button id="paletteLibraryOpenPage" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Mở trang Thư viện</button>
+          </div>
+        </div>
+        <div id="paletteLibraryState" class="tc-card p-3 mt-3 text-xs tc-muted">Đang tải preset từ Thư viện...</div>
+        <div id="paletteLibraryGrid" class="tc-library-grid mt-3"></div>
       </section>
 
       <details class="tc-card p-4">
@@ -360,6 +1621,52 @@
           <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./threadcolor.html?color=%23F472B6">Mở ở Thêu</a>
         </div>
       </section>
+        </div>
+        <aside id="paletteRevisionPanel" class="tc-room-timeline hidden" aria-live="polite">
+          <div class="tc-room-timeline-head">
+            <div>
+              <p id="paletteRevisionTitle" class="tc-room-timeline__title">Lịch sử phiên bản</p>
+              <p id="paletteRevisionDesc" class="tc-room-timeline__desc">Timeline các phiên bản để xem và khôi phục.</p>
+            </div>
+            <button id="paletteRevisionCreate" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Tạo mốc phiên bản</button>
+          </div>
+          <p id="paletteRevisionState" class="tc-room-timeline__state">Kết nối phòng để xem lịch sử phiên bản.</p>
+          <div id="paletteRevisionList" class="tc-room-timeline-list"></div>
+          <div id="paletteRevisionPreview" class="tc-room-revision-preview hidden"></div>
+          <section id="paletteCommentPanel" class="tc-room-comment hidden" aria-live="polite">
+            <div class="tc-room-comment-top">
+              <div class="tc-room-comment-headline">
+                <p id="paletteCommentTitle" class="tc-room-timeline__title">Bình luận theo vai màu</p>
+                <span id="paletteCommentBadge" class="tc-room-comment-badge is-hidden"></span>
+              </div>
+              <p id="paletteCommentDesc" class="tc-room-timeline__desc">Mỗi bình luận gắn vào một vai màu để trao đổi chính xác.</p>
+            </div>
+            <div class="tc-room-comment-filter">
+              <label id="paletteCommentFilterLabel" class="text-xs font-semibold" for="paletteCommentFilter">Lọc theo vai</label>
+              <select id="paletteCommentFilter" class="tc-input text-xs"></select>
+            </div>
+            <p id="paletteCommentState" class="tc-room-comment-state">Kết nối phòng để xem bình luận.</p>
+            <div id="paletteCommentReply" class="tc-room-comment-reply-banner hidden">
+              <p id="paletteCommentReplyText" class="m-0"></p>
+              <button id="paletteCommentReplyCancel" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Huỷ trả lời</button>
+            </div>
+            <div id="paletteCommentList" class="tc-room-comment-list"></div>
+            <form id="paletteCommentComposer" class="tc-room-comment-composer" novalidate>
+              <textarea
+                id="paletteCommentInput"
+                class="tc-input text-xs"
+                autocomplete="off"
+                autocapitalize="none"
+                autocorrect="off"
+                spellcheck="false"
+              ></textarea>
+              <div class="tc-room-comment-composer-actions">
+                <button id="paletteCommentSubmit" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="submit">Gửi bình luận</button>
+              </div>
+            </form>
+          </section>
+        </aside>
+      </div>
     </section>
   </main>
 
@@ -374,6 +1681,56 @@
         <div id="palettePresetDetailBody" class="mt-3 grid gap-3"></div>
       </div>
     </div>
+  </div>
+
+  <div id="paletteLibraryModal" class="tc-library-modal" aria-hidden="true">
+    <div class="tc-library-modal__backdrop" data-library-modal-close></div>
+    <form id="paletteLibraryForm" class="tc-library-modal__dialog" novalidate>
+      <div class="flex items-center justify-between gap-2">
+        <p id="paletteLibraryModalTitle" class="text-sm font-semibold">Lưu preset bảng phối</p>
+        <button id="paletteLibraryModalClose" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Đóng</button>
+      </div>
+      <div class="tc-library-modal__grid">
+        <label class="text-xs font-semibold" for="paletteLibraryName" id="paletteLibraryNameLabel">Tên preset</label>
+        <input
+          id="paletteLibraryName"
+          class="tc-input w-full text-sm"
+          type="text"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          placeholder="Ví dụ: Bộ màu landing tháng 3"
+        >
+
+        <label class="text-xs font-semibold" for="paletteLibraryTags" id="paletteLibraryTagsLabel">Nhãn</label>
+        <input
+          id="paletteLibraryTags"
+          class="tc-input w-full text-sm"
+          type="text"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          placeholder="ui, thương hiệu, chiến dịch"
+        >
+
+        <label class="text-xs font-semibold" for="paletteLibraryNotes" id="paletteLibraryNotesLabel">Ghi chú (tuỳ chọn)</label>
+        <textarea
+          id="paletteLibraryNotes"
+          class="tc-input w-full text-sm h-24"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          placeholder="Mục tiêu sử dụng, bối cảnh..."
+        ></textarea>
+      </div>
+      <div class="tc-library-modal__actions">
+        <button id="paletteLibraryCancel" class="tc-btn tc-chip px-3 py-2 text-sm" type="button">Huỷ</button>
+        <button id="paletteLibrarySubmit" class="tc-btn tc-btn-primary px-3 py-2 text-sm" type="submit">Lưu preset</button>
+      </div>
+    </form>
   </div>
 
   <div id="paletteFullscreen" class="pf-overlay" aria-hidden="true">
@@ -710,6 +2067,7 @@
     </div>
   </div>
 
+  <script src="../i18n.js"></script>
   <script type="module" src="../auth.js"></script>
   <script type="module" src="../scripts/workbench_bridge.js"></script>
   <script type="module" src="./palette.js"></script>

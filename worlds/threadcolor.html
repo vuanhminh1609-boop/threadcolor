@@ -449,6 +449,25 @@
       gap: 0.5rem;
       flex: 1 1 220px;
     }
+    .tc-autofill-decoy{
+      position: fixed;
+      left: -100vw;
+      top: -100vh;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      clip-path: inset(100%);
+      white-space: nowrap;
+    }
+    .tc-autofill-decoy input{
+      width: 1px;
+      height: 1px;
+      border: 0;
+      padding: 0;
+      margin: 0;
+    }
     .brand-filter-clear{
       min-width: 64px;
     }
@@ -861,7 +880,7 @@
 
 
   <div class="w1-actionbar border-b border-black/5">
-    <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-end gap-3">
+    <div class="tc-shell py-2 flex flex-wrap items-center justify-end gap-3">
       <div class="relative">
         <button id="w1CommunityBtn" class="tc-chip tc-btn flex items-center gap-2 px-3 py-2 text-sm font-semibold" aria-expanded="false" aria-haspopup="menu" aria-controls="w1CommunityMenu" data-i18n="topbar.nav.community">Cộng đồng</button>
         <div id="w1CommunityMenu" data-open="0" role="menu" class="tc-menu absolute right-0 mt-2 w-48 rounded-lg backdrop-blur-md shadow-xl p-1 text-sm">
@@ -878,7 +897,7 @@
     </div>
   </div>
 
-  <main class="mx-auto max-w-4xl px-4 pt-6 pb-10">
+  <main class="tc-shell pt-6 pb-10">
     <div class="tc-card rounded-2xl p-6 md:p-8">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold tc-gradient-text text-center md:text-left">Trung tâm Điều phối Màu Chỉ Thêu</h1>
@@ -904,17 +923,25 @@
         </div>
         <div class="brand-filter-bar mt-3">
           <div class="brand-filter-field">
+            <div class="tc-autofill-decoy" aria-hidden="true">
+              <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true">
+              <input type="password" autocomplete="new-password" tabindex="-1" aria-hidden="true">
+            </div>
             <input
-              id="brandFilterSearch"
+              id="scThreadBrandFilter"
               class="tc-field flex-1 min-w-[220px]"
-              type="search"
+              type="text"
               placeholder="Lọc nhanh theo tên hãng..."
-              name="w1_brand_filter_search"
-              autocomplete="off"
+              name="sc_thread_brand_filter"
+              autocomplete="new-password"
               autocapitalize="none"
               autocorrect="off"
               spellcheck="false"
-              inputmode="search"
+              inputmode="text"
+              aria-label="Lọc theo tên hãng chỉ"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
             >
             <button id="brandFilterClear" class="tc-btn tc-chip px-3 py-2 text-xs brand-filter-clear" type="button" aria-label="Xoá lọc">Xoá</button>
           </div>
@@ -1319,12 +1346,18 @@
     const BUY_LOCAL_KEY = "tc_buy_local_v1";
     const BRAND_GRID_STORAGE_KEY = "tc_w1_brandGridBrand";
     const CONVERT_LIMIT = 12;
+    const REVERSE_DEBUG_FLAG_KEY = "tc_w1_reverse_debug";
 
     const state = {
       threads: [],
       brandList: [],
       brandMap: new Map(),
       brandGridMap: new Map(),
+      brandByKey: new Map(),
+      reverseLookupByBrandCode: new Map(),
+      reverseLookupByCode: new Map(),
+      catalogReady: false,
+      reverseLookupBound: false,
       worker: null,
       workerReady: false,
       workerSeq: 0,
@@ -1337,6 +1370,31 @@
     };
 
     let activateTab = null;
+
+    const t = (key, fallback = "", params) => {
+      try {
+        return window.tcI18n?.t?.(key, fallback, params) || fallback;
+      } catch (_err) {
+        return fallback;
+      }
+    };
+
+    const isReverseDebugEnabled = () => {
+      try {
+        return localStorage.getItem(REVERSE_DEBUG_FLAG_KEY) === "1";
+      } catch (_err) {
+        return false;
+      }
+    };
+
+    const logReverseDebug = (...parts) => {
+      if (!isReverseDebugEnabled()) return;
+      if (!Array.isArray(window.__tcReverseDebugLogs)) {
+        window.__tcReverseDebugLogs = [];
+      }
+      window.__tcReverseDebugLogs.push(parts);
+      console.info("[w1:reverse-lookup]", ...parts);
+    };
 
     const normalizeHex = (value) => {
       if (!value) return "";
@@ -1359,6 +1417,46 @@
         .trim()
         .toUpperCase()
         .replace(/\s+/g, " ");
+    };
+
+    const buildReverseLookupKey = (brandKey, codeKey) => {
+      if (!brandKey || !codeKey) return "";
+      return `${brandKey}|${codeKey}`;
+    };
+
+    const normalizeThreadCode = (raw, selectedBrand) => {
+      const collapsed = String(raw || "").trim().replace(/\s+/g, " ");
+      if (!collapsed) {
+        return { brandKey: null, codeKey: "", display: "" };
+      }
+      const normalizedRaw = normalizeCodeKey(collapsed);
+      const brandCandidates = state.brandList
+        .map((brand) => ({
+          brand,
+          brandKey: normalizeBrandKey(brand),
+          brandToken: normalizeCodeKey(brand)
+        }))
+        .filter((entry) => entry.brandKey && entry.brandToken)
+        .sort((a, b) => b.brandToken.length - a.brandToken.length);
+      let matchedBrand = null;
+      let codePart = normalizedRaw;
+      for (const entry of brandCandidates) {
+        if (!normalizedRaw.startsWith(entry.brandToken)) continue;
+        const sliced = normalizedRaw.slice(entry.brandToken.length);
+        const stripped = sliced.replace(/^[-_:./\s]+/, "").trim();
+        if (!stripped) continue;
+        matchedBrand = entry;
+        codePart = stripped;
+        break;
+      }
+      const codeKey = normalizeCodeKey(codePart);
+      const displayBrand = matchedBrand?.brand || "";
+      const display = displayBrand && codeKey ? `${displayBrand} ${codeKey}` : codeKey;
+      return {
+        brandKey: matchedBrand ? matchedBrand.brandKey : null,
+        codeKey,
+        display
+      };
     };
 
     const escapeHtml = (value) => {
@@ -1593,11 +1691,14 @@
     const buildIndexes = (threads) => {
       const byBrand = new Map();
       const brands = new Set();
+      const brandByKey = new Map();
       threads.forEach((thread) => {
         if (!thread?.brand) return;
         if (!byBrand.has(thread.brand)) byBrand.set(thread.brand, []);
         byBrand.get(thread.brand).push(thread);
         brands.add(thread.brand);
+        const key = normalizeBrandKey(thread.brand);
+        if (key && !brandByKey.has(key)) brandByKey.set(key, thread.brand);
       });
       const brandList = Array.from(brands).sort((a, b) => a.localeCompare(b, "vi", { sensitivity: "base" }));
       const brandGridMap = new Map();
@@ -1618,7 +1719,38 @@
         });
         brandGridMap.set(brand, enriched);
       });
-      return { brandList, brandMap: byBrand, brandGridMap };
+      return { brandList, brandMap: byBrand, brandGridMap, brandByKey };
+    };
+
+    const buildReverseLookupIndexes = (threads) => {
+      if (state.catalogReady && state.reverseLookupByBrandCode.size) return;
+      const byBrandCode = new Map();
+      const byCode = new Map();
+      threads.forEach((item) => {
+        const brandKey = normalizeBrandKey(item?.brand);
+        const codeKey = normalizeCodeKey(item?.code);
+        if (!brandKey || !codeKey) return;
+        const pairKey = buildReverseLookupKey(brandKey, codeKey);
+        if (pairKey && !byBrandCode.has(pairKey)) byBrandCode.set(pairKey, item);
+        if (!byCode.has(codeKey)) byCode.set(codeKey, []);
+        byCode.get(codeKey).push(item);
+      });
+      byCode.forEach((items) => {
+        items.sort((a, b) => {
+          const aBrand = a?.brand || "";
+          const bBrand = b?.brand || "";
+          return aBrand.localeCompare(bBrand, "vi", { sensitivity: "base" });
+        });
+      });
+      state.reverseLookupByBrandCode = byBrandCode;
+      state.reverseLookupByCode = byCode;
+      state.catalogReady = true;
+      const sampleCodes = state.threads.slice(0, 8).map((item) => `${item.brand} ${item.code}`);
+      logReverseDebug("catalog/index ready", {
+        sampleCodes,
+        byBrandCodeSize: state.reverseLookupByBrandCode.size,
+        byCodeSize: state.reverseLookupByCode.size
+      });
     };
 
     const initWorker = (threads) => {
@@ -1958,16 +2090,115 @@
     };
 
     const parseBrandCodeInput = (raw, fallbackBrand) => {
-      const trimmed = String(raw || "").trim();
-      if (!trimmed) return { brand: fallbackBrand, code: "" };
-      const lower = trimmed.toLowerCase();
-      for (const brand of state.brandList) {
-        const brandLower = brand.toLowerCase();
-        if (lower.startsWith(`${brandLower} `)) {
-          return { brand, code: trimmed.slice(brand.length).trim() };
-        }
+      const normalized = normalizeThreadCode(raw, fallbackBrand);
+      if (!normalized.brandKey) {
+        return {
+          brand: fallbackBrand,
+          code: normalized.codeKey
+        };
       }
-      return { brand: fallbackBrand, code: trimmed };
+      return {
+        brand: state.brandByKey.get(normalized.brandKey) || fallbackBrand,
+        code: normalized.codeKey
+      };
+    };
+
+    const setConvertInputs = (thread) => {
+      if (!thread) return;
+      const brandSelect = $("#convertBrand");
+      const codeInput = $("#convertCode");
+      if (brandSelect && state.brandList.includes(thread.brand)) {
+        brandSelect.value = thread.brand;
+      }
+      if (codeInput) {
+        codeInput.value = thread.code || "";
+      }
+    };
+
+    const runConvertFromBase = async (base) => {
+      if (!base?.hex || !base?.brand) return false;
+      const method = $("#deltaMethod")?.value === "2000" ? "2000" : "76";
+      const methodLabel = method === "2000" ? "ΔE2000" : "ΔE76";
+      const verifiedOnly = $("#verifiedOnlyToggle")?.checked ?? false;
+      const brands = state.brandList.filter((brand) => brand !== base.brand);
+      const results = await searchNearest(base.hex, brands, CONVERT_LIMIT, method, verifiedOnly);
+      renderConvertResults(base, results, methodLabel);
+      return true;
+    };
+
+    const renderReverseLookupMissing = (message) => {
+      const resultBox = $("#result");
+      if (resultBox) {
+        resultBox.innerHTML = `<div class="text-sm tc-muted">${escapeHtml(message)}</div>`;
+      }
+      showToast(message);
+    };
+
+    const renderReverseBrandChoices = (codeKey, matches) => {
+      const resultBox = $("#result");
+      if (!resultBox) return;
+      const uniqueByBrand = new Map();
+      matches.forEach((item) => {
+        const brandKey = normalizeBrandKey(item?.brand);
+        if (!brandKey || uniqueByBrand.has(brandKey)) return;
+        uniqueByBrand.set(brandKey, item);
+      });
+      const uniqueItems = Array.from(uniqueByBrand.values());
+      const title = t(
+        "tc.section.code.multipleTitle",
+        "Mã {code} xuất hiện ở nhiều hãng. Hãy chọn một hãng để tra cứu.",
+        { code: codeKey }
+      );
+      const helper = t(
+        "tc.section.code.multipleHelper",
+        "Chọn một hãng bên dưới để xem kết quả chính xác."
+      );
+      const chooseLabel = t("tc.section.code.chooseBrand", "Chọn hãng");
+      resultBox.innerHTML = `
+        <div class="tc-card p-4">
+          <div class="text-sm font-semibold">${escapeHtml(title)}</div>
+          <div class="text-xs tc-muted mt-1">${escapeHtml(helper)}</div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            ${uniqueItems.map((item) => {
+              const brandKey = normalizeBrandKey(item.brand);
+              const label = `${item.brand} ${item.code || codeKey}`;
+              return `
+                <button
+                  type="button"
+                  class="tc-btn tc-chip px-3 py-2 text-sm"
+                  data-action="reverse-choose-brand"
+                  data-brand-key="${escapeHtml(brandKey)}"
+                  data-code-key="${escapeHtml(codeKey)}"
+                  aria-label="${escapeHtml(`${chooseLabel}: ${label}`)}"
+                >${escapeHtml(label)}</button>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+      resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    const lookupThreadByReverseCode = (normalizedInput) => {
+      if (!state.catalogReady) {
+        return { status: "catalog-not-ready", matches: [] };
+      }
+      const codeKey = normalizeCodeKey(normalizedInput?.codeKey);
+      const brandKey = normalizedInput?.brandKey || null;
+      if (!codeKey) {
+        return { status: "empty-input", matches: [] };
+      }
+      if (brandKey) {
+        const pairKey = buildReverseLookupKey(brandKey, codeKey);
+        const matched = state.reverseLookupByBrandCode.get(pairKey);
+        return matched
+          ? { status: "single-match", matches: [matched] }
+          : { status: "not-found", matches: [] };
+      }
+      const codeMatches = state.reverseLookupByCode.get(codeKey) || [];
+      if (!codeMatches.length) return { status: "not-found", matches: [] };
+      if (codeMatches.length === 1) return { status: "single-match", matches: codeMatches };
+      return { status: "multiple-match", matches: codeMatches };
     };
 
     const renderConvertResults = (base, results, methodLabel) => {
@@ -2074,12 +2305,7 @@
         }
         matches.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
         const base = matches[0];
-        const method = $("#deltaMethod")?.value === "2000" ? "2000" : "76";
-        const methodLabel = method === "2000" ? "ΔE2000" : "ΔE76";
-        const verifiedOnly = $("#verifiedOnlyToggle")?.checked ?? false;
-        const brands = state.brandList.filter((b) => b !== base.brand);
-        const results = await searchNearest(base.hex, brands, CONVERT_LIMIT, method, verifiedOnly);
-        renderConvertResults(base, results, methodLabel);
+        await runConvertFromBase(base);
       };
       btn.addEventListener("click", runConvert);
       codeInput.addEventListener("keydown", (event) => {
@@ -2087,6 +2313,86 @@
           event.preventDefault();
           runConvert();
         }
+      });
+    };
+
+    const initReverseLookup = () => {
+      const codeInput = $("#codeInput");
+      const triggerBtn = $("#btnFindByCode");
+      const resultBox = $("#result");
+      if (!codeInput || !triggerBtn) return;
+
+      const applyMatchedThread = async (thread) => {
+        if (!thread) return;
+        setConvertInputs(thread);
+        await runConvertFromBase(thread);
+      };
+
+      const runLookup = async () => {
+        const rawValue = codeInput.value;
+        const selectedBrand = $("#convertBrand")?.value || "";
+        const normalized = normalizeThreadCode(rawValue, selectedBrand);
+        const lookupInfo = lookupThreadByReverseCode(normalized);
+        logReverseDebug("lookup", {
+          handlerHit: true,
+          rawInput: rawValue,
+          normalizedInput: normalized,
+          lookupStatus: lookupInfo.status,
+          compareKey: normalized.brandKey ? "brandKey|codeKey" : "codeKey",
+          hasParseInt: false
+        });
+
+        if (lookupInfo.status === "catalog-not-ready") {
+          renderReverseLookupMissing(t("tc.section.code.catalogNotReady", "Dữ liệu màu chưa sẵn sàng."));
+          return;
+        }
+        if (lookupInfo.status === "empty-input") {
+          renderReverseLookupMissing(t("tc.section.code.empty", "Nhập mã chỉ để tra cứu."));
+          return;
+        }
+        if (lookupInfo.status === "not-found") {
+          const label = normalized.display || normalized.codeKey || normalizeCodeKey(rawValue);
+          renderReverseLookupMissing(
+            t("tc.section.code.notFound", "Không tìm thấy mã chỉ {query}.", { query: label })
+          );
+          return;
+        }
+        if (lookupInfo.status === "multiple-match") {
+          renderReverseBrandChoices(normalized.codeKey, lookupInfo.matches);
+          return;
+        }
+        await applyMatchedThread(lookupInfo.matches[0]);
+      };
+
+      triggerBtn.addEventListener("click", runLookup);
+      codeInput.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        runLookup();
+      });
+
+      if (!resultBox || state.reverseLookupBound) return;
+      state.reverseLookupBound = true;
+      resultBox.addEventListener("click", async (event) => {
+        const btn = event.target.closest('[data-action="reverse-choose-brand"]');
+        if (!btn) return;
+        const brandKey = normalizeBrandKey(btn.getAttribute("data-brand-key"));
+        const codeKey = normalizeCodeKey(btn.getAttribute("data-code-key"));
+        const pairKey = buildReverseLookupKey(brandKey, codeKey);
+        const item = state.reverseLookupByBrandCode.get(pairKey);
+        logReverseDebug("pick brand", {
+          brandKey,
+          codeKey,
+          pairKey,
+          found: Boolean(item)
+        });
+        if (!item) {
+          renderReverseLookupMissing(
+            t("tc.section.code.notFound", "Không tìm thấy mã chỉ {query}.", { query: codeKey })
+          );
+          return;
+        }
+        await applyMatchedThread(item);
       });
     };
 
@@ -2333,10 +2639,13 @@
         state.brandList = indexes.brandList;
         state.brandMap = indexes.brandMap;
         state.brandGridMap = indexes.brandGridMap;
+        state.brandByKey = indexes.brandByKey;
+        buildReverseLookupIndexes(threads);
         initWorker(threads);
         initPaletteWorker();
         initBrandGrid();
         initConvert();
+        initReverseLookup();
         initPaletteExtract();
       } catch (err) {
         console.error("[threadcolor] load failed", err);
