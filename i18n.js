@@ -233,6 +233,22 @@
             library: {
               label: "Thư viện màu",
               desc: "Lưu và quản lý tài sản màu"
+            },
+            paintfabric: {
+              label: "Sơn&Vải",
+              desc: "Mô phỏng màu trên sơn/vải"
+            },
+            imagecolor: {
+              label: "Màu từ Ảnh",
+              desc: "Lấy màu chủ đạo từ ảnh"
+            },
+            colorplay: {
+              label: "Trò chơi màu",
+              desc: "Trò chơi luyện mắt màu"
+            },
+            threadvault: {
+              label: "Kho chỉ",
+              desc: "Quản lý kho chỉ và dữ liệu"
             }
           }
         },

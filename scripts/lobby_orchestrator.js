@@ -3,6 +3,7 @@
   const PIN_KEY = "pinnedWorlds";
   const MAX_RECENT = 5;
   const MAX_PINNED = 3;
+  const registryApi = window.tcWorldRegistry || null;
 
   const t = (key, fallback = "", params) => {
     const fn = window.tcI18n?.t;
@@ -11,42 +12,66 @@
     return typeof value === "string" && value ? value : fallback;
   };
 
-  const WORLD_META = {
-    threadcolor: {
-      labelKey: "lobby.recent.worlds.threadcolor.label",
-      labelFallback: "Thế giới màu thêu",
-      descKey: "lobby.recent.worlds.threadcolor.desc",
-      descFallback: "Tra mã chỉ từ ảnh/HEX",
-      url: "./worlds/threadcolor.html"
-    },
-    palette: {
-      labelKey: "lobby.recent.worlds.palette.label",
-      labelFallback: "Bảng phối màu",
-      descKey: "lobby.recent.worlds.palette.desc",
-      descFallback: "Phối màu và kiểm tra tương phản",
-      url: "./worlds/palette.html"
-    },
-    gradient: {
-      labelKey: "lobby.recent.worlds.gradient.label",
-      labelFallback: "Dải chuyển màu",
-      descKey: "lobby.recent.worlds.gradient.desc",
-      descFallback: "Tạo dải chuyển và xuất token nhanh",
-      url: "./worlds/gradient.html"
-    },
-    printcolor: {
-      labelKey: "lobby.recent.worlds.printcolor.label",
-      labelFallback: "CMYK và in ấn",
-      descKey: "lobby.recent.worlds.printcolor.desc",
-      descFallback: "Kiểm tra CMYK/TAC trước khi in",
-      url: "./worlds/printcolor.html"
-    },
-    library: {
-      labelKey: "lobby.recent.worlds.library.label",
-      labelFallback: "Thư viện màu",
-      descKey: "lobby.recent.worlds.library.desc",
-      descFallback: "Lưu và quản lý tài sản màu",
-      url: "./worlds/library.html"
+  const resolveRegistryUrl = (id, basePath = "./") => {
+    const item = registryApi?.getById?.(id);
+    if (!item) return "";
+    if (typeof registryApi?.resolveUrl === "function") {
+      return registryApi.resolveUrl(item, basePath);
     }
+    if (typeof item.url === "string" && item.url) {
+      const normalizedBase = basePath.endsWith("/") ? basePath : `${basePath}/`;
+      return `${normalizedBase}${item.url.replace(/^\.?\//, "")}`;
+    }
+    return "";
+  };
+
+  const WORLD_META = (registryApi?.getAllItems?.() || [])
+    .filter((item) => item.type === "world" || item.type === "utility")
+    .reduce((acc, item) => {
+      acc[item.id] = {
+        labelKey: item.recentLabelI18nKey || item.i18nKey || "",
+        labelFallback: item.recentLabel || item.label || item.id,
+        descKey: item.descI18nKey || "",
+        descFallback: item.desc || "",
+        url: resolveRegistryUrl(item.id, "./")
+      };
+      return acc;
+    }, {});
+
+  const verifyRouteDrift = () => {
+    const checks = [
+      { id: "threadcolor", selector: "a[data-i18n=\"lobby.portals.cards.threadcolor.cta\"]" },
+      { id: "gradient", selector: "a[data-i18n=\"lobby.portals.cards.gradient.cta\"]" },
+      { id: "palette", selector: "a[data-i18n=\"lobby.portals.cards.palette.cta\"]" },
+      { id: "printcolor", selector: "a[data-i18n=\"lobby.portals.cards.printcolor.cta\"]" },
+      { id: "library", selector: "a[data-i18n=\"lobby.portals.cards.library.cta\"]" },
+      { id: "paintfabric", selector: "a[data-i18n=\"lobby.portals.cards.paintfabric.cta\"]" },
+      { id: "imagecolor", selector: "a[data-i18n=\"lobby.portals.cards.imagecolor.cta\"]" },
+      { id: "colorplay", selector: "a[data-i18n=\"lobby.portals.cards.colorplay.cta\"]" },
+      { id: "threadcolor", selector: "a[data-i18n=\"footer.columns.tools.threadcolor\"]" },
+      { id: "threadvault", selector: "a[data-i18n=\"footer.columns.tools.threadvault\"]" },
+      { id: "library", selector: "a[data-i18n=\"footer.columns.tools.library\"]" },
+      { id: "palette", selector: "a[data-i18n=\"footer.columns.tools.palette\"]" },
+      { id: "gradient", selector: "a[data-i18n=\"footer.columns.tools.gradient\"]" },
+      { id: "imagecolor", selector: "a[data-i18n=\"footer.columns.tools.imagecolor\"]" },
+      { id: "printcolor", selector: "a[data-i18n=\"footer.columns.tools.printcolor\"]" },
+      { id: "paintfabric", selector: "a[data-i18n=\"footer.columns.tools.paintfabric\"]" }
+    ];
+    checks.forEach((check) => {
+      const expected = resolveRegistryUrl(check.id, "./");
+      if (!expected) return;
+      const node = document.querySelector(check.selector);
+      if (!node) return;
+      const actual = node.getAttribute("href") || "";
+      if (actual !== expected) {
+        console.warn("[route-drift]", {
+          id: check.id,
+          selector: check.selector,
+          expected,
+          actual
+        });
+      }
+    });
   };
 
   const previewPresets = {
@@ -343,9 +368,9 @@
     const pills = Array.from(frame.querySelectorAll("[data-preview-pill]"));
     const ctaBtn = frame.querySelector("[data-preview-cta]");
     const ctaTargets = {
-      ui: "./worlds/palette.html",
-      poster: "./worlds/gradient.html",
-      thread: "./worlds/threadcolor.html"
+      ui: resolveRegistryUrl("palette", "./") || "./worlds/palette.html",
+      poster: resolveRegistryUrl("gradient", "./") || "./worlds/gradient.html",
+      thread: resolveRegistryUrl("threadcolor", "./") || "./worlds/threadcolor.html"
     };
     let activeTab = "ui";
 
@@ -516,6 +541,7 @@
     if (match) pushRecent(match[0]);
   };
 
+  verifyRouteDrift();
   recordReferrer();
   bindActions();
   bindRouteCards();

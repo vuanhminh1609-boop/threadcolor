@@ -10,68 +10,41 @@
   const MAX_RECENT = 5;
   const MAX_RESULTS = 8;
 
-  const actions = [
-    {
-      id: "world-threadcolor",
-      kind: "world",
-      world: "threadcolor",
-      title: "Mở Thế giới màu thêu",
-      subtitle: "Tra mã chỉ từ ảnh/HEX",
-      url: "./worlds/threadcolor.html",
-      keywords: ["thêu", "mã chỉ", "thread", "màu thêu", "ảnh", "hex"]
-    },
-    {
-      id: "world-threadvault",
-      kind: "world",
-      world: "threadvault",
-      title: "Mở Thế giới Kho chỉ",
-      subtitle: "Quản lý kho chỉ và dữ liệu",
-      url: "./worlds/threadvault.html",
-      keywords: ["kho chỉ", "kho", "vault", "chỉ"]
-    },
-    {
-      id: "world-palette",
-      kind: "world",
-      world: "palette",
-      title: "Mở Thế giới Bảng phối",
-      subtitle: "Phối màu & tương phản",
-      url: "./worlds/palette.html",
-      keywords: ["palette", "bảng phối", "tương phản", "contrast", "phối màu"]
-    },
-    {
-      id: "world-gradient",
-      kind: "world",
-      world: "gradient",
-      title: "Mở Thế giới Dải chuyển",
-      subtitle: "Token & dải chuyển",
-      url: "./worlds/gradient.html",
-      keywords: ["gradient", "dải chuyển", "token"]
-    },
-    {
-      id: "world-printcolor",
-      kind: "world",
-      world: "printcolor",
-      title: "Mở Thế giới CMYK",
-      subtitle: "Kiểm tra CMYK/TAC",
-      url: "./worlds/printcolor.html",
-      keywords: ["cmyk", "in", "print", "tac"]
-    },
-    {
-      id: "world-library",
-      kind: "world",
-      world: "library",
-      title: "Mở Thư viện màu",
-      subtitle: "Lưu và quản trị tài sản",
-      url: "./worlds/library.html",
-      keywords: ["thư viện", "library", "lưu"]
-    },
+  const registryApi = window.tcWorldRegistry || null;
+  const resolveRegistryUrl = (id, fallback) => {
+    const item = registryApi?.getById?.(id);
+    if (item && typeof registryApi?.resolveUrl === "function") {
+      return registryApi.resolveUrl(item, "./");
+    }
+    return fallback;
+  };
+
+  const openActions = (registryApi?.getAllItems?.() || [])
+    .filter((item) => (item.type === "world" || item.type === "utility") && item.status !== "soon")
+    .map((item) => ({
+      id: `open-${item.id}`,
+      kind: item.type === "utility" ? "utility" : "world",
+      world: item.id,
+      title: item.type === "utility" ? `Mở tiện ích ${item.label}` : `Mở ${item.label}`,
+      subtitle: item.desc || "",
+      url: typeof registryApi?.resolveUrl === "function"
+        ? registryApi.resolveUrl(item, "./")
+        : `./${String(item.url || "").replace(/^\.?\//, "")}`,
+      keywords: [
+        item.id,
+        item.type,
+        ...(Array.isArray(item.keywords) ? item.keywords : [])
+      ]
+    }));
+
+  const routeActions = [
     {
       id: "route-threadcolor",
       kind: "route",
       world: "threadcolor",
       title: "Chạy route Ảnh/HEX → Mã chỉ → Lưu",
       subtitle: "Đi thẳng vào tra mã chỉ",
-      url: "./worlds/threadcolor.html",
+      url: resolveRegistryUrl("threadcolor", "./worlds/threadcolor.html"),
       keywords: ["route", "ảnh", "hex", "mã chỉ", "thêu"]
     },
     {
@@ -80,7 +53,7 @@
       world: "palette",
       title: "Chạy route Bảng phối → Tương phản → Preview → Xuất",
       subtitle: "Chốt bảng phối nhanh",
-      url: "./worlds/palette.html",
+      url: resolveRegistryUrl("palette", "./worlds/palette.html"),
       keywords: ["route", "palette", "bảng phối", "tương phản", "preview", "xuất"]
     },
     {
@@ -89,7 +62,7 @@
       world: "gradient",
       title: "Chạy route Dải chuyển → Token → Lưu",
       subtitle: "Tạo dải và lưu token",
-      url: "./worlds/gradient.html",
+      url: resolveRegistryUrl("gradient", "./worlds/gradient.html"),
       keywords: ["route", "gradient", "dải chuyển", "token", "lưu"]
     },
     {
@@ -98,10 +71,12 @@
       world: "printcolor",
       title: "Chạy route CMYK → Lưu",
       subtitle: "Kiểm tra CMYK trước khi in",
-      url: "./worlds/printcolor.html",
+      url: resolveRegistryUrl("printcolor", "./worlds/printcolor.html"),
       keywords: ["route", "cmyk", "in", "lưu"]
     }
   ];
+
+  const actions = [...openActions, ...routeActions];
 
   let isOpen = false;
   let activeIndex = -1;
@@ -221,7 +196,11 @@
 
       const kindWrap = document.createElement("div");
       kindWrap.className = "tc-cmdk-kind";
-      kindWrap.textContent = action.kind === "route" ? "Chạy route" : "Mở Thế giới";
+      kindWrap.textContent = action.kind === "route"
+        ? "Chạy route"
+        : action.kind === "utility"
+          ? "Mở tiện ích"
+          : "Mở Thế giới";
 
       button.appendChild(meta);
       button.appendChild(kindWrap);

@@ -146,7 +146,11 @@
 | Dải màu (gamut) | Dải màu | Phạm vi màu thiết bị in có thể tái tạo; ngoài gamut sẽ bị lệch. |
 | Ý đồ chuyển đổi (intent) | Ý đồ chuyển đổi | Cách ưu tiên giữ màu/độ tương phản khi chuyển đổi giữa các profile màu. |
 | Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
-| Bộ đồng bộ Sắc thái | Bộ đồng bộ Sắc thái | Cơ chế đồng bộ Sắc thái giữa các trang bằng `localStorage` (`tc_world`), thuộc tính `data-world` trên thẻ `<html>` và sự kiện đồng bộ giữa tab. |
+| Auth cluster | Cụm điều khiển tài khoản | Cụm UI tài khoản ở góc phải topbar, gồm nút Đăng nhập (guest) hoặc menu tài khoản (đã đăng nhập). |
+| World registry | Danh mục chuẩn Thế giới | Nguồn metadata chuẩn cho các Thế giới (id, nhãn, route, thứ tự, trạng thái) để mọi nơi dùng chung, tránh lệch dữ liệu. |
+| Utility item | Mục tiện ích | Mục điều hướng bổ trợ trong hệ sinh thái, không thuộc nhóm Thế giới chính và không được tính là World thứ 9. |
+| Route drift | Lệch tuyến điều hướng | Tình trạng route/link thực tế bị lệch so với route chuẩn đã định nghĩa trong registry, dễ gây link chết hoặc điều hướng sai. |
+| Bộ đồng bộ Sắc thái | Bộ đồng bộ Sắc thái | Cơ chế đồng bộ Sắc thái giữa các trang bằng `localStorage` (`tc_tone`, có di trú từ `tc_world`), thuộc tính `data-world` trên thẻ `<html>` và sự kiện đồng bộ giữa tab. |
 | Thanh trên dính | Thanh trên dính | Topbar bám trên cùng khi cuộn để truy cập nhanh chức năng chính. |
 | Thu gọn theo cuộn | Thu gọn theo cuộn | Cơ chế giảm chiều cao/đệm của topbar khi người dùng cuộn xuống. |
 | Thanh trên thông minh | Thanh trên thông minh | Topbar tự ẩn khi cuộn xuống và hiện lại khi cuộn lên để tiết kiệm không gian. |
@@ -162,7 +166,14 @@
 | Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
-| Single source of truth | Nguồn chuẩn duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| Single source of truth | Nguồn sự thật duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| Critical rendering path | Đường găng hiển thị đầu trang | Chuỗi tài nguyên và bước xử lý bắt buộc để nội dung đầu trang hiển thị; càng ngắn thì tải cảm nhận càng mượt. |
+| Lazy load | Nạp trễ theo nhu cầu | Chỉ nạp tài nguyên khi thực sự cần hoặc khi trình duyệt rảnh, giúp giảm tải ban đầu. |
+| Script blocking | Tập lệnh chặn hiển thị | Tình trạng script chặn parser/render trong giai đoạn đầu trang, làm tăng thời gian hiển thị nội dung hữu ích. |
+| Invariant | Điều kiện bất biến | Điều kiện phải luôn đúng ở mọi trạng thái chạy; khi vi phạm cần cảnh báo rõ để tránh vỡ hành vi nền tảng. |
+| Regression | Lỗi hồi quy | Lỗi phát sinh sau khi sửa hoặc thêm tính năng mới làm hỏng hành vi vốn đang chạy đúng trước đó. |
+| Backward compatibility | Tương thích ngược | Khả năng giữ cho hệ thống mới vẫn đọc/chạy đúng với dữ liệu hoặc hành vi cũ mà không làm hỏng luồng hiện tại. |
+| Migration key | Di trú khóa lưu trữ | Quy trình chuyển dữ liệu từ khóa lưu trữ cũ sang khóa mới (ví dụ `tc_world` sang `tc_tone`) mà không mất trạng thái người dùng. |
 | LocalStorage (bộ nhớ cục bộ của trình duyệt) | LocalStorage | Bộ nhớ lưu cục bộ theo domain, giữ dữ liệu ngay cả khi tải lại trang. |
 | IndexedDB (kho dữ liệu cục bộ trình duyệt) | IndexedDB | Cơ chế lưu dữ liệu dạng kho trong trình duyệt, phù hợp lưu blob/ảnh và dữ liệu lớn theo phiên bản. |
 | Bộ chuyển đổi (adapter) | Bộ chuyển đổi | Lớp trung gian ánh xạ interface chung sang triển khai cụ thể để thay đổi backend mà không đập code. |

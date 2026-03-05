@@ -2,72 +2,150 @@
   if (window.__topbarBehaviorBound) return;
   window.__topbarBehaviorBound = true;
 
-  const WORLD_KEYS = ["nebula", "ocean", "ink", "origami", "arcade", "dunes", "chrome", "circuit"];
-  const STORAGE_KEY = "tc_world";
-
-  const normalizeWorldKey = (key) => {
-    const raw = typeof key === "string" ? key.trim().toLowerCase() : "";
-    return WORLD_KEYS.includes(raw) ? raw : null;
-  };
-
-  const readStoredWorld = () => {
-    try {
-      return normalizeWorldKey(localStorage.getItem(STORAGE_KEY));
-    } catch (_err) {
-      return null;
-    }
-  };
-
-  const getCurrentWorld = () => normalizeWorldKey(document.documentElement?.getAttribute("data-world"));
-
-  const dispatchWorldChanged = (world, source) => {
-    document.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world, source } }));
-  };
-
-  const setToneWorld = (key, options = {}) => {
-    const source = typeof options.source === "string" ? options.source : "sync";
-    const persist = options.persist !== false;
-    let next = normalizeWorldKey(key);
-    if (!next) {
-      next = readStoredWorld() || "chrome";
+  const ensureThemeConfig = (callback) => {
+    if (window.tcThemeConfig) {
+      callback();
+      return;
     }
 
-    const prev = document.documentElement.getAttribute("data-world");
-    document.documentElement.setAttribute("data-world", next);
+    if (!window.__tcThemeConfigLoadPromise) {
+      const currentSrc = document.currentScript?.src || "";
+      const fallbackBase = window.location.pathname.includes("/worlds/") || window.location.pathname.includes("/spaces/")
+        ? "../scripts/theme_config.js"
+        : "./scripts/theme_config.js";
+      const themeConfigUrl = currentSrc ? new URL("./theme_config.js", currentSrc).href : fallbackBase;
 
-    if (persist) {
+      window.__tcThemeConfigLoadPromise = new Promise((resolve) => {
+        const done = () => resolve(window.tcThemeConfig || null);
+        const existing = document.querySelector('script[data-tc-theme-config="1"]');
+        if (existing) {
+          if (window.tcThemeConfig) {
+            done();
+            return;
+          }
+          existing.addEventListener("load", done, { once: true });
+          existing.addEventListener("error", done, { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = themeConfigUrl;
+        script.async = false;
+        script.defer = false;
+        script.dataset.tcThemeConfig = "1";
+        script.addEventListener("load", done, { once: true });
+        script.addEventListener("error", done, { once: true });
+        document.head.appendChild(script);
+      });
+    }
+
+    window.__tcThemeConfigLoadPromise.finally(callback);
+  };
+
+  const initTopbarBehavior = () => {
+    const themeConfig = window.tcThemeConfig || {};
+    const toneList = Array.isArray(themeConfig.TONES) ? themeConfig.TONES : [];
+    let toneKeysFromConfig = Array.isArray(themeConfig.TONE_KEYS)
+      ? themeConfig.TONE_KEYS
+      : toneList
+        .map((tone) => tone?.key)
+        .filter((key) => typeof key === "string" && key.trim());
+    if (!toneKeysFromConfig.length) {
+      toneKeysFromConfig = Array.from(document.querySelectorAll("[data-world]"))
+        .map((node) => node.getAttribute("data-world"))
+        .filter((key) => typeof key === "string" && key.trim());
+    }
+    if (!toneKeysFromConfig.length) {
+      const rootTone = document.documentElement?.getAttribute("data-world");
+      if (typeof rootTone === "string" && rootTone.trim()) {
+        toneKeysFromConfig = [rootTone];
+      }
+    }
+    const TONE_KEYS = toneKeysFromConfig
+      .map((key) => key.trim().toLowerCase())
+      .filter((key, index, list) => key && list.indexOf(key) === index);
+    const normalizeToneKey = typeof themeConfig.normalizeToneKey === "function"
+      ? themeConfig.normalizeToneKey
+      : (key) => {
+        const raw = typeof key === "string" ? key.trim().toLowerCase() : "";
+        return TONE_KEYS.includes(raw) ? raw : null;
+      };
+    const DEFAULT_TONE = normalizeToneKey(themeConfig.DEFAULT_TONE) || TONE_KEYS[0] || "origami";
+    const TONE_STORAGE_KEY = typeof themeConfig.STORAGE_KEY === "string" ? themeConfig.STORAGE_KEY : "tc_tone";
+    const LEGACY_TONE_STORAGE_KEY = typeof themeConfig.LEGACY_STORAGE_KEY === "string"
+      ? themeConfig.LEGACY_STORAGE_KEY
+      : "tc_world";
+
+    const readStoredTone = () => {
       try {
-        if (localStorage.getItem(STORAGE_KEY) !== next) {
-          localStorage.setItem(STORAGE_KEY, next);
+        const storedTone = normalizeToneKey(localStorage.getItem(TONE_STORAGE_KEY));
+        if (storedTone) {
+          return storedTone;
+        }
+        const legacyTone = normalizeToneKey(localStorage.getItem(LEGACY_TONE_STORAGE_KEY));
+        if (legacyTone) {
+          localStorage.setItem(TONE_STORAGE_KEY, legacyTone);
+          return legacyTone;
         }
       } catch (_err) {}
-    }
+      return null;
+    };
 
-    if (prev !== next || options.forceDispatch === true) {
-      dispatchWorldChanged(next, source);
-    }
+    const getCurrentTone = () => normalizeToneKey(document.documentElement?.getAttribute("data-world"));
 
-    return next;
-  };
+    const dispatchWorldChanged = (tone, source) => {
+      document.dispatchEvent(new CustomEvent("tc-world-changed", { detail: { world: tone, tone, source } }));
+    };
 
-  const syncToneWorld = (source = "init") => {
-    const stored = readStoredWorld();
-    return setToneWorld(stored || "chrome", { source, persist: true });
-  };
+    const setToneState = (key, options = {}) => {
+      const source = typeof options.source === "string" ? options.source : "sync";
+      const persist = options.persist !== false;
+      let next = normalizeToneKey(key);
+      if (!next) {
+        next = readStoredTone() || getCurrentTone() || DEFAULT_TONE;
+      }
 
-  const bindToneStorageSync = () => {
-    window.addEventListener("storage", (event) => {
-      if (event.key !== STORAGE_KEY) return;
-      setToneWorld(event.newValue, { source: "storage", persist: false });
-    });
-  };
+      const prev = document.documentElement.getAttribute("data-world");
+      document.documentElement.setAttribute("data-world", next);
 
-  window.tcToneSync = {
-    keys: [...WORLD_KEYS],
-    storageKey: STORAGE_KEY,
-    getWorld: () => getCurrentWorld() || readStoredWorld() || "chrome",
-    setWorld: (key) => setToneWorld(key, { source: "api-write", persist: true })
-  };
+      if (persist) {
+        try {
+          if (localStorage.getItem(TONE_STORAGE_KEY) !== next) {
+            localStorage.setItem(TONE_STORAGE_KEY, next);
+          }
+        } catch (_err) {}
+      }
+
+      if (prev !== next || options.forceDispatch === true) {
+        dispatchWorldChanged(next, source);
+      }
+
+      return next;
+    };
+
+    const syncToneState = (source = "init") => {
+      const storedTone = readStoredTone();
+      return setToneState(storedTone || getCurrentTone() || DEFAULT_TONE, { source, persist: true });
+    };
+
+    const bindToneStorageSync = () => {
+      window.addEventListener("storage", (event) => {
+        if (event.key !== TONE_STORAGE_KEY && event.key !== LEGACY_TONE_STORAGE_KEY) return;
+        const shouldPersist = event.key === LEGACY_TONE_STORAGE_KEY;
+        setToneState(event.newValue, { source: "storage", persist: shouldPersist });
+      });
+    };
+
+    window.tcToneSync = {
+      keys: [...TONE_KEYS],
+      toneKeys: [...TONE_KEYS],
+      storageKey: TONE_STORAGE_KEY,
+      legacyStorageKey: LEGACY_TONE_STORAGE_KEY,
+      getWorld: () => getCurrentTone() || readStoredTone() || DEFAULT_TONE,
+      setWorld: (key) => setToneState(key, { source: "api-write", persist: true }),
+      getTone: () => getCurrentTone() || readStoredTone() || DEFAULT_TONE,
+      setTone: (key) => setToneState(key, { source: "api-write", persist: true })
+    };
 
   const bindAdminLink = () => {
     const adminLink = document.getElementById("portalAdminLink");
@@ -180,7 +258,7 @@
     };
 
     const syncWorldLabel = () => {
-      const current = getCurrentWorld() || "chrome";
+      const current = getCurrentTone() || DEFAULT_TONE;
       const label = getLabelMap().get(current);
       if (worldLabel && label) {
         const prefix = worldLabel.dataset?.prefix || "";
@@ -207,7 +285,7 @@
       const item = event.target.closest("[data-world]");
       if (!item || !worldMenu.contains(item)) return;
       event.preventDefault();
-      setToneWorld(item.getAttribute("data-world"), { source: "switcher", persist: true });
+      setToneState(item.getAttribute("data-world"), { source: "switcher", persist: true });
       syncWorldLabel();
       setMenuOpen(false);
       worldBtn.focus();
@@ -218,7 +296,7 @@
       galleryGrid.addEventListener("click", (event) => {
         const card = event.target.closest('[data-world-card="1"]');
         if (!card || !galleryGrid.contains(card)) return;
-        setToneWorld(card.dataset.world, { source: "gallery", persist: true });
+        setToneState(card.dataset.world, { source: "gallery", persist: true });
         syncWorldLabel();
         if (worldMenu.dataset.open === "1") {
           setMenuOpen(false);
@@ -229,7 +307,7 @@
         if (!card || !galleryGrid.contains(card) || document.activeElement !== card) return;
         if (event.key === "Enter" || event.key === " " || event.key === "Spacebar" || event.key === "Space") {
           event.preventDefault();
-          setToneWorld(card.dataset.world, { source: "gallery", persist: true });
+          setToneState(card.dataset.world, { source: "gallery", persist: true });
           syncWorldLabel();
           if (worldMenu.dataset.open === "1") {
             setMenuOpen(false);
@@ -430,12 +508,15 @@
     window.addEventListener("resize", onScroll);
   };
 
-  syncToneWorld("init");
-  bindToneStorageSync();
-  bindAdminLink();
-  bindPortalMenu();
-  bindToneSwitcher();
-  bindCommunityMenus();
-  bindQuickActions();
-  bindScrollBehavior();
+    syncToneState("init");
+    bindToneStorageSync();
+    bindAdminLink();
+    bindPortalMenu();
+    bindToneSwitcher();
+    bindCommunityMenus();
+    bindQuickActions();
+    bindScrollBehavior();
+  };
+
+  ensureThemeConfig(initTopbarBehavior);
 })();

@@ -92,51 +92,6 @@
           transform: none;
         }
       }
-      @media (max-width: 520px) {
-        .tc-topbar > .max-w-6xl,
-        .tc-topbar > .tc-shell {
-          flex-wrap: wrap;
-          row-gap: 8px;
-          column-gap: 8px;
-        }
-        .tc-topbar > .max-w-6xl > :nth-child(1),
-        .tc-topbar > .tc-shell > :nth-child(1) {
-          order: 1;
-          min-width: 0;
-        }
-        .tc-topbar > .max-w-6xl > :nth-child(2),
-        .tc-topbar > .tc-shell > :nth-child(2) {
-          order: 3;
-          flex: 1 1 100%;
-          min-width: 0;
-        }
-        .tc-topbar > .max-w-6xl > :nth-child(3),
-        .tc-topbar > .tc-shell > :nth-child(3) {
-          order: 2;
-          margin-left: auto;
-        }
-        .tc-topbar #portalSwitcher,
-        .tc-topbar #portalBtn {
-          width: 100%;
-          max-width: 100%;
-        }
-        .tc-topbar [data-i18n="topbar.slogan"] {
-          display: none;
-        }
-        .tc-topbar .tc-brand {
-          max-width: 160px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        #topbarAuthSlot #userName {
-          display: none;
-        }
-        .tc-topbar a,
-        .tc-topbar button {
-          min-height: 40px;
-        }
-      }
     </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -146,7 +101,7 @@
       font-family: "Inter", "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
   </style></head>
-<body class="font-sans tc-multiverse" data-page="lobby">
+<body class="font-sans tc-multiverse" data-page="lobby" data-enable-hex-inspector="1">
   <!-- TOPBAR -->
       <div id="tcTopbarMount"></div>
 
@@ -433,6 +388,7 @@
     </section>
 
     <!-- PORTAL HUB -->
+    <!-- Portal cards giữ markup tĩnh cho SEO/CLS; route được kiểm tra đồng bộ với world_registry trong lobby_orchestrator -->
     <section class="tc-shell pb-12" id="portalHub">
       <div class="flex items-end justify-between mb-6">
         <div>
@@ -696,6 +652,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
         <div class="space-y-3">
           <h3 class="text-sm font-semibold" data-i18n="footer.columns.tools.title">Công cụ</h3>
+          <!-- Footer tools giữ link tĩnh để ổn định layout, đồng thời được kiểm tra route-drift theo world_registry -->
           <ul class="space-y-2">
             <li><a class="hover:text-white" href="./worlds/threadcolor.html" data-i18n="footer.columns.tools.threadcolor">Tra mã chỉ (HEX/Ảnh)</a></li>
             <li><a class="hover:text-white" href="./worlds/threadvault.html" data-i18n="footer.columns.tools.threadvault">Kho chỉ</a></li>
@@ -896,17 +853,18 @@
     </div>
   </div>
 
-  <script src="./scripts/site_meta.js"></script>
+  <script src="./scripts/site_meta.js" defer></script>
   <script src="./i18n.js"></script>
   <script type="module" src="./auth.js"></script>
   <script type="module" src="./scripts/hex_hub.js"></script>
   <script type="module" src="./scripts/workbench_bridge.js"></script>
   <script src="./scripts/support_hub.js" defer></script>
   <script src="./scripts/hero_fx.js" defer></script>
+  <script src="./scripts/world_registry.js" defer></script>
   <script src="./scripts/lobby_orchestrator.js" defer></script>
   <script src="./scripts/command_palette.js" defer></script>
   <script>
-    (() => {
+    document.addEventListener("DOMContentLoaded", () => {
       const meta = window.__SC_META__?.contact || {};
       const email = meta.email || "";
       const phone = meta.phone || "";
@@ -921,7 +879,7 @@
       if (phoneText && phone) phoneText.textContent = phone;
       if (phoneLink && phone) phoneLink.href = `tel:${phone}`;
       if (zaloLink && zaloUrl) zaloLink.href = zaloUrl;
-    })();
+    });
   </script>
   
   
@@ -1103,7 +1061,7 @@
       refreshForgeUI();
     })();
   </script>
-  <script src="./quick_actions.js"></script>
+  <script src="./quick_actions.js" defer></script>
   <span class="sr-only" data-i18n="toast.copied">Đã sao chép!</span>
 
   <script src="./scripts/topbar_render.js" defer></script>
