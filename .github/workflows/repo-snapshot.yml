@@ -73,23 +73,26 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          SARIF_PATH="${RUNNER_TEMP}/gitleaks/gitleaks-results.sarif"
+          mkdir -p "$(dirname "$SARIF_PATH")"
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info || code=$?
           fi
+          echo "sarif_path=${SARIF_PATH}" >> "$GITHUB_OUTPUT"
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
       - name: Kiểm tra file SARIF trước khi tải
         if: always()
         shell: bash
         run: |
-          sarif_path="results.sarif"
-          if [ -f "${sarif_path}" ]; then
+          sarif_path="${{ steps.gitleaks_scan.outputs.sarif_path }}"
+          if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
             echo "Tim thay ${sarif_path}; se upload artifact."
           else
-            echo "Khong tim thay results.sarif de upload."
+            echo "Khong tim thay file SARIF de upload (sarif_path=${sarif_path:-<empty>})."
           fi
       - name: Tải kết quả gitleaks
         if: always()
@@ -97,22 +100,22 @@ jobs:
         with:
           name: repo-snapshot-gitleaks
           if-no-files-found: warn
-          path: results.sarif
+          path: ${{ steps.gitleaks_scan.outputs.sarif_path }}
       - name: Đánh giá kết quả gitleaks
         shell: bash
         run: |
           code="${{ steps.gitleaks_scan.outputs.exit_code }}"
-          sarif_path="results.sarif"
+          sarif_path="${{ steps.gitleaks_scan.outputs.sarif_path }}"
           sarif_exists=false
-          findings_count=0
+          findings_count_filtered=0
 
-          if [ -f "${sarif_path}" ]; then
+          if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
             sarif_exists=true
-            findings_count="$(node -e 'const fs=require("fs"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; c=runs.reduce((sum, run) => sum + (Array.isArray(run?.results)?run.results.length:0), 0); } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
+            findings_count_filtered="$(node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const uriBase=path.basename(String(uri)); if (uriBase !== reportBase) c += 1; } } } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
             parse_code=$?
             if [ "${parse_code}" -ne 0 ]; then
               echo "Khong doc duoc SARIF (parse_code=${parse_code})."
-              findings_count=0
+              findings_count_filtered=0
               if [ -z "${code}" ] || [ "${code}" = "0" ]; then
                 code="${parse_code}"
               fi
@@ -122,11 +125,11 @@ jobs:
           echo "exit_code=${code:-<empty>}"
           echo "sarif_path=${sarif_path}"
           echo "sarif_exists=${sarif_exists}"
-          echo "findings_count=${findings_count}"
+          echo "findings_count_filtered=${findings_count_filtered}"
 
-          if [ "${sarif_exists}" = "true" ] && [ "${findings_count}" -gt 0 ]; then
+          if [ "${sarif_exists}" = "true" ] && [ "${findings_count_filtered}" -gt 0 ]; then
             echo "Top findings metadata (toi da 5):"
-            node -e 'const fs=require("fs"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; const out=[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; out.push(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); if (out.length >= 5) break; } if (out.length >= 5) break; } if (out.length === 0) { console.log("(khong co metadata finding de in)"); } else { for (const row of out) console.log(row); } } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
+            node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; let shown=0; outer: for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; if (path.basename(String(uri)) === reportBase) continue; console.log(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); shown += 1; if (shown >= 5) break outer; } } if (shown === 0) console.log("(khong co metadata finding de in)"); } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
             echo "Phat hien bi mat, dung workflow."
             exit 2
           fi
@@ -262,23 +265,26 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          SARIF_PATH="${RUNNER_TEMP}/gitleaks/gitleaks-results.sarif"
+          mkdir -p "$(dirname "$SARIF_PATH")"
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info || code=$?
           fi
+          echo "sarif_path=${SARIF_PATH}" >> "$GITHUB_OUTPUT"
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
       - name: Kiểm tra file SARIF trước khi tải
         if: always()
         shell: bash
         run: |
-          sarif_path="results.sarif"
-          if [ -f "${sarif_path}" ]; then
+          sarif_path="${{ steps.gitleaks_scan.outputs.sarif_path }}"
+          if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
             echo "Tim thay ${sarif_path}; se upload artifact."
           else
-            echo "Khong tim thay results.sarif de upload."
+            echo "Khong tim thay file SARIF de upload (sarif_path=${sarif_path:-<empty>})."
           fi
       - name: Tải kết quả gitleaks
         if: always()
@@ -286,22 +292,22 @@ jobs:
         with:
           name: repo-snapshot-gitleaks
           if-no-files-found: warn
-          path: results.sarif
+          path: ${{ steps.gitleaks_scan.outputs.sarif_path }}
       - name: Đánh giá kết quả gitleaks
         shell: bash
         run: |
           code="${{ steps.gitleaks_scan.outputs.exit_code }}"
-          sarif_path="results.sarif"
+          sarif_path="${{ steps.gitleaks_scan.outputs.sarif_path }}"
           sarif_exists=false
-          findings_count=0
+          findings_count_filtered=0
 
-          if [ -f "${sarif_path}" ]; then
+          if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
             sarif_exists=true
-            findings_count="$(node -e 'const fs=require("fs"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; c=runs.reduce((sum, run) => sum + (Array.isArray(run?.results)?run.results.length:0), 0); } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
+            findings_count_filtered="$(node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const uriBase=path.basename(String(uri)); if (uriBase !== reportBase) c += 1; } } } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
             parse_code=$?
             if [ "${parse_code}" -ne 0 ]; then
               echo "Khong doc duoc SARIF (parse_code=${parse_code})."
-              findings_count=0
+              findings_count_filtered=0
               if [ -z "${code}" ] || [ "${code}" = "0" ]; then
                 code="${parse_code}"
               fi
@@ -311,11 +317,11 @@ jobs:
           echo "exit_code=${code:-<empty>}"
           echo "sarif_path=${sarif_path}"
           echo "sarif_exists=${sarif_exists}"
-          echo "findings_count=${findings_count}"
+          echo "findings_count_filtered=${findings_count_filtered}"
 
-          if [ "${sarif_exists}" = "true" ] && [ "${findings_count}" -gt 0 ]; then
+          if [ "${sarif_exists}" = "true" ] && [ "${findings_count_filtered}" -gt 0 ]; then
             echo "Top findings metadata (toi da 5):"
-            node -e 'const fs=require("fs"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; const out=[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; out.push(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); if (out.length >= 5) break; } if (out.length >= 5) break; } if (out.length === 0) { console.log("(khong co metadata finding de in)"); } else { for (const row of out) console.log(row); } } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
+            node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; let shown=0; outer: for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; if (path.basename(String(uri)) === reportBase) continue; console.log(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); shown += 1; if (shown >= 5) break outer; } } if (shown === 0) console.log("(khong co metadata finding de in)"); } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
             echo "Phat hien bi mat, dung workflow."
             exit 2
           fi
