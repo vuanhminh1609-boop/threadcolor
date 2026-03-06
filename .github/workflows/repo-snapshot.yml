@@ -67,13 +67,23 @@ jobs:
         shell: bash
         run: |
           echo "Gitleaks commit range: '${{ steps.gitleaks_range.outputs.range }}'"
+      - name: Dọn file SARIF cũ trước khi quét
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Quét workspace tìm *.sarif/results.sarif"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
+          echo "Xóa các file SARIF cũ trong workspace"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -delete
+          echo "Danh sách SARIF còn lại sau dọn:"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
       - name: Quét bí mật trước khi xuất snapshot
         id: gitleaks_scan
         shell: bash
         continue-on-error: true
         run: |
           set -euo pipefail
-          SARIF_PATH="${RUNNER_TEMP}/gitleaks/gitleaks-results.sarif"
+          SARIF_PATH="${RUNNER_TEMP}/gitleaks/results.sarif"
           mkdir -p "$(dirname "$SARIF_PATH")"
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
@@ -111,7 +121,7 @@ jobs:
 
           if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
             sarif_exists=true
-            findings_count_filtered="$(node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const uriBase=path.basename(String(uri)); if (uriBase !== reportBase) c += 1; } } } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
+            findings_count_filtered="$(node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; let c=0; const normalize=(u)=>String(u||"").replace(/\\\\/g,"/").replace(/^(\\.\\/)+/, ""); try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=normalize(r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""); if (uri !== reportBase) c += 1; } } } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
             parse_code=$?
             if [ "${parse_code}" -ne 0 ]; then
               echo "Khong doc duoc SARIF (parse_code=${parse_code})."
@@ -129,7 +139,7 @@ jobs:
 
           if [ "${sarif_exists}" = "true" ] && [ "${findings_count_filtered}" -gt 0 ]; then
             echo "Top findings metadata (toi da 5):"
-            node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; let shown=0; outer: for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; if (path.basename(String(uri)) === reportBase) continue; console.log(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); shown += 1; if (shown >= 5) break outer; } } if (shown === 0) console.log("(khong co metadata finding de in)"); } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
+            node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; const normalize=(u)=>String(u||"").replace(/\\\\/g,"/").replace(/^(\\.\\/)+/, ""); try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; let shown=0; outer: for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=normalize(r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""); const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; if (uri === reportBase) continue; console.log(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); shown += 1; if (shown >= 5) break outer; } } if (shown === 0) console.log("(khong co metadata finding de in)"); } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
             echo "Phat hien bi mat, dung workflow."
             exit 2
           fi
@@ -259,13 +269,23 @@ jobs:
         shell: bash
         run: |
           echo "Gitleaks commit range: '${{ steps.gitleaks_range.outputs.range }}'"
+      - name: Dọn file SARIF cũ trước khi quét
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Quét workspace tìm *.sarif/results.sarif"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
+          echo "Xóa các file SARIF cũ trong workspace"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -delete
+          echo "Danh sách SARIF còn lại sau dọn:"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
       - name: Quét bí mật trước khi xuất snapshot
         id: gitleaks_scan
         shell: bash
         continue-on-error: true
         run: |
           set -euo pipefail
-          SARIF_PATH="${RUNNER_TEMP}/gitleaks/gitleaks-results.sarif"
+          SARIF_PATH="${RUNNER_TEMP}/gitleaks/results.sarif"
           mkdir -p "$(dirname "$SARIF_PATH")"
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
@@ -303,7 +323,7 @@ jobs:
 
           if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
             sarif_exists=true
-            findings_count_filtered="$(node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const uriBase=path.basename(String(uri)); if (uriBase !== reportBase) c += 1; } } } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
+            findings_count_filtered="$(node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; let c=0; const normalize=(u)=>String(u||"").replace(/\\\\/g,"/").replace(/^(\\.\\/)+/, ""); try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=normalize(r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""); if (uri !== reportBase) c += 1; } } } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
             parse_code=$?
             if [ "${parse_code}" -ne 0 ]; then
               echo "Khong doc duoc SARIF (parse_code=${parse_code})."
@@ -321,7 +341,7 @@ jobs:
 
           if [ "${sarif_exists}" = "true" ] && [ "${findings_count_filtered}" -gt 0 ]; then
             echo "Top findings metadata (toi da 5):"
-            node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; let shown=0; outer: for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; if (path.basename(String(uri)) === reportBase) continue; console.log(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); shown += 1; if (shown >= 5) break outer; } } if (shown === 0) console.log("(khong co metadata finding de in)"); } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
+            node -e 'const fs=require("fs"); const path=require("path"); const p=process.argv[1]; const normalize=(u)=>String(u||"").replace(/\\\\/g,"/").replace(/^(\\.\\/)+/, ""); try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const reportBase=path.basename(p || ""); const runs=Array.isArray(d?.runs)?d.runs:[]; let shown=0; outer: for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=normalize(r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""); const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; if (uri === reportBase) continue; console.log(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); shown += 1; if (shown >= 5) break outer; } } if (shown === 0) console.log("(khong co metadata finding de in)"); } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
             echo "Phat hien bi mat, dung workflow."
             exit 2
           fi
