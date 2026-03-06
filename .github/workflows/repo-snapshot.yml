@@ -125,6 +125,8 @@ jobs:
           echo "findings_count=${findings_count}"
 
           if [ "${sarif_exists}" = "true" ] && [ "${findings_count}" -gt 0 ]; then
+            echo "Top findings metadata (toi da 5):"
+            node -e 'const fs=require("fs"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; const out=[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; out.push(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); if (out.length >= 5) break; } if (out.length >= 5) break; } if (out.length === 0) { console.log("(khong co metadata finding de in)"); } else { for (const row of out) console.log(row); } } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
             echo "Phat hien bi mat, dung workflow."
             exit 2
           fi
@@ -312,6 +314,8 @@ jobs:
           echo "findings_count=${findings_count}"
 
           if [ "${sarif_exists}" = "true" ] && [ "${findings_count}" -gt 0 ]; then
+            echo "Top findings metadata (toi da 5):"
+            node -e 'const fs=require("fs"); const p=process.argv[1]; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; const out=[]; for (const run of runs) { const results=Array.isArray(run?.results)?run.results:[]; for (const r of results) { const uri=r?.locations?.[0]?.physicalLocation?.artifactLocation?.uri || ""; const line=r?.locations?.[0]?.physicalLocation?.region?.startLine || ""; out.push(`ruleId=${r?.ruleId || ""}; uri=${uri}; line=${line}`); if (out.length >= 5) break; } if (out.length >= 5) break; } if (out.length === 0) { console.log("(khong co metadata finding de in)"); } else { for (const row of out) console.log(row); } } catch (err) { console.log("(khong doc duoc metadata tu SARIF)"); }' "${sarif_path}" || true
             echo "Phat hien bi mat, dung workflow."
             exit 2
           fi
