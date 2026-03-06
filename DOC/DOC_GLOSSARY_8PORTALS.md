@@ -206,6 +206,7 @@
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main |
 | Feature Flag | Cờ tính năng | Cơ chế bật/tắt tính năng theo điều kiện như query param, user role… |
 | Quét bí mật (secret scan) | Quét bí mật (secret scan) | Quét tìm khoá/bí mật trong code và lịch sử để ngăn rò rỉ. |
+| Ignore-inline | Bỏ qua theo dòng | Cách bỏ qua false positive bằng chú thích ngay tại đúng dòng bị cảnh báo, thay vì mở rộng phạm vi bỏ qua toàn file/thư mục. |
 | gitleaks:allow (chú thích để Gitleaks bỏ qua một phát hiện cụ thể ở đúng dòng code) | gitleaks:allow | Comment gắn ở đúng dòng nhằm bỏ qua một phát hiện cụ thể, không ảnh hưởng phạm vi khác. |
 | Siết CI (harden CI) | Siết CI (harden CI) | Siết quy trình CI/CD để giảm rủi ro (thêm kiểm tra, chỉnh phân quyền). |
 | additionalProperties | additionalProperties | Tuy chon cua JSON Schema cho phep field phat sinh |

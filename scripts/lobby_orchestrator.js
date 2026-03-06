@@ -29,9 +29,9 @@
     .filter((item) => item.type === "world" || item.type === "utility")
     .reduce((acc, item) => {
       acc[item.id] = {
-        labelKey: item.recentLabelI18nKey || item.i18nKey || "",
+        labelKey: item.recentLabelI18nKey || item.i18nKey || "", // gitleaks:allow
         labelFallback: item.recentLabel || item.label || item.id,
-        descKey: item.descI18nKey || "",
+        descKey: item.descI18nKey || "", // gitleaks:allow
         descFallback: item.desc || "",
         url: resolveRegistryUrl(item.id, "./")
       };
