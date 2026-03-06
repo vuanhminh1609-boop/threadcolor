@@ -76,9 +76,9 @@ jobs:
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
           fi
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
       - name: Kiểm tra file SARIF trước khi tải
@@ -263,9 +263,9 @@ jobs:
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
           fi
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
       - name: Kiểm tra file SARIF trước khi tải

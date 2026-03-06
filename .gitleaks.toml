@@ -1,0 +1,16 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Bo qua false positive I18nKey trong lobby orchestrator"
+condition = "AND"
+paths = [
+  '''scripts/lobby_orchestrator\.js'''
+]
+regexTarget = "line"
+regexes = [
+  '''I18nKey'''
+]

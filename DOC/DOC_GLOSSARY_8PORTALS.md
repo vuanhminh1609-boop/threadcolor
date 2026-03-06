@@ -175,6 +175,9 @@
 | SARIF | Báo cáo SARIF | Định dạng báo cáo bảo mật chuẩn để lưu kết quả quét và phục vụ phân tích trong CI/CD hoặc nền tảng mã nguồn. |
 | Exit code mapping | Quy tắc diễn giải mã thoát | Quy ước ánh xạ từng mã thoát sang kết luận nghiệp vụ (ví dụ: phát hiện bí mật hay lỗi hạ tầng) để tránh hiểu sai trạng thái CI. |
 | Fingerprint | Dấu định danh phát hiện | Chuỗi định danh ổn định của một cảnh báo quét, dùng để allowlist chính xác theo từng phát hiện thay vì bỏ qua rộng. |
+| Allowlist | Danh sách cho phép hẹp | Tập ngoại lệ được chỉ định chính xác theo điều kiện cụ thể để bỏ qua cảnh báo nhầm mà không nới lỏng quét toàn cục. |
+| regexTarget | Đích áp dụng regex | Trường dữ liệu mà biểu thức chính quy sẽ kiểm tra (ví dụ theo dòng `line`) khi xét điều kiện allowlist. |
+| Condition AND/OR | Điều kiện kết hợp | Quy tắc kết hợp nhiều điều kiện allowlist; `AND` yêu cầu đồng thời thỏa tất cả điều kiện, `OR` chỉ cần thỏa một điều kiện. |
 | Invariant | Điều kiện bất biến | Điều kiện phải luôn đúng ở mọi trạng thái chạy; khi vi phạm cần cảnh báo rõ để tránh vỡ hành vi nền tảng. |
 | Regression | Lỗi hồi quy | Lỗi phát sinh sau khi sửa hoặc thêm tính năng mới làm hỏng hành vi vốn đang chạy đúng trước đó. |
 | Backward compatibility | Tương thích ngược | Khả năng giữ cho hệ thống mới vẫn đọc/chạy đúng với dữ liệu hoặc hành vi cũ mà không làm hỏng luồng hiện tại. |
