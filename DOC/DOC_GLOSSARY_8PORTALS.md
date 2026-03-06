@@ -208,6 +208,8 @@
 | Quét bí mật (secret scan) | Quét bí mật (secret scan) | Quét tìm khoá/bí mật trong code và lịch sử để ngăn rò rỉ. |
 | Tự-dính (self-hit) | Tự-dính (self-hit) | Trường hợp công cụ quét phát hiện mẫu nghi vấn nằm trong chính file báo cáo do nó vừa sinh ra, gây nhiễu kết quả nếu không lọc. |
 | RUNNER_TEMP | Thư mục tạm của runner | Biến môi trường chỉ vùng lưu tệp tạm trong job CI, phù hợp đặt file trung gian như báo cáo SARIF để tránh ghi vào workspace. |
+| Heredoc | Khối chuỗi nhiều dòng | Cú pháp truyền trực tiếp đoạn nội dung nhiều dòng cho lệnh shell (ví dụ `node <<'NODE'`) để tránh lỗi escape/quoting. |
+| Chuẩn hoá đường dẫn | Chuẩn hoá đường dẫn | Quy trình đưa đường dẫn về định dạng nhất quán (ví dụ đổi `\` sang `/`, bỏ `./`) trước khi so khớp điều kiện. |
 | Ignore-inline | Bỏ qua theo dòng | Cách bỏ qua false positive bằng chú thích ngay tại đúng dòng bị cảnh báo, thay vì mở rộng phạm vi bỏ qua toàn file/thư mục. |
 | gitleaks:allow (chú thích để Gitleaks bỏ qua một phát hiện cụ thể ở đúng dòng code) | gitleaks:allow | Comment gắn ở đúng dòng nhằm bỏ qua một phát hiện cụ thể, không ảnh hưởng phạm vi khác. |
 | Siết CI (harden CI) | Siết CI (harden CI) | Siết quy trình CI/CD để giảm rủi ro (thêm kiểm tra, chỉnh phân quyền). |
