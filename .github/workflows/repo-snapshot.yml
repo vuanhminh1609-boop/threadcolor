@@ -131,7 +131,9 @@ jobs:
           }
 
           const sarifExists = !!sarifPath && fs.existsSync(sarifPath);
-          let findings = 0;
+          let findingsTotal = 0;
+          let selfHitCount = 0;
+          let findingsFiltered = 0;
           const top = [];
 
           if (sarifExists) {
@@ -150,15 +152,20 @@ jobs:
                   const ruleId = r.ruleId || '';
                   const isSelf = uri === reportBase;
 
-                  if (!isSelf) findings += 1;
+                  findingsTotal += 1;
+                  if (isSelf) {
+                    selfHitCount += 1;
+                  } else {
+                    findingsFiltered += 1;
+                  }
 
                   if (top.length < 5) {
-                    top.push({ ruleId, uri, line, self: isSelf });
+                    top.push({ ruleId, uri, line });
                   }
                 }
               }
             } catch (e) {
-              console.error('Loi parse SARIF:', e && e.message ? e.message : e);
+              console.error('Lỗi parse SARIF:', e && e.message ? e.message : e);
               process.exit(1);
             }
           }
@@ -166,25 +173,30 @@ jobs:
           console.log(`exit_code=${exitCode}`);
           console.log(`sarif_path=${sarifPath}`);
           console.log(`sarif_exists=${sarifExists}`);
-          console.log(`findings_count_filtered=${findings}`);
-          console.log('Top findings metadata (toi da 5):');
+          console.log(`findings_total=${findingsTotal}`);
+          console.log(`self_hit_count=${selfHitCount}`);
+          console.log(`findings_count_filtered=${findingsFiltered}`);
+          console.log('Top findings metadata (tối đa 5):');
           if (top.length === 0) {
-            console.log('(khong co metadata finding de in)');
+            console.log('(không có metadata finding để in)');
           } else {
             for (const t of top) {
-              console.log(`ruleId=${t.ruleId}; uri=${t.uri}; line=${t.line}; self=${t.self}`);
+              console.log(`ruleId=${t.ruleId}; uri=${t.uri}; line=${t.line}`);
             }
           }
 
           const code = String(exitCode || '0');
-          if (findings > 0) {
-            console.log('Phat hien bi mat, dung workflow.');
+          if (findingsFiltered > 0) {
+            console.log('Phát hiện bí mật, dừng workflow.');
             process.exit(2);
+          } else if (findingsTotal > 0 && selfHitCount === findingsTotal) {
+            console.log('Chỉ phát hiện tự-dính trong file báo cáo, bỏ qua.');
+            process.exit(0);
           } else if (code !== '' && code !== '0') {
-            console.log(`Gitleaks loi ha tang/cau hinh (code=${code}).`);
+            console.log(`Gitleaks lỗi hạ tầng/cấu hình (code=${code}).`);
             process.exit(Number(code) || 1);
           } else {
-            console.log('Khong co phat hien, tiep tuc.');
+            console.log('Không có phát hiện, tiếp tục.');
             process.exit(0);
           }
           NODE
@@ -368,7 +380,9 @@ jobs:
           }
 
           const sarifExists = !!sarifPath && fs.existsSync(sarifPath);
-          let findings = 0;
+          let findingsTotal = 0;
+          let selfHitCount = 0;
+          let findingsFiltered = 0;
           const top = [];
 
           if (sarifExists) {
@@ -387,15 +401,20 @@ jobs:
                   const ruleId = r.ruleId || '';
                   const isSelf = uri === reportBase;
 
-                  if (!isSelf) findings += 1;
+                  findingsTotal += 1;
+                  if (isSelf) {
+                    selfHitCount += 1;
+                  } else {
+                    findingsFiltered += 1;
+                  }
 
                   if (top.length < 5) {
-                    top.push({ ruleId, uri, line, self: isSelf });
+                    top.push({ ruleId, uri, line });
                   }
                 }
               }
             } catch (e) {
-              console.error('Loi parse SARIF:', e && e.message ? e.message : e);
+              console.error('Lỗi parse SARIF:', e && e.message ? e.message : e);
               process.exit(1);
             }
           }
@@ -403,25 +422,30 @@ jobs:
           console.log(`exit_code=${exitCode}`);
           console.log(`sarif_path=${sarifPath}`);
           console.log(`sarif_exists=${sarifExists}`);
-          console.log(`findings_count_filtered=${findings}`);
-          console.log('Top findings metadata (toi da 5):');
+          console.log(`findings_total=${findingsTotal}`);
+          console.log(`self_hit_count=${selfHitCount}`);
+          console.log(`findings_count_filtered=${findingsFiltered}`);
+          console.log('Top findings metadata (tối đa 5):');
           if (top.length === 0) {
-            console.log('(khong co metadata finding de in)');
+            console.log('(không có metadata finding để in)');
           } else {
             for (const t of top) {
-              console.log(`ruleId=${t.ruleId}; uri=${t.uri}; line=${t.line}; self=${t.self}`);
+              console.log(`ruleId=${t.ruleId}; uri=${t.uri}; line=${t.line}`);
             }
           }
 
           const code = String(exitCode || '0');
-          if (findings > 0) {
-            console.log('Phat hien bi mat, dung workflow.');
+          if (findingsFiltered > 0) {
+            console.log('Phát hiện bí mật, dừng workflow.');
             process.exit(2);
+          } else if (findingsTotal > 0 && selfHitCount === findingsTotal) {
+            console.log('Chỉ phát hiện tự-dính trong file báo cáo, bỏ qua.');
+            process.exit(0);
           } else if (code !== '' && code !== '0') {
-            console.log(`Gitleaks loi ha tang/cau hinh (code=${code}).`);
+            console.log(`Gitleaks lỗi hạ tầng/cấu hình (code=${code}).`);
             process.exit(Number(code) || 1);
           } else {
-            console.log('Khong co phat hien, tiep tuc.');
+            console.log('Không có phát hiện, tiếp tục.');
             process.exit(0);
           }
           NODE
