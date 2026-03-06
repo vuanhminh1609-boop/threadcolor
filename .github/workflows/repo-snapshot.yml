@@ -76,11 +76,21 @@ jobs:
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
           fi
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
+      - name: Kiểm tra file SARIF trước khi tải
+        if: always()
+        shell: bash
+        run: |
+          sarif_path="results.sarif"
+          if [ -f "${sarif_path}" ]; then
+            echo "Tim thay ${sarif_path}; se upload artifact."
+          else
+            echo "Khong tim thay results.sarif de upload."
+          fi
       - name: Tải kết quả gitleaks
         if: always()
         uses: actions/upload-artifact@v4
@@ -92,13 +102,42 @@ jobs:
         shell: bash
         run: |
           code="${{ steps.gitleaks_scan.outputs.exit_code }}"
-          if [ "${code}" = "2" ]; then
-            echo "Phát hiện bí mật, dừng workflow."
-            exit 2
-          elif [ -n "${code}" ] && [ "${code}" != "0" ]; then
-            echo "Gitleaks lỗi hạ tầng (code=${code})."
-            exit "${code}"
+          sarif_path="results.sarif"
+          sarif_exists=false
+          findings_count=0
+
+          if [ -f "${sarif_path}" ]; then
+            sarif_exists=true
+            findings_count="$(node -e 'const fs=require("fs"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; c=runs.reduce((sum, run) => sum + (Array.isArray(run?.results)?run.results.length:0), 0); } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
+            parse_code=$?
+            if [ "${parse_code}" -ne 0 ]; then
+              echo "Khong doc duoc SARIF (parse_code=${parse_code})."
+              findings_count=0
+              if [ -z "${code}" ] || [ "${code}" = "0" ]; then
+                code="${parse_code}"
+              fi
+            fi
           fi
+
+          echo "exit_code=${code:-<empty>}"
+          echo "sarif_path=${sarif_path}"
+          echo "sarif_exists=${sarif_exists}"
+          echo "findings_count=${findings_count}"
+
+          if [ "${sarif_exists}" = "true" ] && [ "${findings_count}" -gt 0 ]; then
+            echo "Phat hien bi mat, dung workflow."
+            exit 2
+          fi
+
+          if [ -z "${code}" ] || [ "${code}" != "0" ]; then
+            effective_code="${code:-1}"
+            echo "Gitleaks loi ha tang/cau hinh (code=${effective_code})."
+            echo "Hay kiem tra log buoc quet va artifact 'repo-snapshot-gitleaks' (${sarif_path})."
+            exit "${effective_code}"
+          fi
+
+          echo "Gitleaks: khong phat hien nghi van bi mat."
+          exit 0
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot
@@ -224,11 +263,21 @@ jobs:
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
           fi
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
+      - name: Kiểm tra file SARIF trước khi tải
+        if: always()
+        shell: bash
+        run: |
+          sarif_path="results.sarif"
+          if [ -f "${sarif_path}" ]; then
+            echo "Tim thay ${sarif_path}; se upload artifact."
+          else
+            echo "Khong tim thay results.sarif de upload."
+          fi
       - name: Tải kết quả gitleaks
         if: always()
         uses: actions/upload-artifact@v4
@@ -240,13 +289,42 @@ jobs:
         shell: bash
         run: |
           code="${{ steps.gitleaks_scan.outputs.exit_code }}"
-          if [ "${code}" = "2" ]; then
-            echo "Phát hiện bí mật, dừng workflow."
-            exit 2
-          elif [ -n "${code}" ] && [ "${code}" != "0" ]; then
-            echo "Gitleaks lỗi hạ tầng (code=${code})."
-            exit "${code}"
+          sarif_path="results.sarif"
+          sarif_exists=false
+          findings_count=0
+
+          if [ -f "${sarif_path}" ]; then
+            sarif_exists=true
+            findings_count="$(node -e 'const fs=require("fs"); const p=process.argv[1]; let c=0; try { const d=JSON.parse(fs.readFileSync(p,"utf8")); const runs=Array.isArray(d?.runs)?d.runs:[]; c=runs.reduce((sum, run) => sum + (Array.isArray(run?.results)?run.results.length:0), 0); } catch (err) { process.exit(3); } process.stdout.write(String(c));' "${sarif_path}")"
+            parse_code=$?
+            if [ "${parse_code}" -ne 0 ]; then
+              echo "Khong doc duoc SARIF (parse_code=${parse_code})."
+              findings_count=0
+              if [ -z "${code}" ] || [ "${code}" = "0" ]; then
+                code="${parse_code}"
+              fi
+            fi
           fi
+
+          echo "exit_code=${code:-<empty>}"
+          echo "sarif_path=${sarif_path}"
+          echo "sarif_exists=${sarif_exists}"
+          echo "findings_count=${findings_count}"
+
+          if [ "${sarif_exists}" = "true" ] && [ "${findings_count}" -gt 0 ]; then
+            echo "Phat hien bi mat, dung workflow."
+            exit 2
+          fi
+
+          if [ -z "${code}" ] || [ "${code}" != "0" ]; then
+            effective_code="${code:-1}"
+            echo "Gitleaks loi ha tang/cau hinh (code=${effective_code})."
+            echo "Hay kiem tra log buoc quet va artifact 'repo-snapshot-gitleaks' (${sarif_path})."
+            exit "${effective_code}"
+          fi
+
+          echo "Gitleaks: khong phat hien nghi van bi mat."
+          exit 0
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot

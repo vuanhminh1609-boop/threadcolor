@@ -170,6 +170,11 @@
 | Critical rendering path | Đường găng hiển thị đầu trang | Chuỗi tài nguyên và bước xử lý bắt buộc để nội dung đầu trang hiển thị; càng ngắn thì tải cảm nhận càng mượt. |
 | Lazy load | Nạp trễ theo nhu cầu | Chỉ nạp tài nguyên khi thực sự cần hoặc khi trình duyệt rảnh, giúp giảm tải ban đầu. |
 | Script blocking | Tập lệnh chặn hiển thị | Tình trạng script chặn parser/render trong giai đoạn đầu trang, làm tăng thời gian hiển thị nội dung hữu ích. |
+| Exit code | Mã thoát | Giá trị trạng thái do tiến trình trả về sau khi chạy xong; dùng để phân loại thành công, phát hiện vi phạm hoặc lỗi hạ tầng. |
+| False positive | Dương tính giả | Trường hợp công cụ cảnh báo có rủi ro nhưng thực tế không phải bí mật thật hoặc không vi phạm chính sách. |
+| SARIF | Báo cáo SARIF | Định dạng báo cáo bảo mật chuẩn để lưu kết quả quét và phục vụ phân tích trong CI/CD hoặc nền tảng mã nguồn. |
+| Exit code mapping | Quy tắc diễn giải mã thoát | Quy ước ánh xạ từng mã thoát sang kết luận nghiệp vụ (ví dụ: phát hiện bí mật hay lỗi hạ tầng) để tránh hiểu sai trạng thái CI. |
+| Fingerprint | Dấu định danh phát hiện | Chuỗi định danh ổn định của một cảnh báo quét, dùng để allowlist chính xác theo từng phát hiện thay vì bỏ qua rộng. |
 | Invariant | Điều kiện bất biến | Điều kiện phải luôn đúng ở mọi trạng thái chạy; khi vi phạm cần cảnh báo rõ để tránh vỡ hành vi nền tảng. |
 | Regression | Lỗi hồi quy | Lỗi phát sinh sau khi sửa hoặc thêm tính năng mới làm hỏng hành vi vốn đang chạy đúng trước đó. |
 | Backward compatibility | Tương thích ngược | Khả năng giữ cho hệ thống mới vẫn đọc/chạy đúng với dữ liệu hoặc hành vi cũ mà không làm hỏng luồng hiện tại. |
