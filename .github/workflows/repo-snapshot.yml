@@ -67,38 +67,139 @@ jobs:
         shell: bash
         run: |
           echo "Gitleaks commit range: '${{ steps.gitleaks_range.outputs.range }}'"
+      - name: Dọn file SARIF cũ trước khi quét
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Quét workspace tìm *.sarif/results.sarif"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
+          echo "Xóa các file SARIF cũ trong workspace"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -delete
+          echo "Danh sách SARIF còn lại sau dọn:"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
       - name: Quét bí mật trước khi xuất snapshot
         id: gitleaks_scan
         shell: bash
         continue-on-error: true
         run: |
           set -euo pipefail
+          SARIF_PATH="${RUNNER_TEMP}/gitleaks/results.sarif"
+          mkdir -p "$(dirname "$SARIF_PATH")"
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info || code=$?
           fi
+          echo "sarif_path=${SARIF_PATH}" >> "$GITHUB_OUTPUT"
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
+      - name: Kiểm tra file SARIF trước khi tải
+        if: always()
+        shell: bash
+        run: |
+          sarif_path="${{ steps.gitleaks_scan.outputs.sarif_path }}"
+          if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
+            echo "Tim thay ${sarif_path}; se upload artifact."
+          else
+            echo "Khong tim thay file SARIF de upload (sarif_path=${sarif_path:-<empty>})."
+          fi
       - name: Tải kết quả gitleaks
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: repo-snapshot-gitleaks
           if-no-files-found: warn
-          path: results.sarif
+          path: ${{ steps.gitleaks_scan.outputs.sarif_path }}
       - name: Đánh giá kết quả gitleaks
         shell: bash
         run: |
-          code="${{ steps.gitleaks_scan.outputs.exit_code }}"
-          if [ "${code}" = "2" ]; then
-            echo "Phát hiện bí mật, dừng workflow."
-            exit 2
-          elif [ -n "${code}" ] && [ "${code}" != "0" ]; then
-            echo "Gitleaks lỗi hạ tầng (code=${code})."
-            exit "${code}"
-          fi
+          export SARIF_PATH="${{ steps.gitleaks_scan.outputs.sarif_path }}"
+          export EXIT_CODE="${{ steps.gitleaks_scan.outputs.exit_code }}"
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+
+          const sarifPath = process.env.SARIF_PATH || process.argv[1] || 'results.sarif';
+          const exitCode = process.env.EXIT_CODE || '0';
+
+          function normalize(u) {
+            let s = String(u || '');
+            s = s.split('\\').join('/');
+            while (s.startsWith('./')) s = s.slice(2);
+            return s;
+          }
+
+          const sarifExists = !!sarifPath && fs.existsSync(sarifPath);
+          let findingsTotal = 0;
+          let selfHitCount = 0;
+          let findingsFiltered = 0;
+          const top = [];
+
+          if (sarifExists) {
+            try {
+              const raw = fs.readFileSync(sarifPath, 'utf8');
+              const d = JSON.parse(raw);
+              const reportBase = path.posix.basename(normalize(sarifPath));
+              const runs = Array.isArray(d.runs) ? d.runs : [];
+
+              for (const run of runs) {
+                const results = Array.isArray(run.results) ? run.results : [];
+                for (const r of results) {
+                  const loc = r.locations?.[0]?.physicalLocation || {};
+                  const uri = normalize(loc.artifactLocation?.uri || '');
+                  const line = loc.region?.startLine || '';
+                  const ruleId = r.ruleId || '';
+                  const isSelf = uri === reportBase;
+
+                  findingsTotal += 1;
+                  if (isSelf) {
+                    selfHitCount += 1;
+                  } else {
+                    findingsFiltered += 1;
+                  }
+
+                  if (top.length < 5) {
+                    top.push({ ruleId, uri, line });
+                  }
+                }
+              }
+            } catch (e) {
+              console.error('Lỗi parse SARIF:', e && e.message ? e.message : e);
+              process.exit(1);
+            }
+          }
+
+          console.log(`exit_code=${exitCode}`);
+          console.log(`sarif_path=${sarifPath}`);
+          console.log(`sarif_exists=${sarifExists}`);
+          console.log(`findings_total=${findingsTotal}`);
+          console.log(`self_hit_count=${selfHitCount}`);
+          console.log(`findings_count_filtered=${findingsFiltered}`);
+          console.log('Top findings metadata (tối đa 5):');
+          if (top.length === 0) {
+            console.log('(không có metadata finding để in)');
+          } else {
+            for (const t of top) {
+              console.log(`ruleId=${t.ruleId}; uri=${t.uri}; line=${t.line}`);
+            }
+          }
+
+          const code = String(exitCode || '0');
+          if (findingsFiltered > 0) {
+            console.log('Phát hiện bí mật, dừng workflow.');
+            process.exit(2);
+          } else if (findingsTotal > 0 && selfHitCount === findingsTotal) {
+            console.log('Chỉ phát hiện tự-dính trong file báo cáo, bỏ qua.');
+            process.exit(0);
+          } else if (code !== '' && code !== '0') {
+            console.log(`Gitleaks lỗi hạ tầng/cấu hình (code=${code}).`);
+            process.exit(Number(code) || 1);
+          } else {
+            console.log('Không có phát hiện, tiếp tục.');
+            process.exit(0);
+          }
+          NODE
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot
@@ -215,38 +316,139 @@ jobs:
         shell: bash
         run: |
           echo "Gitleaks commit range: '${{ steps.gitleaks_range.outputs.range }}'"
+      - name: Dọn file SARIF cũ trước khi quét
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Quét workspace tìm *.sarif/results.sarif"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
+          echo "Xóa các file SARIF cũ trong workspace"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -delete
+          echo "Danh sách SARIF còn lại sau dọn:"
+          find . -maxdepth 6 -type f \( -name "results.sarif" -o -name "*.sarif" \) -print || true
       - name: Quét bí mật trước khi xuất snapshot
         id: gitleaks_scan
         shell: bash
         continue-on-error: true
         run: |
           set -euo pipefail
+          SARIF_PATH="${RUNNER_TEMP}/gitleaks/results.sarif"
+          mkdir -p "$(dirname "$SARIF_PATH")"
           RANGE="${{ steps.gitleaks_range.outputs.range }}"
           code=0
           if [ -n "${RANGE}" ]; then
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info --log-opts="${RANGE}" || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info --log-opts="${RANGE}" || code=$?
           else
-            gitleaks detect --redact --report-format=sarif --report-path=results.sarif --log-level=info || code=$?
+            gitleaks detect --redact --config=.gitleaks.toml --gitleaks-ignore-path=.gitleaksignore --report-format=sarif --report-path="${SARIF_PATH}" --log-level=info || code=$?
           fi
+          echo "sarif_path=${SARIF_PATH}" >> "$GITHUB_OUTPUT"
           echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
+      - name: Kiểm tra file SARIF trước khi tải
+        if: always()
+        shell: bash
+        run: |
+          sarif_path="${{ steps.gitleaks_scan.outputs.sarif_path }}"
+          if [ -n "${sarif_path}" ] && [ -f "${sarif_path}" ]; then
+            echo "Tim thay ${sarif_path}; se upload artifact."
+          else
+            echo "Khong tim thay file SARIF de upload (sarif_path=${sarif_path:-<empty>})."
+          fi
       - name: Tải kết quả gitleaks
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: repo-snapshot-gitleaks
           if-no-files-found: warn
-          path: results.sarif
+          path: ${{ steps.gitleaks_scan.outputs.sarif_path }}
       - name: Đánh giá kết quả gitleaks
         shell: bash
         run: |
-          code="${{ steps.gitleaks_scan.outputs.exit_code }}"
-          if [ "${code}" = "2" ]; then
-            echo "Phát hiện bí mật, dừng workflow."
-            exit 2
-          elif [ -n "${code}" ] && [ "${code}" != "0" ]; then
-            echo "Gitleaks lỗi hạ tầng (code=${code})."
-            exit "${code}"
-          fi
+          export SARIF_PATH="${{ steps.gitleaks_scan.outputs.sarif_path }}"
+          export EXIT_CODE="${{ steps.gitleaks_scan.outputs.exit_code }}"
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+
+          const sarifPath = process.env.SARIF_PATH || process.argv[1] || 'results.sarif';
+          const exitCode = process.env.EXIT_CODE || '0';
+
+          function normalize(u) {
+            let s = String(u || '');
+            s = s.split('\\').join('/');
+            while (s.startsWith('./')) s = s.slice(2);
+            return s;
+          }
+
+          const sarifExists = !!sarifPath && fs.existsSync(sarifPath);
+          let findingsTotal = 0;
+          let selfHitCount = 0;
+          let findingsFiltered = 0;
+          const top = [];
+
+          if (sarifExists) {
+            try {
+              const raw = fs.readFileSync(sarifPath, 'utf8');
+              const d = JSON.parse(raw);
+              const reportBase = path.posix.basename(normalize(sarifPath));
+              const runs = Array.isArray(d.runs) ? d.runs : [];
+
+              for (const run of runs) {
+                const results = Array.isArray(run.results) ? run.results : [];
+                for (const r of results) {
+                  const loc = r.locations?.[0]?.physicalLocation || {};
+                  const uri = normalize(loc.artifactLocation?.uri || '');
+                  const line = loc.region?.startLine || '';
+                  const ruleId = r.ruleId || '';
+                  const isSelf = uri === reportBase;
+
+                  findingsTotal += 1;
+                  if (isSelf) {
+                    selfHitCount += 1;
+                  } else {
+                    findingsFiltered += 1;
+                  }
+
+                  if (top.length < 5) {
+                    top.push({ ruleId, uri, line });
+                  }
+                }
+              }
+            } catch (e) {
+              console.error('Lỗi parse SARIF:', e && e.message ? e.message : e);
+              process.exit(1);
+            }
+          }
+
+          console.log(`exit_code=${exitCode}`);
+          console.log(`sarif_path=${sarifPath}`);
+          console.log(`sarif_exists=${sarifExists}`);
+          console.log(`findings_total=${findingsTotal}`);
+          console.log(`self_hit_count=${selfHitCount}`);
+          console.log(`findings_count_filtered=${findingsFiltered}`);
+          console.log('Top findings metadata (tối đa 5):');
+          if (top.length === 0) {
+            console.log('(không có metadata finding để in)');
+          } else {
+            for (const t of top) {
+              console.log(`ruleId=${t.ruleId}; uri=${t.uri}; line=${t.line}`);
+            }
+          }
+
+          const code = String(exitCode || '0');
+          if (findingsFiltered > 0) {
+            console.log('Phát hiện bí mật, dừng workflow.');
+            process.exit(2);
+          } else if (findingsTotal > 0 && selfHitCount === findingsTotal) {
+            console.log('Chỉ phát hiện tự-dính trong file báo cáo, bỏ qua.');
+            process.exit(0);
+          } else if (code !== '' && code !== '0') {
+            console.log(`Gitleaks lỗi hạ tầng/cấu hình (code=${code}).`);
+            process.exit(Number(code) || 1);
+          } else {
+            console.log('Không có phát hiện, tiếp tục.');
+            process.exit(0);
+          }
+          NODE
       - name: Tạo snapshot zip + manifest
         run: |
           bash tools/export_repo_snapshot.sh --mode snapshot

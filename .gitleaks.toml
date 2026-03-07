@@ -1,0 +1,17 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+  [[rules.allowlists]]
+  description = "Bỏ qua false positive: tên key i18n (I18nKey) trong lobby orchestrator"
+  condition = "AND"
+  regexTarget = "line"
+  regexes = [
+    '''I18nKey'''
+  ]
+  # paths regex phải match được cả / và \ để tránh lệch môi trường
+  paths = [
+    '''(^|.*[\\/])scripts[\\/]lobby_orchestrator\.js$''',
+    '''(^|.*[\\/])lobby_orchestrator\.js$'''
+  ]

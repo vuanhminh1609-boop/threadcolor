@@ -146,7 +146,11 @@
 | Dải màu (gamut) | Dải màu | Phạm vi màu thiết bị in có thể tái tạo; ngoài gamut sẽ bị lệch. |
 | Ý đồ chuyển đổi (intent) | Ý đồ chuyển đổi | Cách ưu tiên giữ màu/độ tương phản khi chuyển đổi giữa các profile màu. |
 | Topbar | Thanh trên | Thanh điều hướng trên cùng; phải giữ **Đăng nhập** ở góc phải. |
-| Bộ đồng bộ Sắc thái | Bộ đồng bộ Sắc thái | Cơ chế đồng bộ Sắc thái giữa các trang bằng `localStorage` (`tc_world`), thuộc tính `data-world` trên thẻ `<html>` và sự kiện đồng bộ giữa tab. |
+| Auth cluster | Cụm điều khiển tài khoản | Cụm UI tài khoản ở góc phải topbar, gồm nút Đăng nhập (guest) hoặc menu tài khoản (đã đăng nhập). |
+| World registry | Danh mục chuẩn Thế giới | Nguồn metadata chuẩn cho các Thế giới (id, nhãn, route, thứ tự, trạng thái) để mọi nơi dùng chung, tránh lệch dữ liệu. |
+| Utility item | Mục tiện ích | Mục điều hướng bổ trợ trong hệ sinh thái, không thuộc nhóm Thế giới chính và không được tính là World thứ 9. |
+| Route drift | Lệch tuyến điều hướng | Tình trạng route/link thực tế bị lệch so với route chuẩn đã định nghĩa trong registry, dễ gây link chết hoặc điều hướng sai. |
+| Bộ đồng bộ Sắc thái | Bộ đồng bộ Sắc thái | Cơ chế đồng bộ Sắc thái giữa các trang bằng `localStorage` (`tc_tone`, có di trú từ `tc_world`), thuộc tính `data-world` trên thẻ `<html>` và sự kiện đồng bộ giữa tab. |
 | Thanh trên dính | Thanh trên dính | Topbar bám trên cùng khi cuộn để truy cập nhanh chức năng chính. |
 | Thu gọn theo cuộn | Thu gọn theo cuộn | Cơ chế giảm chiều cao/đệm của topbar khi người dùng cuộn xuống. |
 | Thanh trên thông minh | Thanh trên thông minh | Topbar tự ẩn khi cuộn xuống và hiện lại khi cuộn lên để tiết kiệm không gian. |
@@ -162,7 +166,22 @@
 | Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
-| Single source of truth | Nguồn chuẩn duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| Single source of truth | Nguồn sự thật duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| Critical rendering path | Đường găng hiển thị đầu trang | Chuỗi tài nguyên và bước xử lý bắt buộc để nội dung đầu trang hiển thị; càng ngắn thì tải cảm nhận càng mượt. |
+| Lazy load | Nạp trễ theo nhu cầu | Chỉ nạp tài nguyên khi thực sự cần hoặc khi trình duyệt rảnh, giúp giảm tải ban đầu. |
+| Script blocking | Tập lệnh chặn hiển thị | Tình trạng script chặn parser/render trong giai đoạn đầu trang, làm tăng thời gian hiển thị nội dung hữu ích. |
+| Exit code | Mã thoát | Giá trị trạng thái do tiến trình trả về sau khi chạy xong; dùng để phân loại thành công, phát hiện vi phạm hoặc lỗi hạ tầng. |
+| False positive | Dương tính giả | Trường hợp công cụ cảnh báo có rủi ro nhưng thực tế không phải bí mật thật hoặc không vi phạm chính sách. |
+| SARIF | Báo cáo SARIF | Định dạng báo cáo bảo mật chuẩn để lưu kết quả quét và phục vụ phân tích trong CI/CD hoặc nền tảng mã nguồn. |
+| Exit code mapping | Quy tắc diễn giải mã thoát | Quy ước ánh xạ từng mã thoát sang kết luận nghiệp vụ (ví dụ: phát hiện bí mật hay lỗi hạ tầng) để tránh hiểu sai trạng thái CI. |
+| Fingerprint | Dấu định danh phát hiện | Chuỗi định danh ổn định của một cảnh báo quét, dùng để allowlist chính xác theo từng phát hiện thay vì bỏ qua rộng. |
+| Allowlist | Danh sách cho phép hẹp | Tập ngoại lệ được chỉ định chính xác theo điều kiện cụ thể để bỏ qua cảnh báo nhầm mà không nới lỏng quét toàn cục. |
+| regexTarget | Đích áp dụng regex | Trường dữ liệu mà biểu thức chính quy sẽ kiểm tra (ví dụ theo dòng `line`) khi xét điều kiện allowlist. |
+| Condition AND/OR | Điều kiện kết hợp | Quy tắc kết hợp nhiều điều kiện allowlist; `AND` yêu cầu đồng thời thỏa tất cả điều kiện, `OR` chỉ cần thỏa một điều kiện. |
+| Invariant | Điều kiện bất biến | Điều kiện phải luôn đúng ở mọi trạng thái chạy; khi vi phạm cần cảnh báo rõ để tránh vỡ hành vi nền tảng. |
+| Regression | Lỗi hồi quy | Lỗi phát sinh sau khi sửa hoặc thêm tính năng mới làm hỏng hành vi vốn đang chạy đúng trước đó. |
+| Backward compatibility | Tương thích ngược | Khả năng giữ cho hệ thống mới vẫn đọc/chạy đúng với dữ liệu hoặc hành vi cũ mà không làm hỏng luồng hiện tại. |
+| Migration key | Di trú khóa lưu trữ | Quy trình chuyển dữ liệu từ khóa lưu trữ cũ sang khóa mới (ví dụ `tc_world` sang `tc_tone`) mà không mất trạng thái người dùng. |
 | LocalStorage (bộ nhớ cục bộ của trình duyệt) | LocalStorage | Bộ nhớ lưu cục bộ theo domain, giữ dữ liệu ngay cả khi tải lại trang. |
 | IndexedDB (kho dữ liệu cục bộ trình duyệt) | IndexedDB | Cơ chế lưu dữ liệu dạng kho trong trình duyệt, phù hợp lưu blob/ảnh và dữ liệu lớn theo phiên bản. |
 | Bộ chuyển đổi (adapter) | Bộ chuyển đổi | Lớp trung gian ánh xạ interface chung sang triển khai cụ thể để thay đổi backend mà không đập code. |
@@ -187,6 +206,11 @@
 | CI gate | CI gate | Cong chan trong CI de ngan loi vao main |
 | Feature Flag | Cờ tính năng | Cơ chế bật/tắt tính năng theo điều kiện như query param, user role… |
 | Quét bí mật (secret scan) | Quét bí mật (secret scan) | Quét tìm khoá/bí mật trong code và lịch sử để ngăn rò rỉ. |
+| Tự-dính (self-hit) | Tự-dính (self-hit) | Trường hợp công cụ quét phát hiện mẫu nghi vấn nằm trong chính file báo cáo do nó vừa sinh ra, gây nhiễu kết quả nếu không lọc. |
+| RUNNER_TEMP | Thư mục tạm của runner | Biến môi trường chỉ vùng lưu tệp tạm trong job CI, phù hợp đặt file trung gian như báo cáo SARIF để tránh ghi vào workspace. |
+| Heredoc | Khối chuỗi nhiều dòng | Cú pháp truyền trực tiếp đoạn nội dung nhiều dòng cho lệnh shell (ví dụ `node <<'NODE'`) để tránh lỗi escape/quoting. |
+| Chuẩn hoá đường dẫn | Chuẩn hoá đường dẫn | Quy trình đưa đường dẫn về định dạng nhất quán (ví dụ đổi `\` sang `/`, bỏ `./`) trước khi so khớp điều kiện. |
+| Ignore-inline | Bỏ qua theo dòng | Cách bỏ qua false positive bằng chú thích ngay tại đúng dòng bị cảnh báo, thay vì mở rộng phạm vi bỏ qua toàn file/thư mục. |
 | gitleaks:allow (chú thích để Gitleaks bỏ qua một phát hiện cụ thể ở đúng dòng code) | gitleaks:allow | Comment gắn ở đúng dòng nhằm bỏ qua một phát hiện cụ thể, không ảnh hưởng phạm vi khác. |
 | Siết CI (harden CI) | Siết CI (harden CI) | Siết quy trình CI/CD để giảm rủi ro (thêm kiểm tra, chỉnh phân quyền). |
 | additionalProperties | additionalProperties | Tuy chon cua JSON Schema cho phep field phat sinh |
