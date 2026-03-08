@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(__filename), "..");
 const REPORT_DIR = path.join(ROOT, "reports");
 
-const SKIP_DIRS = new Set([".git", "node_modules", "dist", "build", "__pycache__", "_graveyard"]);
+const SKIP_DIRS = new Set([".git", "node_modules", "dist", "build", "__pycache__", "_graveyard", ".tmp", "tmp"]);
 const TEXT_EXT = new Set([".html", ".css", ".js", ".mjs", ".json", ".md", ".yml", ".yaml", ".txt"]);
 const BINARY_EXT = new Set([
   ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".mp4", ".mov", ".psd",
@@ -25,6 +25,7 @@ const BUILTIN_MODULES = new Set([
 
 const HTML_TAG_RE = /<(script|link|img|a|source)\b[^>]*?>/gi;
 const HTML_ATTR_RE = /(src|href|srcset)=["']([^"']+)["']/gi;
+const HTML_SCRIPT_SRC_RE = /<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
 const CSS_URL_RE = /url\(\s*["']?([^"')]+)["']?\s*\)/gi;
 
 const JS_IMPORT_RE = /\bimport\s+(?:[^"']+from\s+)?["']([^"']+)["']/g;
@@ -38,6 +39,10 @@ const JS_FETCH_RE = /\bfetch\(\s*["']([^"']+)["']\s*\)/g;
 const JS_XHR_RE = /\.open\(\s*["']GET["']\s*,\s*["']([^"']+)["']\s*\)/g;
 const JS_IMPORT_SCRIPTS_RE = /\bimportScripts\(\s*["']([^"']+)["']\s*\)/g;
 const JS_URL_ASSIGN_RE = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*new\s+URL\(\s*["']([^"']+)["']\s*,\s*import\.meta\.url\s*\)/g;
+const JS_CONST_STRING_RE = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*["']([^"']+)["']/g;
+const JS_TEMPLATE_JOIN_RE = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*`[^`]*\$\{\s*([A-Za-z_$][\w$]*)\s*\}\s*\/\s*\$\{\s*([A-Za-z_$][\w$]*)\s*\}[^`]*`/g;
+const JS_FETCH_VAR_RE = /\bfetch\(\s*([A-Za-z_$][\w$]*)\s*(?:,|\))/g;
+const JS_ASSET_FILENAME_RE = /["']([A-Za-z0-9_-]+\.(?:png|jpg|jpeg|webp|gif|svg|mp4|mov|psd|ttf|woff2?|eot|zip|rar|7z|pdf|ico))["']/gi;
 
 const RUNTIME_JS = [
   "auth.js",
@@ -137,6 +142,15 @@ function extractHtmlRefs(text) {
   return refs;
 }
 
+function extractHtmlScriptRefs(text) {
+  const refs = [];
+  let match;
+  while ((match = HTML_SCRIPT_SRC_RE.exec(text)) !== null) {
+    refs.push(match[1]);
+  }
+  return refs.filter(Boolean);
+}
+
 function extractAll(regex, text) {
   const out = [];
   let match;
@@ -148,6 +162,105 @@ function extractAll(regex, text) {
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+}
+
+function isMonitoredAssetRef(rel, ext) {
+  if (ASSET_EXT.has(ext)) return true;
+  if (ext !== ".css") return false;
+  if (rel.startsWith("src/")) return false;
+  return true;
+}
+
+function buildScriptConsumers(absFiles, allFiles) {
+  const consumers = new Map();
+  for (const absFile of absFiles) {
+    const ext = path.extname(absFile).toLowerCase();
+    if (ext !== ".html" && ext !== ".htm") continue;
+    let text = "";
+    try {
+      text = fs.readFileSync(absFile, "utf8");
+    } catch {
+      continue;
+    }
+    const scriptRefs = extractHtmlScriptRefs(text);
+    for (const ref of scriptRefs) {
+      const { resolved } = resolveRef(absFile, ref, allFiles);
+      if (!resolved) continue;
+      const scriptExt = path.extname(resolved).toLowerCase();
+      if (scriptExt !== ".js" && scriptExt !== ".mjs") continue;
+      if (!consumers.has(resolved)) consumers.set(resolved, new Set());
+      consumers.get(resolved).add(absFile);
+    }
+  }
+  return consumers;
+}
+
+function resolveRuntimeRef(baseFile, ref, allFiles, scriptConsumers) {
+  const direct = resolveRef(baseFile, ref, allFiles);
+  if (direct.resolved) return { ...direct, viaHtmlContext: false };
+  const consumers = scriptConsumers.get(baseFile);
+  if (!consumers || !consumers.size) return { ...direct, viaHtmlContext: false };
+
+  for (const htmlFile of consumers) {
+    const resolvedFromHtml = resolveRef(htmlFile, ref, allFiles);
+    if (!resolvedFromHtml.resolved) continue;
+    return {
+      ...resolvedFromHtml,
+      viaHtmlContext: true,
+      htmlBase: htmlFile
+    };
+  }
+  return { ...direct, viaHtmlContext: false };
+}
+
+function extractDynamicTemplateRefs(text) {
+  const refs = [];
+  const seen = new Set();
+  const usedFetchVars = new Set();
+  JS_FETCH_VAR_RE.lastIndex = 0;
+  let fetchMatch;
+  while ((fetchMatch = JS_FETCH_VAR_RE.exec(text)) !== null) {
+    usedFetchVars.add(fetchMatch[1]);
+  }
+  if (!usedFetchVars.size) return refs;
+
+  const constMap = new Map();
+  JS_CONST_STRING_RE.lastIndex = 0;
+  let constMatch;
+  while ((constMatch = JS_CONST_STRING_RE.exec(text)) !== null) {
+    constMap.set(constMatch[1], constMatch[2]);
+  }
+
+  const baseVars = new Set();
+  JS_TEMPLATE_JOIN_RE.lastIndex = 0;
+  let joinMatch;
+  while ((joinMatch = JS_TEMPLATE_JOIN_RE.exec(text)) !== null) {
+    const pathVar = joinMatch[1];
+    const baseVar = joinMatch[2];
+    if (!usedFetchVars.has(pathVar)) continue;
+    if (!constMap.has(baseVar)) continue;
+    baseVars.add(baseVar);
+  }
+  if (!baseVars.size) return refs;
+
+  const fileNames = new Set();
+  JS_ASSET_FILENAME_RE.lastIndex = 0;
+  let nameMatch;
+  while ((nameMatch = JS_ASSET_FILENAME_RE.exec(text)) !== null) {
+    fileNames.add(nameMatch[1]);
+  }
+
+  for (const baseVar of baseVars) {
+    const base = normalizeRef(constMap.get(baseVar) || "");
+    if (!base) continue;
+    for (const fileName of fileNames) {
+      const ref = `${base}/${fileName}`;
+      if (seen.has(ref)) continue;
+      seen.add(ref);
+      refs.push(ref);
+    }
+  }
+  return refs;
 }
 
 function fileCategory(rel) {
@@ -168,6 +281,7 @@ function isRuntimeEntry(relPath) {
 const files = walk(ROOT);
 const absFiles = files.map(f => path.join(ROOT, f));
 const allFiles = new Set(absFiles);
+const scriptConsumers = buildScriptConsumers(absFiles, allFiles);
 
 const nodes = {};
 const missing = [];
@@ -175,6 +289,12 @@ const missingWarn = [];
 const generatedInfo = [];
 const refsIn = {};
 let todoCount = 0;
+let runtimeResolvedViaHtml = 0;
+const refStats = {
+  static: 0,
+  runtime_fetch: 0,
+  dynamic: 0
+};
 
 for (const file of absFiles) {
   const ext = path.extname(file).toLowerCase();
@@ -194,60 +314,76 @@ for (const file of absFiles) {
 
   let refs = [];
   if (ext === ".html" || ext === ".htm") {
-    refs = extractHtmlRefs(text);
+    refs = extractHtmlRefs(text).map((ref) => ({ ref, source: "static" }));
   } else if (ext === ".css") {
-    refs = extractAll(CSS_URL_RE, text);
+    refs = extractAll(CSS_URL_RE, text).map((ref) => ({ ref, source: "static" }));
   } else if (ext === ".js" || ext === ".mjs") {
     refs = refs
-      .concat(extractAll(JS_IMPORT_RE, text))
-      .concat(extractAll(JS_EXPORT_RE, text))
-      .concat(extractAll(JS_DYNAMIC_IMPORT_RE, text))
-      .concat(extractAll(JS_REQUIRE_RE, text))
-      .concat(extractAll(JS_WORKER_URL_RE, text))
-      .concat(extractAll(JS_WORKER_RE, text))
-      .concat(extractAll(JS_SW_RE, text))
-      .concat(extractAll(JS_FETCH_RE, text))
-      .concat(extractAll(JS_IMPORT_SCRIPTS_RE, text))
-      .concat(extractAll(JS_XHR_RE, text));
+      .concat(extractAll(JS_IMPORT_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_EXPORT_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_DYNAMIC_IMPORT_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_REQUIRE_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_WORKER_URL_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_WORKER_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_SW_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_FETCH_RE, text).map((ref) => ({ ref, source: "runtime_fetch" })))
+      .concat(extractAll(JS_IMPORT_SCRIPTS_RE, text).map((ref) => ({ ref, source: "static" })))
+      .concat(extractAll(JS_XHR_RE, text).map((ref) => ({ ref, source: "runtime_fetch" })))
+      .concat(extractDynamicTemplateRefs(text).map((ref) => ({ ref, source: "dynamic" })));
 
     let urlMatch;
     while ((urlMatch = JS_URL_ASSIGN_RE.exec(text)) !== null) {
-      refs.push(urlMatch[2]);
+      refs.push({ ref: urlMatch[2], source: "static" });
     }
   }
 
-  for (const ref of refs) {
+  for (const refEntry of refs) {
+    const ref = typeof refEntry === "string" ? refEntry : refEntry.ref;
+    const source = typeof refEntry === "string" ? "static" : (refEntry.source || "static");
+    if (source in refStats) refStats[source] += 1;
+
     const cleaned = normalizeRef(ref);
     if (!cleaned || cleaned.startsWith("#") || isExternalUrl(cleaned)) continue;
     const kind = classifySpecifier(cleaned);
     if (kind === "builtin" || kind === "external") continue;
-    const { resolved, cleaned: cleanedResolved } = resolveRef(file, cleaned, allFiles);
+    const resolvedInfo = source === "runtime_fetch"
+      ? resolveRuntimeRef(file, cleaned, allFiles, scriptConsumers)
+      : resolveRef(file, cleaned, allFiles);
+    const { resolved, cleaned: cleanedResolved } = resolvedInfo;
     if (resolved) {
       nodes[file].refs_out.push(resolved);
       refsIn[resolved] = refsIn[resolved] || new Set();
       refsIn[resolved].add(file);
+      if (source === "runtime_fetch" && resolvedInfo.viaHtmlContext) {
+        runtimeResolvedViaHtml += 1;
+      }
     } else {
       const relFrom = path.relative(ROOT, file).replace(/\\/g, "/");
       const relMissing = cleanedResolved
         ? path.relative(ROOT, cleanedResolved).replace(/\\/g, "/")
         : cleaned;
+      const sourceHint = source === "dynamic"
+        ? "tham chiếu động"
+        : source === "runtime_fetch"
+          ? "runtime fetch"
+          : "tham chiếu tĩnh";
       if (GENERATED_OUTPUTS.has(relMissing)) {
         generatedInfo.push({
           title: "Output tooling (\u0111\u01b0\u1ee3c ph\u00e9p)",
-          detail: `Ch\u01b0a c\u00f3 ${relMissing}`,
+          detail: `Ch\u01b0a c\u00f3 ${relMissing} (${sourceHint})`,
           path: relFrom
         });
       } else if (isRuntimeEntry(relFrom)) {
         missing.push({
           title: "Thi\u1ebfu tham chi\u1ebfu n\u1ed9i b\u1ed9",
-          detail: `Kh\u00f4ng t\u00ecm th\u1ea5y ${relMissing}`,
+          detail: `Kh\u00f4ng t\u00ecm th\u1ea5y ${relMissing} (${sourceHint})`,
           from: relFrom,
           ref: cleaned
         });
       } else {
         missingWarn.push({
           title: "Thi\u1ebfu tham chi\u1ebfu n\u1ed9i b\u1ed9 (tooling/docs)",
-          detail: `Kh\u00f4ng t\u00ecm th\u1ea5y ${relMissing}`,
+          detail: `Kh\u00f4ng t\u00ecm th\u1ea5y ${relMissing} (${sourceHint})`,
           path: relFrom
         });
       }
@@ -291,10 +427,28 @@ for (const relPath of RUNTIME_JS) {
       try { fs.rmdirSync(tmpDir); } catch {}
     }
   }
+  if (result?.error) {
+    infoIssues.push({
+      title: "B\u1ecf qua check c\u00fa ph\u00e1p (h\u1ea1n ch\u1ebf m\u00f4i tr\u01b0\u1eddng)",
+      detail: `${relPath}: ${result.error.message || "spawnSync that bai"}`,
+      path: relPath
+    });
+    continue;
+  }
+  if (typeof result?.status !== "number") {
+    infoIssues.push({
+      title: "B\u1ecf qua check c\u00fa ph\u00e1p (kh\u00f4ng c\u00f3 m\u00e3 tho\u00e1t)",
+      detail: relPath,
+      path: relPath
+    });
+    continue;
+  }
   if (result.status !== 0) {
+    const stderr = typeof result.stderr === "string" ? result.stderr.trim() : "";
+    const stdout = typeof result.stdout === "string" ? result.stdout.trim() : "";
     blockIssues.push({
       title: "Lỗi cú pháp JavaScript",
-      detail: result.stderr.trim() || result.stdout.trim(),
+      detail: stderr || stdout || "node --check that bai",
       from: relPath
     });
   }
@@ -310,11 +464,30 @@ if (generatedInfo.length) {
   for (const item of generatedInfo) infoIssues.push(item);
 }
 
+infoIssues.push({
+  title: "Tham chiếu tĩnh",
+  detail: `${refStats.static} tham chiếu`
+});
+infoIssues.push({
+  title: "Runtime fetch",
+  detail: `${refStats.runtime_fetch} tham chiếu`
+});
+infoIssues.push({
+  title: "Tham chiếu động",
+  detail: `${refStats.dynamic} tham chiếu`
+});
+if (runtimeResolvedViaHtml > 0) {
+  infoIssues.push({
+    title: "Runtime fetch resolve theo ngữ cảnh trang",
+    detail: `${runtimeResolvedViaHtml} tham chiếu`
+  });
+}
+
 for (const file of absFiles) {
   const rel = path.relative(ROOT, file).replace(/\\/g, "/");
   const ext = path.extname(file).toLowerCase();
   if (rel.startsWith("_graveyard/")) continue;
-  if ((ASSET_EXT.has(ext) || ext === ".css") && !(refsIn[file]?.size)) {
+  if (isMonitoredAssetRef(rel, ext) && !(refsIn[file]?.size)) {
     warnIssues.push({
       title: "Asset/CSS kh\u00f4ng \u0111\u01b0\u1ee3c tham chi\u1ebfu",
       detail: "Kh\u00f4ng c\u00f3 refs_in",

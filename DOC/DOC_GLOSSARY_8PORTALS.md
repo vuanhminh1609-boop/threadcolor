@@ -167,9 +167,15 @@
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
 | Single source of truth | Nguồn sự thật duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| Modularization | Module hoá | Cách chia tệp lớn thành các module nhỏ theo trách nhiệm rõ ràng để dễ bảo trì, dễ kiểm thử và giảm rủi ro sửa chéo. |
+| View helper | Trợ hàm hiển thị | Nhóm hàm thuần hỗ trợ định dạng và dựng phần hiển thị, không giữ trạng thái nghiệp vụ. |
+| Bridge layer | Lớp cầu nối | Lớp trung gian liên kết logic nội bộ với luồng chia sẻ/lưu thư viện, giúp tách riêng mã hạ tầng khỏi luồng hiển thị. |
 | Critical rendering path | Đường găng hiển thị đầu trang | Chuỗi tài nguyên và bước xử lý bắt buộc để nội dung đầu trang hiển thị; càng ngắn thì tải cảm nhận càng mượt. |
 | Lazy load | Nạp trễ theo nhu cầu | Chỉ nạp tài nguyên khi thực sự cần hoặc khi trình duyệt rảnh, giúp giảm tải ban đầu. |
 | Script blocking | Tập lệnh chặn hiển thị | Tình trạng script chặn parser/render trong giai đoạn đầu trang, làm tăng thời gian hiển thị nội dung hữu ích. |
+| Static reference | Tham chiếu tĩnh | Đường dẫn tài nguyên được ghi trực tiếp bằng chuỗi cố định trong mã, có thể kiểm tra ngay bằng phân tích tĩnh. |
+| Dynamic reference | Tham chiếu động | Đường dẫn tài nguyên được ghép khi chạy từ biến hoặc template string, cần rule phân tích ngữ cảnh để tránh cảnh báo giả. |
+| Runtime fetch | Nạp tài nguyên lúc chạy | Cơ chế tải dữ liệu/tệp bằng `fetch` trong thời gian chạy; đường dẫn có thể phụ thuộc ngữ cảnh trang hoặc module. |
 | Exit code | Mã thoát | Giá trị trạng thái do tiến trình trả về sau khi chạy xong; dùng để phân loại thành công, phát hiện vi phạm hoặc lỗi hạ tầng. |
 | False positive | Dương tính giả | Trường hợp công cụ cảnh báo có rủi ro nhưng thực tế không phải bí mật thật hoặc không vi phạm chính sách. |
 | SARIF | Báo cáo SARIF | Định dạng báo cáo bảo mật chuẩn để lưu kết quả quét và phục vụ phân tích trong CI/CD hoặc nền tảng mã nguồn. |
@@ -713,6 +719,9 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 |---|---|---|
 | Footer đa cột | Footer đa cột | Chân trang gồm nhiều cột liên kết để điều hướng nhanh và chuyên nghiệp. |
 | Sitemap | Sitemap | Bản đồ liên kết tổng quan giúp người dùng định vị trang cần tìm. |
+| Lobby (trang điều phối trung tâm) | Sảnh điều phối | Trang trung tâm của 8Portals, dùng để điều hướng nhanh đến các Thế giới và công cụ chính. |
+| Redirect page (trang chuyển hướng) | Trang chuyển hướng | Trang trung gian tự chuyển người dùng sang đường dẫn mới, đồng thời có CTA dự phòng để mở thủ công khi cần. |
+| Page role (vai trò trang) | Vai trò trang | Chức năng chính mà một trang đảm nhiệm; title và H1 cần bám đúng vai trò để tránh chồng chéo ngữ nghĩa. |
 
 | Mailto | Mailto | Liên kết mở email soạn sẵn trong ứng dụng mail mặc định. |
 | Neo cuộn (anchor) | Neo cuộn | Liên kết cuộn đến một vị trí trong trang. |

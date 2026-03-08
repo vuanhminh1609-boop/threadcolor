@@ -1434,7 +1434,8 @@ const updateDotGainUI = () => {
 
 const loadScreenPresets = async () => {
   try {
-    const res = await fetch("../assets/knowledge/screenprint_presets_vi.json");
+    const presetUrl = new URL("./assets/knowledge/screenprint_presets_vi.json", import.meta.url);
+    const res = await fetch(presetUrl.href);
     if (!res.ok) throw new Error("bad_status");
     state.screenPresets = await res.json();
   } catch (err) {

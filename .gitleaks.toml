@@ -15,3 +15,16 @@ id = "generic-api-key"
     '''(^|.*[\\/])scripts[\\/]lobby_orchestrator\.js$''',
     '''(^|.*[\\/])lobby_orchestrator\.js$'''
   ]
+
+[[rules]]
+id = "sourcegraph-access-token"
+  [[rules.allowlists]]
+  description = "Bỏ qua tự-dính khi scanner quét chính file SARIF report"
+  condition = "AND"
+  regexTarget = "line"
+  regexes = [
+    '''sourcegraph-access-token'''
+  ]
+  paths = [
+    '''(^|.*[\\/])(results|gitleaks-results)\.sarif$'''
+  ]
