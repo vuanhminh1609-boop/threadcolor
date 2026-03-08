@@ -118,12 +118,42 @@
               <span class="heroLine heroLine1" data-i18n="lobby.hero.line1">Không gian</span>
               <span class="heroLine heroLine2" data-i18n="lobby.hero.line2">chuẩn hóa màu số</span>
             </h1>
-            <p class="mt-4 tc-muted" data-i18n="hero.desc">Tra nhanh HEX/ảnh → ra mã chỉ gần nhất → tạo bảng phối & dải chuyển → lưu vào Thư viện. Chọn Thế giới ở thanh trên hoặc chọn 1 cổng bên dưới.</p>
+            <p class="mt-4 tc-muted">Sảnh điều phối sẽ đưa bạn vào đúng Thế giới trong dưới 30 giây, dựa trên mục tiêu hiện tại.</p>
+            <div class="tc-hero-cta-main">
+              <a class="tc-btn tc-btn-primary px-6 py-3 text-base font-semibold" id="heroJourneyStart" href="./worlds/threadcolor.html">Bắt đầu hành trình màu của bạn</a>
+              <p class="tc-hero-cta-note">Nếu đã có lịch sử hoặc asset, hệ thống sẽ tự ưu tiên bước tiếp theo phù hợp.</p>
+            </div>
             <div class="tc-hero-actions">
               <div class="flex flex-wrap gap-3">
-                <a class="tc-btn tc-btn-primary px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
+                <a class="tc-btn tc-chip px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
                 <a class="tc-btn tc-chip px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaSecondary">Mở công cụ tra mã chỉ</a>
                 <button class="tc-btn tc-chip px-5 py-3" type="button" data-hexhub-open data-i18n="hero.ctaHex">Kho HEX</button>
+              </div>
+              <div class="tc-journey-gates" id="journeyHub">
+                <div class="tc-journey-head">
+                  <h2 class="tc-journey-heading">3 cổng hành trình</h2>
+                  <p class="tc-journey-subtitle">Chọn đúng lối vào theo trạng thái làm việc của bạn.</p>
+                </div>
+                <div class="tc-journey-grid">
+                  <article class="tc-journey-card tc-card" data-route-card data-url="./worlds/threadcolor.html" data-world="threadcolor" role="button" tabindex="0">
+                    <span class="tc-journey-audience">Người mới</span>
+                    <h3 class="tc-journey-title">Tôi mới đến</h3>
+                    <p class="tc-muted text-sm">Bắt đầu từ tra mã chỉ để nắm luồng nhanh nhất của hệ sinh thái.</p>
+                    <a class="tc-btn tc-btn-primary px-3 py-2 text-sm mt-auto self-start" href="./worlds/threadcolor.html" data-world-link="1" data-world="threadcolor">Mở lộ trình khởi động</a>
+                  </article>
+                  <article class="tc-journey-card tc-card" data-route-card data-url="#recentHub" role="button" tabindex="0">
+                    <span class="tc-journey-audience">Người quay lại</span>
+                    <h3 class="tc-journey-title">Tôi muốn tiếp tục việc đang dở</h3>
+                    <p class="tc-muted text-sm" id="journeyContinueMeta">Mở lại mục gần đây hoặc mục đã ghim để nối tiếp phiên làm việc.</p>
+                    <a class="tc-btn tc-btn-primary px-3 py-2 text-sm mt-auto self-start" id="journeyContinueBtn" href="#recentHub">Mở mục gần đây</a>
+                  </article>
+                  <article class="tc-journey-card tc-card" data-route-card data-url="./worlds/library.html" data-world="library" role="button" tabindex="0">
+                    <span class="tc-journey-audience">Người đang làm việc</span>
+                    <h3 class="tc-journey-title">Tôi đang có asset / dự án</h3>
+                    <p class="tc-muted text-sm">Vào Thư viện để tiếp tục asset, rồi đẩy qua Palette hoặc Gradient ngay.</p>
+                    <a class="tc-btn tc-btn-primary px-3 py-2 text-sm mt-auto self-start" href="./worlds/library.html" data-world-link="1" data-world="library">Mở asset hiện có</a>
+                  </article>
+                </div>
               </div>
               <div>
                 <div class="text-xs uppercase tc-muted" data-i18n="lobby.hero.jumpLabel">Đi nhanh</div>
@@ -136,11 +166,11 @@
               </div>
             </div>
           </div>
-          <div class="tc-aurora" id="quickHub">
+          <div class="tc-aurora tc-aurora-secondary" id="quickHub">
             <div class="tc-aurora-head">
               <div>
-                <h2 class="text-2xl font-semibold" data-i18n="lobby.quick.title">Trạm thao tác nhanh</h2>
-                <p class="tc-aurora-subtitle" data-i18n="lobby.quick.subtitle">Làm nhanh ngay tại sảnh, sau đó mới mở chi tiết.</p>
+                <h2 class="text-2xl font-semibold">Trạm thao tác nhanh (phụ trợ)</h2>
+                <p class="tc-aurora-subtitle">Dùng để thao tác tắt tại sảnh, sau đó chuyển vào Thế giới chi tiết khi cần xử lý sâu.</p>
               </div>
               <span class="tc-qa-pill" id="qaHeroLive" data-i18n="lobby.quick.live" data-i18n-attr="aria-label:lobby.quick.liveAria" aria-label="LIVE">LIVE</span>
             </div>
@@ -314,9 +344,43 @@
       </div>
     </section>
 
+    <section class="tc-shell pb-10" id="nextStepHub">
+      <div class="tc-card p-6 md:p-7 tc-next-step-card">
+        <div class="tc-section-head">
+          <div>
+            <h2 class="text-2xl font-semibold">Bước tiếp theo gợi ý</h2>
+            <p class="tc-muted text-sm mt-1">Đề xuất dựa trên asset gần nhất, dự án đang dở và lịch sử gần đây trên thiết bị này.</p>
+          </div>
+          <span class="tc-next-step-badge" id="nextStepSignal">Đang đọc dữ liệu cục bộ</span>
+        </div>
+        <div class="tc-next-step-grid mt-5">
+          <div class="tc-next-step-primary">
+            <div class="text-xs uppercase tracking-[0.14em] tc-muted" id="nextStepType">Khởi động mới</div>
+            <h3 class="text-lg font-semibold mt-2" id="nextStepTitle">Bắt đầu từ Thế giới màu thêu</h3>
+            <p class="tc-muted text-sm mt-2" id="nextStepDesc">Bạn chưa có dữ liệu cục bộ, nên bắt đầu từ luồng tra mã chỉ để vào nhịp trong vài bước.</p>
+            <a class="tc-btn tc-btn-primary px-4 py-2 mt-4 inline-flex" id="nextStepCta" href="./worlds/threadcolor.html">Đi tới bước này</a>
+          </div>
+          <div class="tc-next-step-list">
+            <div class="tc-next-step-item">
+              <span class="tc-next-step-label">Asset cục bộ</span>
+              <span id="nextStepAssetCount">0</span>
+            </div>
+            <div class="tc-next-step-item">
+              <span class="tc-next-step-label">Mục gần đây</span>
+              <span id="nextStepRecentCount">0</span>
+            </div>
+            <div class="tc-next-step-item">
+              <span class="tc-next-step-label">Mục đã ghim</span>
+              <span id="nextStepPinnedCount">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="tc-shell pb-14">
       <div class="tc-lobby-grid">
-        <div class="tc-card p-6 md:p-7 tc-recent-card">
+        <div class="tc-card p-6 md:p-7 tc-recent-card" id="recentHub">
           <div class="tc-section-head">
             <div>
               <h2 class="text-2xl font-semibold" data-i18n="lobby.recent.title">Gần đây / Ghim</h2>
@@ -392,8 +456,8 @@
     <section class="tc-shell pb-12" id="portalHub">
       <div class="flex items-end justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-semibold" data-i18n="lobby.portals.title">8 Cổng SpaceColors</h2>
-          <p class="tc-muted text-sm mt-1" data-i18n="lobby.portals.desc">Chọn cổng để bước vào một Thế giới sắc màu khác.</p>
+          <h2 class="text-2xl font-semibold">8 Thế giới + Không gian Cộng đồng</h2>
+          <p class="tc-muted text-sm mt-1">Mỗi card có gợi ý “dùng khi nào” để bạn chọn đúng điểm vào theo ngữ cảnh.</p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -401,6 +465,7 @@
           <div class="flex-1">
             <h3 class="font-semibold" data-i18n="lobby.portals.cards.threadcolor.title">Thế giới màu thêu (Thêu)</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.threadcolor.desc">Tra mã chỉ từ ảnh/HEX, so màu gần nhất, quản lý kho chỉ và đặt mua.</p>
+            <p class="tc-world-when">Dùng khi: bạn cần tìm mã chỉ chuẩn từ ảnh hoặc HEX trong thời gian ngắn.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/threadcolor.html" data-i18n="lobby.portals.cards.threadcolor.cta">Mở</a>
         </div>
@@ -408,6 +473,7 @@
           <div class="flex-1">
             <h3 class="font-semibold" data-i18n="lobby.portals.cards.gradient.title">Thế giới Dải chuyển màu (Gradient)</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.gradient.desc">Tạo dải chuyển màu, chỉnh góc & điểm neo, xuất CSS/Token nhanh.</p>
+            <p class="tc-world-when">Dùng khi: bạn cần dựng nền, hero hoặc banner có chuyển sắc mượt và sạch.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/gradient.html" data-i18n="lobby.portals.cards.gradient.cta">Mở</a>
         </div>
@@ -415,6 +481,7 @@
           <div class="flex-1">
             <h3 class="font-semibold" data-i18n="lobby.portals.cards.palette.title">Thế giới Bảng phối màu (Palette)</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.palette.desc">Khám phá phối màu theo cảm xúc, lưu bộ sưu tập, xuất token/HEX.</p>
+            <p class="tc-world-when">Dùng khi: bạn cần chốt bảng phối và kiểm tra vai trò màu trước khi triển khai.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/palette.html" data-i18n="lobby.portals.cards.palette.cta">Mở</a>
         </div>
@@ -422,6 +489,7 @@
           <div class="flex-1">
             <h3 class="font-semibold" data-i18n="lobby.portals.cards.printcolor.title">Thế giới Màu in (CMYK)</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.printcolor.desc">Đổi HEX → CMYK, theo dõi TAC, cảnh báo lệch in và xuất bảng cho nhà in.</p>
+            <p class="tc-world-when">Dùng khi: bạn chuẩn bị file in và cần kiểm soát CMYK, TAC, sai lệch màu.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/printcolor.html" data-i18n="lobby.portals.cards.printcolor.cta">Mở</a>
         </div>
@@ -429,6 +497,7 @@
           <div class="flex-1">
             <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.library.title">Thế giới Thư viện Tài sản Màu</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.library.desc">Lưu tài sản màu, lọc nhanh, xem nhanh và áp dụng sang Palette/Gradient.</p>
+            <p class="tc-world-when">Dùng khi: bạn cần quản lý asset màu và tái sử dụng nhất quán giữa các dự án.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/library.html" data-i18n="lobby.portals.cards.library.cta">Mở</a>
         </div>
@@ -436,6 +505,7 @@
           <div class="flex-1">
             <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.paintfabric.title">Thế giới màu Sơn&Vải</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.paintfabric.desc">Mô phỏng màu trên sơn/vải, điều chỉnh ánh sáng, lưu tài sản vật liệu.</p>
+            <p class="tc-world-when">Dùng khi: bạn cần kiểm thử màu trên bề mặt vật liệu trước khi sản xuất.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/paintfabric.html" data-i18n="lobby.portals.cards.paintfabric.cta">Mở</a>
         </div>
@@ -443,6 +513,7 @@
           <div class="flex-1">
             <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.imagecolor.title">Thế giới Màu từ Ảnh</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.imagecolor.desc">Lấy màu chủ đạo từ ảnh, tạo palette/gradient và lưu nhanh.</p>
+            <p class="tc-world-when">Dùng khi: bạn muốn trích màu từ ảnh tham chiếu để làm nền cho toàn bộ hành trình.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/imagecolor.html" data-i18n="lobby.portals.cards.imagecolor.cta">Mở</a>
         </div>
@@ -450,8 +521,17 @@
           <div class="flex-1">
             <h3 class="font-semibold mt-3" data-i18n="lobby.portals.cards.colorplay.title">Thế giới trò chơi màu</h3>
             <p class="tc-muted text-sm mt-2" data-i18n="lobby.portals.cards.colorplay.desc">Chơi Line 98, luyện mắt màu và tối ưu điểm số theo combo.</p>
+            <p class="tc-world-when">Dùng khi: bạn muốn luyện cảm giác màu và thư giãn giữa các phiên làm việc dài.</p>
           </div>
           <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./worlds/colorplay.html" data-i18n="lobby.portals.cards.colorplay.cta">Mở</a>
+        </div>
+        <div class="tc-card p-5 flex flex-col gap-4 h-full">
+          <div class="flex-1">
+            <h3 class="font-semibold mt-3">Không gian Cộng đồng</h3>
+            <p class="tc-muted text-sm mt-2">Kết nối người dùng SpaceColors để chia sẻ kết quả, phản biện và remix phương án màu.</p>
+            <p class="tc-world-when">Dùng khi: bạn cần nhận góp ý nhanh hoặc muốn công bố phương án để cộng đồng cùng phát triển.</p>
+          </div>
+          <a class="tc-btn tc-btn-primary px-4 py-2 inline-flex w-full sm:w-max mt-auto self-start" href="./spaces/community.html">Mở</a>
         </div>
       </div>
     </section>
@@ -881,11 +961,163 @@
       if (zaloLink && zaloUrl) zaloLink.href = zaloUrl;
     });
   </script>
-  
-  
-  
-  
-  
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const nextStepType = document.getElementById("nextStepType");
+      const nextStepTitle = document.getElementById("nextStepTitle");
+      const nextStepDesc = document.getElementById("nextStepDesc");
+      const nextStepCta = document.getElementById("nextStepCta");
+      const nextStepSignal = document.getElementById("nextStepSignal");
+      const nextStepAssetCount = document.getElementById("nextStepAssetCount");
+      const nextStepRecentCount = document.getElementById("nextStepRecentCount");
+      const nextStepPinnedCount = document.getElementById("nextStepPinnedCount");
+      const continueBtn = document.getElementById("journeyContinueBtn");
+      const continueMeta = document.getElementById("journeyContinueMeta");
+      if (!nextStepType || !nextStepTitle || !nextStepDesc || !nextStepCta || !nextStepSignal) return;
+
+      const safeParse = (raw, fallback) => {
+        if (!raw) return fallback;
+        try {
+          return JSON.parse(raw);
+        } catch (_err) {
+          return fallback;
+        }
+      };
+
+      const safeGet = (key) => {
+        try {
+          return localStorage.getItem(key);
+        } catch (_err) {
+          return "";
+        }
+      };
+
+      const readList = (key) => {
+        const parsed = safeParse(safeGet(key), []);
+        return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string" && item.trim()) : [];
+      };
+
+      const registryApi = window.tcWorldRegistry || null;
+      const worldFallback = {
+        threadcolor: { label: "Thế giới màu thêu", url: "./worlds/threadcolor.html" },
+        gradient: { label: "Thế giới Dải chuyển màu", url: "./worlds/gradient.html" },
+        palette: { label: "Thế giới Bảng phối màu", url: "./worlds/palette.html" },
+        printcolor: { label: "Thế giới Màu in", url: "./worlds/printcolor.html" },
+        library: { label: "Thế giới Thư viện Tài sản Màu", url: "./worlds/library.html" },
+        paintfabric: { label: "Thế giới màu Sơn&Vải", url: "./worlds/paintfabric.html" },
+        imagecolor: { label: "Thế giới Màu từ Ảnh", url: "./worlds/imagecolor.html" },
+        colorplay: { label: "Thế giới trò chơi màu", url: "./worlds/colorplay.html" },
+        threadvault: { label: "Kho chỉ", url: "./worlds/threadvault.html" }
+      };
+
+      const resolveWorldInfo = (id) => {
+        const worldId = String(id || "").trim();
+        if (!worldId) return null;
+        const fallback = worldFallback[worldId];
+        const item = registryApi?.getById?.(worldId);
+        const label = item?.label || fallback?.label || worldId;
+        const resolvedUrl = typeof registryApi?.resolveUrl === "function" && item
+          ? registryApi.resolveUrl(item, "./")
+          : (fallback?.url || "");
+        return resolvedUrl ? { id: worldId, label, url: resolvedUrl } : null;
+      };
+
+      const readAssetCount = () => {
+        const parsed = safeParse(safeGet("tc_asset_library_v1"), []);
+        if (Array.isArray(parsed)) return parsed.length;
+        if (Array.isArray(parsed?.items)) return parsed.items.length;
+        if (Array.isArray(parsed?.assets)) return parsed.assets.length;
+        return 0;
+      };
+
+      const readProjectState = () => {
+        const parsed = safeParse(safeGet("tc_project_current"), null);
+        if (!parsed || typeof parsed !== "object") return null;
+        const colors = Array.isArray(parsed.colors) ? parsed.colors : [];
+        const stops = Array.isArray(parsed.stops) ? parsed.stops : [];
+        const hasPayload = Boolean(colors.length || stops.length || parsed.assetId || parsed.name || parsed.id);
+        if (!hasPayload) return null;
+        return parsed;
+      };
+
+      const applyRecommendation = (payload) => {
+        nextStepType.textContent = payload.type;
+        nextStepTitle.textContent = payload.title;
+        nextStepDesc.textContent = payload.desc;
+        nextStepCta.textContent = payload.cta;
+        nextStepCta.href = payload.url;
+        nextStepSignal.textContent = payload.signal;
+      };
+
+      const recent = readList("lastVisitedWorlds");
+      const pinned = readList("pinnedWorlds");
+      const assetCount = readAssetCount();
+      const project = readProjectState();
+
+      if (nextStepAssetCount) nextStepAssetCount.textContent = String(assetCount);
+      if (nextStepRecentCount) nextStepRecentCount.textContent = String(recent.length);
+      if (nextStepPinnedCount) nextStepPinnedCount.textContent = String(pinned.length);
+
+      let recommendation = {
+        type: "Khởi động mới",
+        title: "Bắt đầu từ Thế giới màu thêu",
+        desc: "Bạn chưa có dữ liệu cục bộ, nên luồng vào nhanh nhất là tra mã chỉ từ ảnh hoặc HEX.",
+        cta: "Bắt đầu ngay",
+        url: "./worlds/threadcolor.html",
+        signal: "Chế độ mặc định"
+      };
+
+      if (project) {
+        const projectWorldInfo = resolveWorldInfo(project.world || project.worldId || "palette") || worldFallback.palette;
+        recommendation = {
+          type: "Dự án đang dở",
+          title: `Tiếp tục tại ${projectWorldInfo.label}`,
+          desc: "Đã phát hiện dự án cục bộ. Nên quay lại đúng Thế giới để tiếp tục liền mạch, không mất ngữ cảnh.",
+          cta: "Tiếp tục dự án",
+          url: projectWorldInfo.url,
+          signal: "Ưu tiên dự án"
+        };
+      } else if (assetCount > 0) {
+        recommendation = {
+          type: "Asset sẵn có",
+          title: "Mở Thư viện để tái dùng asset",
+          desc: "Bạn đã có asset cục bộ. Bước tiếp theo tối ưu là mở Thư viện rồi đẩy sang Palette/Gradient.",
+          cta: "Mở Thư viện",
+          url: "./worlds/library.html",
+          signal: "Ưu tiên asset"
+        };
+      } else if (recent.length > 0) {
+        const recentWorldInfo = resolveWorldInfo(recent[0]);
+        if (recentWorldInfo) {
+          recommendation = {
+            type: "Lịch sử gần đây",
+            title: `Tiếp tục tại ${recentWorldInfo.label}`,
+            desc: "Đã phát hiện Thế giới bạn vừa dùng. Bạn có thể tiếp tục ngay để giữ nhịp công việc.",
+            cta: "Tiếp tục làm việc",
+            url: recentWorldInfo.url,
+            signal: "Ưu tiên lịch sử"
+          };
+        }
+      }
+
+      applyRecommendation(recommendation);
+
+      if (continueBtn) {
+        const continueWorld = resolveWorldInfo(recent[0]);
+        if (continueWorld) {
+          continueBtn.href = continueWorld.url;
+          continueBtn.textContent = `Tiếp tục: ${continueWorld.label}`;
+          continueBtn.dataset.worldLink = "1";
+          continueBtn.dataset.world = continueWorld.id;
+          if (continueMeta) {
+            continueMeta.textContent = `Đang ưu tiên mục gần đây nhất: ${continueWorld.label}.`;
+          }
+        }
+      }
+    });
+  </script>
+
   <script>
     (() => {
       const root = document.documentElement;

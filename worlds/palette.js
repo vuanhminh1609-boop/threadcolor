@@ -312,7 +312,11 @@ const el = {
   roomCommentList: document.getElementById("paletteCommentList"),
   roomCommentComposer: document.getElementById("paletteCommentComposer"),
   roomCommentInput: document.getElementById("paletteCommentInput"),
-  roomCommentSubmit: document.getElementById("paletteCommentSubmit")
+  roomCommentSubmit: document.getElementById("paletteCommentSubmit"),
+  modeQuick: document.getElementById("paletteModeQuick"),
+  modeExpert: document.getElementById("paletteModeExpert"),
+  modeHint: document.getElementById("paletteModeHint"),
+  modeTargets: Array.from(document.querySelectorAll("[data-palette-mode-target]"))
 };
 
 const ROLE_KEYS = ["bg", "surface", "text", "muted", "accent"];
@@ -324,6 +328,11 @@ const SHORT_SHARE_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn
 const SHORT_SHARE_ID_LENGTH = 9;
 const SHORT_SHARE_MAX_TRIES = 8;
 const SHORT_SHARE_WAIT_AUTH_MS = 2200;
+const PALETTE_WORKMODE_HINT = {
+  quick: "Tạo nhanh: tập trung các bước tạo/chọn palette để ra kết quả ngay.",
+  expert: "Chế độ chuyên gia: mở thêm thư viện nâng cao và không gian cộng tác theo phòng."
+};
+let paletteWorkMode = "quick";
 let roomListenerUnsub = null;
 let firestoreRealtimeModulePromise = null;
 let roomSyncTimer = null;
@@ -403,6 +412,27 @@ function t(key, fallback = "", params) {
 
 function normalizeHex(input) {
   return normalizeHexCore(input);
+}
+
+function setPaletteWorkMode(nextMode) {
+  paletteWorkMode = nextMode === "expert" ? "expert" : "quick";
+  const isExpert = paletteWorkMode === "expert";
+  el.modeQuick?.classList.toggle("is-active", !isExpert);
+  el.modeQuick?.setAttribute("aria-pressed", !isExpert ? "true" : "false");
+  el.modeExpert?.classList.toggle("is-active", isExpert);
+  el.modeExpert?.setAttribute("aria-pressed", isExpert ? "true" : "false");
+  if (el.modeHint) {
+    el.modeHint.textContent = PALETTE_WORKMODE_HINT[paletteWorkMode];
+  }
+  (el.modeTargets || []).forEach((node) => {
+    const targetMode = String(node?.getAttribute("data-palette-mode-target") || "");
+    if (targetMode !== "expert") return;
+    if (isExpert) {
+      node.removeAttribute("hidden");
+    } else {
+      node.setAttribute("hidden", "hidden");
+    }
+  });
 }
 
 function hexToRgb(hex) {
@@ -8887,6 +8917,7 @@ async function loadPalettes() {
 
 async function init() {
   if (handleBackwardCompatibility()) return;
+  setPaletteWorkMode("quick");
   const queryParams = new URLSearchParams(normalizeSearchText(window.location.search || ""));
   const hasRoomQueryParam = queryParams.has("room");
   const roomIdFromQuery = parseRoomIdFromQuery(window.location.search || "");
@@ -8932,6 +8963,12 @@ async function init() {
     }
   }
   loadPalettes();
+  el.modeQuick?.addEventListener("click", () => {
+    setPaletteWorkMode("quick");
+  });
+  el.modeExpert?.addEventListener("click", () => {
+    setPaletteWorkMode("expert");
+  });
 
   el.hexApply?.addEventListener("click", () => {
     const stops = parseHexList(el.hexInput?.value || "").slice(0, MAX_STOPS);

@@ -23,11 +23,38 @@ const SUDOKU_LAST_KEY = "tc_colorplay_sudoku_last_v1";
 const COLORPLAY_ASSET_KEY = "tc_asset_library_v1";
 const LINE98_DAILY_BEST_KEY = "tc_colorplay_line98_daily_best_v1";
 const COLORPLAY_ACHIEVEMENTS_KEY = "tc_colorplay_achievements_v1";
+const COLORPLAY_PROGRESS_KEY = "tc_colorplay_progress_v1";
 const LINE98_SAVE_VERSION = 1;
 const PILL_SAVE_VERSION = 1;
 const SUDOKU_SAVE_VERSION = 1;
 const SUDOKU_BEST_KEY = "tc_colorplay_sudoku_best_v1";
 const HINT_COOLDOWN_MS = 5000;
+const MIN_LINE_DISTINCT_COLORS = 5;
+const MIN_PILL_DISTINCT_COLORS = 4;
+const DAILY_CHALLENGE_SCORE_TARGET = 240;
+const BADGE_TIERS = [
+  { id: "rookie", name: "Tân binh sắc màu", min: 0, desc: "Hoàn thành vài ván đầu để làm nóng tay." },
+  { id: "crafter", name: "Thợ phối mượt", min: 400, desc: "Bạn đã giữ nhịp chơi ổn định và đều tay." },
+  { id: "artisan", name: "Nghệ nhân vòng màu", min: 1200, desc: "Nhịp chơi chắc và khả năng đọc màu rất tốt." },
+  { id: "legend", name: "Huyền thoại ColorPlay", min: 2600, desc: "Giữ phong độ cao và hoàn thành thử thách liên tục." }
+];
+const DAILY_CHALLENGE_ITEMS = [
+  {
+    id: "line98_finish",
+    label: "Kết thúc 1 ván Line 98",
+    isDone: (entry) => Boolean(entry?.line98Finished)
+  },
+  {
+    id: "pill_finish",
+    label: "Kết thúc 1 ván Xếp thuốc",
+    isDone: (entry) => Boolean(entry?.pillFinished)
+  },
+  {
+    id: "daily_score",
+    label: `Tích luỹ ${DAILY_CHALLENGE_SCORE_TARGET} điểm/ngày`,
+    isDone: (entry) => Number(entry?.scoreToday || 0) >= DAILY_CHALLENGE_SCORE_TARGET
+  }
+];
 const PILL_WIDTH = 8;
 const PILL_HEIGHT = 16;
 const PILL_COLORS = [
@@ -87,6 +114,7 @@ let pillResumeRequested = false;
 let sudokuResumeRequested = false;
 let focusCard = null;
 let achievementListEl = null;
+let progressEls = {};
 let hintFrame = null;
 
 let el = {};
@@ -266,23 +294,221 @@ function applyColorBlindMode() {
   document.body.classList.toggle("colorplay-colorblind", settings.colorBlind);
 }
 
-const buildPaletteForCount = (list, count, fallback) => {
-  const base = Array.isArray(list) && list.length ? list : fallback;
-  if (!Array.isArray(base) || !base.length) return [];
-  const total = Math.max(1, Number(count) || 1);
-  const output = [];
-  for (let i = 0; i < total; i += 1) {
-    output.push(base[i] || base[base.length - 1]);
+const PALETTE_VARIANTS = [
+  { dl: 14, ds: 0, dh: 0 },
+  { dl: -14, ds: 0, dh: 0 },
+  { dl: 8, ds: 10, dh: 10 },
+  { dl: -8, ds: 10, dh: -10 },
+  { dl: 12, ds: -12, dh: 16 },
+  { dl: -12, ds: -10, dh: -16 },
+  { dl: 18, ds: 6, dh: 22 },
+  { dl: -18, ds: 6, dh: -22 },
+  { dl: 6, ds: 14, dh: 28 },
+  { dl: -6, ds: 14, dh: -28 },
+  { dl: 10, ds: -20, dh: 34 },
+  { dl: -10, ds: -20, dh: -34 }
+];
+
+let linePaletteCache = { key: "", result: null };
+let pillPaletteCache = { key: "", result: null };
+
+function toHexChannel(value) {
+  return Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, "0");
+}
+
+function rgbToHex(r, g, b) {
+  return `#${toHexChannel(r)}${toHexChannel(g)}${toHexChannel(b)}`;
+}
+
+function parseHexColor(hex) {
+  const normalized = normalizeHexList([hex])[0] || "";
+  if (!normalized) return null;
+  const raw = normalized.replace("#", "");
+  if (!/^[0-9a-fA-F]{6}$/.test(raw)) return null;
+  return {
+    r: parseInt(raw.slice(0, 2), 16),
+    g: parseInt(raw.slice(2, 4), 16),
+    b: parseInt(raw.slice(4, 6), 16)
+  };
+}
+
+function rgbToHsl(r, g, b) {
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const delta = max - min;
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (delta !== 0) {
+    s = delta / (1 - Math.abs(2 * l - 1));
+    if (max === rn) {
+      h = 60 * (((gn - bn) / delta) % 6);
+    } else if (max === gn) {
+      h = 60 * (((bn - rn) / delta) + 2);
+    } else {
+      h = 60 * (((rn - gn) / delta) + 4);
+    }
   }
-  return output;
+  if (h < 0) h += 360;
+  return { h, s: s * 100, l: l * 100 };
+}
+
+function hslToRgb(h, s, l) {
+  const sn = s / 100;
+  const ln = l / 100;
+  const c = (1 - Math.abs(2 * ln - 1)) * sn;
+  const hh = h / 60;
+  const x = c * (1 - Math.abs((hh % 2) - 1));
+  let rn = 0;
+  let gn = 0;
+  let bn = 0;
+  if (hh >= 0 && hh < 1) {
+    rn = c; gn = x;
+  } else if (hh < 2) {
+    rn = x; gn = c;
+  } else if (hh < 3) {
+    gn = c; bn = x;
+  } else if (hh < 4) {
+    gn = x; bn = c;
+  } else if (hh < 5) {
+    rn = x; bn = c;
+  } else {
+    rn = c; bn = x;
+  }
+  const m = ln - c / 2;
+  return {
+    r: (rn + m) * 255,
+    g: (gn + m) * 255,
+    b: (bn + m) * 255
+  };
+}
+
+function colorDistance(hexA, hexB) {
+  const a = parseHexColor(hexA);
+  const b = parseHexColor(hexB);
+  if (!a || !b) return 999;
+  const dr = a.r - b.r;
+  const dg = a.g - b.g;
+  const db = a.b - b.b;
+  return Math.sqrt(dr * dr + dg * dg + db * db);
+}
+
+function isDistinctColor(nextHex, existing, minDistance = 24) {
+  if (!existing.length) return true;
+  return existing.every((hex) => colorDistance(nextHex, hex) >= minDistance);
+}
+
+function createVariantColor(baseHex, variant) {
+  const parsed = parseHexColor(baseHex);
+  if (!parsed) return null;
+  const hsl = rgbToHsl(parsed.r, parsed.g, parsed.b);
+  const hue = (hsl.h + Number(variant?.dh || 0) + 360) % 360;
+  const sat = clampNumber(hsl.s + Number(variant?.ds || 0), 8, 94);
+  const lum = clampNumber(hsl.l + Number(variant?.dl || 0), 8, 92);
+  const rgb = hslToRgb(hue, sat, lum);
+  return rgbToHex(rgb.r, rgb.g, rgb.b);
+}
+
+function uniqHexList(list) {
+  const source = normalizeHexList(Array.isArray(list) ? list : []);
+  return source.filter((hex, idx) => source.indexOf(hex) === idx);
+}
+
+function expandPaletteSmart(baseColors, count, fallbackColors) {
+  const total = Math.max(1, Number(count) || 1);
+  const pool = uniqHexList(baseColors);
+  const fallback = uniqHexList(fallbackColors);
+  const output = [];
+  pool.forEach((hex) => {
+    if (output.length >= total) return;
+    if (isDistinctColor(hex, output, 18)) output.push(hex);
+  });
+  let rounds = 0;
+  while (output.length < total && rounds < 8) {
+    rounds += 1;
+    const seeds = output.length ? output.slice() : (pool.length ? pool : fallback);
+    if (!seeds.length) break;
+    for (let i = 0; i < seeds.length && output.length < total; i += 1) {
+      const seed = seeds[i];
+      for (let j = 0; j < PALETTE_VARIANTS.length && output.length < total; j += 1) {
+        const variant = PALETTE_VARIANTS[(j + rounds - 1) % PALETTE_VARIANTS.length];
+        const candidate = createVariantColor(seed, variant);
+        if (!candidate) continue;
+        if (!isDistinctColor(candidate, output, 20)) continue;
+        output.push(candidate);
+      }
+    }
+  }
+  for (let i = 0; i < fallback.length && output.length < total; i += 1) {
+    const candidate = fallback[i];
+    if (isDistinctColor(candidate, output, 16)) {
+      output.push(candidate);
+    }
+  }
+  for (let i = 0; i < fallback.length && output.length < total; i += 1) {
+    output.push(fallback[i]);
+  }
+  return output.slice(0, total);
+}
+
+const buildPaletteForCount = (list, count, fallback, options = {}) => {
+  const input = uniqHexList(Array.isArray(list) ? list : []);
+  const fallbackList = uniqHexList(fallback);
+  const minDistinct = Math.max(1, Number(options.minDistinct) || 1);
+  const requested = Math.max(1, Number(count) || 1);
+  const required = Math.max(requested, minDistinct);
+  const seed = input.length ? input : fallbackList;
+  const expanded = expandPaletteSmart(seed, required, fallbackList);
+  return {
+    colors: expanded,
+    inputCount: input.length,
+    requestedCount: requested,
+    requiredCount: required,
+    expandedFromCustom: input.length > 0 && required > input.length
+  };
 };
 
+function getLinePaletteResult() {
+  const cacheKey = JSON.stringify({
+    custom: uniqHexList(state.customPalette),
+    count: state.colorCount
+  });
+  if (linePaletteCache.key !== cacheKey) {
+    linePaletteCache = {
+      key: cacheKey,
+      result: buildPaletteForCount(state.customPalette, state.colorCount, COLORS, {
+        minDistinct: MIN_LINE_DISTINCT_COLORS
+      })
+    };
+  }
+  return linePaletteCache.result;
+}
+
+function getPillPaletteResult() {
+  const cacheKey = JSON.stringify({
+    custom: uniqHexList(pillState.customPalette),
+    count: pillState.colorCount
+  });
+  if (pillPaletteCache.key !== cacheKey) {
+    pillPaletteCache = {
+      key: cacheKey,
+      result: buildPaletteForCount(pillState.customPalette, pillState.colorCount, PILL_COLORS, {
+        minDistinct: MIN_PILL_DISTINCT_COLORS
+      })
+    };
+  }
+  return pillPaletteCache.result;
+}
+
 function getLineColors() {
-  return buildPaletteForCount(state.customPalette, state.colorCount, COLORS);
+  return getLinePaletteResult().colors;
 }
 
 function getPillColors() {
-  return buildPaletteForCount(pillState.customPalette, pillState.colorCount, PILL_COLORS);
+  return getPillPaletteResult().colors;
 }
 
 const applyHexPalette = (hexes) => {
@@ -290,11 +516,20 @@ const applyHexPalette = (hexes) => {
   if (!normalized.length) return false;
   state.customPalette = normalized;
   pillState.customPalette = normalized;
+  const linePalette = getLinePaletteResult();
+  const pillPalette = getPillPaletteResult();
   window.tcWorkbench?.setContext?.(normalized, { worldKey: "colorplay", source: "hex-apply" });
   renderBoardState();
   renderUpcoming();
   renderPillBoard();
   renderPillNext();
+  if (linePalette.expandedFromCustom || pillPalette.expandedFromCustom) {
+    const targetLine = linePalette.requiredCount;
+    const targetPill = pillPalette.requiredCount;
+    showToast(`Bảng màu đã được mở rộng nhẹ để chơi mượt hơn (Line ${targetLine} màu, Pill ${targetPill} màu).`);
+  } else {
+    showToast("Đã áp dụng bảng màu cá nhân cho cả hai game.");
+  }
   return true;
 };
 
@@ -505,6 +740,8 @@ if (!achievementState.unlocked) {
   achievementState.unlocked = {};
 }
 
+let progressionState = loadProgressState();
+
 function saveAchievementState() {
   try {
     localStorage.setItem(COLORPLAY_ACHIEVEMENTS_KEY, JSON.stringify(achievementState));
@@ -527,6 +764,7 @@ function unlockAchievement(id) {
   saveAchievementState();
   const meta = ACHIEVEMENTS.find((item) => item.id === id);
   if (meta) showToast(`Mở khoá: ${meta.name}.`);
+  grantProgressPoints(35, { silent: true });
   renderAchievements();
 }
 
@@ -553,6 +791,219 @@ function renderAchievements() {
     card.appendChild(desc);
     achievementListEl.appendChild(card);
   });
+}
+
+function createEmptyProgressState() {
+  return {
+    version: 1,
+    totalPoints: 0,
+    daily: {}
+  };
+}
+
+function loadProgressState() {
+  const fallback = createEmptyProgressState();
+  try {
+    const raw = safeParseJSON(localStorage.getItem(COLORPLAY_PROGRESS_KEY), fallback);
+    if (!raw || typeof raw !== "object") return fallback;
+    const stateValue = {
+      version: 1,
+      totalPoints: Math.max(0, Number(raw.totalPoints) || 0),
+      daily: raw.daily && typeof raw.daily === "object" ? raw.daily : {}
+    };
+    return stateValue;
+  } catch (_err) {
+    return fallback;
+  }
+}
+
+function saveProgressState() {
+  try {
+    localStorage.setItem(COLORPLAY_PROGRESS_KEY, JSON.stringify(progressionState));
+  } catch (_err) {
+    // ignore
+  }
+}
+
+function ensureDailyProgress(dayKey = getTodaySeed()) {
+  progressionState.daily = progressionState.daily && typeof progressionState.daily === "object"
+    ? progressionState.daily
+    : {};
+  if (!progressionState.daily[dayKey] || typeof progressionState.daily[dayKey] !== "object") {
+    progressionState.daily[dayKey] = {
+      line98Finished: false,
+      pillFinished: false,
+      scoreToday: 0,
+      rewardClaimed: false,
+      rewardAssetId: ""
+    };
+  }
+  const entry = progressionState.daily[dayKey];
+  entry.line98Finished = Boolean(entry.line98Finished);
+  entry.pillFinished = Boolean(entry.pillFinished);
+  entry.scoreToday = Math.max(0, Number(entry.scoreToday) || 0);
+  entry.rewardClaimed = Boolean(entry.rewardClaimed);
+  entry.rewardAssetId = String(entry.rewardAssetId || "");
+  const keys = Object.keys(progressionState.daily).sort();
+  if (keys.length > 31) {
+    const staleKeys = keys.slice(0, keys.length - 31);
+    staleKeys.forEach((key) => {
+      delete progressionState.daily[key];
+    });
+  }
+  return entry;
+}
+
+function getBadgeTier(points) {
+  const value = Math.max(0, Number(points) || 0);
+  let active = BADGE_TIERS[0];
+  BADGE_TIERS.forEach((tier) => {
+    if (value >= tier.min) active = tier;
+  });
+  return active;
+}
+
+function getChallengeProgress(entry) {
+  return DAILY_CHALLENGE_ITEMS.map((item) => ({
+    id: item.id,
+    label: item.label,
+    done: item.isDone(entry)
+  }));
+}
+
+function isDailyChallengeDone(entry) {
+  return getChallengeProgress(entry).every((item) => item.done);
+}
+
+function prependAssetToLibrary(asset) {
+  if (!asset) return false;
+  try {
+    const raw = localStorage.getItem(COLORPLAY_ASSET_KEY);
+    const list = safeParseJSON(raw, []);
+    const next = Array.isArray(list) ? list : [];
+    next.unshift(asset);
+    localStorage.setItem(COLORPLAY_ASSET_KEY, JSON.stringify(next));
+    return true;
+  } catch (_err) {
+    return false;
+  }
+}
+
+function buildDailyRewardAsset(dayKey) {
+  const createdAt = new Date().toISOString();
+  const colors = uniqHexList([
+    ...getLineColors(),
+    ...getPillColors(),
+    ...COLORS,
+    ...PILL_COLORS
+  ]).slice(0, 6);
+  const safeColors = colors.length ? colors : COLORS.slice(0, 6);
+  return {
+    id: `colorplay_reward_${dayKey}_${Date.now()}`,
+    type: "palette",
+    name: `Phần thưởng ColorPlay ${new Date().toLocaleDateString("vi-VN")}`,
+    tags: ["colorplay", "thử-thách-ngày", "reward-asset"],
+    payload: {
+      colors: safeColors,
+      source: "colorplay_daily_challenge",
+      challengeDate: dayKey
+    },
+    notes: "Phần thưởng tài sản từ thử thách ngày ColorPlay.",
+    createdAt,
+    updatedAt: createdAt,
+    sourceWorld: "colorplay",
+    project: ""
+  };
+}
+
+function renderProgressPanel() {
+  if (!progressEls.points || !progressEls.badge || !progressEls.badgeDesc || !progressEls.challengeList) return;
+  const dayKey = getTodaySeed();
+  const entry = ensureDailyProgress(dayKey);
+  const totalPoints = Math.max(0, Number(progressionState.totalPoints) || 0);
+  const badge = getBadgeTier(totalPoints);
+  progressEls.points.textContent = String(totalPoints);
+  progressEls.badge.textContent = badge.name;
+  progressEls.badgeDesc.textContent = badge.desc;
+  const challengeItems = getChallengeProgress(entry);
+  progressEls.challengeList.innerHTML = challengeItems.map((item) => `
+    <div class="tc-progress-challenge${item.done ? " is-done" : ""}">
+      <span>${item.label}</span>
+      <strong>${item.done ? "Đã xong" : "Chưa xong"}</strong>
+    </div>
+  `).join("");
+  const completed = challengeItems.filter((item) => item.done).length;
+  const challengeDone = completed === challengeItems.length;
+  if (progressEls.hint) {
+    progressEls.hint.textContent = challengeDone
+      ? "Bạn đã hoàn thành đủ nhiệm vụ hôm nay. Có thể nhận thưởng ngay."
+      : `Hoàn thành ${completed}/${challengeItems.length} nhiệm vụ để mở thưởng asset.`;
+  }
+  if (progressEls.rewardButton) {
+    const canClaim = challengeDone && !entry.rewardClaimed;
+    progressEls.rewardButton.disabled = !canClaim;
+    progressEls.rewardButton.textContent = entry.rewardClaimed
+      ? "Đã nhận thưởng hôm nay"
+      : "Nhận thưởng asset hôm nay";
+  }
+  if (progressEls.rewardStatus) {
+    if (entry.rewardClaimed) {
+      progressEls.rewardStatus.textContent = "Bạn đã nhận thưởng hôm nay, phần thưởng đã có trong Thư viện.";
+    } else if (challengeDone) {
+      progressEls.rewardStatus.textContent = "Nhiệm vụ đã đủ. Nhấn nhận thưởng để lưu asset vào Thư viện.";
+    } else {
+      progressEls.rewardStatus.textContent = `Điểm tích luỹ hôm nay: ${entry.scoreToday}/${DAILY_CHALLENGE_SCORE_TARGET}.`;
+    }
+  }
+}
+
+function grantProgressPoints(points, options = {}) {
+  const value = Math.max(0, Math.floor(Number(points) || 0));
+  if (!value) return;
+  progressionState.totalPoints = Math.max(0, Number(progressionState.totalPoints) || 0) + value;
+  saveProgressState();
+  renderProgressPanel();
+  if (!options.silent) {
+    showToast(`+${value} điểm tiến trình.`);
+  }
+}
+
+function updateDailyProgress(gameKey, payload = {}) {
+  const dayKey = getTodaySeed();
+  const entry = ensureDailyProgress(dayKey);
+  const score = Math.max(0, Math.floor(Number(payload.score) || 0));
+  if (gameKey === "line98") entry.line98Finished = true;
+  if (gameKey === "pillstack") entry.pillFinished = true;
+  entry.scoreToday += score;
+  saveProgressState();
+  renderProgressPanel();
+}
+
+function handleClaimDailyReward() {
+  const dayKey = getTodaySeed();
+  const entry = ensureDailyProgress(dayKey);
+  if (!isDailyChallengeDone(entry)) {
+    showToast("Sắp xong rồi, hoàn thành đủ nhiệm vụ hôm nay để mở thưởng.");
+    renderProgressPanel();
+    return;
+  }
+  if (entry.rewardClaimed) {
+    showToast("Bạn đã nhận thưởng của hôm nay.");
+    renderProgressPanel();
+    return;
+  }
+  const rewardAsset = buildDailyRewardAsset(dayKey);
+  const ok = prependAssetToLibrary(rewardAsset);
+  if (!ok) {
+    showToast("Không thể lưu thưởng vào Thư viện.");
+    return;
+  }
+  entry.rewardClaimed = true;
+  entry.rewardAssetId = rewardAsset.id;
+  grantProgressPoints(120, { silent: true });
+  saveProgressState();
+  renderProgressPanel();
+  showToast("Đã nhận thưởng asset và lưu vào Thư viện.");
 }
 
 function showStatus(message) {
@@ -1596,6 +2047,7 @@ function clearLines(lines, { fromSpawn = false, onCleared } = {}) {
   });
   const gained = lines.length * 10;
   state.score += gained;
+  grantProgressPoints(gained, { silent: true });
   if (fromSpawn) {
     state.combo = 0;
   } else {
@@ -1818,18 +2270,12 @@ async function saveLine98RunToLibrary(payload) {
     sourceWorld: "colorplay",
     project: ""
   };
-  try {
-    const raw = localStorage.getItem(COLORPLAY_ASSET_KEY);
-    const list = safeParseJSON(raw, []);
-    const next = Array.isArray(list) ? list : [];
-    next.unshift(asset);
-    localStorage.setItem(COLORPLAY_ASSET_KEY, JSON.stringify(next));
+  if (prependAssetToLibrary(asset)) {
     showToast("Đã lưu vào Thư viện.");
     return true;
-  } catch (_err) {
-    showToast("Không thể lưu vào Thư viện.");
-    return false;
   }
+  showToast("Không thể lưu vào Thư viện.");
+  return false;
 }
 
 function handleLine98DifficultyChange() {
@@ -1896,6 +2342,7 @@ function handleHintToggle() {
 }
 
 function handleGameOver() {
+  if (state.gameOver) return;
   state.gameOver = true;
   state.elapsedMs = getLineElapsedMs();
   state.startedAt = null;
@@ -1910,6 +2357,8 @@ function handleGameOver() {
     updateDailyUI();
     unlockAchievement("line98_daily_complete");
   }
+  updateDailyProgress("line98", payload);
+  grantProgressPoints(30 + Math.floor(payload.score * 0.12), { silent: true });
   saveLine98LastRun(payload);
   clearLine98Progress();
   openLine98Endscreen(payload);
@@ -2516,6 +2965,7 @@ function resolvePillMatches(onComplete) {
     if (block) block.classList.add("is-clearing");
   });
   pillState.score += matches.length * 10;
+  grantProgressPoints(matches.length * 10, { silent: true });
   if (matches.length >= 4) unlockAchievement("pill_first_clear");
   if (pillState.score >= 200) unlockAchievement("pill_score_200");
   if (pillState.score >= 500) unlockAchievement("pill_score_500");
@@ -2679,18 +3129,12 @@ async function savePillRunToLibrary(payload) {
     sourceWorld: "colorplay",
     project: ""
   };
-  try {
-    const raw = localStorage.getItem(COLORPLAY_ASSET_KEY);
-    const list = safeParseJSON(raw, []);
-    const next = Array.isArray(list) ? list : [];
-    next.unshift(asset);
-    localStorage.setItem(COLORPLAY_ASSET_KEY, JSON.stringify(next));
+  if (prependAssetToLibrary(asset)) {
     showToast("Đã lưu vào Thư viện.");
     return true;
-  } catch (_err) {
-    showToast("Không thể lưu vào Thư viện.");
-    return false;
   }
+  showToast("Không thể lưu vào Thư viện.");
+  return false;
 }
 
 function handlePillDifficultyChange() {
@@ -2724,6 +3168,7 @@ async function handlePillEndSave() {
 }
 
 function handlePillGameOver() {
+  if (pillState.gameOver) return;
   pillState.gameOver = true;
   pillState.elapsedMs = getPillElapsedMs();
   pillState.startedAt = null;
@@ -2733,6 +3178,8 @@ function handlePillGameOver() {
   showToast("Game over. Nhấn Ván mới để chơi lại.");
   stopPillLoop();
   const payload = buildPillRunPayload();
+  updateDailyProgress("pillstack", payload);
+  grantProgressPoints(30 + Math.floor(payload.score * 0.12), { silent: true });
   savePillLastRun(payload);
   clearPillProgress();
   openPillEndscreen(payload);
@@ -3749,6 +4196,7 @@ function checkSudokuWin() {
     difficulty: sudokuState.difficulty,
     mistakes: sudokuState.mistakes
   };
+  grantProgressPoints(Math.max(80, 260 - Math.min(200, durationSec)), { silent: true });
   saveSudokuLastRun({
     ...payload,
     playedAt: new Date().toISOString()
@@ -4020,7 +4468,22 @@ function initLobby() {
   lobbyPillMount = document.querySelector('[data-game-mount="pillstack"]');
   lobbySudokuMount = document.querySelector('[data-game-mount="colorsudoku"]');
   achievementListEl = document.getElementById("colorplayAchievementList");
+  progressEls = {
+    points: document.getElementById("colorplayPointTotal"),
+    badge: document.getElementById("colorplayBadgeName"),
+    badgeDesc: document.getElementById("colorplayBadgeDesc"),
+    challengeList: document.getElementById("colorplayDailyChallengeList"),
+    rewardButton: document.getElementById("colorplayRewardClaim"),
+    rewardStatus: document.getElementById("colorplayRewardStatus"),
+    hint: document.getElementById("colorplayProgressHint")
+  };
   renderAchievements();
+  ensureDailyProgress(getTodaySeed());
+  renderProgressPanel();
+  if (progressEls.rewardButton && progressEls.rewardButton.dataset.bound !== "1") {
+    progressEls.rewardButton.addEventListener("click", handleClaimDailyReward);
+    progressEls.rewardButton.dataset.bound = "1";
+  }
 
   lobbyTriggers.forEach((btn) => {
     btn.addEventListener("click", () => {

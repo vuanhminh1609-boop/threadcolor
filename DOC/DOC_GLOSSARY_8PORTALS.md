@@ -30,6 +30,10 @@
 |---|---|---|
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
+| Primary CTA | CTA chính | Nút kêu gọi hành động ưu tiên cao nhất trong một màn hình, dẫn người dùng vào luồng chính cần thực hiện ngay. |
+| Journey gateway | Cổng hành trình | Nhóm lối vào theo ngữ cảnh người dùng (mới, quay lại, đang làm việc) để rút ngắn thời gian vào đúng Thế giới. |
+| Next-step recommendation | Bước tiếp theo gợi ý | Khối gợi ý hành động kế tiếp dựa trên dữ liệu cục bộ gần nhất như asset, dự án đang dở và lịch sử truy cập. |
+| User segmentation | Phân tầng người dùng | Cách chia người dùng thành nhóm trạng thái sử dụng khác nhau để tối ưu thông điệp và lối vào ngay tại Sảnh. |
 | Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
 | Token nền (biến CSS đại diện nền theo sắc thái) | Token nền | Biến CSS đại diện nền của một sắc thái, dùng lại đồng bộ giữa card và nền trang. |
 | Canvas nền (lớp nền chính theo sắc thái) | Canvas nền | Lớp nền chính theo từng sắc thái, thường là gradient để tạo chiều sâu tổng thể. |
@@ -158,6 +162,12 @@
 | Microcopy | Vi mô ngôn từ | Câu chữ ngắn trong UI (nhãn nút, mô tả) — phải “đắt và sạch”. |
 | Trạng thái rỗng | Màn hình rỗng | UI khi chưa có dữ liệu (phải sang, không xin lỗi). |
 | Trạng thái lỗi | Màn hình lỗi | UI khi có lỗi (gọn, rõ, không hoảng). |
+| Use-case | Ngữ cảnh sử dụng | Bối cảnh mục tiêu của người dùng (Web/UI, Branding, Textile, Print) để hệ thống chọn preset và cách xem trước phù hợp. |
+| Quick mode | Chế độ Tạo nhanh | Chế độ ưu tiên thao tác cốt lõi, giảm nhiễu tính năng nâng cao để người mới ra kết quả nhanh. |
+| Expert mode | Chế độ chuyên gia | Chế độ mở thêm công cụ nâng cao và không gian cộng tác cho người dùng đã quen workflow. |
+| Asset hub | Trung tâm tài sản | Khu tổng hợp tài sản nóng, phân loại, gợi ý hành động tiếp theo và mốc thời gian cập nhật trong Thư viện. |
+| Asset timeline | Dòng thời gian tài sản | Danh sách mốc cập nhật theo thời gian để theo dõi vòng đời và nhịp sử dụng tài sản. |
+| Next-action hint | Gợi ý dùng tiếp | Gợi ý bước kế tiếp phù hợp với loại tài sản đang chọn để giữ luồng liên thông không bị đứt. |
 
 ---
 
@@ -728,3 +738,14 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Hộp thoại | Hộp thoại | Vùng nổi hiển thị nội dung hoặc câu hỏi cần xác nhận. |
 | Liên kết pháp lý | Liên kết pháp lý | Các liên kết điều khoản, quyền riêng tư, cookie và thông tin tuân thủ. |
 
+
+## 21) Thuật ngữ gameplay cộng đồng
+
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| Smart palette expansion (mở rộng bảng màu tự động có kiểm soát) | Mở rộng palette thông minh | Cơ chế tự sinh thêm biến thể màu cùng gia đình khi đầu vào quá ít màu, giúp game vẫn đủ màu phân biệt mà không lặp màu máy móc. |
+| Distinct color threshold (ngưỡng khác biệt màu) | Ngưỡng màu phân biệt tối thiểu | Số màu phân biệt tối thiểu cần có cho từng game để người chơi không bị nhầm màu trong thao tác nhanh. |
+| Reward asset (tài sản thưởng) | Tài sản phần thưởng | Tài sản được cấp khi hoàn thành thử thách, lưu vào Library và dùng tiếp được trong workflow 8Portals. |
+| Remix lineage (chuỗi nguồn gốc remix) | Dòng dõi remix | Tập metadata ghi lại nguồn gốc của bản remix như asset gốc, bài gốc, người remix và thời điểm remix. |
+| Local-first architecture (kiến trúc ưu tiên dữ liệu cục bộ) | Kiến trúc local-first | Cách tổ chức dữ liệu ưu tiên đọc/ghi local trước để UI vẫn chạy mượt khi chưa có backend hoàn chỉnh. |
+| Quick actions per item (thao tác nhanh theo từng item) | Hành động nhanh theo item | Nhóm thao tác tức thời ngay trên mỗi card feed như Lưu, Remix, Dùng ngay để giảm số bước điều hướng. |

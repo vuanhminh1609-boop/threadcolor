@@ -347,6 +347,30 @@
       </div>
 
       <div id="assetTabPanel" class="mt-6">
+        <section id="assetHubOverview" class="tc-card p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="text-sm font-semibold">Trung tâm tài sản</h2>
+            <span class="tc-muted text-xs">Theo dõi nhanh tài sản nóng, loại tài sản và bước dùng tiếp</span>
+          </div>
+          <div class="mt-3 grid gap-3 md:grid-cols-2">
+            <article class="tc-chip rounded-xl px-3 py-3">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.2em] tc-muted">Tài sản đang nóng</h3>
+              <div id="assetHubHot" class="mt-2 text-sm">Chưa có dữ liệu.</div>
+            </article>
+            <article class="tc-chip rounded-xl px-3 py-3">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.2em] tc-muted">Tài sản theo loại</h3>
+              <div id="assetHubTypes" class="mt-2 text-sm">Chưa có dữ liệu.</div>
+            </article>
+            <article class="tc-chip rounded-xl px-3 py-3">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.2em] tc-muted">Gợi ý dùng tiếp</h3>
+              <div id="assetHubNext" class="mt-2 text-sm">Hãy chọn một tài sản để nhận gợi ý liên thông.</div>
+            </article>
+            <article class="tc-chip rounded-xl px-3 py-3">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.2em] tc-muted">Dòng thời gian tài sản</h3>
+              <div id="assetHubTimeline" class="mt-2 text-sm">Chưa có mốc cập nhật.</div>
+            </article>
+          </div>
+        </section>
         <div class="flex flex-wrap gap-3">
           <!-- Ô bẫy để Edge Password Manager không bám vào ô tìm kiếm -->
           <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">

@@ -73,9 +73,62 @@
       gap: 0.5rem;
       font-size: 0.7rem;
     }
+    .tc-progress-shell {
+      display: grid;
+      gap: 0.9rem;
+    }
+    .tc-progress-metrics {
+      display: grid;
+      gap: 0.6rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .tc-progress-metric {
+      padding: 0.75rem;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(255, 255, 255, 0.6);
+      display: grid;
+      gap: 0.3rem;
+    }
+    .tc-progress-challenge-list {
+      display: grid;
+      gap: 0.5rem;
+    }
+    .tc-progress-challenge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.85rem;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      background: rgba(255, 255, 255, 0.52);
+      font-size: 0.78rem;
+    }
+    .tc-progress-challenge.is-done {
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(187, 247, 208, 0.32);
+    }
+    .tc-progress-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      background: rgba(255, 255, 255, 0.65);
+    }
     @media (min-width: 768px) {
       .tc-achievement-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (min-width: 960px) {
+      .tc-progress-shell {
+        grid-template-columns: 1.1fr 1fr;
       }
     }
     .tc-game-thumb-sudoku {
@@ -223,6 +276,43 @@
           <span class="tc-dot" aria-hidden="true"></span>
           <span>Chế độ thử nghiệm · Đang hoàn thiện</span>
         </div>
+      </div>
+
+      <div class="mt-6 tc-progress-shell">
+        <section class="tc-card p-4">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs uppercase tracking-[0.25em] tc-muted">Tiến trình người chơi</p>
+              <h2 class="text-lg font-semibold mt-1">Điểm và huy hiệu</h2>
+            </div>
+            <span id="colorplayBadgeName" class="tc-progress-badge">Tân binh sắc màu</span>
+          </div>
+          <div class="tc-progress-metrics mt-4">
+            <div class="tc-progress-metric">
+              <span class="tc-muted text-[11px] uppercase tracking-[0.18em]">Điểm hệ thống</span>
+              <strong id="colorplayPointTotal" class="text-2xl font-semibold">0</strong>
+            </div>
+            <div class="tc-progress-metric">
+              <span class="tc-muted text-[11px] uppercase tracking-[0.18em]">Mức hiện tại</span>
+              <strong id="colorplayBadgeDesc" class="text-base font-semibold">Mở khoá huy hiệu đầu tiên</strong>
+            </div>
+          </div>
+          <p id="colorplayProgressHint" class="tc-muted text-xs mt-3">Chơi thêm để mở khoá huy hiệu và phần thưởng tài sản.</p>
+        </section>
+
+        <section class="tc-card p-4">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <p class="text-xs uppercase tracking-[0.25em] tc-muted">Thử thách ngày</p>
+              <h2 class="text-lg font-semibold mt-1">Nhiệm vụ hôm nay</h2>
+            </div>
+          </div>
+          <div id="colorplayDailyChallengeList" class="tc-progress-challenge-list mt-4"></div>
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <button id="colorplayRewardClaim" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Nhận thưởng asset hôm nay</button>
+            <span id="colorplayRewardStatus" class="tc-muted text-xs">Hoàn thành thử thách để mở thưởng.</span>
+          </div>
+        </section>
       </div>
 
       <div class="mt-6 tc-game-lobby">

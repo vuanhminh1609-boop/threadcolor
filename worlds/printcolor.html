@@ -175,6 +175,30 @@
         <button id="printModeScreen" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">In lưới (Đồng phục)</button>
       </div>
 
+      <section id="printQuickFlow" class="mt-6 tc-card p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-sm font-semibold">Flow mặc định 3 bước</h2>
+          <button id="printOpenAdvanced" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Mở chế độ kỹ thuật nâng cao</button>
+        </div>
+        <ol class="mt-3 grid gap-2 text-sm tc-muted">
+          <li class="tc-chip px-3 py-2 rounded-xl">
+            <strong class="text-white">1) Chọn đầu vào</strong>
+            <span class="block mt-1">Dán danh sách HEX hoặc lấy từ Kho HEX để bắt đầu.</span>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs mt-2" type="button" data-print-jump="#hexInput">Đi tới đầu vào</button>
+          </li>
+          <li class="tc-chip px-3 py-2 rounded-xl">
+            <strong class="text-white">2) Chọn ngữ cảnh in</strong>
+            <span class="block mt-1">Chọn preset hồ sơ in, TAC và chất liệu để đúng bối cảnh sản xuất.</span>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs mt-2" type="button" data-print-jump="#profilePreset">Đi tới ngữ cảnh in</button>
+          </li>
+          <li class="tc-chip px-3 py-2 rounded-xl">
+            <strong class="text-white">3) Nhận kết quả sẵn dùng</strong>
+            <span class="block mt-1">Xem bảng chuyển đổi, kiểm tra cảnh báo và xuất kết quả ngay.</span>
+            <button class="tc-btn tc-chip px-3 py-2 text-xs mt-2" type="button" data-print-jump="#printTableWrap">Đi tới kết quả</button>
+          </li>
+        </ol>
+      </section>
+
       <div id="cmykMode">
         <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
           <div class="space-y-4">
@@ -548,6 +572,31 @@
   </section>
 
   <div id="printToast" class="tc-toast" role="status" aria-live="polite"></div>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const jumpButtons = document.querySelectorAll("[data-print-jump]");
+      jumpButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const selector = button.getAttribute("data-print-jump");
+          if (!selector) return;
+          const target = document.querySelector(selector);
+          if (!target) return;
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) {
+            target.focus({ preventScroll: true });
+          }
+        });
+      });
+      const advancedBtn = document.getElementById("printOpenAdvanced");
+      advancedBtn?.addEventListener("click", () => {
+        const detail = document.getElementById("preflightDetails");
+        if (detail && "open" in detail) {
+          detail.open = true;
+          detail.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+  </script>
 
   <script type="module" src="../auth.js"></script>
   <script type="module" src="../scripts/workbench_bridge.js"></script>

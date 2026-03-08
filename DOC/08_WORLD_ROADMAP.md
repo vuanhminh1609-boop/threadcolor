@@ -56,3 +56,14 @@ Không gian Cộng đồng (Chia sẻ + Remix) là không gian xuyên suốt 8 W
 - [ ] Link mẫu đúng chuẩn `?color/#p/#g/#c`.
 - [ ] Không lệch topbar, không phá layout.
 - [ ] Không spam console.
+
+## 7) Cập nhật tăng chất cho World8 và Không gian Cộng đồng
+- **Mở rộng palette thông minh cho game**: khi người dùng đưa quá ít màu, hệ thống sinh biến thể cùng gia đình màu (sáng/tối, ấm/lạnh nhẹ, tăng/giảm bão hòa) để tránh trùng màu gây cảm giác lỗi.
+- **Ngưỡng màu tối thiểu theo loại game**:
+  - Line/Board: giữ ngưỡng tối thiểu đủ phân biệt rõ cho nhịp chơi.
+  - Pill/Drop: giữ ngưỡng tối thiểu đủ phân biệt cho viên rơi và cụm xoá.
+- **Hệ tiến trình người chơi**: điểm hệ thống + huy hiệu + thử thách ngày + phần thưởng asset lưu được vào Library.
+- **Không gian Cộng đồng local-first**:
+  - Có Feed thật, Remix thật, Showcase thật.
+  - Có lineage cơ bản cho remix (`sourcePostId`, `sourceAssetId`, `remixedBy`, `remixedAt`).
+  - Có hành động nhanh theo item: Lưu, Remix, Dùng ngay.
