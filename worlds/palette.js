@@ -1,5 +1,55 @@
 ﻿import { composeHandoff } from "../scripts/handoff.js";
 import { resolveIncoming } from "../scripts/workbench_context.js";
+import {
+  createPaletteState,
+  createImageExtractState
+} from "./palette_modules/state.js";
+import {
+  normalizeHex as normalizeHexCore,
+  hexToRgb as hexToRgbCore,
+  rgbToHsl as rgbToHslCore,
+  hslToHex as hslToHexCore,
+  rgbToLab as rgbToLabCore,
+  deltaE76 as deltaE76Core,
+  clampNumber as clampNumberCore,
+  rgbToCmykApprox as rgbToCmykApproxCore,
+  formatCmyk as formatCmykCore,
+  gradientCss as gradientCssCore,
+  relativeLuminance as relativeLuminanceCore,
+  contrastRatio as contrastRatioCore,
+  toHexByte as toHexByteCore,
+  rgbToHexUpper as rgbToHexUpperCore,
+  colorDistanceSq as colorDistanceSqCore,
+  sampleImagePixels as sampleImagePixelsCore,
+  initKMeansCentroids as initKMeansCentroidsCore,
+  quantizeSamplesKMeans as quantizeSamplesKMeansCore,
+  hasCloseColor as hasCloseColorCore,
+  sortRgbByHue as sortRgbByHueCore,
+  extractPaletteFromImageData as extractPaletteFromImageDataCore,
+  buildHarmonyPalette as buildHarmonyPaletteCore,
+  buildTonePalette as buildTonePaletteCore
+} from "./palette_modules/generators.js";
+import {
+  normalizeShareSim as normalizeShareSimCore,
+  toInternalVisionMode as toInternalVisionModeCore,
+  toShareSim as toShareSimCore,
+  normalizeShareRoles as normalizeShareRolesCore,
+  normalizeShareStatePayload as normalizeShareStatePayloadCore,
+  encodeBase64UrlUtf8 as encodeBase64UrlUtf8Core,
+  decodeBase64UrlUtf8 as decodeBase64UrlUtf8Core,
+  encodePaletteShareState as encodePaletteShareStateCore,
+  decodePaletteShareState as decodePaletteShareStateCore,
+  normalizeSearchText as normalizeSearchTextCore,
+  normalizeShortShareId as normalizeShortShareIdCore,
+  createShortShareId as createShortShareIdCore,
+  createLibraryPresetId as createLibraryPresetIdCore
+} from "./palette_modules/share_bridge.js";
+import {
+  toIsoString as toIsoStringCore,
+  formatStampVi as formatStampViCore,
+  formatRoomRevisionTime as formatRoomRevisionTimeCore,
+  formatTuneValue as formatTuneValueCore
+} from "./palette_modules/view_helpers.js";
 
 const MIN_STOPS = 2;
 const MAX_STOPS = 7;
@@ -100,57 +150,10 @@ const FALLBACK_KNOWLEDGE = {
   defaults: { h: 210, s: 35, l: 50 }
 };
 
-const state = {
-  palettes: [],
-  hashPalette: null,
-  selectedPaletteId: "",
-  lockedSlots: {},
-  generatorStops: [],
-  roleMapByPaletteId: new Map(),
-  previewTabByPaletteId: new Map(),
-  previewVisionModeByPaletteId: new Map(),
-  libraryPresets: [],
-  libraryLoaded: false,
-  libraryLoading: false,
-  librarySaveDraft: null,
-  librarySaveBusy: false,
-  libraryScope: "personal",
-  teams: [],
-  teamsLoaded: false,
-  teamsLoading: false,
-  selectedTeamId: "",
-  selectedTeamRole: TEAM_ROLE_VIEWER,
-  teamGuidelineByTeamId: new Map(),
-  approvalHistoryByPresetId: new Map(),
-  releaseById: new Map(),
-  room: {
-    id: "",
-    name: "",
-    role: TEAM_ROLE_VIEWER,
-    shareMode: ROOM_SHARE_INVITE_ONLY,
-    status: "idle",
-    readOnly: false,
-    active: false,
-    baseRev: 0,
-    currentFingerprint: "",
-    pendingFingerprint: "",
-    pendingPayload: null,
-    pendingDirty: false,
-    invalidStateNotified: false,
-    selfUid: "",
-    selfDisplayName: "",
-    presenceByUid: new Map(),
-    revisions: [],
-    revisionStatus: "idle",
-    revisionPreviewId: "",
-    lastRevisionAtMs: 0,
-    lastRevisionSnapshot: null,
-    comments: [],
-    commentStatus: "idle",
-    commentFilterRole: "all",
-    commentReplyRootId: ""
-  }
-};
+const state = createPaletteState({
+  teamRoleViewer: TEAM_ROLE_VIEWER,
+  roomShareInviteOnly: ROOM_SHARE_INVITE_ONLY
+});
 
 const FULLSCREEN_COLUMNS = 5;
 const FULLSCREEN_HISTORY_LIMIT = 10;
@@ -309,7 +312,11 @@ const el = {
   roomCommentList: document.getElementById("paletteCommentList"),
   roomCommentComposer: document.getElementById("paletteCommentComposer"),
   roomCommentInput: document.getElementById("paletteCommentInput"),
-  roomCommentSubmit: document.getElementById("paletteCommentSubmit")
+  roomCommentSubmit: document.getElementById("paletteCommentSubmit"),
+  modeQuick: document.getElementById("paletteModeQuick"),
+  modeExpert: document.getElementById("paletteModeExpert"),
+  modeHint: document.getElementById("paletteModeHint"),
+  modeTargets: Array.from(document.querySelectorAll("[data-palette-mode-target]"))
 };
 
 const ROLE_KEYS = ["bg", "surface", "text", "muted", "accent"];
@@ -321,6 +328,11 @@ const SHORT_SHARE_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn
 const SHORT_SHARE_ID_LENGTH = 9;
 const SHORT_SHARE_MAX_TRIES = 8;
 const SHORT_SHARE_WAIT_AUTH_MS = 2200;
+const PALETTE_WORKMODE_HINT = {
+  quick: "Tạo nhanh: tập trung các bước tạo/chọn palette để ra kết quả ngay.",
+  expert: "Chế độ chuyên gia: mở thêm thư viện nâng cao và không gian cộng tác theo phòng."
+};
+let paletteWorkMode = "quick";
 let roomListenerUnsub = null;
 let firestoreRealtimeModulePromise = null;
 let roomSyncTimer = null;
@@ -388,11 +400,7 @@ const BUILTIN_FALLBACK_PALETTES = [
   }
 ];
 
-const imageExtractState = {
-  file: null,
-  scaled: null,
-  stops: []
-};
+const imageExtractState = createImageExtractState();
 
 function t(key, fallback = "", params) {
   try {
@@ -403,104 +411,48 @@ function t(key, fallback = "", params) {
 }
 
 function normalizeHex(input) {
-  if (!input) return null;
-  let value = String(input).trim();
-  if (!value) return null;
-  if (!value.startsWith("#")) value = `#${value}`;
-  value = value.toLowerCase();
-  return /^#[0-9a-f]{6}$/.test(value) ? value : null;
+  return normalizeHexCore(input);
+}
+
+function setPaletteWorkMode(nextMode) {
+  paletteWorkMode = nextMode === "expert" ? "expert" : "quick";
+  const isExpert = paletteWorkMode === "expert";
+  el.modeQuick?.classList.toggle("is-active", !isExpert);
+  el.modeQuick?.setAttribute("aria-pressed", !isExpert ? "true" : "false");
+  el.modeExpert?.classList.toggle("is-active", isExpert);
+  el.modeExpert?.setAttribute("aria-pressed", isExpert ? "true" : "false");
+  if (el.modeHint) {
+    el.modeHint.textContent = PALETTE_WORKMODE_HINT[paletteWorkMode];
+  }
+  (el.modeTargets || []).forEach((node) => {
+    const targetMode = String(node?.getAttribute("data-palette-mode-target") || "");
+    if (targetMode !== "expert") return;
+    if (isExpert) {
+      node.removeAttribute("hidden");
+    } else {
+      node.setAttribute("hidden", "hidden");
+    }
+  });
 }
 
 function hexToRgb(hex) {
-  const cleaned = normalizeHex(hex);
-  if (!cleaned) return null;
-  const raw = cleaned.replace("#", "");
-  return {
-    r: parseInt(raw.slice(0, 2), 16),
-    g: parseInt(raw.slice(2, 4), 16),
-    b: parseInt(raw.slice(4, 6), 16)
-  };
+  return hexToRgbCore(hex);
 }
 
 function rgbToHsl({ r, g, b }) {
-  const rn = r / 255;
-  const gn = g / 255;
-  const bn = b / 255;
-  const max = Math.max(rn, gn, bn);
-  const min = Math.min(rn, gn, bn);
-  let h = 0;
-  let s = 0;
-  const l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case rn:
-        h = (gn - bn) / d + (gn < bn ? 6 : 0);
-        break;
-      case gn:
-        h = (bn - rn) / d + 2;
-        break;
-      default:
-        h = (rn - gn) / d + 4;
-    }
-    h *= 60;
-  }
-  return { h, s: s * 100, l: l * 100 };
+  return rgbToHslCore({ r, g, b });
 }
 
 function hslToHex(h, s, l) {
-  const sat = Math.max(0, Math.min(100, s)) / 100;
-  const light = Math.max(0, Math.min(100, l)) / 100;
-  const c = (1 - Math.abs(2 * light - 1)) * sat;
-  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-  const m = light - c / 2;
-  let r1 = 0;
-  let g1 = 0;
-  let b1 = 0;
-  if (h >= 0 && h < 60) {
-    r1 = c; g1 = x; b1 = 0;
-  } else if (h < 120) {
-    r1 = x; g1 = c; b1 = 0;
-  } else if (h < 180) {
-    r1 = 0; g1 = c; b1 = x;
-  } else if (h < 240) {
-    r1 = 0; g1 = x; b1 = c;
-  } else if (h < 300) {
-    r1 = x; g1 = 0; b1 = c;
-  } else {
-    r1 = c; g1 = 0; b1 = x;
-  }
-  const toHex = (v) => Math.round((v + m) * 255).toString(16).padStart(2, "0");
-  return `#${toHex(r1)}${toHex(g1)}${toHex(b1)}`.toUpperCase();
+  return hslToHexCore(h, s, l);
 }
 
 function rgbToLab({ r, g, b }) {
-  let rn = r / 255;
-  let gn = g / 255;
-  let bn = b / 255;
-  rn = rn > 0.04045 ? Math.pow((rn + 0.055) / 1.055, 2.4) : rn / 12.92;
-  gn = gn > 0.04045 ? Math.pow((gn + 0.055) / 1.055, 2.4) : gn / 12.92;
-  bn = bn > 0.04045 ? Math.pow((bn + 0.055) / 1.055, 2.4) : bn / 12.92;
-
-  let x = (rn * 0.4124 + gn * 0.3576 + bn * 0.1805) / 0.95047;
-  let y = (rn * 0.2126 + gn * 0.7152 + bn * 0.0722);
-  let z = (rn * 0.0193 + gn * 0.1192 + bn * 0.9505) / 1.08883;
-
-  x = x > 0.008856 ? Math.cbrt(x) : (7.787 * x + 16 / 116);
-  y = y > 0.008856 ? Math.cbrt(y) : (7.787 * y + 16 / 116);
-  z = z > 0.008856 ? Math.cbrt(z) : (7.787 * z + 16 / 116);
-
-  return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
+  return rgbToLabCore({ r, g, b });
 }
 
 function deltaE76(lab1, lab2) {
-  if (!lab1 || !lab2) return null;
-  return Math.sqrt(
-    (lab1[0] - lab2[0]) ** 2 +
-    (lab1[1] - lab2[1]) ** 2 +
-    (lab1[2] - lab2[2]) ** 2
-  );
+  return deltaE76Core(lab1, lab2);
 }
 
 function getLabForHex(hex) {
@@ -509,62 +461,27 @@ function getLabForHex(hex) {
 }
 
 function clampNumber(value, min, max) {
-  const num = Number(value);
-  if (Number.isNaN(num)) return min;
-  return Math.max(min, Math.min(max, num));
+  return clampNumberCore(value, min, max);
 }
 
 function rgbToCmykApprox({ r, g, b }) {
-  const rn = r / 255;
-  const gn = g / 255;
-  const bn = b / 255;
-  const k = 1 - Math.max(rn, gn, bn);
-  if (k >= 1) return { c: 0, m: 0, y: 0, k: 100 };
-  const c = (1 - rn - k) / (1 - k);
-  const m = (1 - gn - k) / (1 - k);
-  const y = (1 - bn - k) / (1 - k);
-  return {
-    c: Math.round(c * 100),
-    m: Math.round(m * 100),
-    y: Math.round(y * 100),
-    k: Math.round(k * 100)
-  };
+  return rgbToCmykApproxCore({ r, g, b });
 }
 
 function formatCmyk(cmyk) {
-  if (!cmyk) return "--";
-  return `${cmyk.c}/${cmyk.m}/${cmyk.y}/${cmyk.k}`;
+  return formatCmykCore(cmyk);
 }
 
 function gradientCss(stops) {
-  const total = stops.length;
-  if (total <= 1) return stops[0] || "#000000";
-  const parts = stops.map((hex, idx) => {
-    const pct = Math.round((idx / (total - 1)) * 100);
-    return `${hex} ${pct}%`;
-  });
-  return `linear-gradient(90deg, ${parts.join(", ")})`;
+  return gradientCssCore(stops);
 }
 
 function relativeLuminance(hex) {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return 0;
-  const toLinear = (c) => {
-    const v = c / 255;
-    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-  };
-  const r = toLinear(rgb.r);
-  const g = toLinear(rgb.g);
-  const b = toLinear(rgb.b);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return relativeLuminanceCore(hex);
 }
 
 function contrastRatio(hexA, hexB) {
-  const l1 = relativeLuminance(hexA);
-  const l2 = relativeLuminance(hexB);
-  const hi = Math.max(l1, l2);
-  const lo = Math.min(l1, l2);
-  return (hi + 0.05) / (lo + 0.05);
+  return contrastRatioCore(hexA, hexB);
 }
 
 function getBestText(hex) {
@@ -865,11 +782,11 @@ function buildRoleTokenPayload(stops, roleMap) {
 }
 
 function toHexByte(value) {
-  return Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, "0");
+  return toHexByteCore(value);
 }
 
 function rgbToHexUpper(r, g, b) {
-  return `#${toHexByte(r)}${toHexByte(g)}${toHexByte(b)}`.toUpperCase();
+  return rgbToHexUpperCore(r, g, b);
 }
 
 function isImageFile(file) {
@@ -931,297 +848,84 @@ async function downscaleImageForExtraction(file, maxSide = IMAGE_EXTRACT_MAX_SID
 }
 
 function colorDistanceSq(a, b) {
-  const dr = a.r - b.r;
-  const dg = a.g - b.g;
-  const db = a.b - b.b;
-  return dr * dr + dg * dg + db * db;
+  return colorDistanceSqCore(a, b);
 }
 
 function sampleImagePixels(imageData, priorityMode) {
-  const width = Number(imageData?.width || 0);
-  const height = Number(imageData?.height || 0);
-  const data = imageData?.data;
-  if (!width || !height || !data?.length) return [];
-  const totalPixels = width * height;
-  const targetSamples = 12000;
-  const stride = Math.max(1, Math.floor(Math.sqrt(totalPixels / targetSamples)));
-  const samples = [];
-
-  for (let y = 0; y < height; y += stride) {
-    const rowOffset = y * width * 4;
-    for (let x = 0; x < width; x += stride) {
-      const idx = rowOffset + x * 4;
-      const alpha = data[idx + 3];
-      if (alpha < 24) continue;
-      const r = data[idx];
-      const g = data[idx + 1];
-      const b = data[idx + 2];
-      const rn = r / 255;
-      const gn = g / 255;
-      const bn = b / 255;
-      const max = Math.max(rn, gn, bn);
-      const min = Math.min(rn, gn, bn);
-      const lum = (max + min) / 2;
-      const delta = max - min;
-      const sat = delta === 0 ? 0 : (lum > 0.5 ? delta / (2 - max - min) : delta / (max + min));
-      const midTone = 1 - Math.min(1, Math.abs(lum - 0.5) * 2);
-      const vividWeight = 0.45 + sat * 1.9;
-      const softWeight = 0.55 + midTone * 1.2 + (1 - sat) * 0.35;
-      const weight = priorityMode === "soft" ? softWeight : vividWeight;
-      samples.push({ r, g, b, weight });
-    }
-  }
-  return samples;
+  return sampleImagePixelsCore(imageData, priorityMode);
 }
 
 function initKMeansCentroids(samples, count) {
-  if (!samples.length) return [];
-  const centroids = [];
-  let first = samples[0];
-  samples.forEach((sample) => {
-    if (sample.weight > first.weight) first = sample;
-  });
-  centroids.push({ r: first.r, g: first.g, b: first.b });
-  while (centroids.length < count) {
-    let best = null;
-    let bestScore = -1;
-    samples.forEach((sample) => {
-      let minDist = Number.POSITIVE_INFINITY;
-      centroids.forEach((center) => {
-        minDist = Math.min(minDist, colorDistanceSq(sample, center));
-      });
-      const score = minDist * Math.max(0.1, sample.weight);
-      if (score > bestScore) {
-        bestScore = score;
-        best = sample;
-      }
-    });
-    if (!best) break;
-    centroids.push({ r: best.r, g: best.g, b: best.b });
-  }
-  return centroids;
+  return initKMeansCentroidsCore(samples, count);
 }
 
 function quantizeSamplesKMeans(samples, targetCount) {
-  if (!samples.length) return [];
-  const count = Math.max(1, Math.min(targetCount, samples.length));
-  const centroids = initKMeansCentroids(samples, count);
-  if (!centroids.length) return [];
-
-  for (let iteration = 0; iteration < 12; iteration += 1) {
-    const sums = Array.from({ length: centroids.length }, () => ({ r: 0, g: 0, b: 0, w: 0 }));
-    samples.forEach((sample) => {
-      let bestIdx = 0;
-      let bestDist = Number.POSITIVE_INFINITY;
-      centroids.forEach((center, idx) => {
-        const dist = colorDistanceSq(sample, center);
-        if (dist < bestDist) {
-          bestDist = dist;
-          bestIdx = idx;
-        }
-      });
-      const weight = Math.max(0.1, sample.weight);
-      sums[bestIdx].r += sample.r * weight;
-      sums[bestIdx].g += sample.g * weight;
-      sums[bestIdx].b += sample.b * weight;
-      sums[bestIdx].w += weight;
-    });
-
-    let totalShift = 0;
-    sums.forEach((sum, idx) => {
-      if (sum.w <= 0) {
-        const fallback = samples[(idx * 131 + iteration * 17) % samples.length];
-        totalShift += colorDistanceSq(centroids[idx], fallback);
-        centroids[idx] = { r: fallback.r, g: fallback.g, b: fallback.b };
-        return;
-      }
-      const next = {
-        r: sum.r / sum.w,
-        g: sum.g / sum.w,
-        b: sum.b / sum.w
-      };
-      totalShift += colorDistanceSq(centroids[idx], next);
-      centroids[idx] = next;
-    });
-    if (totalShift < centroids.length * 0.7) break;
-  }
-  return centroids;
+  return quantizeSamplesKMeansCore(samples, targetCount);
 }
 
 function hasCloseColor(colors, candidate, threshold) {
-  return colors.some((color) => Math.sqrt(colorDistanceSq(color, candidate)) < threshold);
+  return hasCloseColorCore(colors, candidate, threshold);
 }
 
 function sortRgbByHue(colors) {
-  const list = [...colors];
-  list.sort((a, b) => {
-    const ahsl = rgbToHsl(a);
-    const bhsl = rgbToHsl(b);
-    if (ahsl.h !== bhsl.h) return ahsl.h - bhsl.h;
-    return ahsl.l - bhsl.l;
-  });
-  return list;
+  return sortRgbByHueCore(colors);
 }
 
 function extractPaletteFromImageData(imageData, requestedCount, priorityMode) {
-  const target = clampNumber(requestedCount, IMAGE_EXTRACT_MIN, IMAGE_EXTRACT_MAX);
-  const samples = sampleImagePixels(imageData, priorityMode);
-  if (samples.length < 12) return [];
-  const centroids = quantizeSamplesKMeans(samples, target);
-  const unique = [];
-  centroids.forEach((center) => {
-    if (!hasCloseColor(unique, center, 18)) unique.push(center);
+  return extractPaletteFromImageDataCore(imageData, requestedCount, priorityMode, {
+    minCount: IMAGE_EXTRACT_MIN,
+    maxCount: IMAGE_EXTRACT_MAX
   });
-  if (unique.length < target) {
-    const fallbackPool = [...samples].sort((a, b) => b.weight - a.weight);
-    fallbackPool.forEach((sample) => {
-      if (unique.length >= target) return;
-      if (!hasCloseColor(unique, sample, 16)) {
-        unique.push({ r: sample.r, g: sample.g, b: sample.b });
-      }
-    });
-  }
-  const sorted = sortRgbByHue(unique).slice(0, target);
-  return sorted.map((color) => rgbToHexUpper(color.r, color.g, color.b));
 }
 
 function normalizeShareSim(raw) {
-  const key = String(raw || "").trim().toLowerCase();
-  if (!key) return "normal";
-  if (Object.prototype.hasOwnProperty.call(SHARE_SIM_TO_INTERNAL, key)) return key;
-  if (key === "deuteranopia") return "deuter";
-  if (key === "protanopia") return "protan";
-  if (key === "tritanopia") return "tritan";
-  if (key === "grayscale") return "normal";
-  return "normal";
+  return normalizeShareSimCore(raw, SHARE_SIM_TO_INTERNAL);
 }
 
 function toInternalVisionMode(shareSim) {
-  const simKey = normalizeShareSim(shareSim);
-  return SHARE_SIM_TO_INTERNAL[simKey] || "normal";
+  return toInternalVisionModeCore(shareSim, SHARE_SIM_TO_INTERNAL);
 }
 
 function toShareSim(internalMode) {
-  const key = String(internalMode || "").trim().toLowerCase();
-  return SHARE_SIM_FROM_INTERNAL[key] || "normal";
+  return toShareSimCore(internalMode, SHARE_SIM_FROM_INTERNAL);
 }
 
 function normalizeShareRoles(rawRoles, stopCount) {
-  if (!rawRoles || typeof rawRoles !== "object") return null;
-  const roles = {};
-  for (const roleKey of ROLE_KEYS) {
-    if (!Object.prototype.hasOwnProperty.call(rawRoles, roleKey)) return null;
-    const value = Number(rawRoles[roleKey]);
-    if (!Number.isInteger(value)) return null;
-    if (value < 0 || value >= stopCount) return null;
-    roles[roleKey] = value;
-  }
-  return roles;
+  return normalizeShareRolesCore(rawRoles, stopCount, ROLE_KEYS);
 }
 
 function normalizeShareStatePayload(payload) {
-  if (!payload || typeof payload !== "object") return null;
-  if (Number(payload.v) !== SHARE_STATE_VERSION) return null;
-  const colors = Array.isArray(payload.colors)
-    ? payload.colors.map((hex) => normalizeHex(hex)).filter(Boolean).map((hex) => hex.toUpperCase())
-    : [];
-  if (colors.length < MIN_STOPS || colors.length > MAX_STOPS) return null;
-  const roles = normalizeShareRoles(payload.roles, colors.length);
-  if (!roles) return null;
-  const preview = PREVIEW_TABS.includes(payload.preview) ? payload.preview : null;
-  if (!preview) return null;
-  const sim = normalizeShareSim(payload.sim);
-  return {
-    v: SHARE_STATE_VERSION,
-    colors,
-    roles,
-    preview,
-    sim,
-    visionMode: toInternalVisionMode(sim)
-  };
+  return normalizeShareStatePayloadCore(payload, {
+    shareStateVersion: SHARE_STATE_VERSION,
+    normalizeHex,
+    minStops: MIN_STOPS,
+    maxStops: MAX_STOPS,
+    roleKeys: ROLE_KEYS,
+    previewTabs: PREVIEW_TABS,
+    shareSimToInternal: SHARE_SIM_TO_INTERNAL
+  });
 }
 
 function encodeBase64UrlUtf8(text) {
-  const value = String(text ?? "");
-  try {
-    if (typeof TextEncoder !== "undefined" && typeof btoa === "function") {
-      const bytes = new TextEncoder().encode(value);
-      let binary = "";
-      bytes.forEach((byte) => {
-        binary += String.fromCharCode(byte);
-      });
-      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-    }
-    if (typeof btoa === "function") {
-      return btoa(unescape(encodeURIComponent(value))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-    }
-    if (typeof Buffer !== "undefined") {
-      return Buffer.from(value, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-    }
-  } catch (_err) {
-    return "";
-  }
-  return "";
+  return encodeBase64UrlUtf8Core(text);
 }
 
 function decodeBase64UrlUtf8(input) {
-  const source = String(input || "").trim();
-  if (!source) return "";
-  let base64 = source.replace(/-/g, "+").replace(/_/g, "/");
-  while (base64.length % 4 !== 0) {
-    base64 += "=";
-  }
-  try {
-    if (typeof atob === "function") {
-      const binary = atob(base64);
-      if (typeof TextDecoder !== "undefined") {
-        const bytes = Uint8Array.from(binary, (ch) => ch.charCodeAt(0));
-        return new TextDecoder().decode(bytes);
-      }
-      return decodeURIComponent(escape(binary));
-    }
-    if (typeof Buffer !== "undefined") {
-      return Buffer.from(base64, "base64").toString("utf8");
-    }
-  } catch (_err) {
-    return "";
-  }
-  return "";
+  return decodeBase64UrlUtf8Core(input);
 }
 
 function encodePaletteShareState(statePayload) {
-  const normalized = normalizeShareStatePayload(statePayload);
-  if (!normalized) return "";
-  const encoded = encodeBase64UrlUtf8(JSON.stringify({
-    v: normalized.v,
-    colors: normalized.colors,
-    roles: normalized.roles,
-    preview: normalized.preview,
-    sim: normalized.sim
-  }));
-  if (!encoded) return "";
-  return `v${SHARE_STATE_VERSION}.${encoded}`;
+  return encodePaletteShareStateCore(statePayload, {
+    shareStateVersion: SHARE_STATE_VERSION,
+    normalizePayload: normalizeShareStatePayload
+  });
 }
 
 function decodePaletteShareState(rawValue) {
-  const value = String(rawValue || "").trim();
-  if (!value) return { status: "none", state: null };
-  const safe = safeDecode(value).trim();
-  if (!safe.startsWith(`v${SHARE_STATE_VERSION}.`)) {
-    return { status: "none", state: null };
-  }
-  const encoded = safe.slice(`v${SHARE_STATE_VERSION}.`.length);
-  if (!encoded) return { status: "invalid", state: null };
-  const jsonText = decodeBase64UrlUtf8(encoded);
-  if (!jsonText) return { status: "invalid", state: null };
-  try {
-    const payload = JSON.parse(jsonText);
-    const normalized = normalizeShareStatePayload(payload);
-    if (!normalized) return { status: "invalid", state: null };
-    return { status: "ok", state: normalized };
-  } catch (_err) {
-    return { status: "invalid", state: null };
-  }
+  return decodePaletteShareStateCore(rawValue, {
+    shareStateVersion: SHARE_STATE_VERSION,
+    normalizePayload: normalizeShareStatePayload
+  });
 }
 
 function parsePaletteShareStateFromHash(hashText) {
@@ -1232,83 +936,37 @@ function parsePaletteShareStateFromHash(hashText) {
 }
 
 function normalizeSearchText(searchText) {
-  if (!searchText) return "";
-  const value = String(searchText).trim();
-  if (!value) return "";
-  return value.startsWith("?") ? value.slice(1) : value;
+  return normalizeSearchTextCore(searchText);
 }
 
 function normalizeShortShareId(rawValue) {
-  const id = String(rawValue || "").trim();
-  if (!/^[0-9A-Za-z]{8,10}$/.test(id)) return null;
-  return id;
-}
-
-function randomShortShareIndex(max) {
-  if (typeof window !== "undefined" && window.crypto?.getRandomValues) {
-    const arr = new Uint32Array(1);
-    window.crypto.getRandomValues(arr);
-    return arr[0] % max;
-  }
-  return Math.floor(Math.random() * max);
+  return normalizeShortShareIdCore(rawValue);
 }
 
 function createShortShareId(length = SHORT_SHARE_ID_LENGTH) {
-  const size = Math.max(8, Math.min(10, Number(length) || SHORT_SHARE_ID_LENGTH));
-  let output = "";
-  for (let i = 0; i < size; i += 1) {
-    output += SHORT_SHARE_ALPHABET[randomShortShareIndex(SHORT_SHARE_ALPHABET.length)];
-  }
-  return output;
-}
-
-function randomLibraryIndex(max) {
-  if (typeof window !== "undefined" && window.crypto?.getRandomValues) {
-    const arr = new Uint32Array(1);
-    window.crypto.getRandomValues(arr);
-    return arr[0] % max;
-  }
-  return Math.floor(Math.random() * max);
+  const cryptoApi = typeof window !== "undefined" ? window.crypto : globalThis.crypto;
+  return createShortShareIdCore({
+    length,
+    alphabet: SHORT_SHARE_ALPHABET,
+    cryptoApi
+  });
 }
 
 function createLibraryPresetId(length = LIBRARY_ID_LENGTH) {
-  const size = Math.max(8, Math.min(20, Number(length) || LIBRARY_ID_LENGTH));
-  let output = "";
-  for (let i = 0; i < size; i += 1) {
-    output += LIBRARY_ID_ALPHABET[randomLibraryIndex(LIBRARY_ID_ALPHABET.length)];
-  }
-  return output;
+  const cryptoApi = typeof window !== "undefined" ? window.crypto : globalThis.crypto;
+  return createLibraryPresetIdCore({
+    length,
+    alphabet: LIBRARY_ID_ALPHABET,
+    cryptoApi
+  });
 }
 
 function toIsoString(value) {
-  if (!value) return "";
-  if (typeof value === "string") {
-    const stamp = Date.parse(value);
-    return Number.isNaN(stamp) ? "" : new Date(stamp).toISOString();
-  }
-  if (typeof value?.toDate === "function") {
-    try {
-      const date = value.toDate();
-      return date instanceof Date && !Number.isNaN(date.getTime()) ? date.toISOString() : "";
-    } catch (_err) {
-      return "";
-    }
-  }
-  if (typeof value?.seconds === "number") {
-    const date = new Date(value.seconds * 1000);
-    return Number.isNaN(date.getTime()) ? "" : date.toISOString();
-  }
-  return "";
+  return toIsoStringCore(value);
 }
 
 function formatStampVi(value) {
-  const iso = toIsoString(value);
-  if (!iso) return "";
-  try {
-    return new Date(iso).toLocaleString("vi-VN");
-  } catch (_err) {
-    return iso;
-  }
+  return formatStampViCore(value, "vi-VN");
 }
 
 function parseTagsText(raw) {
@@ -1833,21 +1491,10 @@ function resolveRoomRevisionStateText() {
 }
 
 function formatRoomRevisionTime(isoText) {
-  if (!isoText) return t("paletteTool.room.revisions.unknownTime", "Không rõ thời gian");
-  const stamp = Date.parse(isoText);
-  if (!Number.isFinite(stamp)) return isoText;
-  try {
-    return new Date(stamp).toLocaleString("vi-VN", {
-      hour12: false,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-  } catch (_err) {
-    return isoText;
-  }
+  return formatRoomRevisionTimeCore(isoText, {
+    locale: "vi-VN",
+    unknownText: t("paletteTool.room.revisions.unknownTime", "Không rõ thời gian")
+  });
 }
 
 function renderRoomRevisionPreview(selectedRevision) {
@@ -4456,10 +4103,7 @@ function adjustFullscreenColumn(idx, { hueDelta = 0, lightDelta = 0 } = {}) {
 }
 
 function formatTuneValue(value, { isOffset = false } = {}) {
-  const num = Math.round(Number(value) || 0);
-  if (!isOffset) return String(num);
-  if (num > 0) return `+${num}`;
-  return String(num);
+  return formatTuneValueCore(value, { isOffset });
 }
 
 function syncTuneValues(panel) {
@@ -9132,47 +8776,11 @@ function initImageExtractTool() {
 }
 
 function buildHarmonyPalette(baseHex, rule) {
-  const rgb = hexToRgb(baseHex);
-  if (!rgb) return [];
-  const hsl = rgbToHsl(rgb);
-  const baseHue = hsl.h;
-  const baseSat = hsl.s;
-  const baseLight = hsl.l;
-  const hues = [baseHue];
-  if (rule === "complementary") {
-    hues.push((baseHue + 180) % 360);
-  } else if (rule === "analogous") {
-    hues.push((baseHue + 30) % 360, (baseHue + 330) % 360);
-  } else if (rule === "triad") {
-    hues.push((baseHue + 120) % 360, (baseHue + 240) % 360);
-  } else if (rule === "tetrad") {
-    hues.push((baseHue + 90) % 360, (baseHue + 180) % 360, (baseHue + 270) % 360);
-  }
-  const unique = Array.from(new Set(hues)).slice(0, 5);
-  while (unique.length < 5) unique.push((unique[unique.length - 1] + 20) % 360);
-  return unique.map((h, idx) => {
-    const l = clampNumber(baseLight + (idx - 2) * 6, 20, 85);
-    return hslToHex(h, baseSat, l);
-  });
+  return buildHarmonyPaletteCore(baseHex, rule);
 }
 
 function buildTonePalette(tone, count) {
-  const palette = [];
-  const baseHue = Math.floor(Math.random() * 360);
-  const toneMap = {
-    fresh: { s: [70, 90], l: [45, 60] },
-    pastel: { s: [25, 45], l: [70, 85] },
-    deep: { s: [40, 60], l: [25, 40] },
-    lux: { s: [20, 40], l: [35, 55] }
-  };
-  const conf = toneMap[tone] || toneMap.fresh;
-  for (let i = 0; i < count; i++) {
-    const h = (baseHue + i * 18) % 360;
-    const s = clampNumber(conf.s[0] + Math.random() * (conf.s[1] - conf.s[0]), 10, 95);
-    const l = clampNumber(conf.l[0] + Math.random() * (conf.l[1] - conf.l[0]), 15, 90);
-    palette.push(hslToHex(h, s, l));
-  }
-  return palette;
+  return buildTonePaletteCore(tone, count);
 }
 
 function renderPalettes() {
@@ -9309,6 +8917,7 @@ async function loadPalettes() {
 
 async function init() {
   if (handleBackwardCompatibility()) return;
+  setPaletteWorkMode("quick");
   const queryParams = new URLSearchParams(normalizeSearchText(window.location.search || ""));
   const hasRoomQueryParam = queryParams.has("room");
   const roomIdFromQuery = parseRoomIdFromQuery(window.location.search || "");
@@ -9354,6 +8963,12 @@ async function init() {
     }
   }
   loadPalettes();
+  el.modeQuick?.addEventListener("click", () => {
+    setPaletteWorkMode("quick");
+  });
+  el.modeExpert?.addEventListener("click", () => {
+    setPaletteWorkMode("expert");
+  });
 
   el.hexApply?.addEventListener("click", () => {
     const stops = parseHexList(el.hexInput?.value || "").slice(0, MAX_STOPS);

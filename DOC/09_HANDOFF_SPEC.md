@@ -45,3 +45,13 @@ Nên dùng 1–3 màu tiêu biểu:
 - Không log màu nhạy cảm vào console.
 - CTA không chặn luồng chính nếu lỗi.
 - Topbar/ID/class hiện có giữ nguyên.
+
+## 7) Bổ sung handoff cho Cộng đồng và phần thưởng game
+- **Reward asset từ ColorPlay** lưu vào Library dưới dạng `type: "palette"`, có thể mở lại trực tiếp trong các World dùng palette.
+- **Remix lineage tối thiểu** cần giữ các trường:
+  - `sourcePostId`: bài gốc trong feed.
+  - `sourceAssetId`: asset gốc.
+  - `remixedBy`: người remix.
+  - `remixedAt`: thời điểm remix.
+- **Điều hướng “Dùng ngay” từ Community** ưu tiên route đúng World theo `asset.type`, không hardcode sai đường dẫn giữa `spaces/` và `worlds/`.
+- **Local-first fallback**: nếu feed rỗng, có thể dựng feed từ tài sản hiện có trong Library để tránh trang trống.

@@ -27,6 +27,16 @@ const WORLD_LABELS = {
   paintfabric: "Sơn & Vải",
   imagecolor: "Ảnh"
 };
+const ASSET_TYPE_LABELS = {
+  palette: "Palette",
+  gradient: "Gradient",
+  thread_set: "Bộ chỉ thêu",
+  cmyk_recipe: "Công thức in",
+  paint_profile: "Sơn",
+  fabric_profile: "Vải",
+  image_palette: "Màu từ ảnh",
+  hex_swatch: "HEX swatch"
+};
 const PACK_SCHEMA_VERSION = "1.0";
 const SHARE_PREFIX = "SCASSET1:";
 
@@ -39,6 +49,10 @@ const elements = {
   pinnedList: document.getElementById("assetPinnedList"),
   recentStrip: document.getElementById("assetRecentStrip"),
   recentList: document.getElementById("assetRecentList"),
+  hubHot: document.getElementById("assetHubHot"),
+  hubTypes: document.getElementById("assetHubTypes"),
+  hubNext: document.getElementById("assetHubNext"),
+  hubTimeline: document.getElementById("assetHubTimeline"),
   assetMultiSelect: document.getElementById("assetMultiSelect"),
   assetActionBar: document.getElementById("assetActionBar"),
   assetSelectedCount: document.getElementById("assetSelectedCount"),
@@ -1053,6 +1067,102 @@ const filterAssets = () => {
   });
 };
 
+const formatAssetTime = (iso) => {
+  if (!iso) return "Không rõ thời gian";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "Không rõ thời gian";
+  return date.toLocaleString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+};
+
+const buildNextSuggestion = (asset) => {
+  const type = String(asset?.type || "");
+  const worldKey = resolveWorldKey(asset);
+  const worldPath = worldKey ? WORLD_PATHS[worldKey] : "";
+  const worldLabel = worldKey ? (WORLD_LABELS[worldKey] || worldKey) : "";
+  const copyByType = {
+    palette: "Đẩy tiếp sang Gradient hoặc In để chốt phương án triển khai.",
+    gradient: "Kiểm tra context rồi chuyển sang Palette hoặc In cho đầu ra cuối.",
+    thread_set: "Mở Thêu để so sánh mã chỉ và chốt thay thế theo hãng.",
+    cmyk_recipe: "Mở Màu in để kiểm tra TAC/QC trước khi xuất báo cáo.",
+    paint_profile: "Mở Sơn & Vải để xem scene lớn và lưu profile vật liệu.",
+    fabric_profile: "Mở Sơn & Vải để tinh chỉnh chất liệu theo bối cảnh thực.",
+    image_palette: "Mở Màu từ Ảnh để trích thêm biến thể cùng ngữ cảnh."
+  };
+  return {
+    note: copyByType[type] || "Chọn tài sản và mở đúng Thế giới để tiếp tục workflow.",
+    worldLabel,
+    worldPath
+  };
+};
+
+const renderAssetHubOverview = () => {
+  if (!elements.hubHot || !elements.hubTypes || !elements.hubNext || !elements.hubTimeline) return;
+  if (!Array.isArray(state.assets) || !state.assets.length) {
+    elements.hubHot.textContent = "Chưa có tài sản nóng.";
+    elements.hubTypes.textContent = "Chưa có dữ liệu phân loại.";
+    elements.hubNext.textContent = "Hãy tạo hoặc chọn một tài sản để nhận gợi ý.";
+    elements.hubTimeline.textContent = "Chưa có mốc cập nhật.";
+    return;
+  }
+  const byId = new Map(state.assets.map((asset) => [asset.id, asset]));
+  const hotIds = [];
+  [...assetPinnedIds, ...assetRecentIds].forEach((id) => {
+    if (!id || hotIds.includes(id)) return;
+    hotIds.push(id);
+  });
+  const hotAssets = hotIds
+    .map((id) => byId.get(id))
+    .filter(Boolean)
+    .slice(0, 4);
+  const fallbackHot = state.assets
+    .slice()
+    .sort((a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime())
+    .slice(0, 4);
+  const finalHot = hotAssets.length ? hotAssets : fallbackHot;
+  elements.hubHot.innerHTML = finalHot.map((asset) => {
+    const typeLabel = ASSET_TYPE_LABELS[asset.type] || asset.type || "Khác";
+    return `<div class="flex items-center justify-between gap-2"><span>${escapeHTML(asset.name || "Không tên")}</span><span class="tc-muted text-xs">${escapeHTML(typeLabel)}</span></div>`;
+  }).join("");
+
+  const typeCounter = new Map();
+  state.assets.forEach((asset) => {
+    const key = String(asset?.type || "other");
+    typeCounter.set(key, (typeCounter.get(key) || 0) + 1);
+  });
+  const typeRows = Array.from(typeCounter.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, count]) => {
+      const label = ASSET_TYPE_LABELS[type] || type;
+      return `<div class="flex items-center justify-between gap-2"><span>${escapeHTML(label)}</span><strong>${count}</strong></div>`;
+    });
+  elements.hubTypes.innerHTML = typeRows.join("");
+
+  const focusAsset = state.selected
+    || byId.get(assetRecentIds[0])
+    || byId.get(assetPinnedIds[0])
+    || state.assets[0];
+  const next = buildNextSuggestion(focusAsset);
+  const nextName = escapeHTML(focusAsset?.name || "Tài sản hiện tại");
+  const nextNote = escapeHTML(next.note);
+  if (next.worldPath && next.worldLabel) {
+    elements.hubNext.innerHTML = `<div><strong>${nextName}</strong></div><div class="tc-muted text-xs mt-1">${nextNote}</div><a class="tc-btn tc-chip px-3 py-2 text-xs mt-2 inline-flex" href="${escapeHTML(next.worldPath)}">Mở ${escapeHTML(next.worldLabel)}</a>`;
+  } else {
+    elements.hubNext.innerHTML = `<div><strong>${nextName}</strong></div><div class="tc-muted text-xs mt-1">${nextNote}</div>`;
+  }
+
+  const timelineRows = state.assets
+    .slice()
+    .sort((a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime())
+    .slice(0, 5)
+    .map((asset) => `<div class="flex items-center justify-between gap-2"><span>${escapeHTML(asset.name || "Không tên")}</span><span class="tc-muted text-xs">${escapeHTML(formatAssetTime(asset.updatedAt))}</span></div>`);
+  elements.hubTimeline.innerHTML = timelineRows.join("");
+};
+
 const buildAssetSwatches = (asset, limit = 5) => {
   const stops = getStopsFromAsset(asset)
     .map((hex) => normalizeHexLoose(hex))
@@ -1160,6 +1270,7 @@ const selectAssetCard = (asset) => {
     state.assetRenderedIds = items.map((asset) => asset.id);
     renderPinnedStrip(query);
     renderRecentStrip(query);
+    renderAssetHubOverview();
     if (!items.length) {
       elements.grid.innerHTML = `<div class="tc-muted text-sm">Chưa có tài sản. Hãy tạo demo.</div>`;
       updateAssetActionBar();

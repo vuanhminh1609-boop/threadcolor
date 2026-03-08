@@ -344,6 +344,38 @@
       gap: .5rem;
       margin-top: .55rem;
     }
+    .tc-palette-workmode{
+      display: grid;
+      gap: .65rem;
+      margin-top: 1rem;
+      padding: .9rem 1rem;
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      background: rgba(255,255,255,.28);
+    }
+    .tc-palette-workmode-tabs{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+    .tc-palette-workmode-btn{
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      background: rgba(255,255,255,.2);
+      color: var(--text);
+      font-size: .76rem;
+      font-weight: 600;
+      padding: .45rem .9rem;
+    }
+    .tc-palette-workmode-btn.is-active{
+      color: #fff;
+      background: linear-gradient(120deg, var(--a1), var(--a2));
+      border-color: transparent;
+    }
+    .tc-palette-workmode-hint{
+      font-size: .73rem;
+      color: var(--text-muted);
+    }
     .tc-library-mode-row{
       display: flex;
       flex-wrap: wrap;
@@ -1302,7 +1334,18 @@
           <button id="paletteShare" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chia sẻ</button>
         </div>
       </header>
-      <section id="paletteRoomBar" class="tc-room-bar hidden" aria-live="polite">
+      <section id="paletteWorkMode" class="tc-palette-workmode" aria-label="Chế độ làm việc">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-sm font-semibold">Chế độ tạo bảng phối</h2>
+          <span class="tc-muted text-xs">Mặc định cho người mới: Tạo nhanh</span>
+        </div>
+        <div class="tc-palette-workmode-tabs">
+          <button id="paletteModeQuick" class="tc-palette-workmode-btn is-active" type="button" data-palette-workmode="quick">Tạo nhanh</button>
+          <button id="paletteModeExpert" class="tc-palette-workmode-btn" type="button" data-palette-workmode="expert">Chế độ chuyên gia</button>
+        </div>
+        <p id="paletteModeHint" class="tc-palette-workmode-hint">Tạo nhanh: tập trung các thao tác tạo và chọn palette trong 1 luồng gọn.</p>
+      </section>
+      <section id="paletteRoomBar" class="tc-room-bar hidden" aria-live="polite" data-palette-mode-target="expert">
         <div class="tc-room-bar__lead">
           <p id="paletteRoomLabel" class="tc-room-bar__label">Phòng chỉnh sửa</p>
           <p id="paletteRoomName" class="tc-room-bar__title">Đang chuẩn bị...</p>
@@ -1544,7 +1587,7 @@
         <div id="paletteGrid" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
       </section>
 
-      <section class="tc-palette-zone" id="paletteLibraryHub">
+      <section class="tc-palette-zone" id="paletteLibraryHub" data-palette-mode-target="expert">
         <div class="tc-library-head">
           <div>
             <h2 class="tc-palette-zone-title" id="paletteLibraryTitle">Từ Thư viện</h2>
@@ -1622,7 +1665,7 @@
         </div>
       </section>
         </div>
-        <aside id="paletteRevisionPanel" class="tc-room-timeline hidden" aria-live="polite">
+        <aside id="paletteRevisionPanel" class="tc-room-timeline hidden" aria-live="polite" data-palette-mode-target="expert">
           <div class="tc-room-timeline-head">
             <div>
               <p id="paletteRevisionTitle" class="tc-room-timeline__title">Lịch sử phiên bản</p>
@@ -2110,4 +2153,3 @@
   <script src="../scripts/topbar_behavior.js" defer></script>
 </body>
 </html>
-

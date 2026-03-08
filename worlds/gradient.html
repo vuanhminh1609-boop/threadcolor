@@ -101,6 +101,25 @@
       border-color: rgb(var(--a1-rgb) / 0.5);
       background: rgb(var(--a1-rgb) / 0.18);
     }
+    .tc-usecase-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.5rem;
+    }
+    .tc-usecase-btn{
+      justify-content: flex-start;
+      text-align: left;
+    }
+    .tc-usecase-btn.is-active{
+      border-color: rgb(var(--a1-rgb) / 0.55);
+      background: rgb(var(--a1-rgb) / 0.2);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+    }
+    .tc-usecase-hint{
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.65rem;
+    }
     .tc-context-panel[hidden]{
       display: none !important;
     }
@@ -311,6 +330,20 @@
           <span>Gradient-first · Xuất nhanh</span>
         </div>
       </div>
+
+      <section class="mt-6 tc-card p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <p class="text-sm font-semibold">Use-case theo ngữ cảnh</p>
+          <p class="tc-muted text-xs">Chọn ngữ cảnh để đổi preset và preview đồng bộ.</p>
+        </div>
+        <div id="gradientUseCaseGroup" class="tc-usecase-grid mt-3">
+          <button id="gradientUseCaseWeb" class="tc-btn tc-chip px-3 py-2 text-sm tc-usecase-btn" type="button" data-gradient-usecase="webui">Web / UI</button>
+          <button id="gradientUseCaseBranding" class="tc-btn tc-chip px-3 py-2 text-sm tc-usecase-btn" type="button" data-gradient-usecase="branding">Branding</button>
+          <button id="gradientUseCaseTextile" class="tc-btn tc-chip px-3 py-2 text-sm tc-usecase-btn" type="button" data-gradient-usecase="textile">Textile</button>
+          <button id="gradientUseCasePrint" class="tc-btn tc-chip px-3 py-2 text-sm tc-usecase-btn" type="button" data-gradient-usecase="print">Print</button>
+        </div>
+        <p id="gradientUseCaseHint" class="tc-usecase-hint">Chọn use-case để dải mẫu và panel xem thử đổi theo đúng ngữ cảnh.</p>
+      </section>
 
       <section class="mt-6 tc-card p-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -592,5 +625,4 @@
   <script src="../scripts/topbar_behavior.js" defer></script>
 </body>
 </html>
-
 

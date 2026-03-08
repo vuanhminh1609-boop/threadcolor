@@ -57,6 +57,32 @@ const GRADIENT_PRESETS = [
     stops: ["#451a03", "#d97706", "#facc15"]
   }
 ];
+const USE_CASE_CONFIG = {
+  webui: {
+    key: "webui",
+    presetKey: "crystal",
+    previewTab: "ui",
+    hint: "Web / UI: ưu tiên tương phản sạch, bám card và CTA."
+  },
+  branding: {
+    key: "branding",
+    presetKey: "sunset",
+    previewTab: "poster",
+    hint: "Branding: ưu tiên điểm nhấn thị giác mạnh cho headline và chiến dịch."
+  },
+  textile: {
+    key: "textile",
+    presetKey: "forest",
+    previewTab: "thread",
+    hint: "Textile: ưu tiên dải chuyển mềm, kiểm tra bề mặt sợi và nhịp chỉ."
+  },
+  print: {
+    key: "print",
+    presetKey: "chrome",
+    previewTab: "poster",
+    hint: "Print: ưu tiên dải kiểm soát tốt, hạn chế banding khi xuất in."
+  }
+};
 
 const state = {
   stops: [
@@ -73,6 +99,7 @@ const EXPORT_FORMATS = ["css", "vars", "token", "tailwind"];
 const CONTEXT_PREVIEW_TABS = ["ui", "poster", "thread"];
 let exportFormatActive = "css";
 let contextPreviewActiveTab = "ui";
+let activeUseCase = "webui";
 let previewDitherEnabled = false;
 let latestBandingAnalysis = null;
 
@@ -142,6 +169,9 @@ const el = {
   contextSurfaceUi: document.getElementById("gradientContextSurfaceUi"),
   contextSurfacePoster: document.getElementById("gradientContextSurfacePoster"),
   contextSurfaceThread: document.getElementById("gradientContextSurfaceThread"),
+  useCaseGroup: document.getElementById("gradientUseCaseGroup"),
+  useCaseHint: document.getElementById("gradientUseCaseHint"),
+  useCaseButtons: Array.from(document.querySelectorAll("[data-gradient-usecase]")),
   bandingScore: document.getElementById("gradientBandingScore"),
   bandingStatus: document.getElementById("gradientBandingStatus"),
   bandingMeta: document.getElementById("gradientBandingMeta"),
@@ -1017,6 +1047,10 @@ function buildPresetStops(preset) {
   return cloneStops(cleaned);
 }
 
+function getPresetByKey(key) {
+  return GRADIENT_PRESETS.find((preset) => preset.key === key) || null;
+}
+
 function applyPreset(preset) {
   if (!preset) return;
   const presetStops = buildPresetStops(preset);
@@ -1033,6 +1067,34 @@ function applyPreset(preset) {
   schedulePreview();
   recordHistory(beforeSnapshot);
   showToast(t("gradient.toast.presetApplied", "Đã áp dụng preset dải chuyển."));
+}
+
+function renderUseCaseState() {
+  const cfg = USE_CASE_CONFIG[activeUseCase] || USE_CASE_CONFIG.webui;
+  (el.useCaseButtons || []).forEach((button) => {
+    const key = String(button?.dataset?.gradientUsecase || "");
+    const active = key === cfg.key;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+  if (el.useCaseHint) {
+    el.useCaseHint.textContent = cfg.hint;
+  }
+}
+
+function setUseCase(nextKey, options = {}) {
+  const cfg = USE_CASE_CONFIG[nextKey] || USE_CASE_CONFIG.webui;
+  activeUseCase = cfg.key;
+  renderUseCaseState();
+  if (cfg.previewTab) {
+    setContextPreviewTab(cfg.previewTab);
+  }
+  if (!options.skipPreset) {
+    const preset = getPresetByKey(cfg.presetKey);
+    if (preset) {
+      applyPreset(preset);
+    }
+  }
 }
 
 function renderPresetRail() {
@@ -2250,6 +2312,12 @@ function initEvents() {
       setContextPreviewTab(entry.key);
     });
   });
+  (el.useCaseButtons || []).forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = String(button.dataset.gradientUsecase || "");
+      setUseCase(key);
+    });
+  });
   el.copyShareLinkBtn?.addEventListener("click", async () => {
     const shareUrl = buildShareLinkUrl();
     if (!shareUrl) {
@@ -2441,6 +2509,7 @@ function init() {
   loadMyPresetsFromStorage();
   if (el.typeSelect) el.typeSelect.value = state.type;
   renderPresetRail();
+  setUseCase(activeUseCase, { skipPreset: true });
   renderMyPresetRail();
   renderStops();
   setContextPreviewTab(contextPreviewActiveTab);

@@ -30,6 +30,10 @@
 |---|---|---|
 | Portal | Cổng | Điểm vào/điều hướng đến các “Thế giới”. |
 | World | Thế giới | Một không gian chức năng độc lập trong 8Portals (ví dụ: Màu thêu, Kho chỉ). |
+| Primary CTA | CTA chính | Nút kêu gọi hành động ưu tiên cao nhất trong một màn hình, dẫn người dùng vào luồng chính cần thực hiện ngay. |
+| Journey gateway | Cổng hành trình | Nhóm lối vào theo ngữ cảnh người dùng (mới, quay lại, đang làm việc) để rút ngắn thời gian vào đúng Thế giới. |
+| Next-step recommendation | Bước tiếp theo gợi ý | Khối gợi ý hành động kế tiếp dựa trên dữ liệu cục bộ gần nhất như asset, dự án đang dở và lịch sử truy cập. |
+| User segmentation | Phân tầng người dùng | Cách chia người dùng thành nhóm trạng thái sử dụng khác nhau để tối ưu thông điệp và lối vào ngay tại Sảnh. |
 | Tone/Sắc thái | Sắc thái | Bộ theme giao diện: nền/màu nhấn/chữ không phải “Thế giới” chức năng. |
 | Token nền (biến CSS đại diện nền theo sắc thái) | Token nền | Biến CSS đại diện nền của một sắc thái, dùng lại đồng bộ giữa card và nền trang. |
 | Canvas nền (lớp nền chính theo sắc thái) | Canvas nền | Lớp nền chính theo từng sắc thái, thường là gradient để tạo chiều sâu tổng thể. |
@@ -158,6 +162,12 @@
 | Microcopy | Vi mô ngôn từ | Câu chữ ngắn trong UI (nhãn nút, mô tả) — phải “đắt và sạch”. |
 | Trạng thái rỗng | Màn hình rỗng | UI khi chưa có dữ liệu (phải sang, không xin lỗi). |
 | Trạng thái lỗi | Màn hình lỗi | UI khi có lỗi (gọn, rõ, không hoảng). |
+| Use-case | Ngữ cảnh sử dụng | Bối cảnh mục tiêu của người dùng (Web/UI, Branding, Textile, Print) để hệ thống chọn preset và cách xem trước phù hợp. |
+| Quick mode | Chế độ Tạo nhanh | Chế độ ưu tiên thao tác cốt lõi, giảm nhiễu tính năng nâng cao để người mới ra kết quả nhanh. |
+| Expert mode | Chế độ chuyên gia | Chế độ mở thêm công cụ nâng cao và không gian cộng tác cho người dùng đã quen workflow. |
+| Asset hub | Trung tâm tài sản | Khu tổng hợp tài sản nóng, phân loại, gợi ý hành động tiếp theo và mốc thời gian cập nhật trong Thư viện. |
+| Asset timeline | Dòng thời gian tài sản | Danh sách mốc cập nhật theo thời gian để theo dõi vòng đời và nhịp sử dụng tài sản. |
+| Next-action hint | Gợi ý dùng tiếp | Gợi ý bước kế tiếp phù hợp với loại tài sản đang chọn để giữ luồng liên thông không bị đứt. |
 
 ---
 
@@ -167,9 +177,15 @@
 |---|---|---|
 | Source of truth | Nguồn dữ liệu gốc | Nguồn chính thức, mọi thứ khác sinh ra từ đây (ví dụ: `threads.json`). |
 | Single source of truth | Nguồn sự thật duy nhất | Nguồn sự thật duy nhất để tránh lệch; nơi định nghĩa chuẩn để mọi nơi dùng chung, tránh copy-paste lệch. |
+| Modularization | Module hoá | Cách chia tệp lớn thành các module nhỏ theo trách nhiệm rõ ràng để dễ bảo trì, dễ kiểm thử và giảm rủi ro sửa chéo. |
+| View helper | Trợ hàm hiển thị | Nhóm hàm thuần hỗ trợ định dạng và dựng phần hiển thị, không giữ trạng thái nghiệp vụ. |
+| Bridge layer | Lớp cầu nối | Lớp trung gian liên kết logic nội bộ với luồng chia sẻ/lưu thư viện, giúp tách riêng mã hạ tầng khỏi luồng hiển thị. |
 | Critical rendering path | Đường găng hiển thị đầu trang | Chuỗi tài nguyên và bước xử lý bắt buộc để nội dung đầu trang hiển thị; càng ngắn thì tải cảm nhận càng mượt. |
 | Lazy load | Nạp trễ theo nhu cầu | Chỉ nạp tài nguyên khi thực sự cần hoặc khi trình duyệt rảnh, giúp giảm tải ban đầu. |
 | Script blocking | Tập lệnh chặn hiển thị | Tình trạng script chặn parser/render trong giai đoạn đầu trang, làm tăng thời gian hiển thị nội dung hữu ích. |
+| Static reference | Tham chiếu tĩnh | Đường dẫn tài nguyên được ghi trực tiếp bằng chuỗi cố định trong mã, có thể kiểm tra ngay bằng phân tích tĩnh. |
+| Dynamic reference | Tham chiếu động | Đường dẫn tài nguyên được ghép khi chạy từ biến hoặc template string, cần rule phân tích ngữ cảnh để tránh cảnh báo giả. |
+| Runtime fetch | Nạp tài nguyên lúc chạy | Cơ chế tải dữ liệu/tệp bằng `fetch` trong thời gian chạy; đường dẫn có thể phụ thuộc ngữ cảnh trang hoặc module. |
 | Exit code | Mã thoát | Giá trị trạng thái do tiến trình trả về sau khi chạy xong; dùng để phân loại thành công, phát hiện vi phạm hoặc lỗi hạ tầng. |
 | False positive | Dương tính giả | Trường hợp công cụ cảnh báo có rủi ro nhưng thực tế không phải bí mật thật hoặc không vi phạm chính sách. |
 | SARIF | Báo cáo SARIF | Định dạng báo cáo bảo mật chuẩn để lưu kết quả quét và phục vụ phân tích trong CI/CD hoặc nền tảng mã nguồn. |
@@ -713,9 +729,23 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 |---|---|---|
 | Footer đa cột | Footer đa cột | Chân trang gồm nhiều cột liên kết để điều hướng nhanh và chuyên nghiệp. |
 | Sitemap | Sitemap | Bản đồ liên kết tổng quan giúp người dùng định vị trang cần tìm. |
+| Lobby (trang điều phối trung tâm) | Sảnh điều phối | Trang trung tâm của 8Portals, dùng để điều hướng nhanh đến các Thế giới và công cụ chính. |
+| Redirect page (trang chuyển hướng) | Trang chuyển hướng | Trang trung gian tự chuyển người dùng sang đường dẫn mới, đồng thời có CTA dự phòng để mở thủ công khi cần. |
+| Page role (vai trò trang) | Vai trò trang | Chức năng chính mà một trang đảm nhiệm; title và H1 cần bám đúng vai trò để tránh chồng chéo ngữ nghĩa. |
 
 | Mailto | Mailto | Liên kết mở email soạn sẵn trong ứng dụng mail mặc định. |
 | Neo cuộn (anchor) | Neo cuộn | Liên kết cuộn đến một vị trí trong trang. |
 | Hộp thoại | Hộp thoại | Vùng nổi hiển thị nội dung hoặc câu hỏi cần xác nhận. |
 | Liên kết pháp lý | Liên kết pháp lý | Các liên kết điều khoản, quyền riêng tư, cookie và thông tin tuân thủ. |
 
+
+## 21) Thuật ngữ gameplay cộng đồng
+
+| Thuật ngữ | Việt hoá dùng trong repo | Định nghĩa ngắn |
+|---|---|---|
+| Smart palette expansion (mở rộng bảng màu tự động có kiểm soát) | Mở rộng palette thông minh | Cơ chế tự sinh thêm biến thể màu cùng gia đình khi đầu vào quá ít màu, giúp game vẫn đủ màu phân biệt mà không lặp màu máy móc. |
+| Distinct color threshold (ngưỡng khác biệt màu) | Ngưỡng màu phân biệt tối thiểu | Số màu phân biệt tối thiểu cần có cho từng game để người chơi không bị nhầm màu trong thao tác nhanh. |
+| Reward asset (tài sản thưởng) | Tài sản phần thưởng | Tài sản được cấp khi hoàn thành thử thách, lưu vào Library và dùng tiếp được trong workflow 8Portals. |
+| Remix lineage (chuỗi nguồn gốc remix) | Dòng dõi remix | Tập metadata ghi lại nguồn gốc của bản remix như asset gốc, bài gốc, người remix và thời điểm remix. |
+| Local-first architecture (kiến trúc ưu tiên dữ liệu cục bộ) | Kiến trúc local-first | Cách tổ chức dữ liệu ưu tiên đọc/ghi local trước để UI vẫn chạy mượt khi chưa có backend hoàn chỉnh. |
+| Quick actions per item (thao tác nhanh theo từng item) | Hành động nhanh theo item | Nhóm thao tác tức thời ngay trên mỗi card feed như Lưu, Remix, Dùng ngay để giảm số bước điều hướng. |

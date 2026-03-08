@@ -88,7 +88,7 @@
     .tc-preview{
       border-radius: 1.1rem;
       border: 1px solid var(--stroke);
-      min-height: 220px;
+      min-height: 320px;
       position: relative;
       overflow: hidden;
     }
@@ -295,7 +295,7 @@
         <div>
           <p class="text-xs uppercase tracking-[0.35em] tc-muted">WORLD6 · SƠN&VẢI</p>
           <h1 class="text-3xl md:text-4xl font-bold">Thế giới màu Sơn&Vải</h1>
-          <p class="mt-2 tc-muted">Chọn màu, chất liệu, độ bóng và ánh sáng để xem trước nhanh.</p>
+          <p class="mt-2 tc-muted">Ưu tiên xem trước scene lớn; phần điều khiển giữ vai trò phụ để tinh chỉnh.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
@@ -333,8 +333,8 @@
         </div>
       </div>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_1fr]">
-        <div id="pfControls">
+      <div class="mt-6 grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+        <div id="pfControls" class="order-2">
           <div class="space-y-4">
             <div>
               <div class="text-xs font-semibold tracking-[0.2em] uppercase tc-muted">Nhập dữ liệu</div>
@@ -606,7 +606,11 @@
           </div>
         </div>
 
-        <div>
+        <div class="order-1">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <p class="text-sm font-semibold">Preview trung tâm</p>
+            <span class="tc-muted text-xs">Scene lớn · so sánh trực quan</span>
+          </div>
           <div class="flex items-center justify-between mb-3">
             <label class="text-sm font-semibold" data-i18n="paintfabric.labels.compare">So sánh</label>
             <span id="pfCompareLabel" class="text-xs tc-muted">A/B: 60%</span>

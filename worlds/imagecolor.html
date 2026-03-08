@@ -217,6 +217,15 @@
       display: grid;
       gap: 12px;
     }
+    .ic-extract-presets{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ic-extract-preset.is-active{
+      border-color: rgb(var(--a1-rgb) / 0.5);
+      background: rgb(var(--a1-rgb) / 0.18);
+    }
     .ic-mockup-card{
       border-radius: 1rem;
       border: 1px solid var(--stroke);
@@ -226,6 +235,10 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+    }
+    .ic-mockup-card.is-focus{
+      border-color: rgb(var(--a1-rgb) / 0.55);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.18) inset;
     }
     .ic-mockup-label{
       font-size: 10px;
@@ -334,6 +347,19 @@
             </div>
             <button id="btnSample" class="tc-btn tc-btn-primary px-4 py-2">Lấy mẫu màu</button>
           </div>
+          <div class="tc-card p-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p class="text-sm font-semibold">Preset trích màu</p>
+              <p class="tc-muted text-xs">Chọn ngữ cảnh để đổi ưu tiên trích màu + preview.</p>
+            </div>
+            <div id="imageExtractPresetGroup" class="ic-extract-presets mt-2">
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="brand">Brand</button>
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="interior">Ảnh nội thất</button>
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="fashion">Ảnh thời trang</button>
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="embroidery">Ảnh thêu</button>
+            </div>
+            <p id="imagePresetHint" class="tc-muted text-xs mt-2">Brand: ưu tiên dải nhận diện và điểm nhấn chính/phụ.</p>
+          </div>
           <div class="flex items-center gap-2 flex-wrap">
             <button id="btnRegion" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Khoanh vùng</button>
             <button id="btnRegionClear" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Xoá vùng</button>
@@ -403,6 +429,51 @@
 
   <canvas id="sampleCanvas" width="64" height="64" class="hidden"></canvas>
   <div id="toast" class="tc-toast"></div>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const presets = {
+        brand: { size: "8", focus: "mockupUi", hint: "Brand: ưu tiên dải nhận diện và điểm nhấn chính/phụ." },
+        interior: { size: "8", focus: "mockupPoster", hint: "Ảnh nội thất: ưu tiên nền trung tính và các màu điểm nhấn không gian." },
+        fashion: { size: "12", focus: "mockupPoster", hint: "Ảnh thời trang: ưu tiên dải màu có nhịp chuyển rõ cho bộ sưu tập." },
+        embroidery: { size: "5", focus: "mockupFabric", hint: "Ảnh thêu: ưu tiên cụm màu cô đọng, dễ chuyển sang chỉ thêu." }
+      };
+      const group = document.getElementById("imageExtractPresetGroup");
+      const buttons = Array.from(group?.querySelectorAll("[data-image-preset]") || []);
+      const paletteSize = document.getElementById("paletteSize");
+      const hint = document.getElementById("imagePresetHint");
+      const sampleButton = document.getElementById("btnSample");
+      const cards = ["mockupUi", "mockupPoster", "mockupFabric"]
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+      const applyPreset = (key, autoSample) => {
+        const cfg = presets[key] || presets.brand;
+        buttons.forEach((button) => {
+          const active = button.getAttribute("data-image-preset") === key;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        if (paletteSize && cfg.size) {
+          paletteSize.value = cfg.size;
+        }
+        if (hint) {
+          hint.textContent = cfg.hint;
+        }
+        cards.forEach((card) => {
+          card.classList.toggle("is-focus", card.id === cfg.focus);
+        });
+        if (autoSample && sampleButton && !sampleButton.disabled) {
+          sampleButton.click();
+        }
+      };
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.getAttribute("data-image-preset") || "brand";
+          applyPreset(key, true);
+        });
+      });
+      applyPreset("brand", false);
+    });
+  </script>
 
   <script type="module" src="../auth.js"></script>
   <script type="module" src="../scripts/workbench_bridge.js"></script>
