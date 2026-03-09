@@ -120,26 +120,21 @@
             </h1>
             <p class="mt-4 tc-muted">Sảnh điều phối sẽ đưa bạn vào đúng Thế giới trong dưới 30 giây, dựa trên mục tiêu hiện tại.</p>
             <div class="tc-hero-cta-main">
-              <a class="tc-btn tc-btn-primary px-6 py-3 text-base font-semibold" id="heroJourneyStart" href="./worlds/threadcolor.html">Bắt đầu hành trình màu của bạn</a>
-              <p class="tc-hero-cta-note">Nếu đã có lịch sử hoặc asset, hệ thống sẽ tự ưu tiên bước tiếp theo phù hợp.</p>
+              <a class="tc-btn tc-btn-primary px-6 py-3 text-base font-semibold" id="heroJourneyStart" href="#portalHub">Bắt đầu từ lựa chọn thế giới mục tiêu</a>
+              <p class="tc-hero-cta-note">Bạn có thể đi theo 3 cổng hành trình ngay bên dưới để vào đúng tuyến công việc.</p>
             </div>
             <div class="tc-hero-actions">
-              <div class="flex flex-wrap gap-3">
-                <a class="tc-btn tc-chip px-5 py-3" href="./worlds/library.html" data-i18n="hero.ctaPrimary">Bắt đầu với Thư viện màu</a>
-                <a class="tc-btn tc-chip px-5 py-3" href="./worlds/threadcolor.html" data-i18n="hero.ctaSecondary">Mở công cụ tra mã chỉ</a>
-                <button class="tc-btn tc-chip px-5 py-3" type="button" data-hexhub-open data-i18n="hero.ctaHex">Kho HEX</button>
-              </div>
               <div class="tc-journey-gates" id="journeyHub">
                 <div class="tc-journey-head">
                   <h2 class="tc-journey-heading">3 cổng hành trình</h2>
                   <p class="tc-journey-subtitle">Chọn đúng lối vào theo trạng thái làm việc của bạn.</p>
                 </div>
                 <div class="tc-journey-grid">
-                  <article class="tc-journey-card tc-card" data-route-card data-url="./worlds/threadcolor.html" data-world="threadcolor" role="button" tabindex="0">
+                  <article class="tc-journey-card tc-card" data-route-card data-url="#portalHub" role="button" tabindex="0">
                     <span class="tc-journey-audience">Người mới</span>
                     <h3 class="tc-journey-title">Tôi mới đến</h3>
-                    <p class="tc-muted text-sm">Bắt đầu từ tra mã chỉ để nắm luồng nhanh nhất của hệ sinh thái.</p>
-                    <a class="tc-btn tc-btn-primary px-3 py-2 text-sm mt-auto self-start" href="./worlds/threadcolor.html" data-world-link="1" data-world="threadcolor">Mở lộ trình khởi động</a>
+                    <p class="tc-muted text-sm">Bắt đầu từ cụm điều phối để chọn đúng Thế giới hoặc Không gian theo mục tiêu hiện tại.</p>
+                    <a class="tc-btn tc-btn-primary px-3 py-2 text-sm mt-auto self-start" href="#portalHub">Mở lộ trình khởi động</a>
                   </article>
                   <article class="tc-journey-card tc-card" data-route-card data-url="#recentHub" role="button" tabindex="0">
                     <span class="tc-journey-audience">Người quay lại</span>
@@ -158,7 +153,6 @@
               <div>
                 <div class="text-xs uppercase tc-muted" data-i18n="lobby.hero.jumpLabel">Đi nhanh</div>
                 <div class="mt-2 flex flex-wrap gap-2">
-                  <a class="tc-btn tc-btn-primary px-3 py-2 text-xs" href="#portalHub" data-i18n="lobby.hero.jump.portals">Sơ đồ 8 cổng</a>
                   <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#rouletteHub" data-i18n="lobby.hero.jump.roulette">Vòng quay bảng phối màu</a>
                   <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#forgeHub" data-i18n="lobby.hero.jump.forge">Lò rèn dải màu</a>
                   <a class="tc-btn tc-chip px-3 py-2 text-xs" href="#galleryHub" data-i18n="lobby.hero.jump.gallery">Bộ sưu tập sắc thái</a>
@@ -756,12 +750,23 @@
         </div>
         <div class="space-y-3">
           <h3 class="text-sm font-semibold" data-i18n="footer.columns.support.title">Hỗ trợ</h3>
-          <ul class="space-y-2">
-            <li><button class="text-left hover:text-white" data-action="open-support" data-i18n="footer.columns.support.help">Hỗ trợ giải đáp</button></li>
-            <li><button class="text-left hover:text-white" data-action="open-support-bug" data-i18n="footer.columns.support.bug">Báo lỗi</button></li>
-            <li><button class="text-left hover:text-white" data-action="open-support-feature" data-i18n="footer.columns.support.feature">Đề xuất tính năng</button></li>
-            <li><button class="text-left hover:text-white" data-action="open-support-start" data-i18n="footer.columns.support.start">Hướng dẫn bắt đầu trong 60 giây</button></li>
-          </ul>
+          <div class="space-y-3">
+            <article class="rounded-xl border border-slate-200/35 bg-white/55 p-3 space-y-2">
+              <h4 class="text-sm font-semibold" data-i18n="footer.columns.support.help">Hỗ trợ giải đáp</h4>
+              <p class="text-xs tc-muted" data-i18n="footer.columns.support.helpDesc">Dành cho cách dùng, chọn Thế giới phù hợp, dữ liệu màu, lưu/xuất/đồng bộ và sai lệch màu.</p>
+              <button class="text-xs font-semibold underline hover:text-white" data-action="open-support-start" data-i18n="footer.columns.support.helpCta">Xem hướng dẫn theo luồng</button>
+            </article>
+            <article class="rounded-xl border border-slate-200/35 bg-white/55 p-3 space-y-2">
+              <h4 class="text-sm font-semibold" data-i18n="footer.columns.support.bug">Báo lỗi</h4>
+              <p class="text-xs tc-muted" data-i18n="footer.columns.support.bugDesc">Dùng khi có lỗi thao tác hoặc lỗi hiển thị. Ưu tiên gửi trang gặp lỗi, bước tái hiện, thiết bị/trình duyệt và ảnh chụp.</p>
+              <button class="text-xs font-semibold underline hover:text-white" data-action="open-support-bug" data-i18n="footer.columns.support.bugCta">Mở luồng báo lỗi</button>
+            </article>
+            <article class="rounded-xl border border-slate-200/35 bg-white/55 p-3 space-y-2">
+              <h4 class="text-sm font-semibold" data-i18n="footer.columns.support.feature">Đề xuất tính năng</h4>
+              <p class="text-xs tc-muted" data-i18n="footer.columns.support.featureDesc">Dành cho đề xuất tính năng mới, cải tiến workflow, UI/layout hoặc nâng cấp các Thế giới/Không gian hiện có.</p>
+              <button class="text-xs font-semibold underline hover:text-white" data-action="open-support-feature" data-i18n="footer.columns.support.featureCta">Gửi đề xuất</button>
+            </article>
+          </div>
         </div>
         <div class="space-y-3">
           <h3 class="text-sm font-semibold" data-i18n="footer.columns.contact.title">Liên hệ</h3>
@@ -821,7 +826,7 @@
         <div class="space-y-2">
           <p class="text-sm font-semibold" data-i18n="support.toc.title">Mục lục câu hỏi</p>
           <div class="flex flex-wrap gap-2 text-xs" id="supportToc">
-            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-start" data-i18n="support.toc.start">Bắt đầu trong 60 giây</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-start" data-i18n="support.toc.start">Chọn thế giới phù hợp trong 3 bước</button>
             <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-hex" data-i18n="support.toc.hex">Tra mã chỉ từ HEX</button>
             <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-image" data-i18n="support.toc.image">Tra mã chỉ từ ảnh</button>
             <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-screen" data-i18n="support.toc.screen">Khác màu giữa màn hình</button>
@@ -831,59 +836,97 @@
             <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-privacy" data-i18n="support.toc.privacy">Quyền riêng tư & telemetry</button>
             <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-cmyk" data-i18n="support.toc.cmyk">Khi nào dùng CMYK</button>
             <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-remix" data-i18n="support.toc.remix">Cộng đồng remix</button>
-            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-pro" data-i18n="support.toc.pro">Gói Pro</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-pro" data-i18n="support.toc.pro">Đề xuất tính năng</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-beginner" data-i18n="support.toc.beginner">Không làm ngành thêu bắt đầu ở đâu</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-image-only" data-i18n="support.toc.imageOnly">Chỉ có ảnh thì vào đâu</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-hex-only" data-i18n="support.toc.hexOnly">Chỉ có HEX thì vào đâu</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-sync-mode" data-i18n="support.toc.syncMode">Lưu cục bộ khác gì đồng bộ</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-public-data" data-i18n="support.toc.publicData">Dữ liệu có tự công khai không</button>
+            <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-delete-data" data-i18n="support.toc.deleteData">Yêu cầu xoá dữ liệu</button>
             <button class="tc-chip px-3 py-1 rounded-full" data-support-target="support-bug" data-i18n="support.toc.bug">Báo lỗi hiệu quả</button>
           </div>
         </div>
 
         <div class="space-y-5 text-sm leading-relaxed">
           <section id="support-start">
-            <h3 class="font-semibold" data-i18n="support.q1">Bắt đầu trong 60 giây</h3>
-            <p class="tc-muted" data-i18n="support.a1">Đang cập nhật hướng dẫn nhanh theo từng công cụ.</p>
+            <h3 class="font-semibold" data-i18n="support.q1">Chọn thế giới phù hợp trong 3 bước</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a1">Bước 1: Xác định bạn đang có gì (ý tưởng, ảnh, mã màu hoặc nhu cầu hỏi cộng đồng).
+Bước 2: Xác định bạn muốn làm gì (khám phá, phối, tra, lưu hay chia sẻ).
+Bước 3: Mở card Thế giới hoặc Không gian Cộng đồng tương ứng ở cụm điều phối.</p>
           </section>
           <section id="support-hex">
             <h3 class="font-semibold" data-i18n="support.q2">Tra mã chỉ từ HEX hoạt động thế nào?</h3>
-            <p class="tc-muted" data-i18n="support.a2">Hệ thống so khớp màu gần nhất theo không gian màu để gợi ý mã chỉ.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a2">Hệ thống so khớp màu gần nhất theo không gian màu để gợi ý mã chỉ.</p>
           </section>
           <section id="support-image">
             <h3 class="font-semibold" data-i18n="support.q3">Tra mã chỉ từ ảnh hoạt động thế nào?</h3>
-            <p class="tc-muted" data-i18n="support.a3">Ảnh được lấy mẫu màu chính, sau đó so khớp với kho mã chỉ.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a3">Ảnh được lấy mẫu màu chính, sau đó so khớp với kho mã chỉ.</p>
           </section>
           <section id="support-screen">
             <h3 class="font-semibold" data-i18n="support.q4">Vì sao kết quả khác nhau giữa các màn hình?</h3>
-            <p class="tc-muted" data-i18n="support.a4">Mỗi màn hình có profile màu khác nhau; hãy kiểm tra trên thiết bị chuẩn.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a4">Mỗi màn hình có profile màu khác nhau; hãy kiểm tra trên thiết bị chuẩn.</p>
           </section>
           <section id="support-save">
             <h3 class="font-semibold" data-i18n="support.q5">Cách lưu vào Thư viện màu</h3>
-            <p class="tc-muted" data-i18n="support.a5">Chọn tài sản → Lưu vào Thư viện → đặt tên để lưu lại.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a5">Chọn tài sản → Lưu vào Thư viện → đặt tên để lưu lại.</p>
           </section>
           <section id="support-export">
             <h3 class="font-semibold" data-i18n="support.q6">Cách xuất bảng phối / dải chuyển</h3>
-            <p class="tc-muted" data-i18n="support.a6">Dùng nút Xuất trong công cụ tương ứng để lấy CSS hoặc token.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a6">Dùng nút Xuất trong công cụ tương ứng để lấy CSS hoặc token.</p>
           </section>
           <section id="support-storage">
             <h3 class="font-semibold" data-i18n="support.q7">Dữ liệu lưu ở đâu?</h3>
-            <p class="tc-muted" data-i18n="support.a7">Mặc định lưu localStorage; có thể đồng bộ khi đăng nhập.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a7">Mặc định lưu localStorage; có thể đồng bộ khi đăng nhập.</p>
           </section>
           <section id="support-privacy">
             <h3 class="font-semibold" data-i18n="support.q8">Quyền riêng tư & telemetry</h3>
-            <p class="tc-muted" data-i18n="support.a8">Telemetry chỉ dùng để đo lường, luôn fail-silent và có thể tắt khi local.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a8">Telemetry chỉ dùng để đo lường, luôn fail-silent và có thể tắt khi local.</p>
           </section>
           <section id="support-cmyk">
             <h3 class="font-semibold" data-i18n="support.q9">Khi nào nên dùng CMYK</h3>
-            <p class="tc-muted" data-i18n="support.a9">Khi chuẩn bị in ấn, hãy chuyển sang CMYK để kiểm tra TAC và lệch màu.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a9">Khi chuẩn bị in ấn, hãy chuyển sang CMYK để kiểm tra TAC và lệch màu.</p>
           </section>
           <section id="support-remix">
             <h3 class="font-semibold" data-i18n="support.q10">Cộng đồng remix hoạt động ra sao?</h3>
-            <p class="tc-muted" data-i18n="support.a10">Chia sẻ tài sản lên feed; người khác có thể remix và lưu lại.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a10">Chia sẻ tài sản lên feed; người khác có thể remix và lưu lại.</p>
           </section>
           <section id="support-pro">
-            <h3 class="font-semibold" data-i18n="support.q11">Gói Pro gồm gì. Kích hoạt thế nào.</h3>
-            <p class="tc-muted" data-i18n="support.a11">Đang cập nhật thông tin gói Pro và hướng dẫn kích hoạt.</p>
+            <h3 class="font-semibold" data-i18n="support.q11">Đề xuất tính năng thế nào để dễ triển khai?</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a11">Khi nào dùng: Khi bạn muốn đề xuất công cụ mới hoặc cải tiến luồng làm việc hiện có.
+Cách hoạt động: Mô tả mục tiêu, bối cảnh sử dụng và kết quả mong muốn theo đầu ra cụ thể.
+Giới hạn cần biết: Đề xuất quá chung sẽ khó ưu tiên trong lộ trình.
+Cách đạt kết quả tốt hơn: Gửi kèm ví dụ trước/sau hoặc pain point rõ ràng theo từng Thế giới.</p>
+          </section>
+          <section id="support-beginner">
+            <h3 class="font-semibold" data-i18n="support.q13">Tôi không làm ngành thêu thì bắt đầu ở đâu?</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a13">Nếu làm web/UI, branding, nội thất, in ấn hoặc sản phẩm số thì nên vào đúng World theo mục tiêu đầu ra trước.</p>
+          </section>
+          <section id="support-image-only">
+            <h3 class="font-semibold" data-i18n="support.q14">Chỉ có ảnh thì nên vào Thế giới nào?</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a14">Bắt đầu từ Màu từ Ảnh để trích bảng màu, sau đó chuyển qua Palette/Gradient/PrintColor tuỳ nhu cầu.</p>
+          </section>
+          <section id="support-hex-only">
+            <h3 class="font-semibold" data-i18n="support.q15">Chỉ có HEX thì nên vào Thế giới nào?</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a15">Nếu cần so mã chỉ thì vào ThreadColor, nếu cần phối nhanh thì vào Palette, nếu cần dải màu thì vào Gradient.</p>
+          </section>
+          <section id="support-sync-mode">
+            <h3 class="font-semibold" data-i18n="support.q16">Lưu cục bộ khác gì đăng nhập đồng bộ?</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a16">Lưu cục bộ giữ dữ liệu trên thiết bị hiện tại; đăng nhập giúp đồng bộ dữ liệu dùng chung giữa các phiên và thiết bị.</p>
+          </section>
+          <section id="support-public-data">
+            <h3 class="font-semibold" data-i18n="support.q17">Dữ liệu của tôi có tự công khai lên Cộng đồng không?</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a17">Không. Tài sản chỉ xuất hiện ở Cộng đồng khi bạn chủ động chọn chia sẻ/remix theo hành động cụ thể.</p>
+          </section>
+          <section id="support-delete-data">
+            <h3 class="font-semibold" data-i18n="support.q18">Tôi có thể yêu cầu xoá dữ liệu như thế nào?</h3>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a18">Bạn có thể gửi yêu cầu hỗ trợ kèm email đăng nhập, phạm vi dữ liệu cần xoá và thời điểm tạo gần đúng để đội vận hành xử lý.</p>
           </section>
           <section id="support-bug">
             <h3 class="font-semibold" data-i18n="support.q12">Cách báo lỗi hiệu quả</h3>
-            <p class="tc-muted" data-i18n="support.a12">Đính kèm ảnh, trình duyệt, bước tái hiện và kết quả mong đợi.</p>
+            <p class="tc-muted whitespace-pre-line" data-i18n="support.a12">Khi nào dùng: Khi lỗi lặp lại hoặc ảnh hưởng tới tiến độ công việc.
+Cách hoạt động: Gửi báo lỗi kèm trang đang ở, thao tác gây lỗi và kết quả thực tế.
+Giới hạn cần biết: Thiếu bối cảnh sẽ làm chậm quá trình xác minh.
+Cách đạt kết quả tốt hơn: Bổ sung thiết bị/trình duyệt, ảnh chụp màn hình và bước tái hiện theo thứ tự.</p>
           </section>
         </div>
 

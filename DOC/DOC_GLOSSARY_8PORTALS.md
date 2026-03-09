@@ -732,9 +732,13 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Lobby (trang điều phối trung tâm) | Sảnh điều phối | Trang trung tâm của 8Portals, dùng để điều hướng nhanh đến các Thế giới và công cụ chính. |
 | Redirect page (trang chuyển hướng) | Trang chuyển hướng | Trang trung gian tự chuyển người dùng sang đường dẫn mới, đồng thời có CTA dự phòng để mở thủ công khi cần. |
 | Page role (vai trò trang) | Vai trò trang | Chức năng chính mà một trang đảm nhiệm; title và H1 cần bám đúng vai trò để tránh chồng chéo ngữ nghĩa. |
+| Neutral CTA (CTA trung lập theo mục tiêu) | CTA trung lập | CTA tại Sảnh điều phối không ép người dùng vào một World cố định, mà dẫn đến cụm điều hướng theo mục tiêu hiện tại. |
+| Industry-neutral orchestration (điều phối trung lập ngành) | Điều phối trung lập ngành | Cách thiết kế Sảnh điều phối không thiên vị một ngành hay một World cụ thể, để người dùng vào đúng tuyến theo mục tiêu thực tế. |
+| Support branch split (tách nhánh hỗ trợ) | Tách nhánh hỗ trợ | Cách tách rõ luồng Hỗ trợ giải đáp, Báo lỗi và Đề xuất tính năng để tránh trộn mục tiêu và giúp xử lý nhanh hơn. |
 
 | Mailto | Mailto | Liên kết mở email soạn sẵn trong ứng dụng mail mặc định. |
 | Neo cuộn (anchor) | Neo cuộn | Liên kết cuộn đến một vị trí trong trang. |
+| Essential cookie (cookie thiết yếu) | Cookie thiết yếu | Cookie bắt buộc cho các chức năng nền như phiên đăng nhập và bảo mật, không phục vụ quảng cáo. |
 | Hộp thoại | Hộp thoại | Vùng nổi hiển thị nội dung hoặc câu hỏi cần xác nhận. |
 | Liên kết pháp lý | Liên kết pháp lý | Các liên kết điều khoản, quyền riêng tư, cookie và thông tin tuân thủ. |
 
