@@ -10,6 +10,15 @@
   max-width: 58ch;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+#journeyHub,
+#portalHub {
+  scroll-margin-top: 6rem;
+}
+
 .tc-journey-gates {
   margin-top: 0.4rem;
   display: grid;

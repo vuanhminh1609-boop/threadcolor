@@ -217,6 +217,8 @@
         : `${basePath}${String(item.url || "").replace(/^\.?\//, "")}`;
       return `<a class="tc-menu-item block w-full text-left px-3 py-2 rounded-md" href="${href}" role="menuitem">${label}</a>`;
     }).join("");
+    const hexHubLabel = tr("topbar.nav.hexHub", "Kho HEX");
+    const communityLabel = tr("topbar.nav.community", "Cộng đồng");
 
     if (window.tcI18n && typeof window.tcI18n.extendLocale === "function") {
       const worldPatch = tones.reduce((acc, tone) => {
@@ -280,7 +282,8 @@
             </div>
           </div>
           <div class="flex items-center justify-end gap-3 order-2 ml-auto sm:order-none sm:ml-0 md:justify-self-end tc-topbar__right">
-            <a class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" href="${basePath}spaces/community.html">Cộng đồng</a>
+            <button class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" type="button" data-hexhub-open>${hexHubLabel}</button>
+            <a class="tc-chip tc-btn px-3 py-2 text-sm font-semibold" href="${basePath}spaces/community.html">${communityLabel}</a>
             <div id="topbarAuthSlot" data-auth-slot="topbar" class="tc-auth-float flex items-center justify-end order-2 col-span-1 justify-self-end sm:order-none"></div>
           </div>
         </div>
@@ -306,3 +309,4 @@
 
   ensureWorldRegistry(initTopbarRender);
 })();
+
