@@ -83,6 +83,16 @@ const USE_CASE_CONFIG = {
     hint: "Print: ưu tiên dải kiểm soát tốt, hạn chế banding khi xuất in."
   }
 };
+const USE_CASE_TAG_HINTS = {
+  webui: ["cong so", "toi gian", "tuong lai", "lanh"],
+  branding: ["da tiec", "kich tinh", "lang man", "quyen luc", "cao"],
+  textile: ["lua", "nhung", "go", "thien", "da", "thu cong"],
+  print: ["trung tinh", "toi gian", "tuong phan vua", "thap", "cong so"]
+};
+const PRESET_TONE_KEYS = ["am", "lanh", "trung-tinh", "khac"];
+const PRESET_CONTRAST_KEYS = ["thap", "vua", "cao", "khac"];
+const PRESET_MOOD_KEYS = ["sang", "tu-nhien", "hien-dai", "cong-nghe", "thoi-trang", "cam-xuc", "khac"];
+const PRESET_SORT_KEYS = ["featured", "newest", "gentle", "bold", "textile", "ui"];
 
 const state = {
   stops: [
@@ -93,10 +103,21 @@ const state = {
   angle: 90,
   type: "linear",
   samples: [],
-  myPresets: []
+  myPresets: [],
+  presetCatalog: [],
+  activePresetKey: "",
+  activeStartPath: "preset",
+  presetFilters: {
+    group: "all",
+    tone: "all",
+    contrast: "all",
+    mood: "all",
+    sort: "featured",
+    keyword: ""
+  }
 };
 const EXPORT_FORMATS = ["css", "vars", "token", "tailwind"];
-const CONTEXT_PREVIEW_TABS = ["ui", "poster", "thread"];
+const CONTEXT_PREVIEW_TABS = ["ui", "poster", "thread", "ribbon"];
 let exportFormatActive = "css";
 let contextPreviewActiveTab = "ui";
 let activeUseCase = "webui";
@@ -123,6 +144,22 @@ const historyState = {
 const el = {
   preview: document.getElementById("gradientPreview"),
   presetRail: document.getElementById("gradientPresetRail"),
+  presetGroupChips: document.getElementById("gradientPresetGroupChips"),
+  presetGroupFilter: document.getElementById("gradientPresetGroupFilter"),
+  presetToneFilter: document.getElementById("gradientPresetToneFilter"),
+  presetContrastFilter: document.getElementById("gradientPresetContrastFilter"),
+  presetMoodFilter: document.getElementById("gradientPresetMoodFilter"),
+  presetSort: document.getElementById("gradientPresetSort"),
+  presetSearch: document.getElementById("gradientPresetSearch"),
+  presetCount: document.getElementById("gradientPresetCount"),
+  presetStatus: document.getElementById("gradientPresetStatus"),
+  presetEmpty: document.getElementById("gradientPresetEmpty"),
+  workflowStatus: document.getElementById("gradientWorkflowStatus"),
+  nextEditBtn: document.getElementById("gradientNextEdit"),
+  nextSaveBtn: document.getElementById("gradientNextSave"),
+  nextThreadBtn: document.getElementById("gradientNextThread"),
+  nextCommunityBtn: document.getElementById("gradientNextCommunity"),
+  startPathCards: Array.from(document.querySelectorAll("[data-gradient-start-path]")),
   myPresetRail: document.getElementById("gradientMyPresetRail"),
   savePresetBtn: document.getElementById("gradientSavePreset"),
   angleRange: document.getElementById("gradientAngle"),
@@ -163,12 +200,15 @@ const el = {
   contextTabUi: document.getElementById("gradientContextTabUi"),
   contextTabPoster: document.getElementById("gradientContextTabPoster"),
   contextTabThread: document.getElementById("gradientContextTabThread"),
+  contextTabRibbon: document.getElementById("gradientContextTabRibbon"),
   contextPanelUi: document.getElementById("gradientContextPanelUi"),
   contextPanelPoster: document.getElementById("gradientContextPanelPoster"),
   contextPanelThread: document.getElementById("gradientContextPanelThread"),
+  contextPanelRibbon: document.getElementById("gradientContextPanelRibbon"),
   contextSurfaceUi: document.getElementById("gradientContextSurfaceUi"),
   contextSurfacePoster: document.getElementById("gradientContextSurfacePoster"),
   contextSurfaceThread: document.getElementById("gradientContextSurfaceThread"),
+  contextSurfaceRibbon: document.getElementById("gradientContextSurfaceRibbon"),
   useCaseGroup: document.getElementById("gradientUseCaseGroup"),
   useCaseHint: document.getElementById("gradientUseCaseHint"),
   useCaseButtons: Array.from(document.querySelectorAll("[data-gradient-usecase]")),
@@ -188,6 +228,97 @@ function t(key, fallback = "", params) {
   const translate = window.tcI18n?.t;
   if (typeof translate !== "function") return fallback;
   return translate(key, fallback, params);
+}
+
+function normalizeTextValue(input) {
+  return String(input ?? "").replace(/\s+/g, " ").trim();
+}
+
+function normalizeSearchToken(input) {
+  const text = normalizeTextValue(input).toLocaleLowerCase("vi-VN");
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function buildPresetKey(rawKey, fallback = "preset") {
+  const base = normalizeSearchToken(rawKey).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return base || fallback;
+}
+
+function normalizeTagList(tags) {
+  if (!Array.isArray(tags)) return [];
+  const used = new Set();
+  const output = [];
+  tags.forEach((tag) => {
+    const text = normalizeTextValue(tag);
+    if (!text) return;
+    const key = text.toLocaleLowerCase("vi-VN");
+    if (used.has(key)) return;
+    used.add(key);
+    output.push(text);
+  });
+  return output;
+}
+
+function inferPresetTone(tags) {
+  const list = normalizeTagList(tags).map((tag) => normalizeSearchToken(tag));
+  if (list.some((tag) => tag.includes("trung tinh"))) return "trung-tinh";
+  if (list.some((tag) => tag.includes("lanh"))) return "lanh";
+  if (list.some((tag) => tag.includes("am"))) return "am";
+  return "khac";
+}
+
+function inferPresetContrast(tags) {
+  const list = normalizeTagList(tags).map((tag) => normalizeSearchToken(tag));
+  if (list.some((tag) => tag.includes("tuong phan cao"))) return "cao";
+  if (list.some((tag) => tag.includes("tuong phan vua"))) return "vua";
+  if (list.some((tag) => tag.includes("tuong phan thap"))) return "thap";
+  return "khac";
+}
+
+function inferPresetMood(tags) {
+  const list = normalizeTagList(tags).map((tag) => normalizeSearchToken(tag));
+  if (list.some((tag) => tag.includes("quyen luc") || tag.includes("da tiec") || tag.includes("thanh lich"))) {
+    return "sang";
+  }
+  if (list.some((tag) => tag.includes("thien") || tag.includes("go") || tag.includes("lua") || tag.includes("thu cong") || tag.includes("resort"))) {
+    return "tu-nhien";
+  }
+  if (list.some((tag) => tag.includes("cong so") || tag.includes("toi gian"))) {
+    return "hien-dai";
+  }
+  if (list.some((tag) => tag.includes("tuong lai") || tag.includes("neon"))) {
+    return "cong-nghe";
+  }
+  if (list.some((tag) => tag.includes("lang man") || tag.includes("nhung") || tag.includes("fashion"))) {
+    return "thoi-trang";
+  }
+  if (list.some((tag) => tag.includes("kich tinh") || tag.includes("bi an") || tag.includes("hoai co"))) {
+    return "cam-xuc";
+  }
+  return "khac";
+}
+
+function isToneTag(tag) {
+  return ["am", "lanh", "trung tinh"].some((token) => normalizeSearchToken(tag).includes(token));
+}
+
+function isContrastTag(tag) {
+  return normalizeSearchToken(tag).includes("tuong phan");
+}
+
+function getToneLabel(toneKey) {
+  const key = PRESET_TONE_KEYS.includes(toneKey) ? toneKey : "khac";
+  return t(`gradient.presets.filters.tones.${key}`, "Khác");
+}
+
+function getContrastLabel(contrastKey) {
+  const key = PRESET_CONTRAST_KEYS.includes(contrastKey) ? contrastKey : "khac";
+  return t(`gradient.presets.filters.contrasts.${key}`, "Khác");
+}
+
+function getMoodLabel(moodKey) {
+  const key = PRESET_MOOD_KEYS.includes(moodKey) ? moodKey : "khac";
+  return t(`gradient.presets.filters.moods.${key}`, "Khác");
 }
 
 function normalizeHex(input) {
@@ -750,7 +881,8 @@ function getContextPreviewPairs() {
   return [
     { key: "ui", tab: el.contextTabUi, panel: el.contextPanelUi },
     { key: "poster", tab: el.contextTabPoster, panel: el.contextPanelPoster },
-    { key: "thread", tab: el.contextTabThread, panel: el.contextPanelThread }
+    { key: "thread", tab: el.contextTabThread, panel: el.contextPanelThread },
+    { key: "ribbon", tab: el.contextTabRibbon, panel: el.contextPanelRibbon }
   ];
 }
 
@@ -784,6 +916,10 @@ function renderContextPreview() {
     const patternLight = "repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 2px, rgba(255, 255, 255, 0) 2px 9px)";
     const patternDark = "repeating-linear-gradient(-45deg, rgba(15, 23, 42, 0.2) 0 1px, rgba(15, 23, 42, 0) 1px 8px)";
     el.contextSurfaceThread.style.backgroundImage = `${patternLight}, ${patternDark}, ${gradient}`;
+  }
+  if (el.contextSurfaceRibbon) {
+    const sheen = "linear-gradient(115deg, rgba(255,255,255,0.26), rgba(255,255,255,0) 48%, rgba(255,255,255,0.18) 100%)";
+    el.contextSurfaceRibbon.style.backgroundImage = `${sheen}, ${gradient}`;
   }
 }
 
@@ -975,7 +1111,7 @@ function renderBandingPanel() {
 }
 
 function renderPreviewDither() {
-  const targets = [el.preview, el.contextSurfaceUi, el.contextSurfacePoster, el.contextSurfaceThread];
+  const targets = [el.preview, el.contextSurfaceUi, el.contextSurfacePoster, el.contextSurfaceThread, el.contextSurfaceRibbon];
   targets.forEach((node) => {
     if (!node) return;
     node.classList.toggle("tc-dither-on", previewDitherEnabled);
@@ -1037,21 +1173,451 @@ function renderExportFormatPreview() {
   }
 }
 
+function normalizePresetStops(rawStops) {
+  if (!Array.isArray(rawStops)) return [];
+  return rawStops
+    .map((item) => {
+      if (typeof item === "string") return normalizeHex(item);
+      if (item && typeof item === "object") return normalizeHex(item.hex || item.color);
+      return null;
+    })
+    .filter(Boolean)
+    .slice(0, MAX_STOPS);
+}
+
+function normalizeCatalogPreset(rawPreset, index = 0) {
+  if (!rawPreset || typeof rawPreset !== "object") return null;
+  const stops = normalizePresetStops(rawPreset.stops);
+  if (stops.length < MIN_STOPS) return null;
+  const name = normalizePresetName(rawPreset.ten || rawPreset.name, `Preset ${index + 1}`);
+  const tags = normalizeTagList(rawPreset.tags);
+  const group = tags[0] || t("gradient.presets.groupFallback", "Chưa phân nhóm");
+  const tone = inferPresetTone(tags);
+  const contrast = inferPresetContrast(tags);
+  const mood = inferPresetMood(tags);
+  const workflowTag = normalizePresetName(
+    rawPreset.purpose || rawPreset.usecase || tags.find((tag) => !isToneTag(tag) && !isContrastTag(tag) && tag !== group),
+    ""
+  );
+  const description = normalizePresetName(
+    rawPreset.desc || rawPreset.description,
+    `${getMoodLabel(mood)} · ${workflowTag || group}`
+  );
+  const featuredScore = (contrast === "cao" ? 2 : contrast === "vua" ? 1 : 0) + (mood === "sang" || mood === "cong-nghe" ? 1 : 0);
+  const keySeed = rawPreset.id || rawPreset.key || rawPreset.slug || name || `preset-${index + 1}`;
+  return {
+    key: buildPresetKey(keySeed, `preset-${index + 1}`),
+    id: rawPreset.id || "",
+    ten: name,
+    tags,
+    group,
+    tone,
+    contrast,
+    mood,
+    workflowTag,
+    description,
+    featuredScore,
+    angle: clampNumber(rawPreset.angle ?? rawPreset.angleDeg ?? 90, 0, 360),
+    type: normalizeGradientType(rawPreset.type),
+    stops
+  };
+}
+
 function buildPresetStops(preset) {
   if (!preset) return [];
   const source = Array.isArray(preset.stops) ? preset.stops : [];
-  const cleaned = source.map((hex, idx) => ({
-    hex: normalizeHex(hex) || randomHex(),
+  const cleaned = source.map((item, idx) => ({
+    hex: normalizeHex(typeof item === "string" ? item : item?.hex || item?.color) || randomHex(),
     pos: Math.round((idx / Math.max(1, source.length - 1)) * 100)
   }));
   return cloneStops(cleaned);
 }
 
-function getPresetByKey(key) {
-  return GRADIENT_PRESETS.find((preset) => preset.key === key) || null;
+function buildFallbackPresetCatalog() {
+  return GRADIENT_PRESETS.map((preset, index) => ({
+    key: preset.key,
+    id: preset.key,
+    ten: t(`gradient.presets.items.${preset.key}`, preset.key),
+    tags: [t("gradient.presets.fallbackTag", "Preset nhanh")],
+    group: t("gradient.presets.fallbackGroup", "Khởi động nhanh"),
+    tone: "khac",
+    contrast: "khac",
+    mood: "khac",
+    workflowTag: t("gradient.presets.fallbackWorkflow", "Khởi động nhanh"),
+    description: t("gradient.presets.fallbackDesc", "Preset nhanh để bắt đầu chỉnh sâu."),
+    featuredScore: 0,
+    angle: clampNumber(preset.angle ?? 90, 0, 360),
+    type: normalizeGradientType(preset.type),
+    stops: normalizePresetStops(preset.stops),
+    sortOrder: index
+  })).filter((preset) => preset.stops.length >= MIN_STOPS);
 }
 
-function applyPreset(preset) {
+function getActivePresetCatalog() {
+  if (Array.isArray(state.presetCatalog) && state.presetCatalog.length) {
+    return state.presetCatalog;
+  }
+  return buildFallbackPresetCatalog();
+}
+
+function getPresetByKey(key) {
+  const normalizedKey = normalizeTextValue(key);
+  if (!normalizedKey) return null;
+  const inCatalog = getActivePresetCatalog().find((preset) => preset.key === normalizedKey);
+  if (inCatalog) return inCatalog;
+  return GRADIENT_PRESETS.find((preset) => preset.key === normalizedKey) || null;
+}
+
+function renderPresetStatus(activePreset) {
+  if (!el.presetStatus) return;
+  const preset = activePreset || getPresetByKey(state.activePresetKey);
+  if (preset) {
+    el.presetStatus.textContent = t("gradient.presets.status.selected", "Đang áp dụng: {name}. Bạn có thể chỉnh tiếp ở thanh stop.", {
+      name: preset.ten || preset.key
+    });
+    renderWorkflowStatus(preset);
+    return;
+  }
+  el.presetStatus.textContent = t(
+    "gradient.presets.status.ready",
+    "Chọn một preset để lấy điểm xuất phát rồi chỉnh sâu theo nhu cầu."
+  );
+  renderWorkflowStatus(null);
+}
+
+function renderPresetCount(filteredCount, totalCount) {
+  if (!el.presetCount) return;
+  el.presetCount.textContent = t("gradient.presets.count", "{filtered}/{total} preset", {
+    filtered: filteredCount,
+    total: totalCount
+  });
+}
+
+function renderWorkflowStatus(activePreset) {
+  if (!el.workflowStatus) return;
+  const preset = activePreset || getPresetByKey(state.activePresetKey);
+  if (!preset) {
+    el.workflowStatus.textContent = t(
+      "gradient.workflow.status.idle",
+      "Chọn preset để mở các bước liên thông: chỉnh sâu, lưu, sang Thế giới Màu thêu hoặc chia sẻ Cộng đồng."
+    );
+    return;
+  }
+  el.workflowStatus.textContent = t(
+    "gradient.workflow.status.selected",
+    "Đang chọn {name}. Tiếp theo: chỉnh sâu, lưu vào Thư viện hoặc chuyển nhanh sang luồng liên thông.",
+    { name: preset.ten || preset.key }
+  );
+}
+
+function renderStartPathState() {
+  (el.startPathCards || []).forEach((card) => {
+    const key = normalizeTextValue(card?.dataset?.gradientStartPath || "");
+    const active = key === state.activeStartPath;
+    card.classList.toggle("is-active", active);
+    card.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+
+function scrollToPresetStudio() {
+  const block = el.presetRail?.closest("section");
+  if (block) {
+    block.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function focusFirstStopInput() {
+  const firstColorInput = el.stopsWrap?.querySelector("input[type='color']");
+  if (firstColorInput) {
+    firstColorInput.focus({ preventScroll: true });
+    return true;
+  }
+  return false;
+}
+
+function handleStartPath(pathKey) {
+  const key = normalizeTextValue(pathKey) || "preset";
+  state.activeStartPath = key;
+  renderStartPathState();
+  if (key === "preset") {
+    scrollToPresetStudio();
+    el.presetSearch?.focus({ preventScroll: true });
+    return;
+  }
+  if (key === "base") {
+    const advanced = document.querySelector(".tc-advanced");
+    if (advanced && !advanced.hasAttribute("open")) {
+      advanced.setAttribute("open", "open");
+    }
+    const stopBarBlock = el.stopBar?.closest(".tc-card");
+    if (stopBarBlock) {
+      stopBarBlock.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.setTimeout(() => {
+      if (!focusFirstStopInput()) {
+        el.stopBar?.focus({ preventScroll: true });
+      }
+    }, 200);
+    return;
+  }
+  if (key === "mood") {
+    scrollToPresetStudio();
+    el.presetMoodFilter?.focus({ preventScroll: true });
+    if (el.presetMoodFilter && state.presetFilters.mood === "all") {
+      el.presetMoodFilter.value = "sang";
+      state.presetFilters.mood = "sang";
+      renderPresetRail();
+    }
+  }
+}
+
+function getActivePresetHexForRouting() {
+  const preset = getPresetByKey(state.activePresetKey);
+  const source = preset?.stops?.length ? preset.stops : migrateStops(state.stops).map((stop) => stop.hex);
+  const first = Array.isArray(source) ? source[0] : "";
+  return normalizeHex(first) || "#6EE7B7";
+}
+
+function runWorkflowEdit() {
+  const card = el.stopBar?.closest(".tc-card");
+  if (card) {
+    card.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  const advanced = document.querySelector(".tc-advanced");
+  if (advanced && !advanced.hasAttribute("open")) {
+    advanced.setAttribute("open", "open");
+  }
+  window.setTimeout(() => {
+    focusFirstStopInput();
+  }, 160);
+}
+
+function runWorkflowSave() {
+  const asset = buildGradientAsset();
+  const ok = addAssetToLibrary(asset);
+  showToast(ok ? t("gradient.toast.savedLibrary", "Đã lưu vào Thư viện.") : t("gradient.toast.saveFailed", "Không thể lưu tài sản."));
+}
+
+function runWorkflowToThread() {
+  const hex = getActivePresetHexForRouting();
+  window.location.href = `./threadcolor.html?color=${encodeURIComponent(hex)}`;
+}
+
+function runWorkflowToCommunity() {
+  publishToFeed(buildGradientAsset());
+  window.location.href = "../spaces/community.html";
+}
+
+function renderPresetGroupChips(groups) {
+  if (!el.presetGroupChips) return;
+  el.presetGroupChips.innerHTML = "";
+  const allChip = document.createElement("button");
+  allChip.type = "button";
+  allChip.className = "tc-btn tc-chip px-3 py-2 text-xs tc-preset-group-chip";
+  allChip.dataset.groupValue = "all";
+  allChip.textContent = t("gradient.presets.filters.allGroups", "Tất cả nhóm");
+  el.presetGroupChips.appendChild(allChip);
+  groups.forEach((group) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "tc-btn tc-chip px-3 py-2 text-xs tc-preset-group-chip";
+    chip.dataset.groupValue = group;
+    chip.textContent = group;
+    el.presetGroupChips.appendChild(chip);
+  });
+  const activeValue = normalizeTextValue(state.presetFilters.group) || "all";
+  Array.from(el.presetGroupChips.querySelectorAll(".tc-preset-group-chip")).forEach((chip) => {
+    const chipValue = normalizeTextValue(chip.dataset.groupValue) || "all";
+    const active = chipValue === activeValue;
+    chip.classList.toggle("is-active", active);
+    chip.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+
+function renderPresetFilterOptions() {
+  const catalog = getActivePresetCatalog();
+  const groupMap = new Map();
+  catalog.forEach((preset) => {
+    const groupName = normalizeTextValue(preset.group) || t("gradient.presets.groupFallback", "Chưa phân nhóm");
+    if (!groupMap.has(groupName)) {
+      groupMap.set(groupName, groupName);
+    }
+  });
+  const groups = Array.from(groupMap.values()).sort((a, b) => a.localeCompare(b, "vi", { sensitivity: "base" }));
+  const toneOptions = ["all", ...PRESET_TONE_KEYS];
+  const contrastOptions = ["all", ...PRESET_CONTRAST_KEYS];
+  const moodOptions = ["all", ...PRESET_MOOD_KEYS];
+  const sortOptions = [...PRESET_SORT_KEYS];
+
+  if (el.presetGroupFilter) {
+    const keep = normalizeTextValue(state.presetFilters.group) || "all";
+    el.presetGroupFilter.innerHTML = "";
+    const allOption = document.createElement("option");
+    allOption.value = "all";
+    allOption.textContent = t("gradient.presets.filters.allGroups", "Tất cả nhóm");
+    el.presetGroupFilter.appendChild(allOption);
+    groups.forEach((group) => {
+      const option = document.createElement("option");
+      option.value = group;
+      option.textContent = group;
+      el.presetGroupFilter.appendChild(option);
+    });
+    state.presetFilters.group = groups.includes(keep) ? keep : "all";
+    el.presetGroupFilter.value = state.presetFilters.group;
+  }
+  renderPresetGroupChips(groups);
+
+  if (el.presetToneFilter) {
+    const keep = normalizeTextValue(state.presetFilters.tone) || "all";
+    el.presetToneFilter.innerHTML = "";
+    toneOptions.forEach((toneKey) => {
+      const option = document.createElement("option");
+      option.value = toneKey;
+      option.textContent = toneKey === "all"
+        ? t("gradient.presets.filters.allTones", "Mọi tông")
+        : getToneLabel(toneKey);
+      el.presetToneFilter.appendChild(option);
+    });
+    state.presetFilters.tone = toneOptions.includes(keep) ? keep : "all";
+    el.presetToneFilter.value = state.presetFilters.tone;
+  }
+
+  if (el.presetContrastFilter) {
+    const keep = normalizeTextValue(state.presetFilters.contrast) || "all";
+    el.presetContrastFilter.innerHTML = "";
+    contrastOptions.forEach((contrastKey) => {
+      const option = document.createElement("option");
+      option.value = contrastKey;
+      option.textContent = contrastKey === "all"
+        ? t("gradient.presets.filters.allContrasts", "Mọi mức tương phản")
+        : getContrastLabel(contrastKey);
+      el.presetContrastFilter.appendChild(option);
+    });
+    state.presetFilters.contrast = contrastOptions.includes(keep) ? keep : "all";
+    el.presetContrastFilter.value = state.presetFilters.contrast;
+  }
+
+  if (el.presetMoodFilter) {
+    const keep = normalizeTextValue(state.presetFilters.mood) || "all";
+    el.presetMoodFilter.innerHTML = "";
+    moodOptions.forEach((moodKey) => {
+      const option = document.createElement("option");
+      option.value = moodKey;
+      option.textContent = moodKey === "all"
+        ? t("gradient.presets.filters.allMoods", "Mọi cảm hứng")
+        : getMoodLabel(moodKey);
+      el.presetMoodFilter.appendChild(option);
+    });
+    state.presetFilters.mood = moodOptions.includes(keep) ? keep : "all";
+    el.presetMoodFilter.value = state.presetFilters.mood;
+  }
+
+  if (el.presetSort) {
+    const keep = normalizeTextValue(state.presetFilters.sort) || "featured";
+    el.presetSort.innerHTML = "";
+    sortOptions.forEach((sortKey) => {
+      const option = document.createElement("option");
+      option.value = sortKey;
+      option.textContent = t(
+        `gradient.presets.filters.sortOptions.${sortKey}`,
+        sortKey
+      );
+      el.presetSort.appendChild(option);
+    });
+    state.presetFilters.sort = sortOptions.includes(keep) ? keep : "featured";
+    el.presetSort.value = state.presetFilters.sort;
+  }
+}
+
+function matchesPresetFilters(preset) {
+  if (!preset) return false;
+  const groupFilter = normalizeTextValue(state.presetFilters.group) || "all";
+  if (groupFilter !== "all" && preset.group !== groupFilter) return false;
+  const toneFilter = normalizeTextValue(state.presetFilters.tone) || "all";
+  if (toneFilter !== "all" && preset.tone !== toneFilter) return false;
+  const contrastFilter = normalizeTextValue(state.presetFilters.contrast) || "all";
+  if (contrastFilter !== "all" && preset.contrast !== contrastFilter) return false;
+  const moodFilter = normalizeTextValue(state.presetFilters.mood) || "all";
+  if (moodFilter !== "all" && preset.mood !== moodFilter) return false;
+  const keyword = normalizeSearchToken(state.presetFilters.keyword);
+  if (!keyword) return true;
+  const haystack = normalizeSearchToken([
+    preset.ten,
+    preset.group,
+    preset.description,
+    getMoodLabel(preset.mood),
+    preset.workflowTag,
+    ...(Array.isArray(preset.tags) ? preset.tags : [])
+  ].join(" "));
+  return haystack.includes(keyword);
+}
+
+function getPresetTagScore(preset, keywords = []) {
+  const bag = normalizeSearchToken([
+    preset.ten,
+    preset.group,
+    preset.workflowTag,
+    preset.description,
+    ...(Array.isArray(preset.tags) ? preset.tags : [])
+  ].join(" "));
+  return keywords.reduce((sum, keyword) => (bag.includes(keyword) ? sum + 1 : sum), 0);
+}
+
+function getPresetOrderValue(preset) {
+  if (Number.isFinite(preset.sortOrder)) return preset.sortOrder;
+  const fromId = String(preset.id || "").match(/(\d+)/);
+  if (fromId) return Number(fromId[1]) || 0;
+  return 0;
+}
+
+function sortPresets(presets) {
+  const sortKey = normalizeTextValue(state.presetFilters.sort) || "featured";
+  const clone = [...presets];
+  if (sortKey === "newest") {
+    return clone.sort((a, b) => getPresetOrderValue(b) - getPresetOrderValue(a));
+  }
+  if (sortKey === "gentle") {
+    const rank = { thap: 0, vua: 1, cao: 2, khac: 3 };
+    return clone.sort((a, b) => {
+      const diff = (rank[a.contrast] ?? 9) - (rank[b.contrast] ?? 9);
+      return diff !== 0 ? diff : getPresetOrderValue(a) - getPresetOrderValue(b);
+    });
+  }
+  if (sortKey === "bold") {
+    const rank = { cao: 0, vua: 1, thap: 2, khac: 3 };
+    return clone.sort((a, b) => {
+      const diff = (rank[a.contrast] ?? 9) - (rank[b.contrast] ?? 9);
+      return diff !== 0 ? diff : getPresetOrderValue(a) - getPresetOrderValue(b);
+    });
+  }
+  if (sortKey === "textile") {
+    return clone.sort((a, b) => {
+      const scoreA = getPresetTagScore(a, ["lua", "nhung", "go", "thu cong", "theu", "vai"]);
+      const scoreB = getPresetTagScore(b, ["lua", "nhung", "go", "thu cong", "theu", "vai"]);
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      return getPresetOrderValue(a) - getPresetOrderValue(b);
+    });
+  }
+  if (sortKey === "ui") {
+    return clone.sort((a, b) => {
+      const scoreA = getPresetTagScore(a, ["cong so", "toi gian", "tuong lai", "ui", "web"]);
+      const scoreB = getPresetTagScore(b, ["cong so", "toi gian", "tuong lai", "ui", "web"]);
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      return getPresetOrderValue(a) - getPresetOrderValue(b);
+    });
+  }
+  return clone.sort((a, b) => {
+    const diff = (b.featuredScore || 0) - (a.featuredScore || 0);
+    return diff !== 0 ? diff : getPresetOrderValue(a) - getPresetOrderValue(b);
+  });
+}
+
+function getFilteredPresets() {
+  const catalog = getActivePresetCatalog();
+  return sortPresets(catalog.filter((preset) => matchesPresetFilters(preset)));
+}
+
+function applyPreset(preset, options = {}) {
   if (!preset) return;
   const presetStops = buildPresetStops(preset);
   if (!presetStops.length) return;
@@ -1063,10 +1629,17 @@ function applyPreset(preset) {
   state.angle = clampNumber(preset.angle ?? 90, 0, 360);
   if (el.angleRange) el.angleRange.value = String(state.angle);
   if (el.angleInput) el.angleInput.value = String(state.angle);
+  state.activePresetKey = preset.key || state.activePresetKey;
+  state.activeStartPath = "preset";
+  renderStartPathState();
   renderStops();
   schedulePreview();
+  renderPresetStatus(preset);
+  renderPresetRail();
   recordHistory(beforeSnapshot);
-  showToast(t("gradient.toast.presetApplied", "Đã áp dụng preset dải chuyển."));
+  if (!options.silentToast) {
+    showToast(t("gradient.toast.presetApplied", "Đã áp dụng preset dải chuyển."));
+  }
 }
 
 function renderUseCaseState() {
@@ -1082,6 +1655,35 @@ function renderUseCaseState() {
   }
 }
 
+function pickPresetForUseCase(cfg) {
+  const fallbackPreset = getPresetByKey(cfg?.presetKey);
+  const catalog = getActivePresetCatalog();
+  if (!catalog.length || !cfg?.key) return fallbackPreset;
+  const hints = Array.isArray(USE_CASE_TAG_HINTS[cfg.key]) ? USE_CASE_TAG_HINTS[cfg.key] : [];
+  if (!hints.length) return fallbackPreset || catalog[0];
+  const ranked = catalog
+    .map((preset, index) => {
+      const bag = normalizeSearchToken([
+        preset.ten,
+        preset.group,
+        preset.workflowTag,
+        getToneLabel(preset.tone),
+        getContrastLabel(preset.contrast),
+        ...(Array.isArray(preset.tags) ? preset.tags : [])
+      ].join(" "));
+      const score = hints.reduce((sum, hint) => (bag.includes(hint) ? sum + 1 : sum), 0);
+      return { preset, score, index };
+    })
+    .sort((left, right) => {
+      if (right.score !== left.score) return right.score - left.score;
+      return left.index - right.index;
+    });
+  if (ranked[0] && ranked[0].score > 0) {
+    return ranked[0].preset;
+  }
+  return fallbackPreset || ranked[0]?.preset || null;
+}
+
 function setUseCase(nextKey, options = {}) {
   const cfg = USE_CASE_CONFIG[nextKey] || USE_CASE_CONFIG.webui;
   activeUseCase = cfg.key;
@@ -1090,7 +1692,7 @@ function setUseCase(nextKey, options = {}) {
     setContextPreviewTab(cfg.previewTab);
   }
   if (!options.skipPreset) {
-    const preset = getPresetByKey(cfg.presetKey);
+    const preset = pickPresetForUseCase(cfg);
     if (preset) {
       applyPreset(preset);
     }
@@ -1100,24 +1702,80 @@ function setUseCase(nextKey, options = {}) {
 function renderPresetRail() {
   if (!el.presetRail) return;
   el.presetRail.innerHTML = "";
-  GRADIENT_PRESETS.forEach((preset) => {
+  const catalog = getActivePresetCatalog();
+  const presets = getFilteredPresets();
+  if (el.presetGroupChips) {
+    Array.from(el.presetGroupChips.querySelectorAll(".tc-preset-group-chip")).forEach((chip) => {
+      const chipValue = normalizeTextValue(chip.dataset.groupValue) || "all";
+      const active = chipValue === (normalizeTextValue(state.presetFilters.group) || "all");
+      chip.classList.toggle("is-active", active);
+      chip.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+  if (el.presetEmpty) {
+    el.presetEmpty.classList.toggle("hidden", presets.length > 0);
+  }
+  renderPresetCount(presets.length, catalog.length);
+  presets.forEach((preset) => {
+    const active = preset.key === state.activePresetKey;
+    const presetName = preset.ten || preset.key;
+    const toneLabel = getToneLabel(preset.tone);
+    const contrastLabel = getContrastLabel(preset.contrast);
+    const moodLabel = getMoodLabel(preset.mood);
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "tc-btn tc-chip px-3 py-2 text-sm tc-gradient-preset";
-    const label = t(`gradient.presets.items.${preset.key}`, preset.key);
-    button.setAttribute("aria-label", label);
+    button.className = "tc-gradient-preset";
+    if (active) button.classList.add("is-active");
+    button.setAttribute("aria-label", presetName);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+    button.dataset.presetKey = preset.key;
+
+    const head = document.createElement("span");
+    head.className = "tc-gradient-preset-head";
+
+    const title = document.createElement("p");
+    title.className = "tc-gradient-preset-title";
+    title.textContent = presetName;
+
+    const badge = document.createElement("span");
+    badge.className = "tc-gradient-preset-badge";
+    badge.textContent = toneLabel;
+
+    head.appendChild(title);
+    head.appendChild(badge);
+
     const swatch = document.createElement("span");
     swatch.className = "tc-gradient-preset-swatch";
     swatch.style.background = gradientCss(buildPresetStops(preset), preset.angle ?? 90, preset.type || "linear");
-    const text = document.createElement("span");
-    text.textContent = label;
+
+    const meta = document.createElement("p");
+    meta.className = "tc-gradient-preset-meta";
+    meta.textContent = preset.description || `${preset.group} · ${moodLabel} · ${contrastLabel}`;
+
+    const tagsWrap = document.createElement("span");
+    tagsWrap.className = "tc-gradient-preset-tags";
+    const tagItems = [moodLabel, preset.workflowTag, contrastLabel]
+      .filter(Boolean)
+      .slice(0, 3);
+    tagItems.forEach((tag) => {
+      const chip = document.createElement("span");
+      chip.className = "tc-gradient-preset-tag";
+      chip.textContent = tag;
+      tagsWrap.appendChild(chip);
+    });
+
+    button.appendChild(head);
     button.appendChild(swatch);
-    button.appendChild(text);
+    button.appendChild(meta);
+    if (tagItems.length) {
+      button.appendChild(tagsWrap);
+    }
     button.addEventListener("click", () => {
       applyPreset(preset);
     });
     el.presetRail.appendChild(button);
   });
+  renderWorkflowStatus(getPresetByKey(state.activePresetKey));
 }
 
 function normalizeGradientType(type) {
@@ -1822,7 +2480,7 @@ function handleStopOutsideClick(event) {
 function renderSamples() {
   if (!el.samplesWrap) return;
   el.samplesWrap.innerHTML = "";
-  state.samples.slice(0, 8).forEach((palette) => {
+  state.samples.slice(0, 12).forEach((palette) => {
     const card = document.createElement("button");
     card.type = "button";
     card.className = "tc-gradient-sample";
@@ -1830,14 +2488,27 @@ function renderSamples() {
 
     const tile = document.createElement("span");
     tile.className = "tc-gradient-sample-tile";
-    tile.style.background = gradientCss(palette.stops, state.angle, state.type);
+    tile.style.background = gradientCss(palette.stops, palette.angle ?? state.angle, palette.type || state.type);
+
+    const textWrap = document.createElement("span");
+    textWrap.style.minWidth = "0";
 
     const title = document.createElement("span");
     title.className = "tc-gradient-sample-title";
+    title.style.display = "block";
     title.textContent = palette.ten || "Mẫu dải phối";
 
+    const subtitle = document.createElement("span");
+    subtitle.className = "tc-muted text-xs";
+    subtitle.style.display = "block";
+    subtitle.style.marginTop = "0.2rem";
+    const subtitleParts = [palette.group, palette.workflowTag].filter(Boolean).slice(0, 2);
+    subtitle.textContent = subtitleParts.length ? subtitleParts.join(" · ") : "Preset từ thư viện";
+
     card.appendChild(tile);
-    card.appendChild(title);
+    textWrap.appendChild(title);
+    textWrap.appendChild(subtitle);
+    card.appendChild(textWrap);
 
     card.addEventListener("click", () => {
       openSampleDetail(palette);
@@ -1869,8 +2540,15 @@ function renderSampleDetail(palette) {
 
   const preview = document.createElement("div");
   preview.className = "tc-gradient-preview tc-gradient-detail-preview";
-  preview.style.background = gradientCss(palette.stops, state.angle, state.type);
+  preview.style.background = gradientCss(palette.stops, palette.angle ?? state.angle, palette.type || state.type);
   wrapper.appendChild(preview);
+
+  const meta = document.createElement("p");
+  meta.className = "tc-muted text-xs";
+  meta.textContent = [palette.group, getMoodLabel(palette.mood), getContrastLabel(palette.contrast)]
+    .filter(Boolean)
+    .join(" · ");
+  wrapper.appendChild(meta);
 
   const tags = Array.isArray(palette.tags) ? palette.tags.filter(Boolean) : [];
   if (tags.length) {
@@ -1893,9 +2571,7 @@ function renderSampleDetail(palette) {
   applyBtn.className = "tc-btn tc-btn-primary px-4 py-2 text-sm";
   applyBtn.textContent = "Áp dụng dải này";
   applyBtn.addEventListener("click", () => {
-    state.stops = migrateStops(palette.stops);
-    renderStops();
-    schedulePreview();
+    applyPreset(palette, { silentToast: true });
     closeSampleDetail();
     showToast("Đã áp dụng dải phối.");
   });
@@ -1986,9 +2662,9 @@ function openSampleDetail(palette) {
     el.sampleDetailTitle.textContent = palette.ten || "Chi tiết dải phối";
   }
   if (el.sampleDetailSubtitle) {
-    const subtitle = Array.isArray(palette.tags) && palette.tags.length
-      ? palette.tags.join(" · ")
-      : "Mẫu dải phối";
+    const subtitle = [palette.group, getMoodLabel(palette.mood), palette.workflowTag]
+      .filter(Boolean)
+      .join(" · ");
     el.sampleDetailSubtitle.textContent = subtitle;
   }
   el.sampleDetailBody.innerHTML = "";
@@ -2215,13 +2891,32 @@ function buildShareLinkUrl() {
 }
 
 async function loadSamples() {
+  let catalog = [];
   try {
     const res = await fetch("../data/palettes.json", { cache: "no-store" });
     const data = await res.json();
-    state.samples = Array.isArray(data) ? data : [];
+    if (Array.isArray(data)) {
+      catalog = data
+        .map((item, index) => normalizeCatalogPreset(item, index))
+        .filter(Boolean);
+    }
   } catch (_err) {
-    state.samples = [];
+    catalog = [];
   }
+  if (!catalog.length) {
+    catalog = buildFallbackPresetCatalog();
+  }
+  state.presetCatalog = catalog.map((preset, index) => ({ ...preset, sortOrder: index }));
+  state.samples = state.presetCatalog.map((preset) => ({
+    ...preset,
+    tags: Array.isArray(preset.tags) ? [...preset.tags] : []
+  }));
+  if (state.activePresetKey && !state.presetCatalog.some((preset) => preset.key === state.activePresetKey)) {
+    state.activePresetKey = "";
+  }
+  renderPresetFilterOptions();
+  renderPresetStatus();
+  renderPresetRail();
   renderSamples();
 }
 
@@ -2306,7 +3001,8 @@ function initEvents() {
   [
     { key: "ui", tab: el.contextTabUi },
     { key: "poster", tab: el.contextTabPoster },
-    { key: "thread", tab: el.contextTabThread }
+    { key: "thread", tab: el.contextTabThread },
+    { key: "ribbon", tab: el.contextTabRibbon }
   ].forEach((entry) => {
     entry.tab?.addEventListener("click", () => {
       setContextPreviewTab(entry.key);
@@ -2317,6 +3013,58 @@ function initEvents() {
       const key = String(button.dataset.gradientUsecase || "");
       setUseCase(key);
     });
+  });
+  (el.startPathCards || []).forEach((card) => {
+    card.addEventListener("click", () => {
+      const key = String(card.dataset.gradientStartPath || "");
+      handleStartPath(key);
+    });
+  });
+  el.presetGroupChips?.addEventListener("click", (event) => {
+    const chip = event.target.closest(".tc-preset-group-chip");
+    if (!chip) return;
+    const groupValue = normalizeTextValue(chip.dataset.groupValue) || "all";
+    state.presetFilters.group = groupValue;
+    if (el.presetGroupFilter) {
+      el.presetGroupFilter.value = groupValue;
+    }
+    renderPresetRail();
+  });
+  el.presetGroupFilter?.addEventListener("change", () => {
+    state.presetFilters.group = normalizeTextValue(el.presetGroupFilter.value) || "all";
+    renderPresetRail();
+  });
+  el.presetToneFilter?.addEventListener("change", () => {
+    state.presetFilters.tone = normalizeTextValue(el.presetToneFilter.value) || "all";
+    renderPresetRail();
+  });
+  el.presetContrastFilter?.addEventListener("change", () => {
+    state.presetFilters.contrast = normalizeTextValue(el.presetContrastFilter.value) || "all";
+    renderPresetRail();
+  });
+  el.presetMoodFilter?.addEventListener("change", () => {
+    state.presetFilters.mood = normalizeTextValue(el.presetMoodFilter.value) || "all";
+    renderPresetRail();
+  });
+  el.presetSort?.addEventListener("change", () => {
+    state.presetFilters.sort = normalizeTextValue(el.presetSort.value) || "featured";
+    renderPresetRail();
+  });
+  el.presetSearch?.addEventListener("input", () => {
+    state.presetFilters.keyword = normalizeTextValue(el.presetSearch.value);
+    renderPresetRail();
+  });
+  el.nextEditBtn?.addEventListener("click", () => {
+    runWorkflowEdit();
+  });
+  el.nextSaveBtn?.addEventListener("click", () => {
+    runWorkflowSave();
+  });
+  el.nextThreadBtn?.addEventListener("click", () => {
+    runWorkflowToThread();
+  });
+  el.nextCommunityBtn?.addEventListener("click", () => {
+    runWorkflowToCommunity();
   });
   el.copyShareLinkBtn?.addEventListener("click", async () => {
     const shareUrl = buildShareLinkUrl();
@@ -2508,6 +3256,12 @@ function init() {
   state.stops = migrateStops(state.stops);
   loadMyPresetsFromStorage();
   if (el.typeSelect) el.typeSelect.value = state.type;
+  renderPresetFilterOptions();
+  if (el.presetSearch) {
+    el.presetSearch.value = state.presetFilters.keyword;
+  }
+  renderStartPathState();
+  renderPresetStatus();
   renderPresetRail();
   setUseCase(activeUseCase, { skipPreset: true });
   renderMyPresetRail();

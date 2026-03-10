@@ -64,6 +64,30 @@ function t(key, fallback, params) {
   return fallback || "";
 }
 
+function normalizeText(value) {
+  if (value === undefined || value === null) return "";
+  return String(value).trim().replace(/\s+/g, " ");
+}
+
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, (ch) => {
+    switch (ch) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case "\"":
+        return "&quot;";
+      case "'":
+        return "&#39;";
+      default:
+        return ch;
+    }
+  });
+}
+
 function isDevEnv() {
   const host = window.location?.hostname || "";
   if (host === "localhost" || host === "127.0.0.1") return true;
@@ -469,6 +493,24 @@ let searchWorkerSeq = 0;
 let brandFilterQuery = "";
 let brandFilterTimer = null;
 const searchWorkerRequests = new Map();
+const BRAND_INFO_MODE_QUICK = "quick";
+const BRAND_INFO_MODE_DETAIL = "detail";
+const BRAND_LONG_PRESS_MS = 460;
+const BRAND_INFO_FALLBACK_TEXT = "Đang hoàn thiện metadata hãng.";
+const BRAND_METADATA_URL = new URL("./data/world1_brand_metadata.json", import.meta.url);
+const BRAND_INFO_LAYER_ID = "tcBrandInfoLayer";
+const BRAND_INFO_CARD_ID = "tcBrandInfoCard";
+const BRAND_INFO_SHEET_MEDIA_QUERY = "(max-width: 760px)";
+let brandMetadataByKey = new Map();
+let brandMetadataPromise = null;
+let brandInfoLayerRoot = null;
+let brandInfoLayerCard = null;
+let brandInfoActivePopover = null;
+let brandInfoScrollBound = false;
+let brandLongPressTimer = null;
+let brandLongPressWrap = null;
+let brandLongPressFired = false;
+let suppressBrandTileClickUntil = 0;
 const PIN_STORAGE_KEY = "tc_pins_v1";
 let pinnedItems = [];
 const PROJECT_STORAGE_KEY = "tc_project_current";
@@ -517,11 +559,317 @@ if (typeof window.setupAutofillTrap !== "function") {
   window.setupAutofillTrap = setupAutofillTrap;
 }
 
-const closeBrandPopovers = () => {
-  if (!brandFilters) return;
-  brandFilters.querySelectorAll(".brand-popover").forEach((el) => {
-    el.dataset.open = "0";
+const normalizeBrandMetadataRecord = (raw) => {
+  if (!raw || typeof raw !== "object") return null;
+  const brand = normalizeText(raw.brand);
+  const brandKey = normalizeBrandKey(raw.brandKey || brand);
+  if (!brand && !brandKey) return null;
+  const fiberTypes = Array.isArray(raw.fiberTypes)
+    ? raw.fiberTypes.map((item) => normalizeText(item)).filter(Boolean)
+    : [];
+  return {
+    brand,
+    brandKey,
+    companyName: normalizeText(raw.companyName),
+    country: normalizeText(raw.country),
+    summary: normalizeText(raw.summary),
+    fiberTypes,
+    positioning: normalizeText(raw.positioning),
+    sourceLabel: normalizeText(raw.sourceLabel),
+    note: normalizeText(raw.note)
+  };
+};
+
+const loadBrandMetadata = () => {
+  if (brandMetadataPromise) return brandMetadataPromise;
+  brandMetadataPromise = fetch(BRAND_METADATA_URL, { cache: "no-store" })
+    .then((res) => {
+      if (!res.ok) throw new Error(`metadata-http-${res.status}`);
+      return res.json();
+    })
+    .then((data) => {
+      const records = Array.isArray(data) ? data : (Array.isArray(data?.items) ? data.items : []);
+      const map = new Map();
+      records.forEach((entry) => {
+        const normalized = normalizeBrandMetadataRecord(entry);
+        if (!normalized?.brandKey) return;
+        map.set(normalized.brandKey, normalized);
+      });
+      brandMetadataByKey = map;
+      return map;
+    })
+    .catch((err) => {
+      console.warn("[threadcolor] Không tải được metadata hãng:", err?.message || err);
+      brandMetadataByKey = new Map();
+      return brandMetadataByKey;
+    });
+  return brandMetadataPromise;
+};
+
+const getBrandMetadata = (brandName) => {
+  const key = normalizeBrandKey(brandName);
+  if (!key) return null;
+  return brandMetadataByKey.get(key) || null;
+};
+
+const getBrandStats = (brandName) => {
+  const raw = brandStats.get(brandName) || { count: 0, sources: new Set(), verifiedCount: 0 };
+  return {
+    count: Number(raw.count) || 0,
+    verifiedCount: Number(raw.verifiedCount) || 0,
+    sources: Array.from(raw.sources || [])
+  };
+};
+
+const formatBrandField = (value, fallback = BRAND_INFO_FALLBACK_TEXT) => {
+  const normalized = normalizeText(value);
+  return normalized || fallback;
+};
+
+const formatFiberTypes = (items) => {
+  if (!Array.isArray(items) || !items.length) return BRAND_INFO_FALLBACK_TEXT;
+  return items.map((item) => normalizeText(item)).filter(Boolean).join(", ") || BRAND_INFO_FALLBACK_TEXT;
+};
+
+const buildBrandInfoPanelHtml = (brandName, mode = BRAND_INFO_MODE_QUICK) => {
+  const stats = getBrandStats(brandName);
+  const metadata = getBrandMetadata(brandName);
+  const isDetail = mode === BRAND_INFO_MODE_DETAIL;
+  const safeBrandName = escapeHtml(brandName || "Hãng chỉ");
+  const sourceText = stats.sources.length ? stats.sources.join(", ") : "Chưa rõ";
+  const companyName = metadata ? formatBrandField(metadata.companyName) : BRAND_INFO_FALLBACK_TEXT;
+  const country = metadata ? formatBrandField(metadata.country) : BRAND_INFO_FALLBACK_TEXT;
+  const summary = metadata ? formatBrandField(metadata.summary) : BRAND_INFO_FALLBACK_TEXT;
+  const fiberTypes = metadata ? formatFiberTypes(metadata.fiberTypes) : BRAND_INFO_FALLBACK_TEXT;
+  const positioning = metadata ? formatBrandField(metadata.positioning) : BRAND_INFO_FALLBACK_TEXT;
+  const sourceLabel = metadata ? formatBrandField(metadata.sourceLabel) : "Nguồn nội bộ World 1";
+  const note = metadata ? formatBrandField(metadata.note) : "Thông tin hãng đang được cập nhật theo đợt dữ liệu.";
+
+  const quickRows = `
+    <div class="brand-panel-grid">
+      <div class="brand-panel-row"><span class="brand-panel-label">Mã trong kho</span><span class="brand-panel-value">${stats.count}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Đã xác minh</span><span class="brand-panel-value">${stats.verifiedCount}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Nguồn dữ liệu</span><span class="brand-panel-value">${escapeHtml(sourceText)}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Công ty</span><span class="brand-panel-value">${escapeHtml(companyName)}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Quốc gia</span><span class="brand-panel-value">${escapeHtml(country)}</span></div>
+    </div>
+  `;
+
+  if (!isDetail) {
+    return `
+      <div class="brand-panel-title">Thông tin nhanh hãng chỉ</div>
+      <div class="brand-panel-subtitle">${safeBrandName}</div>
+      ${quickRows}
+      <div class="brand-panel-note">${escapeHtml(note)}</div>
+      <button type="button" class="brand-panel-action" data-brand-info-mode="${BRAND_INFO_MODE_DETAIL}">Xem chi tiết</button>
+    `;
+  }
+
+  return `
+    <div class="brand-panel-title">Chi tiết hãng chỉ</div>
+    <div class="brand-panel-subtitle">${safeBrandName}</div>
+    <div class="brand-panel-grid">
+      <div class="brand-panel-row"><span class="brand-panel-label">Công ty</span><span class="brand-panel-value">${escapeHtml(companyName)}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Quốc gia</span><span class="brand-panel-value">${escapeHtml(country)}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Nhóm sợi</span><span class="brand-panel-value">${escapeHtml(fiberTypes)}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Định vị</span><span class="brand-panel-value">${escapeHtml(positioning)}</span></div>
+      <div class="brand-panel-row"><span class="brand-panel-label">Nguồn ghi chú</span><span class="brand-panel-value">${escapeHtml(sourceLabel)}</span></div>
+    </div>
+    <div class="brand-panel-summary">${escapeHtml(summary)}</div>
+    <div class="brand-panel-note">${escapeHtml(note)}</div>
+    <button type="button" class="brand-panel-action" data-brand-info-mode="${BRAND_INFO_MODE_QUICK}">Thu gọn</button>
+  `;
+};
+
+const isBrandInfoSheetLayout = () => {
+  try {
+    return window.matchMedia(BRAND_INFO_SHEET_MEDIA_QUERY).matches;
+  } catch (_err) {
+    return window.innerWidth <= 760;
+  }
+};
+
+const clearBrandInfoCardPosition = () => {
+  if (!brandInfoLayerCard) return;
+  brandInfoLayerCard.style.top = "";
+  brandInfoLayerCard.style.left = "";
+  brandInfoLayerCard.style.right = "";
+  brandInfoLayerCard.style.bottom = "";
+  brandInfoLayerCard.style.maxHeight = "";
+};
+
+const syncBrandPopoverExpanded = (popover, expanded) => {
+  const infoBtn = popover?.querySelector?.("[data-brand-info]");
+  if (infoBtn) infoBtn.setAttribute("aria-expanded", expanded ? "true" : "false");
+};
+
+const ensureBrandInfoLayer = () => {
+  if (brandInfoLayerRoot && brandInfoLayerCard) return true;
+  const root = document.createElement("div");
+  root.id = BRAND_INFO_LAYER_ID;
+  root.className = "brand-info-layer";
+  root.dataset.open = "0";
+  root.dataset.layout = "floating";
+  root.setAttribute("hidden", "");
+
+  const backdrop = document.createElement("button");
+  backdrop.type = "button";
+  backdrop.className = "brand-info-layer__backdrop";
+  backdrop.dataset.brandLayerClose = "1";
+  backdrop.setAttribute("aria-label", "Đóng thông tin hãng");
+
+  const card = document.createElement("div");
+  card.id = BRAND_INFO_CARD_ID;
+  card.className = "brand-info-layer__card";
+  card.setAttribute("role", "dialog");
+  card.setAttribute("aria-live", "polite");
+
+  root.appendChild(backdrop);
+  root.appendChild(card);
+  document.body.appendChild(root);
+
+  root.addEventListener("click", (event) => {
+    const closeBtn = event.target.closest("[data-brand-layer-close]");
+    if (closeBtn) {
+      event.preventDefault();
+      closeBrandPopovers();
+      return;
+    }
+    const modeBtn = event.target.closest("[data-brand-info-mode]");
+    if (!modeBtn || !brandInfoActivePopover) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const mode = modeBtn.getAttribute("data-brand-info-mode") || BRAND_INFO_MODE_QUICK;
+    renderBrandPopoverPanel(brandInfoActivePopover, mode);
+    positionBrandPopover(brandInfoActivePopover);
   });
+
+  if (!brandInfoScrollBound) {
+    const updatePosition = () => {
+      if (!brandInfoActivePopover || root.dataset.open !== "1") return;
+      positionBrandPopover(brandInfoActivePopover);
+    };
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition, { passive: true });
+    window.addEventListener("orientationchange", updatePosition, { passive: true });
+    brandInfoScrollBound = true;
+  }
+
+  brandInfoLayerRoot = root;
+  brandInfoLayerCard = card;
+  return true;
+};
+
+const renderBrandPopoverPanel = (popover, mode = BRAND_INFO_MODE_QUICK) => {
+  if (!popover || !ensureBrandInfoLayer()) return;
+  const nextMode = mode === BRAND_INFO_MODE_DETAIL ? BRAND_INFO_MODE_DETAIL : BRAND_INFO_MODE_QUICK;
+  const brandName = popover.dataset.brandName || "";
+  brandInfoLayerCard.dataset.view = nextMode;
+  brandInfoLayerCard.innerHTML = buildBrandInfoPanelHtml(brandName, nextMode);
+  popover.dataset.mode = nextMode;
+  brandInfoActivePopover = popover;
+};
+
+const closeBrandPopovers = () => {
+  if (brandFilters) {
+    brandFilters.querySelectorAll(".brand-popover").forEach((el) => {
+      el.dataset.open = "0";
+      el.dataset.mode = BRAND_INFO_MODE_QUICK;
+      syncBrandPopoverExpanded(el, false);
+    });
+  }
+  brandInfoActivePopover = null;
+  if (brandInfoLayerRoot) {
+    brandInfoLayerRoot.dataset.open = "0";
+    brandInfoLayerRoot.dataset.layout = "floating";
+    brandInfoLayerRoot.setAttribute("hidden", "");
+  }
+  if (brandInfoLayerCard) {
+    brandInfoLayerCard.innerHTML = "";
+    clearBrandInfoCardPosition();
+  }
+};
+
+const positionBrandPopover = (popover) => {
+  if (!popover || !ensureBrandInfoLayer() || !brandInfoLayerCard || !brandInfoLayerRoot) return;
+  if (brandInfoLayerRoot.dataset.open !== "1") return;
+  if (!popover.isConnected) {
+    closeBrandPopovers();
+    return;
+  }
+
+  if (isBrandInfoSheetLayout()) {
+    brandInfoLayerRoot.dataset.layout = "sheet";
+    clearBrandInfoCardPosition();
+    return;
+  }
+
+  brandInfoLayerRoot.dataset.layout = "floating";
+  const trigger = popover.querySelector("[data-brand-info]") || popover;
+  const triggerRect = trigger.getBoundingClientRect();
+  const gutter = 12;
+  const viewportW = window.innerWidth || document.documentElement.clientWidth || 0;
+  const viewportH = window.innerHeight || document.documentElement.clientHeight || 0;
+
+  brandInfoLayerCard.style.maxHeight = `${Math.max(220, viewportH - gutter * 2)}px`;
+  brandInfoLayerCard.style.top = `${Math.max(gutter, triggerRect.bottom + 10)}px`;
+  brandInfoLayerCard.style.left = `${gutter}px`;
+
+  const panelRect = brandInfoLayerCard.getBoundingClientRect();
+  let left = triggerRect.left;
+  if (left + panelRect.width > viewportW - gutter) {
+    left = viewportW - gutter - panelRect.width;
+  }
+  if (left < gutter) left = gutter;
+
+  let top = triggerRect.bottom + 10;
+  if (top + panelRect.height > viewportH - gutter) {
+    const topAbove = triggerRect.top - panelRect.height - 10;
+    if (topAbove >= gutter) {
+      top = topAbove;
+    } else {
+      top = gutter;
+      brandInfoLayerCard.style.maxHeight = `${Math.max(180, viewportH - gutter * 2)}px`;
+    }
+  }
+
+  brandInfoLayerCard.style.left = `${Math.round(left)}px`;
+  brandInfoLayerCard.style.top = `${Math.round(top)}px`;
+  brandInfoLayerCard.style.bottom = "";
+  brandInfoLayerCard.style.right = "";
+};
+
+const openBrandPopover = (popover, mode = BRAND_INFO_MODE_QUICK) => {
+  if (!popover || !ensureBrandInfoLayer()) return;
+  closeBrandPopovers();
+  renderBrandPopoverPanel(popover, mode);
+  popover.dataset.open = "1";
+  syncBrandPopoverExpanded(popover, true);
+  brandInfoLayerRoot.dataset.open = "1";
+  brandInfoLayerRoot.removeAttribute("hidden");
+  positionBrandPopover(popover);
+};
+
+const clearBrandLongPress = () => {
+  if (brandLongPressTimer) {
+    window.clearTimeout(brandLongPressTimer);
+    brandLongPressTimer = null;
+  }
+  brandLongPressWrap = null;
+  brandLongPressFired = false;
+};
+
+const startBrandLongPress = (wrap) => {
+  clearBrandLongPress();
+  if (!wrap) return;
+  brandLongPressWrap = wrap;
+  brandLongPressTimer = window.setTimeout(() => {
+    brandLongPressTimer = null;
+    brandLongPressFired = true;
+    suppressBrandTileClickUntil = Date.now() + 700;
+    const popover = wrap.querySelector(".brand-popover");
+    if (popover) openBrandPopover(popover, BRAND_INFO_MODE_DETAIL);
+  }, BRAND_LONG_PRESS_MS);
 };
 
 const buildHandoffStops = () => {
@@ -560,6 +908,7 @@ const updateHandoffLinks = () => {
 
 const applyBrandFilter = () => {
   if (!brandFilters) return;
+  closeBrandPopovers();
   const raw = brandFilterSearch ? brandFilterSearch.value : brandFilterQuery;
   brandFilterQuery = raw;
   const normalized = normalizeBrandKey(raw);
@@ -587,6 +936,7 @@ const applyBrandFilter = () => {
 
 function renderBrandFilters(brands) {
   if (!brandFilters) return;
+  closeBrandPopovers();
   const existing = brandFilters.querySelectorAll(".brand-filter");
   const hasExisting = existing.length > 0;
   const selected = new Set([...existing].filter(cb => cb.checked).map(cb => cb.value));
@@ -594,8 +944,7 @@ function renderBrandFilters(brands) {
   brands.forEach(rawBrand => {
     const brandName = (rawBrand || "").trim();
     if (!brandName) return;
-    const stats = brandStats.get(brandName) || { count: 0, sources: new Set(), verifiedCount: 0 };
-    const sources = Array.from(stats.sources || []);
+    const stats = getBrandStats(brandName);
     const label = document.createElement("label");
     label.className = "brand-tile-wrap";
 
@@ -626,23 +975,18 @@ function renderBrandFilters(brands) {
     const popover = document.createElement("span");
     popover.className = "brand-popover";
     popover.dataset.open = "0";
+    popover.dataset.mode = BRAND_INFO_MODE_QUICK;
+    popover.dataset.brandName = brandName;
     const infoBtn = document.createElement("button");
     infoBtn.type = "button";
     infoBtn.className = "brand-info-btn";
     infoBtn.textContent = "i";
     infoBtn.dataset.brandInfo = "1";
+    infoBtn.setAttribute("aria-haspopup", "dialog");
+    infoBtn.setAttribute("aria-expanded", "false");
     infoBtn.setAttribute("aria-label", `Thông tin hãng ${brandName}`);
-    const panel = document.createElement("div");
-    panel.className = "brand-popover-panel text-xs";
-    panel.innerHTML = `
-      <div class="font-semibold mb-1">Thông tin hãng</div>
-      <div>Mã: <strong>${stats.count || 0}</strong></div>
-      <div>Đã xác minh: <strong>${stats.verifiedCount || 0}</strong></div>
-      <div>Nguồn: <strong>${sources.length ? sources.join(", ") : "Chưa rõ"}</strong></div>
-      <div class="tc-muted mt-1">Gợi ý: chọn 2–3 hãng để so nhanh.</div>
-    `;
+    infoBtn.setAttribute("aria-controls", BRAND_INFO_CARD_ID);
     popover.appendChild(infoBtn);
-    popover.appendChild(panel);
 
     meta.appendChild(badge);
     meta.appendChild(popover);
@@ -1015,43 +1359,46 @@ function loadThreads() {
   if (!hasToolUI) return;
   renderResultState("loading");
   const threadsUrl = new URL("./threads.json", import.meta.url);
-  fetch(threadsUrl)
-  .then(res => res.json())
-  .then(data => {
-    const normalized = normalizeAndDedupeThreads(data, {
-      source: { type: "runtime_json" }
-    });
-    matchCache.clear();
-    labCache.clear();
-    threads = normalized.map(t => ({ ...t }));
-    rebuildIndexes(threads);
-    initSearchWorker(threads);
-    const brands = getUniqueBrands(threads);
-    renderBrandFilters(brands);
-    populateContributeBrands(brands);
-    fetchVerifiedThreads().then(list => {
-      verifiedThreads = list;
-      mergeVerifiedThreads(list);
-    });
-    isDataReady = true;
+  Promise.all([
+    fetch(threadsUrl).then(res => res.json()),
+    loadBrandMetadata()
+  ])
+    .then(([data]) => {
+      const normalized = normalizeAndDedupeThreads(data, {
+        source: { type: "runtime_json" }
+      });
+      matchCache.clear();
+      labCache.clear();
+      threads = normalized.map(t => ({ ...t }));
+      rebuildIndexes(threads);
+      initSearchWorker(threads);
+      const brands = getUniqueBrands(threads);
+      renderBrandFilters(brands);
+      populateContributeBrands(brands);
+      fetchVerifiedThreads().then(list => {
+        verifiedThreads = list;
+        mergeVerifiedThreads(list);
+      });
+      isDataReady = true;
 
-    if (pendingHandoffHexes && pendingHandoffHexes.length) {
-      const next = pendingHandoffHexes;
-      pendingHandoffHexes = null;
-      applyHexesFromHub({ hexes: next });
-    }
+      if (pendingHandoffHexes && pendingHandoffHexes.length) {
+        const next = pendingHandoffHexes;
+        pendingHandoffHexes = null;
+        applyHexesFromHub({ hexes: next });
+      }
 
-    renderResultState("ready");
-    if (!incomingHandoff?.hexes?.length || !hasStrictIncoming) {
-      restoreInspectorFromUrl();
-    }
-  })
-  .catch(() => {
-    renderResultState("error");
-  });
+      renderResultState("ready");
+      if (!incomingHandoff?.hexes?.length || !hasStrictIncoming) {
+        restoreInspectorFromUrl();
+      }
+    })
+    .catch(() => {
+      renderResultState("error");
+    });
 }
 
 if (hasToolUI) {
+  ensureBrandInfoLayer();
   loadThreads();
 }
 
@@ -2693,16 +3040,79 @@ document.addEventListener("keydown", (event) => {
 });
 if (brandFilters) {
   brandFilters.addEventListener("click", (event) => {
+    const clickedTile = event.target.closest(".brand-tile-wrap");
+    if (clickedTile && Date.now() < suppressBrandTileClickUntil) {
+      if (!event.target.closest("[data-brand-info]")) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+    }
+
     const btn = event.target.closest("[data-brand-info]");
     if (!btn) return;
     event.preventDefault();
     event.stopPropagation();
     const popover = btn.closest(".brand-popover");
     if (!popover) return;
-    const isOpen = popover.dataset.open === "1";
-    closeBrandPopovers();
-    popover.dataset.open = isOpen ? "0" : "1";
+    const isOpen = popover.dataset.open === "1" && popover.dataset.mode === BRAND_INFO_MODE_QUICK;
+    if (isOpen) {
+      closeBrandPopovers();
+      return;
+    }
+    openBrandPopover(popover, BRAND_INFO_MODE_QUICK);
   });
+
+  brandFilters.addEventListener("contextmenu", (event) => {
+    const wrap = event.target.closest(".brand-tile-wrap");
+    if (!wrap) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const popover = wrap.querySelector(".brand-popover");
+    if (!popover) return;
+    openBrandPopover(popover, BRAND_INFO_MODE_DETAIL);
+  });
+
+  brandFilters.addEventListener("touchstart", (event) => {
+    if ((event.touches?.length || 0) !== 1) {
+      clearBrandLongPress();
+      return;
+    }
+    if (event.target.closest("[data-brand-info]") || event.target.closest("[data-brand-info-mode]")) {
+      clearBrandLongPress();
+      return;
+    }
+    const wrap = event.target.closest(".brand-tile-wrap");
+    if (!wrap) {
+      clearBrandLongPress();
+      return;
+    }
+    startBrandLongPress(wrap);
+  }, { passive: true });
+
+  brandFilters.addEventListener("touchmove", (event) => {
+    if (!brandLongPressTimer || !brandLongPressWrap) return;
+    const touch = event.touches?.[0];
+    if (!touch) {
+      clearBrandLongPress();
+      return;
+    }
+    const hoverEl = document.elementFromPoint(touch.clientX, touch.clientY);
+    const hoverWrap = hoverEl?.closest?.(".brand-tile-wrap") || null;
+    if (hoverWrap !== brandLongPressWrap) {
+      clearBrandLongPress();
+    }
+  }, { passive: true });
+
+  const finishBrandLongPress = (event) => {
+    if (brandLongPressFired && event?.cancelable) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    clearBrandLongPress();
+  };
+  brandFilters.addEventListener("touchend", finishBrandLongPress, { passive: false });
+  brandFilters.addEventListener("touchcancel", finishBrandLongPress, { passive: true });
 }
 if (brandSelectAll) {
   brandSelectAll.addEventListener("click", () => {
@@ -2733,6 +3143,7 @@ if (brandClearAll) {
   });
 }
 document.addEventListener("click", (event) => {
+  if (event.target.closest(`#${BRAND_INFO_LAYER_ID}`)) return;
   if (event.target.closest(".brand-popover")) return;
   closeBrandPopovers();
 });

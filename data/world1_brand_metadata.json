@@ -1,0 +1,56 @@
+[
+  {
+    "brand": "Anchor",
+    "brandKey": "anchor",
+    "companyName": "Coats Group (thương hiệu Anchor)",
+    "country": "Vương quốc Anh",
+    "summary": "Anchor là nhóm chỉ thêu phổ biến trong kho dữ liệu World 1, thường dùng để đối chiếu mã và chuyển hãng.",
+    "fiberTypes": [
+      "Cotton moulin\u00e9 6 s\u1ee3i",
+      "Cotton perle (tu\u1ef3 d\u00f2ng)"
+    ],
+    "positioning": "Ph\u00f9 h\u1ee3p cho quy tr\u00ecnh th\u00eau tay c\u01a1 b\u1ea3n \u0111\u1ebfn n\u00e2ng cao, \u01b0u ti\u00ean m\u00e0u c\u01a1 b\u1ea3n d\u1ec5 tra c\u1ee9u.",
+    "sourceLabel": "Bi\u00ean so\u1ea1n n\u1ed9i b\u1ed9 8Portals",
+    "note": "Th\u00f4ng tin d\u00f9ng cho \u0111i\u1ec1u h\u01b0\u1edbng thao t\u00e1c, kh\u00f4ng thay th\u1ebf t\u00e0i li\u1ec7u h\u00e3ng."
+  },
+  {
+    "brand": "DMC",
+    "brandKey": "dmc",
+    "companyName": "DMC (Dollfus-Mieg et Compagnie)",
+    "country": "Ph\u00e1p",
+    "summary": "DMC l\u00e0 m\u1ed9t trong nh\u1eefng chu\u1ea9n m\u00e3 ch\u1ec9 \u0111\u01b0\u1ee3c d\u00f9ng nhi\u1ec1u \u0111\u1ec3 so kh\u1edbp m\u00e0u v\u00e0 chuy\u1ec3n \u0111\u1ed5i gi\u1eefa c\u00e1c h\u00e3ng.",
+    "fiberTypes": [
+      "Cotton moulin\u00e9 6 s\u1ee3i",
+      "S\u1ee3i chuy\u00ean d\u1ee5ng theo d\u00f2ng s\u1ea3n ph\u1ea9m"
+    ],
+    "positioning": "M\u1ed1c tham chi\u1ebfu ph\u1ed5 bi\u1ebfn trong workflow th\u00eau, ph\u00f9 h\u1ee3p c\u1ea3 d\u1ef1 \u00e1n c\u00e1 nh\u00e2n v\u00e0 s\u1ea3n xu\u1ea5t.",
+    "sourceLabel": "Bi\u00ean so\u1ea1n n\u1ed9i b\u1ed9 8Portals",
+    "note": "\u01afu ti\u00ean d\u00f9ng l\u00e0m \u0111i\u1ec3m neo khi c\u1ea7n chuy\u1ec3n h\u00e3ng."
+  },
+  {
+    "brand": "Marathon",
+    "brandKey": "marathon",
+    "companyName": "Ch\u01b0a x\u00e1c \u0111\u1ecbnh trong ngu\u1ed3n n\u1ed9i b\u1ed9 8Portals",
+    "country": "Ch\u01b0a x\u00e1c \u0111\u1ecbnh trong ngu\u1ed3n n\u1ed9i b\u1ed9 8Portals",
+    "summary": "H\u1ec7 th\u1ed1ng hi\u1ec7n c\u00f3 d\u1eef li\u1ec7u m\u00e3 m\u00e0u Marathon \u0111\u1ec3 ph\u1ee5c v\u1ee5 tra c\u1ee9u v\u00e0 so kh\u1edbp trong World 1.",
+    "fiberTypes": [
+      "\u0110ang ho\u00e0n thi\u1ec7n metadata t\u1eeb ngu\u1ed3n n\u1ed9i b\u1ed9"
+    ],
+    "positioning": "Ph\u00f9 h\u1ee3p cho nhu c\u1ea7u \u0111\u1ed1i chi\u1ebfu m\u00e3 nhanh v\u00e0 chuy\u1ec3n h\u00e3ng trong c\u00f9ng workflow.",
+    "sourceLabel": "Metadata \u0111ang ho\u00e0n thi\u1ec7n",
+    "note": "S\u1ebd c\u1eadp nh\u1eadt khi c\u00f3 ngu\u1ed3n x\u00e1c th\u1ef1c b\u1ed5 sung."
+  },
+  {
+    "brand": "Ming Shyang",
+    "brandKey": "ming shyang",
+    "companyName": "Ch\u01b0a x\u00e1c \u0111\u1ecbnh trong ngu\u1ed3n n\u1ed9i b\u1ed9 8Portals",
+    "country": "Ch\u01b0a x\u00e1c \u0111\u1ecbnh trong ngu\u1ed3n n\u1ed9i b\u1ed9 8Portals",
+    "summary": "D\u1eef li\u1ec7u Ming Shyang trong World 1 h\u1ed7 tr\u1ee3 tra m\u00e3 g\u1ea7n nh\u1ea5t v\u00e0 \u0111\u1ed1i chi\u1ebfu gi\u1eefa c\u00e1c h\u1ec7 m\u00e0u ch\u1ec9.",
+    "fiberTypes": [
+      "\u0110ang ho\u00e0n thi\u1ec7n metadata t\u1eeb ngu\u1ed3n n\u1ed9i b\u1ed9"
+    ],
+    "positioning": "Ph\u00f9 h\u1ee3p cho t\u00ecnh hu\u1ed1ng c\u1ea7n tra nhanh m\u00e3 thay th\u1ebf trong danh m\u1ee5c hi\u1ec7n c\u00f3.",
+    "sourceLabel": "Metadata \u0111ang ho\u00e0n thi\u1ec7n",
+    "note": "\u01afu ti\u00ean hi\u1ec3n th\u1ecb fallback r\u00f5 r\u00e0ng, kh\u00f4ng suy \u0111o\u00e1n th\u00eam."
+  }
+]
