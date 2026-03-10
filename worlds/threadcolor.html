@@ -557,35 +557,160 @@
     }
     .brand-popover{
       position: relative;
+      display: inline-flex;
+      align-items: center;
     }
     .brand-info-btn{
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.1);
-      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(15,23,42,.2);
+      background: rgba(255,255,255,.98);
       font-size: 12px;
       font-weight: 700;
-      color: #4c1d95;
+      color: #312e81;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 6px 16px rgba(15,23,42,.16);
+      transition: transform .12s ease, background .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    .brand-info-btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(67,56,202,.4);
+      background: #eef2ff;
+      box-shadow: 0 10px 24px rgba(67,56,202,.22);
+    }
+    .brand-info-btn:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(67,56,202,.22), 0 10px 24px rgba(67,56,202,.22);
     }
     .brand-popover-panel{
-      position: absolute;
-      left: 0;
-      top: calc(100% + 8px);
-      min-width: 220px;
-      padding: 0.65rem 0.75rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--stroke);
-      background: var(--glass);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
-      display: none;
-      z-index: 20;
+      display: none !important;
     }
-    .brand-popover[data-open="1"] .brand-popover-panel{
-      display: block;
+    .brand-info-layer{
+      position: fixed;
+      inset: 0;
+      z-index: 4600;
+      pointer-events: none;
+    }
+    .brand-info-layer[hidden]{
+      display: none !important;
+    }
+    .brand-info-layer[data-open="1"]{
+      pointer-events: auto;
+    }
+    .brand-info-layer__backdrop{
+      position: absolute;
+      inset: 0;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      cursor: default;
+    }
+    .brand-info-layer__card{
+      position: fixed;
+      width: min(360px, calc(100vw - 24px));
+      max-height: min(72vh, 520px);
+      overflow: auto;
+      padding: 0.82rem 0.9rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(15,23,42,.16);
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 28px 62px rgba(15,23,42,.28), 0 4px 14px rgba(15,23,42,.12);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    .brand-panel-title{
+      font-weight: 800;
+      font-size: .84rem;
+      letter-spacing: .01em;
+      color: #111827;
+    }
+    .brand-panel-subtitle{
+      margin-top: .2rem;
+      margin-bottom: .55rem;
+      font-size: .8rem;
+      color: #334155;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .brand-panel-grid{
+      display: grid;
+      gap: .35rem;
+    }
+    .brand-panel-row{
+      display: grid;
+      grid-template-columns: 108px minmax(0,1fr);
+      gap: .45rem;
+      align-items: start;
+      padding-bottom: .2rem;
+      border-bottom: 1px dashed rgba(148,163,184,.45);
+    }
+    .brand-panel-label{
+      font-size: .72rem;
+      color: #475569;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .brand-panel-value{
+      font-size: .75rem;
+      color: #0f172a;
+      font-weight: 600;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .brand-panel-summary{
+      margin-top: .55rem;
+      padding: .55rem .6rem;
+      border-radius: .62rem;
+      border: 1px solid rgba(148,163,184,.35);
+      background: #f8fafc;
+      font-size: .75rem;
+      color: #1e293b;
+      line-height: 1.45;
+    }
+    .brand-panel-note{
+      margin-top: .5rem;
+      font-size: .72rem;
+      color: #64748b;
+      line-height: 1.4;
+    }
+    .brand-panel-action{
+      margin-top: .58rem;
+      width: 100%;
+      border: 1px solid rgba(67,56,202,.24);
+      background: #eef2ff;
+      color: #312e81;
+      border-radius: .62rem;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .44rem .5rem;
+    }
+    .brand-panel-action:hover{
+      background: #e0e7ff;
+      border-color: rgba(67,56,202,.34);
+    }
+    .brand-info-layer[data-layout="sheet"] .brand-info-layer__backdrop{
+      background: rgba(15,23,42,.26);
+    }
+    .brand-info-layer[data-layout="sheet"] .brand-info-layer__card{
+      left: 12px !important;
+      right: 12px !important;
+      bottom: 10px !important;
+      top: auto !important;
+      width: auto;
+      max-height: min(74vh, 560px);
+      border-radius: 1.05rem 1.05rem 0.9rem 0.9rem;
+      box-shadow: 0 28px 62px rgba(15,23,42,.32), 0 6px 16px rgba(15,23,42,.14);
+    }
+    @media (max-width: 640px){
+      .brand-info-layer__card{ padding: 0.76rem 0.76rem; }
+      .brand-panel-row{
+        grid-template-columns: 92px minmax(0,1fr);
+      }
     }
     /* --- Result UI (tokenized, premium) --- */
     #result .result-item{
@@ -939,7 +1064,7 @@
             <input id="verifiedOnlyToggle" type="checkbox" class="tc-check">
             <span data-i18n="tc.section.brand.verified">Chỉ đã xác minh</span>
           </label>
-          <span class="text-xs tc-muted">Chạm biểu tượng “i” để xem thông tin hãng.</span>
+          <span class="text-xs tc-muted">Chạm “i” để xem nhanh. Chuột phải (desktop) hoặc giữ lâu (mobile) để mở chi tiết.</span>
         </div>
         <div class="brand-filter-bar mt-3">
           <div class="brand-filter-field">

@@ -582,9 +582,80 @@
       },
       gradient: {
         openHexHub: "Mở Kho HEX",
+        startPaths: {
+          title: "Lối bắt đầu",
+          hint: "Chọn cách vào phù hợp để đi nhanh hơn trong chưa tới 30 giây.",
+          items: {
+            preset: {
+              title: "Tôi muốn bắt đầu từ dải phối có sẵn",
+              desc: "Duyệt thư viện tuyển chọn theo nhóm và áp ngay preset đã biên tập."
+            },
+            base: {
+              title: "Tôi đã có một màu gốc",
+              desc: "Mở nhanh vùng chỉnh stop để dựng gradient từ màu của bạn."
+            },
+            mood: {
+              title: "Tôi muốn bắt đầu theo cảm xúc",
+              desc: "Lọc theo mood như sang, tự nhiên, công nghệ để chọn đúng không khí."
+            }
+          }
+        },
         presets: {
           title: "Preset dải chuyển",
-          hint: "Chọn nhanh mẫu dải chuyển để áp ngay.",
+          hint: "Thư viện preset tuyển chọn để bắt đầu nhanh rồi chỉnh sâu.",
+          groupFallback: "Chưa phân nhóm",
+          fallbackGroup: "Khởi động nhanh",
+          fallbackTag: "Preset nhanh",
+          fallbackWorkflow: "Khởi động nhanh",
+          fallbackDesc: "Preset nhanh để bắt đầu chỉnh sâu.",
+          count: "{filtered}/{total} preset",
+          empty: "Không có preset khớp bộ lọc hiện tại. Hãy nới điều kiện hoặc xoá từ khóa tìm kiếm.",
+          status: {
+            ready: "Chọn một preset để lấy điểm xuất phát rồi chỉnh sâu theo nhu cầu.",
+            selected: "Đang áp dụng: {name}. Bạn có thể chỉnh tiếp ở thanh stop."
+          },
+          filters: {
+            group: "Nhóm preset",
+            tone: "Tông màu",
+            contrast: "Độ tương phản",
+            mood: "Mood / Cảm hứng",
+            sort: "Sắp xếp",
+            search: "Tìm theo tên",
+            searchPlaceholder: "Ví dụ: Hoàng hôn biển, Chrome tối...",
+            allGroups: "Tất cả nhóm",
+            allTones: "Mọi tông",
+            allContrasts: "Mọi mức tương phản",
+            allMoods: "Mọi cảm hứng",
+            tones: {
+              am: "Ấm",
+              lanh: "Lạnh",
+              "trung-tinh": "Trung tính",
+              khac: "Khác"
+            },
+            contrasts: {
+              thap: "Tương phản thấp",
+              vua: "Tương phản vừa",
+              cao: "Tương phản cao",
+              khac: "Khác"
+            },
+            moods: {
+              sang: "Sang trọng",
+              "tu-nhien": "Tự nhiên",
+              "hien-dai": "Hiện đại",
+              "cong-nghe": "Công nghệ",
+              "thoi-trang": "Thời trang",
+              "cam-xuc": "Cảm xúc",
+              khac: "Khác"
+            },
+            sortOptions: {
+              featured: "Nổi bật",
+              newest: "Mới thêm",
+              gentle: "Nhẹ nhàng",
+              bold: "Tương phản mạnh",
+              textile: "Hợp thêu",
+              ui: "Hợp UI"
+            }
+          },
           items: {
             neon: "Neon",
             ocean: "Đại dương",
@@ -630,7 +701,8 @@
           tabs: {
             ui: "Giao diện",
             poster: "Áp phích",
-            thread: "Thêu"
+            thread: "Thêu",
+            ribbon: "Dải lụa"
           },
           ui: {
             badge: "Mẫu giao diện",
@@ -651,6 +723,23 @@
             title: "Mảng chỉ trên nền vải",
             desc: "Mô phỏng vải và đường chỉ nhẹ để quan sát cảm giác chuyển màu trong bối cảnh thủ công.",
             cta: "Xem bảng chỉ"
+          },
+          ribbon: {
+            badge: "Mẫu ribbon",
+            title: "Dải lụa chuyển sắc cao cấp",
+            desc: "Xem cảm giác ánh sáng và độ sang khi gradient chạy trên bề mặt mềm."
+          }
+        },
+        workflow: {
+          status: {
+            idle: "Chọn preset để mở các bước liên thông: chỉnh sâu, lưu, sang Thế giới Màu thêu hoặc chia sẻ Cộng đồng.",
+            selected: "Đang chọn {name}. Tiếp theo: chỉnh sâu, lưu vào Thư viện hoặc chuyển nhanh sang luồng liên thông."
+          },
+          actions: {
+            edit: "Chỉnh tiếp dải chuyển",
+            save: "Lưu vào Thư viện",
+            toThread: "Sang Thế giới Màu thêu",
+            toCommunity: "Đẩy sang Cộng đồng"
           }
         },
         banding: {

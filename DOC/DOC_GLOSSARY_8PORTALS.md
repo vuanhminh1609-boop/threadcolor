@@ -41,6 +41,12 @@
 | Overlay nền (lớp hoạ tiết/ánh phủ trên nền chính) | Overlay nền | Lớp hoạ tiết/ánh phủ mỏng đặt trên nền chính để tạo chiều sâu nhưng vẫn nhẹ. |
 | Custom Tone (sắc thái tuỳ chỉnh do người dùng tạo) | Sắc thái tuỳ chỉnh | Sắc thái do người dùng tự lưu lại từ công cụ, có thể áp dụng/preview lại nhanh. |
 | Preset (thiết lập sẵn) | Preset | Thiết lập sẵn có thể lưu và dùng lại, giúp áp nhanh một cấu hình mà không phải chỉnh tay lại. |
+| Preset browser | Trình duyệt preset | Khu giao diện duyệt preset theo dạng card, cho phép lọc và tìm nhanh trước khi áp dụng. |
+| Curated presets | Preset tuyển chọn | Bộ preset được biên tập có chủ đích thẩm mỹ và ngữ cảnh sử dụng, không phải danh sách mẫu ngẫu nhiên. |
+| Faceted filtering | Lọc phân lớp | Cách lọc đồng thời nhiều chiều như nhóm, tông và độ tương phản để thu hẹp đúng tập preset cần dùng. |
+| Mood filter | Bộ lọc cảm hứng | Bộ lọc theo cảm xúc hoặc phong cách sử dụng như sang trọng, tự nhiên, công nghệ để tìm đúng không khí dải màu. |
+| Context preview | Xem trước theo ngữ cảnh | Kiểu xem trước đặt gradient vào bối cảnh sử dụng thật (UI, thêu, ribbon, poster) thay vì chỉ nhìn dải màu thẳng. |
+| Workflow entry path | Lối vào workflow | Điểm bắt đầu có định hướng trong một World (từ preset, từ màu gốc, từ cảm hứng) để giảm thời gian mò tính năng. |
 | Preset theo mục tiêu | Preset theo mục tiêu | Gói preset dựng theo bối cảnh/mục tiêu (ví dụ phòng ngủ, streetwear) để áp nhanh nhiều tham số. |
 | Màu đi kèm (Companion colors) | Màu đi kèm | Bộ màu phụ trợ đi kèm màu chính (viền/nhấn) để phối nhanh và giữ cân bằng. |
 | So sánh A/B | So sánh A/B | Chế độ đặt hai phương án màu cạnh nhau để so sánh nhanh. |
@@ -638,6 +644,13 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Phân tích cú pháp (parse: chuyển chuỗi thành cấu trúc dữ liệu) | Phân tích cú pháp | Quá trình đọc chuỗi đầu vào và chuyển thành cấu trúc dữ liệu có thể xử lý bằng chương trình. |
 | Toast (thông báo nhỏ tự biến mất) | Toast | Thông báo ngắn xuất hiện tạm thời rồi tự ẩn để phản hồi thao tác. |
 | Tooltip (chú giải khi rê chuột) | Tooltip | Nhãn chú giải nhỏ xuất hiện khi rê chuột lên nút/biểu tượng để mô tả chức năng. |
+| Quick info panel (bảng thông tin nhanh) | Bảng thông tin nhanh hãng | Bảng thông tin gọn mở từ nút `i`, hiển thị các trường cốt lõi như số mã, xác minh, công ty và quốc gia. |
+| Detail info panel (bảng thông tin chi tiết) | Bảng thông tin chi tiết hãng | Bảng thông tin mở rộng cho hãng chỉ, bổ sung mô tả, nhóm sợi, định vị và ghi chú nguồn dữ liệu. |
+| Desktop context menu (menu chuột phải desktop) | Menu chuột phải desktop | Tương tác chuột phải trên máy tính để mở nhanh hành động phụ mà không làm đổi trạng thái chọn chính. |
+| Brand metadata (metadata hồ sơ hãng) | Metadata hãng chỉ | Tập dữ liệu tĩnh mô tả hồ sơ hãng chỉ (công ty, quốc gia, mô tả, nhóm sợi, định vị) dùng để làm giàu UI tra cứu. |
+| Stacking context (ngữ cảnh xếp lớp) | Ngữ cảnh xếp lớp | Cơ chế trình duyệt nhóm phần tử theo lớp hiển thị; phần tử ở ngữ cảnh thấp có thể bị che dù tăng z-index cục bộ. |
+| Overflow clipping (cắt tràn bởi overflow) | Cắt tràn bởi overflow | Hiện tượng nội dung nổi bị cắt khi phần tử cha đặt `overflow: hidden/auto/clip`. |
+| Overlay layer (lớp phủ nổi toàn cục) | Lớp phủ nổi toàn cục | Lớp DOM độc lập gắn gần `body` để hiển thị card nổi vượt khỏi ràng buộc layout cục bộ. |
 | Icon-only (nút chỉ có biểu tượng) | Icon-only | Kiểu nút chỉ hiển thị biểu tượng, không kèm chữ để tiết kiệm diện tích. |
 | Handle (tay nắm kéo) | Handle | Phần tử nhỏ để nắm kéo, giúp thay đổi vị trí hoặc giá trị trên thanh chỉnh. |
 | Stop gradient (điểm neo màu trong dải chuyển) | Stop gradient | Điểm neo màu trong dải chuyển, xác định vị trí % của màu trên gradient. |

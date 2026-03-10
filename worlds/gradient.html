@@ -17,26 +17,188 @@
       position: relative;
       overflow: hidden;
     }
-    .tc-gradient-presets{
+    .tc-preset-browser-toolbar{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.55rem;
+      gap: 0.6rem;
     }
-    .tc-gradient-preset{
+    .tc-preset-group-chips{
       display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 0.5rem;
-      text-align: left;
+      flex-wrap: nowrap;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding-bottom: 0.15rem;
+      scroll-snap-type: x proximity;
+    }
+    .tc-preset-group-chip{
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      white-space: nowrap;
+    }
+    .tc-preset-group-chip.is-active{
+      border-color: rgb(var(--a1-rgb) / 0.62);
+      background: rgb(var(--a1-rgb) / 0.18);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+    }
+    .tc-preset-filter{
+      display: grid;
+      gap: 0.32rem;
       min-width: 0;
     }
-    .tc-gradient-preset-swatch{
-      width: 32px;
-      height: 22px;
-      border-radius: 0.55rem;
+    .tc-preset-filter-label{
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+    }
+    .tc-preset-filter .tc-input{
+      min-height: 40px;
+      font-size: 0.82rem;
+    }
+    .tc-preset-search{
+      width: 100%;
+    }
+    .tc-gradient-presets{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.7rem;
+    }
+    .tc-gradient-preset{
+      display: grid;
+      gap: 0.55rem;
+      text-align: left;
+      min-width: 0;
+      padding: 0.68rem;
+      border-radius: 0.95rem;
       border: 1px solid var(--stroke);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.08);
+      color: var(--text);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease, background-color .16s ease;
+    }
+    .tc-gradient-preset:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
+    }
+    .tc-gradient-preset:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0,0,0,.1), 0 0 0 4px rgb(var(--a1-rgb) / .45);
+    }
+    .tc-gradient-preset.is-active{
+      border-color: rgb(var(--a1-rgb) / 0.65);
+      background: rgb(var(--a1-rgb) / 0.17);
+      box-shadow: 0 10px 24px rgb(var(--a1-rgb) / 0.16);
+    }
+    .tc-gradient-preset-head{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+    .tc-gradient-preset-title{
+      margin: 0;
+      font-size: 0.86rem;
+      font-weight: 600;
+      line-height: 1.3;
+      word-break: break-word;
+      color: var(--text);
+    }
+    .tc-gradient-preset-badge{
       flex: 0 0 auto;
+      font-size: 0.66rem;
+      line-height: 1;
+      padding: 0.24rem 0.42rem;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.22);
+    }
+    .tc-gradient-preset-swatch{
+      width: 100%;
+      height: 58px;
+      border-radius: 0.72rem;
+      border: 1px solid var(--stroke);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+    .tc-gradient-preset-meta{
+      margin: 0;
+      font-size: 0.72rem;
+      line-height: 1.35;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .tc-gradient-preset-tags{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .tc-gradient-preset-tag{
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 0.18rem 0.48rem;
+      font-size: 0.66rem;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.2);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tc-preset-empty{
+      margin: 0;
+      border: 1px dashed var(--stroke);
+      border-radius: 0.86rem;
+      padding: 0.8rem;
+      font-size: 0.79rem;
+      color: var(--muted);
+    }
+    .tc-gradient-workflow-actions{
+      display: grid;
+      gap: 0.45rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .tc-gradient-workflow-status{
+      margin: 0;
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+    .tc-gradient-entry-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.6rem;
+    }
+    .tc-gradient-entry-card{
+      border: 1px solid var(--stroke);
+      border-radius: 0.95rem;
+      padding: 0.72rem;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.08);
+      color: var(--text);
+      transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+    .tc-gradient-entry-card:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, 0.11);
+    }
+    .tc-gradient-entry-card.is-active{
+      border-color: rgb(var(--a1-rgb) / 0.62);
+      background: rgb(var(--a1-rgb) / 0.16);
+      box-shadow: 0 10px 20px rgb(var(--a1-rgb) / 0.14);
+    }
+    .tc-gradient-entry-title{
+      margin: 0;
+      font-size: 0.84rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .tc-gradient-entry-desc{
+      margin: 0.28rem 0 0;
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.45;
     }
     .tc-my-presets{
       display: flex;
@@ -178,6 +340,26 @@
         repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0 2px, rgba(255, 255, 255, 0.02) 2px 10px),
         repeating-linear-gradient(0deg, rgba(15, 23, 42, 0.28) 0 1px, rgba(15, 23, 42, 0.05) 1px 8px);
     }
+    .tc-context-ribbon{
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.9rem;
+    }
+    .tc-context-ribbon-strip{
+      height: 56px;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(255,255,255,.25);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, 0.2);
+      transform: skewX(-12deg);
+      transform-origin: center;
+    }
+    .tc-context-ribbon-card{
+      border-radius: 0.9rem;
+      border: 1px solid rgba(255,255,255,.25);
+      padding: 0.7rem;
+      background: rgba(15, 23, 42, 0.34);
+      backdrop-filter: blur(2px);
+    }
     .tc-banding-score{
       margin: 0.1rem 0 0;
       font-size: 1.7rem;
@@ -302,6 +484,23 @@
         min-height: 152px;
         padding: 0.8rem;
       }
+      .tc-gradient-preset{
+        padding: 0.62rem;
+      }
+      .tc-gradient-preset-swatch{
+        height: 52px;
+      }
+      .tc-gradient-entry-grid{
+        grid-template-columns: 1fr;
+      }
+      .tc-gradient-workflow-actions{
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (min-width: 760px) {
+      .tc-preset-browser-toolbar{
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
     }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -347,10 +546,106 @@
 
       <section class="mt-6 tc-card p-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
+          <p class="text-sm font-semibold" data-i18n="gradient.startPaths.title"></p>
+          <p class="tc-muted text-xs" data-i18n="gradient.startPaths.hint"></p>
+        </div>
+        <div id="gradientStartPaths" class="tc-gradient-entry-grid mt-3">
+          <button
+            id="gradientStartPathPreset"
+            class="tc-gradient-entry-card"
+            type="button"
+            data-gradient-start-path="preset"
+            aria-pressed="false"
+          >
+            <p class="tc-gradient-entry-title" data-i18n="gradient.startPaths.items.preset.title"></p>
+            <p class="tc-gradient-entry-desc" data-i18n="gradient.startPaths.items.preset.desc"></p>
+          </button>
+          <button
+            id="gradientStartPathBase"
+            class="tc-gradient-entry-card"
+            type="button"
+            data-gradient-start-path="base"
+            aria-pressed="false"
+          >
+            <p class="tc-gradient-entry-title" data-i18n="gradient.startPaths.items.base.title"></p>
+            <p class="tc-gradient-entry-desc" data-i18n="gradient.startPaths.items.base.desc"></p>
+          </button>
+          <button
+            id="gradientStartPathMood"
+            class="tc-gradient-entry-card"
+            type="button"
+            data-gradient-start-path="mood"
+            aria-pressed="false"
+          >
+            <p class="tc-gradient-entry-title" data-i18n="gradient.startPaths.items.mood.title"></p>
+            <p class="tc-gradient-entry-desc" data-i18n="gradient.startPaths.items.mood.desc"></p>
+          </button>
+        </div>
+      </section>
+
+      <section class="mt-6 tc-card p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           <p class="text-sm font-semibold" data-i18n="gradient.presets.title"></p>
           <p class="tc-muted text-xs" data-i18n="gradient.presets.hint"></p>
         </div>
+        <div id="gradientPresetGroupChips" class="tc-preset-group-chips mt-3"></div>
+        <div class="tc-preset-browser-toolbar mt-3">
+          <div class="tc-preset-filter">
+            <label class="tc-preset-filter-label" for="gradientPresetGroupFilter" data-i18n="gradient.presets.filters.group"></label>
+            <select id="gradientPresetGroupFilter" class="tc-input">
+              <option value="all" data-i18n="gradient.presets.filters.allGroups"></option>
+            </select>
+          </div>
+          <div class="tc-preset-filter">
+            <label class="tc-preset-filter-label" for="gradientPresetToneFilter" data-i18n="gradient.presets.filters.tone"></label>
+            <select id="gradientPresetToneFilter" class="tc-input">
+              <option value="all" data-i18n="gradient.presets.filters.allTones"></option>
+            </select>
+          </div>
+          <div class="tc-preset-filter">
+            <label class="tc-preset-filter-label" for="gradientPresetContrastFilter" data-i18n="gradient.presets.filters.contrast"></label>
+            <select id="gradientPresetContrastFilter" class="tc-input">
+              <option value="all" data-i18n="gradient.presets.filters.allContrasts"></option>
+            </select>
+          </div>
+          <div class="tc-preset-filter">
+            <label class="tc-preset-filter-label" for="gradientPresetSearch" data-i18n="gradient.presets.filters.search"></label>
+            <input
+              id="gradientPresetSearch"
+              class="tc-input tc-preset-search"
+              type="search"
+              placeholder=""
+              data-i18n-attr="placeholder:gradient.presets.filters.searchPlaceholder"
+            >
+          </div>
+          <div class="tc-preset-filter">
+            <label class="tc-preset-filter-label" for="gradientPresetMoodFilter" data-i18n="gradient.presets.filters.mood"></label>
+            <select id="gradientPresetMoodFilter" class="tc-input">
+              <option value="all" data-i18n="gradient.presets.filters.allMoods"></option>
+            </select>
+          </div>
+          <div class="tc-preset-filter">
+            <label class="tc-preset-filter-label" for="gradientPresetSort" data-i18n="gradient.presets.filters.sort"></label>
+            <select id="gradientPresetSort" class="tc-input">
+              <option value="featured" data-i18n="gradient.presets.filters.sortOptions.featured"></option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+          <p id="gradientPresetStatus" class="tc-muted text-xs" data-i18n="gradient.presets.status.ready"></p>
+          <p id="gradientPresetCount" class="tc-muted text-xs">0/0</p>
+        </div>
         <div id="gradientPresetRail" class="tc-gradient-presets mt-3"></div>
+        <p id="gradientPresetEmpty" class="tc-preset-empty mt-3 hidden" data-i18n="gradient.presets.empty"></p>
+        <div class="mt-3">
+          <p id="gradientWorkflowStatus" class="tc-gradient-workflow-status" data-i18n="gradient.workflow.status.idle"></p>
+          <div class="tc-gradient-workflow-actions mt-2">
+            <button id="gradientNextEdit" class="tc-btn tc-chip px-3 py-2 text-sm" type="button" data-i18n="gradient.workflow.actions.edit"></button>
+            <button id="gradientNextSave" class="tc-btn tc-chip px-3 py-2 text-sm" type="button" data-i18n="gradient.workflow.actions.save"></button>
+            <button id="gradientNextThread" class="tc-btn tc-chip px-3 py-2 text-sm" type="button" data-i18n="gradient.workflow.actions.toThread"></button>
+            <button id="gradientNextCommunity" class="tc-btn tc-chip px-3 py-2 text-sm" type="button" data-i18n="gradient.workflow.actions.toCommunity"></button>
+          </div>
+        </div>
       </section>
 
       <section class="mt-4 tc-card p-4">
@@ -387,6 +682,7 @@
                 <button id="gradientContextTabUi" class="tc-btn tc-chip px-3 py-2 text-xs tc-context-tab" type="button" data-i18n="gradient.contextPreview.tabs.ui"></button>
                 <button id="gradientContextTabPoster" class="tc-btn tc-chip px-3 py-2 text-xs tc-context-tab" type="button" data-i18n="gradient.contextPreview.tabs.poster"></button>
                 <button id="gradientContextTabThread" class="tc-btn tc-chip px-3 py-2 text-xs tc-context-tab" type="button" data-i18n="gradient.contextPreview.tabs.thread"></button>
+                <button id="gradientContextTabRibbon" class="tc-btn tc-chip px-3 py-2 text-xs tc-context-tab" type="button" data-i18n="gradient.contextPreview.tabs.ribbon"></button>
               </div>
             </div>
 
@@ -423,6 +719,19 @@
                     <h4 class="text-sm font-semibold" data-i18n="gradient.contextPreview.thread.title"></h4>
                     <p class="text-xs mt-1 tc-muted" data-i18n="gradient.contextPreview.thread.desc"></p>
                     <button class="tc-btn tc-chip px-3 py-2 text-xs mt-3" type="button" data-i18n="gradient.contextPreview.thread.cta"></button>
+                  </div>
+                </div>
+              </section>
+
+              <section id="gradientContextPanelRibbon" class="tc-context-panel" hidden>
+                <div id="gradientContextSurfaceRibbon" class="tc-context-surface">
+                  <span class="tc-chip px-3 py-1 text-xs" data-i18n="gradient.contextPreview.ribbon.badge"></span>
+                  <div class="tc-context-ribbon">
+                    <div class="tc-context-ribbon-strip"></div>
+                    <div class="tc-context-ribbon-card">
+                      <h4 class="text-sm font-semibold" data-i18n="gradient.contextPreview.ribbon.title"></h4>
+                      <p class="text-xs mt-1 tc-muted" data-i18n="gradient.contextPreview.ribbon.desc"></p>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -625,4 +934,3 @@
   <script src="../scripts/topbar_behavior.js" defer></script>
 </body>
 </html>
-
