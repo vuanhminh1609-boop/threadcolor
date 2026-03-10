@@ -209,6 +209,14 @@ let releaseSignatureModalPayload = null;
 const el = {
   grid: document.getElementById("paletteGrid"),
   empty: document.getElementById("paletteEmpty"),
+  onboardingZone: document.getElementById("paletteOnboardingZone"),
+  tourStartBtn: document.getElementById("paletteTourStart"),
+  tourDontShowBtn: document.getElementById("paletteTourDontShow"),
+  tourReplayBtn: document.getElementById("paletteTourReplay"),
+  startFocusButtons: Array.from(document.querySelectorAll("[data-start-focus]")),
+  styleHub: document.getElementById("paletteStyleHub"),
+  presetHub: document.getElementById("palettePresetHub"),
+  reviewZone: document.getElementById("paletteReviewZone"),
   saveLibrary: document.getElementById("paletteSaveLibrary"),
   useLibrary: document.getElementById("paletteUseLibrary"),
   share: document.getElementById("paletteShare"),
@@ -221,6 +229,7 @@ const el = {
   fullscreenTokenCopy: document.getElementById("paletteFsTokenCopy"),
   presetDetail: document.getElementById("palettePresetDetail"),
   presetDetailBody: document.getElementById("palettePresetDetailBody"),
+  presetDetailScrollHint: document.getElementById("palettePresetDetailScrollHint"),
   hexInput: document.getElementById("paletteHexInput"),
   hexApply: document.getElementById("paletteHexApply"),
   baseColor: document.getElementById("paletteBaseColor"),
@@ -287,6 +296,13 @@ const el = {
   scopeTeam: document.getElementById("paletteScopeTeam"),
   teamSelect: document.getElementById("paletteTeamSelect"),
   teamRoleHint: document.getElementById("paletteTeamRoleHint"),
+  roomFlowHint: document.getElementById("paletteRoomFlowHint"),
+  roomFlowState: document.getElementById("paletteRoomFlowState"),
+  roomSoloBtn: document.getElementById("paletteRoomSoloBtn"),
+  roomRecentBtn: document.getElementById("paletteRoomRecentBtn"),
+  roomCreateBtn: document.getElementById("paletteRoomCreateBtn"),
+  roomJoinInput: document.getElementById("paletteRoomJoinInput"),
+  roomJoinBtn: document.getElementById("paletteRoomJoinBtn"),
   roomBar: document.getElementById("paletteRoomBar"),
   roomLabel: document.getElementById("paletteRoomLabel"),
   roomName: document.getElementById("paletteRoomName"),
@@ -320,7 +336,7 @@ const el = {
 };
 
 const ROLE_KEYS = ["bg", "surface", "text", "muted", "accent"];
-const PREVIEW_TABS = ["ui", "poster"];
+const PREVIEW_TABS = ["ui", "poster", "card", "cta"];
 const PREVIEW_VISION_MODES = ["normal", "deuteranopia", "protanopia", "tritanopia", "grayscale"];
 const SHARE_STATE_VERSION = 1;
 const SHORT_SHARE_COLLECTION = "w3_share_links";
@@ -328,9 +344,12 @@ const SHORT_SHARE_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn
 const SHORT_SHARE_ID_LENGTH = 9;
 const SHORT_SHARE_MAX_TRIES = 8;
 const SHORT_SHARE_WAIT_AUTH_MS = 2200;
+const ROOM_LAST_ID_STORAGE_KEY = "tc_w3_last_room_v1";
+const TOUR_SEEN_STORAGE_KEY = "tc_w3_tour_seen_v1";
+const TOUR_NEVER_STORAGE_KEY = "tc_w3_tour_never_v1";
 const PALETTE_WORKMODE_HINT = {
-  quick: "Tạo nhanh: tập trung các bước tạo/chọn palette để ra kết quả ngay.",
-  expert: "Chế độ chuyên gia: mở thêm thư viện nâng cao và không gian cộng tác theo phòng."
+  quick: "Tạo nhanh: đi theo luồng tối ưu từ chọn palette, gán vai màu đến contrast/preview.",
+  expert: "Chế độ chuyên gia: mở thêm cộng tác theo phòng, timeline phiên bản và bình luận vai màu."
 };
 let paletteWorkMode = "quick";
 let roomListenerUnsub = null;
@@ -347,6 +366,7 @@ let roomRevisionListenerUnsub = null;
 let roomRevisionWriteBusy = false;
 let roomCommentListenerUnsub = null;
 let roomCommentWriteBusy = false;
+let activePaletteTour = null;
 let roomPresenceDraft = {
   activePaletteIndex: null,
   activeRoleKey: "",
@@ -410,6 +430,534 @@ function t(key, fallback = "", params) {
   }
 }
 
+function readLocalStorage(key) {
+  try {
+    return String(localStorage.getItem(key) || "").trim();
+  } catch (_err) {
+    return "";
+  }
+}
+
+function writeLocalStorage(key, value) {
+  try {
+    localStorage.setItem(key, String(value || "").trim());
+    return true;
+  } catch (_err) {
+    return false;
+  }
+}
+
+function removeLocalStorage(key) {
+  try {
+    localStorage.removeItem(key);
+    return true;
+  } catch (_err) {
+    return false;
+  }
+}
+
+function rememberLastRoomId(roomId) {
+  const normalized = normalizeRoomId(roomId);
+  if (!normalized) return false;
+  return writeLocalStorage(ROOM_LAST_ID_STORAGE_KEY, normalized);
+}
+
+function getLastRoomId() {
+  const raw = readLocalStorage(ROOM_LAST_ID_STORAGE_KEY);
+  return normalizeRoomId(raw);
+}
+
+function updateRoomQueryParam(roomId = "") {
+  try {
+    const nextRoomId = normalizeRoomId(roomId);
+    const current = new URL(window.location.href);
+    if (nextRoomId) {
+      current.searchParams.set("room", nextRoomId);
+    } else {
+      current.searchParams.delete("room");
+    }
+    const nextHref = `${current.pathname}${current.search}${current.hash}`;
+    window.history.replaceState(null, "", nextHref);
+  } catch (_err) {}
+}
+
+function getCurrentAuthUser() {
+  try {
+    return getFirebaseApi()?.auth?.currentUser || null;
+  } catch (_err) {
+    return null;
+  }
+}
+
+function extractRoomIdFromInput(rawInput) {
+  const text = String(rawInput || "").trim();
+  if (!text) return "";
+  const direct = normalizeRoomId(text);
+  if (direct) return direct;
+  const normalizedText = normalizeSearchText(text);
+  try {
+    const parsed = normalizedText.includes("://")
+      ? new URL(normalizedText)
+      : new URL(normalizedText, window.location.origin);
+    const fromQuery = normalizeRoomId(parsed.searchParams.get("room"));
+    if (fromQuery) return fromQuery;
+  } catch (_err) {}
+  const marker = "room=";
+  const idx = normalizedText.indexOf(marker);
+  if (idx === -1) return "";
+  const rest = normalizedText.slice(idx + marker.length);
+  const token = rest.split("&")[0].split("#")[0].trim();
+  return normalizeRoomId(token);
+}
+
+function resolveRoomFlowStateText() {
+  const status = String(state.room.status || "idle");
+  const hasRoom = Boolean(state.room.id);
+  const hasAuth = Boolean(getCurrentAuthUser()?.uid);
+  if (!hasRoom) {
+    if (hasAuth) {
+      return "Bạn đang làm việc một mình. Có thể tạo phòng mới hoặc nhập room ID khi cần cộng tác.";
+    }
+    return "Bạn đang làm việc một mình. Đăng nhập để tạo phòng mới hoặc tham gia phòng cộng tác.";
+  }
+  if (status === "connecting") return "Đang kết nối phòng...";
+  if (status === "need-login") return "Bạn cần đăng nhập để tiếp tục vào phòng.";
+  if (status === "missing") return "Không tìm thấy phòng. Kiểm tra lại room ID hoặc link mời.";
+  if (status === "invite-only") return "Phòng chỉ cho người được mời. Bạn cần quyền truy cập.";
+  if (status === "listen-error" || status === "invalid-state") {
+    return "Phòng gặp lỗi đồng bộ. Bạn có thể thử lại hoặc chuyển sang dùng một mình.";
+  }
+  if (status === "viewer") return "Đã vào phòng ở chế độ chỉ xem.";
+  if (status === "editor") return "Đã vào phòng và có thể chỉnh sửa thời gian thực.";
+  return "Đang làm việc một mình.";
+}
+
+function renderRoomFlowGuide() {
+  if (!el.roomFlowState || !el.roomFlowHint) return;
+  el.roomFlowState.textContent = resolveRoomFlowStateText();
+  const hasAuth = Boolean(getCurrentAuthUser()?.uid);
+  const hasRoom = Boolean(state.room.id);
+  if (hasRoom) {
+    const roomLabel = state.room.name || state.room.id;
+    el.roomFlowHint.textContent = `Bạn đang ở phòng ${roomLabel}. Có thể chia sẻ link chứa ?room=${state.room.id} để mời người khác.`;
+  } else if (hasAuth) {
+    el.roomFlowHint.textContent = "Chế độ chuyên gia cho phép làm một mình hoặc làm việc theo phòng. Dùng link ?room=... để mở cùng một trạng thái.";
+  } else {
+    el.roomFlowHint.textContent = "Bạn có thể dùng chế độ chuyên gia khi chưa đăng nhập. Đăng nhập chỉ cần thiết khi tạo phòng mới hoặc vào phòng cộng tác.";
+  }
+  const hasRecent = Boolean(getLastRoomId());
+  if (el.roomRecentBtn) {
+    el.roomRecentBtn.disabled = !hasRecent;
+    el.roomRecentBtn.setAttribute("aria-disabled", hasRecent ? "false" : "true");
+  }
+}
+
+function buildFallbackRoomPayload() {
+  const active = getActivePalette();
+  let stops = Array.isArray(active?.stops)
+    ? active.stops.map((hex) => normalizeHex(hex)).filter(Boolean).map((hex) => hex.toUpperCase())
+    : [];
+  if (stops.length < MIN_STOPS) {
+    stops = ["#0EA5E9", "#2563EB", "#0F172A", "#94A3B8", "#F8FAFC"];
+  }
+  stops = stops.slice(0, MAX_STOPS);
+  const roles = active ? getRoleMapForPalette(active, stops) : autoAssignRoleMap(stops);
+  const preview = active ? getCurrentPreviewForPalette(active, PREVIEW_TABS[0]) : PREVIEW_TABS[0];
+  const visionMode = active ? getCurrentVisionForPalette(active, "normal") : "normal";
+  return buildShareStatePayload(stops, {
+    roles,
+    preview,
+    sim: visionMode
+  });
+}
+
+async function pickAvailableRoomId(api, maxRetries = 8) {
+  for (let i = 0; i < maxRetries; i += 1) {
+    const candidate = normalizeRoomId(`room_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`);
+    if (!candidate) continue;
+    const ref = api.doc(api.db, ROOM_COLLECTION, candidate);
+    const snap = await api.getDoc(ref).catch(() => null);
+    if (!snap?.exists?.()) {
+      return candidate;
+    }
+  }
+  return "";
+}
+
+async function createPaletteRoomFromCurrentState() {
+  const api = await waitForFirebaseApi();
+  if (!canUseRoomRealtimeApi(api)) {
+    showToast(t("paletteTool.room.toast.syncUnavailable", "Không thể kết nối đồng bộ phòng."));
+    return { ok: false, reason: "api_unavailable" };
+  }
+  const user = await waitForFirebaseUser(api);
+  if (!user?.uid) {
+    showToast(t("paletteTool.room.toast.needLogin", "Cần đăng nhập để vào Phòng chỉnh sửa."));
+    return { ok: false, reason: "no_auth" };
+  }
+  const roomId = await pickAvailableRoomId(api);
+  if (!roomId) {
+    showToast("Không thể tạo mã phòng mới. Thử lại sau vài giây.");
+    return { ok: false, reason: "room_id_unavailable" };
+  }
+  const nowStamp = typeof api.serverTimestamp === "function" ? api.serverTimestamp() : new Date().toISOString();
+  const roomRef = api.doc(api.db, ROOM_COLLECTION, roomId);
+  const memberRef = api.doc(api.db, ROOM_COLLECTION, roomId, ROOM_MEMBER_COLLECTION, user.uid);
+  const currentRef = api.doc(api.db, ROOM_COLLECTION, roomId, ROOM_STATE_COLLECTION, ROOM_STATE_DOC_ID);
+  const roomName = `Phòng ${roomId.slice(-6).toUpperCase()}`;
+  const payload = buildFallbackRoomPayload();
+  if (!payload) {
+    showToast("Chưa đủ dữ liệu palette để tạo phòng.");
+    return { ok: false, reason: "missing_payload" };
+  }
+  try {
+    await api.setDoc(roomRef, {
+      name: roomName,
+      title: roomName,
+      shareMode: ROOM_SHARE_INVITE_ONLY,
+      createdByUid: user.uid,
+      createdAt: nowStamp,
+      updatedByUid: user.uid,
+      updatedAt: nowStamp
+    }, { merge: false });
+    await api.setDoc(memberRef, {
+      uid: user.uid,
+      role: TEAM_ROLE_OWNER,
+      displayName: resolvePresenceDisplayName(user),
+      joinedAt: nowStamp,
+      updatedAt: nowStamp
+    }, { merge: true });
+    await api.setDoc(currentRef, {
+      ...payload,
+      type: "palette",
+      rev: 0,
+      updatedByUid: user.uid,
+      updatedAt: nowStamp
+    }, { merge: false });
+  } catch (_err) {
+    showToast(t("paletteTool.room.toast.joinFailed", "Không thể tham gia phòng."));
+    return { ok: false, reason: "create_failed" };
+  }
+  const result = await enterPaletteRoom(roomId, { silent: true });
+  if (result?.ok) {
+    rememberLastRoomId(roomId);
+    updateRoomQueryParam(roomId);
+    if (el.roomJoinInput) {
+      el.roomJoinInput.value = roomId;
+    }
+    showToast(`Đã tạo phòng mới: ${roomName}.`);
+  }
+  return result;
+}
+
+async function joinPaletteRoomFromInput(rawInput, options = {}) {
+  const roomId = extractRoomIdFromInput(rawInput);
+  const { silent = false } = options;
+  if (!roomId) {
+    if (!silent) {
+      showToast(t("paletteTool.room.toast.invalidRoom", "Mã phòng không hợp lệ."));
+    }
+    return { ok: false, reason: "invalid_room" };
+  }
+  const result = await enterPaletteRoom(roomId, { silent });
+  if (result?.ok) {
+    rememberLastRoomId(roomId);
+    updateRoomQueryParam(roomId);
+    if (el.roomJoinInput) {
+      el.roomJoinInput.value = roomId;
+    }
+  }
+  return result;
+}
+
+function usePaletteSoloMode(options = {}) {
+  const { silent = false } = options;
+  cleanupRoomListener();
+  resetRoomState();
+  updateRoomQueryParam("");
+  if (el.roomJoinInput && !el.roomJoinInput.value) {
+    el.roomJoinInput.value = getLastRoomId() || "";
+  }
+  renderRoomFlowGuide();
+  if (!silent) {
+    showToast("Đã chuyển sang làm việc một mình trong chế độ chuyên gia.");
+  }
+}
+
+function focusPaletteStartPath(nextPath) {
+  const target = String(nextPath || "").trim();
+  if (target === "style") {
+    setPaletteWorkMode("quick");
+    el.styleHub?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  if (target === "preset") {
+    setPaletteWorkMode("quick");
+    el.presetHub?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  if (target === "expert") {
+    setPaletteWorkMode("expert");
+    (el.roomFlowHint || el.modeExpert)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+function hasPaletteTourBeenSeen() {
+  return readLocalStorage(TOUR_SEEN_STORAGE_KEY) === "1";
+}
+
+function isPaletteTourDisabled() {
+  return readLocalStorage(TOUR_NEVER_STORAGE_KEY) === "1";
+}
+
+function refreshPaletteTourControls() {
+  const disabled = isPaletteTourDisabled();
+  if (el.tourDontShowBtn) {
+    el.tourDontShowBtn.textContent = disabled ? "Đã tắt tự động tour" : "Đừng hiện lại";
+    el.tourDontShowBtn.setAttribute("aria-pressed", disabled ? "true" : "false");
+  }
+  if (el.tourStartBtn) {
+    el.tourStartBtn.textContent = hasPaletteTourBeenSeen() ? "Mở tour lại từ đầu" : "Bắt đầu tour";
+  }
+}
+
+function markPaletteTourSeen() {
+  writeLocalStorage(TOUR_SEEN_STORAGE_KEY, "1");
+  refreshPaletteTourControls();
+}
+
+function markPaletteTourNever() {
+  writeLocalStorage(TOUR_SEEN_STORAGE_KEY, "1");
+  writeLocalStorage(TOUR_NEVER_STORAGE_KEY, "1");
+  refreshPaletteTourControls();
+}
+
+function getPaletteTourSteps() {
+  return [
+    {
+      id: "intro",
+      selector: "#paletteOnboardingZone",
+      title: "World 3 dùng để làm gì?",
+      desc: "Đây là studio tạo bảng phối, kiểm tra độ đọc và chốt màu trước khi triển khai."
+    },
+    {
+      id: "start",
+      selector: "#paletteStyleHub",
+      title: "Có những cách bắt đầu nào?",
+      desc: "Bạn có thể bắt đầu từ mục tiêu, brief 1 dòng, danh sách HEX hoặc ảnh."
+    },
+    {
+      id: "preset",
+      selector: "#palettePresetHub",
+      title: "Chọn palette mẫu ở đâu?",
+      desc: "Khu mẫu palette sẵn giúp vào việc nhanh và có thể mở chi tiết từng bảng."
+    },
+    {
+      id: "contrast",
+      selector: "#paletteReviewContrastHint",
+      title: "Đọc contrast/WCAG ở đâu?",
+      desc: "Mở chi tiết preset để xem cặp đang fail, vai màu nút thắt và các phương án sửa theo mức thay đổi."
+    },
+    {
+      id: "preview",
+      selector: "#paletteReviewPreviewHint",
+      title: "Xem thử theo bối cảnh ở đâu?",
+      desc: "Trong chi tiết preset có preview Giao diện, Áp phích, Thẻ nội dung và CTA/Nhãn để kiểm tra thực tế."
+    },
+    {
+      id: "expert",
+      selector: "#paletteExpertPrimer",
+      title: "Khi nào nên mở chế độ chuyên gia?",
+      desc: "Khi cần cộng tác theo phòng, theo dõi timeline phiên bản và bình luận vai màu.",
+      prepare: () => setPaletteWorkMode("expert")
+    }
+  ];
+}
+
+function getPaletteTourTopInset() {
+  const cssVal = getComputedStyle(document.documentElement).getPropertyValue("--tc-topbar-h");
+  const parsed = Number.parseFloat(cssVal);
+  if (Number.isFinite(parsed)) return parsed + 10;
+  return 76;
+}
+
+function isPaletteTourTargetVisible(node) {
+  if (!node) return false;
+  const style = window.getComputedStyle(node);
+  if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") return false;
+  const rect = node.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0;
+}
+
+function createPaletteTourOverlay() {
+  const overlay = document.createElement("div");
+  overlay.className = "tc-tour-overlay";
+  overlay.innerHTML = `
+    <div class="tc-tour-spotlight" aria-hidden="true"></div>
+    <div class="tc-tour-card" role="dialog" aria-live="polite" aria-label="Tour hướng dẫn World 3">
+      <div class="tc-tour-step"></div>
+      <div class="tc-tour-title"></div>
+      <div class="tc-tour-desc"></div>
+      <div class="tc-tour-actions">
+        <button class="tc-tour-btn tc-tour-prev" type="button">Quay lại</button>
+        <button class="tc-tour-btn tc-tour-skip" type="button">Bỏ qua</button>
+        <button class="tc-tour-btn tc-tour-never" type="button">Đừng hiện lại</button>
+        <button class="tc-tour-btn tc-tour-next" type="button">Tiếp</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+function startPaletteTour(options = {}) {
+  const { force = false } = options;
+  if (!force) {
+    if (isPaletteTourDisabled() || hasPaletteTourBeenSeen()) return false;
+  }
+  const steps = getPaletteTourSteps();
+  if (!steps.length) return false;
+  if (activePaletteTour?.finish) {
+    activePaletteTour.finish({ markSeen: false, restoreMode: false });
+  }
+  const originalMode = paletteWorkMode;
+  setPaletteWorkMode("quick");
+  const overlay = createPaletteTourOverlay();
+  const spotlight = overlay.querySelector(".tc-tour-spotlight");
+  const card = overlay.querySelector(".tc-tour-card");
+  const stepEl = overlay.querySelector(".tc-tour-step");
+  const titleEl = overlay.querySelector(".tc-tour-title");
+  const descEl = overlay.querySelector(".tc-tour-desc");
+  const prevBtn = overlay.querySelector(".tc-tour-prev");
+  const skipBtn = overlay.querySelector(".tc-tour-skip");
+  const neverBtn = overlay.querySelector(".tc-tour-never");
+  const nextBtn = overlay.querySelector(".tc-tour-next");
+  let index = 0;
+
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const positionCard = (rect) => {
+    const margin = 16;
+    const topInset = getPaletteTourTopInset();
+    const cardRect = card.getBoundingClientRect();
+    let top = rect.bottom + 12;
+    if (top + cardRect.height > window.innerHeight - margin) {
+      top = rect.top - cardRect.height - 12;
+    }
+    top = clamp(top, topInset, window.innerHeight - cardRect.height - margin);
+    let left = rect.left;
+    if (left + cardRect.width > window.innerWidth - margin) {
+      left = window.innerWidth - cardRect.width - margin;
+    }
+    left = clamp(left, margin, window.innerWidth - cardRect.width - margin);
+    card.style.top = `${top}px`;
+    card.style.left = `${left}px`;
+  };
+
+  const findValidIndex = (start, direction) => {
+    let next = start;
+    while (next >= 0 && next < steps.length) {
+      const step = steps[next];
+      step?.prepare?.();
+      const target = document.querySelector(step.selector);
+      if (isPaletteTourTargetVisible(target)) return next;
+      next += direction;
+    }
+    return -1;
+  };
+
+  const paintActiveStep = (step, target, options = {}) => {
+    const { shouldScroll = false } = options;
+    if (!step || !target) return;
+    if (shouldScroll) {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    window.setTimeout(() => {
+      const rect = target.getBoundingClientRect();
+      const padding = 10;
+      const topInset = getPaletteTourTopInset();
+      const top = clamp(rect.top - padding, topInset, window.innerHeight - 20);
+      const left = clamp(rect.left - padding, 10, window.innerWidth - 20);
+      const width = clamp(rect.width + padding * 2, 44, window.innerWidth - 20);
+      const height = clamp(rect.height + padding * 2, 44, window.innerHeight - 20);
+      spotlight.style.width = `${width}px`;
+      spotlight.style.height = `${height}px`;
+      spotlight.style.transform = `translate(${left}px, ${top}px)`;
+      positionCard({ top, left, width, height, bottom: top + height });
+      stepEl.textContent = `Bước ${index + 1}/${steps.length}`;
+      titleEl.textContent = step.title;
+      descEl.textContent = step.desc;
+      prevBtn.disabled = index === 0;
+      nextBtn.textContent = index === steps.length - 1 ? "Hoàn tất" : "Tiếp";
+    }, shouldScroll ? 110 : 0);
+  };
+
+  const renderStep = (direction = 1) => {
+    const validIndex = findValidIndex(index, direction);
+    if (validIndex === -1) {
+      finish({ markSeen: true, restoreMode: true });
+      return;
+    }
+    index = validIndex;
+    const step = steps[index];
+    step?.prepare?.();
+    const target = document.querySelector(step.selector);
+    if (!target) {
+      finish({ markSeen: true, restoreMode: true });
+      return;
+    }
+    paintActiveStep(step, target, { shouldScroll: true });
+  };
+
+  const finish = ({ markSeen = true, markNever = false, restoreMode = true } = {}) => {
+    if (markNever) {
+      markPaletteTourNever();
+    } else if (markSeen) {
+      markPaletteTourSeen();
+    }
+    overlay.remove();
+    window.removeEventListener("resize", handleReposition);
+    window.removeEventListener("scroll", handleReposition, true);
+    if (restoreMode) {
+      setPaletteWorkMode(originalMode);
+    }
+    activePaletteTour = null;
+  };
+
+  const handleReposition = () => {
+    const step = steps[index];
+    if (!step) return;
+    const target = document.querySelector(step.selector);
+    if (!target || !isPaletteTourTargetVisible(target)) return;
+    paintActiveStep(step, target, { shouldScroll: false });
+  };
+
+  activePaletteTour = { finish };
+  prevBtn?.addEventListener("click", () => {
+    if (index <= 0) return;
+    index -= 1;
+    renderStep(-1);
+  });
+  nextBtn?.addEventListener("click", () => {
+    if (index >= steps.length - 1) {
+      finish({ markSeen: true, restoreMode: true });
+      return;
+    }
+    index += 1;
+    renderStep(1);
+  });
+  skipBtn?.addEventListener("click", () => {
+    finish({ markSeen: true, restoreMode: true });
+  });
+  neverBtn?.addEventListener("click", () => {
+    finish({ markNever: true, restoreMode: true });
+  });
+
+  window.addEventListener("resize", handleReposition);
+  window.addEventListener("scroll", handleReposition, true);
+  renderStep(1);
+  return true;
+}
+
 function normalizeHex(input) {
   return normalizeHexCore(input);
 }
@@ -417,6 +965,9 @@ function normalizeHex(input) {
 function setPaletteWorkMode(nextMode) {
   paletteWorkMode = nextMode === "expert" ? "expert" : "quick";
   const isExpert = paletteWorkMode === "expert";
+  if (document.body) {
+    document.body.setAttribute("data-palette-mode", paletteWorkMode);
+  }
   el.modeQuick?.classList.toggle("is-active", !isExpert);
   el.modeQuick?.setAttribute("aria-pressed", !isExpert ? "true" : "false");
   el.modeExpert?.classList.toggle("is-active", isExpert);
@@ -433,6 +984,7 @@ function setPaletteWorkMode(nextMode) {
       node.setAttribute("hidden", "hidden");
     }
   });
+  renderRoomFlowGuide();
 }
 
 function hexToRgb(hex) {
@@ -2526,7 +3078,10 @@ function syncRoomReadonlyUi() {
 }
 
 function renderRoomBanner() {
-  if (!el.roomBar || !el.roomName || !el.roomStatus) return;
+  if (!el.roomBar || !el.roomName || !el.roomStatus) {
+    renderRoomFlowGuide();
+    return;
+  }
   const hasRoom = Boolean(state.room.id);
   el.roomBar.classList.toggle("hidden", !hasRoom);
   if (!hasRoom) {
@@ -2534,6 +3089,7 @@ function renderRoomBanner() {
     renderRoomPresenceStack();
     renderRoomRevisionPanel();
     renderRoomCommentPanel();
+    renderRoomFlowGuide();
     return;
   }
   if (el.roomLabel) {
@@ -2546,6 +3102,7 @@ function renderRoomBanner() {
   renderRoomPresenceStack();
   renderRoomRevisionPanel();
   renderRoomCommentPanel();
+  renderRoomFlowGuide();
 }
 
 function isRoomSyncWritable() {
@@ -2962,6 +3519,8 @@ async function enterPaletteRoom(roomId, options = {}) {
   state.room.pendingFingerprint = "";
   state.room.pendingDirty = false;
   state.room.status = state.room.readOnly ? "viewer" : "editor";
+  rememberLastRoomId(normalizedRoomId);
+  updateRoomQueryParam(normalizedRoomId);
   renderRoomBanner();
   syncRoomReadonlyUi();
   await startRoomPresenceSync(api, realtimeApi);
@@ -7205,12 +7764,22 @@ function ensurePresetDetailOverlay() {
   if (el.presetDetail && el.presetDetailBody) return el.presetDetail;
   const overlay = document.getElementById("palettePresetDetail");
   const body = document.getElementById("palettePresetDetailBody");
+  const scrollHint = document.getElementById("palettePresetDetailScrollHint");
   if (overlay && body) {
     el.presetDetail = overlay;
     el.presetDetailBody = body;
+    el.presetDetailScrollHint = scrollHint;
     return overlay;
   }
   return null;
+}
+
+function syncPresetDetailScrollHint() {
+  if (!el.presetDetailBody || !el.presetDetailScrollHint) return;
+  const body = el.presetDetailBody;
+  const hasOverflow = body.scrollHeight > body.clientHeight + 12;
+  const nearBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 14;
+  el.presetDetailScrollHint.hidden = !hasOverflow || nearBottom;
 }
 
 function openPresetDetail(palette) {
@@ -7233,6 +7802,8 @@ function openPresetDetail(palette) {
   presetDetailOpen = true;
   presetDetailBodyOverflow = document.body.style.overflow;
   document.body.style.overflow = "hidden";
+  el.presetDetailBody.scrollTop = 0;
+  window.setTimeout(syncPresetDetailScrollHint, 30);
 }
 
 function closePresetDetail() {
@@ -7243,6 +7814,9 @@ function closePresetDetail() {
   document.body.style.overflow = presetDetailBodyOverflow;
   presetDetailBodyOverflow = "";
   presetDetailOpen = false;
+  if (el.presetDetailScrollHint) {
+    el.presetDetailScrollHint.hidden = false;
+  }
 }
 
 function initPresetDetail() {
@@ -7258,6 +7832,9 @@ function initPresetDetail() {
     if (event.key === "Escape" && presetDetailOpen) {
       closePresetDetail();
     }
+  });
+  el.presetDetailBody?.addEventListener("scroll", () => {
+    syncPresetDetailScrollHint();
   });
 }
 
@@ -7526,6 +8103,19 @@ function renderPaletteCard(palette) {
     "Gán vai màu theo nền/chữ/nhấn để kiểm tra workflow thực tế."
   );
   semanticBody.appendChild(semanticHint);
+  const roleStatus = document.createElement("div");
+  roleStatus.className = "tc-role-status";
+  const roleStatusLine = document.createElement("p");
+  roleStatusLine.className = "tc-role-status__line";
+  const roleHotspotLine = document.createElement("p");
+  roleHotspotLine.className = "tc-role-status__line tc-role-status__line--warn";
+  roleHotspotLine.hidden = true;
+  const roleChipList = document.createElement("div");
+  roleChipList.className = "tc-role-chip-list";
+  roleStatus.appendChild(roleStatusLine);
+  roleStatus.appendChild(roleHotspotLine);
+  roleStatus.appendChild(roleChipList);
+  semanticBody.appendChild(roleStatus);
   const roleGrid = document.createElement("div");
   roleGrid.className = "tc-role-grid";
   semanticBody.appendChild(roleGrid);
@@ -7539,6 +8129,47 @@ function renderPaletteCard(palette) {
     { key: "muted", label: t("paletteTool.roles.items.muted", "Chữ phụ") },
     { key: "accent", label: t("paletteTool.roles.items.accent", "Nhấn (CTA)") }
   ];
+  const roleLabelMap = roleDefs.reduce((acc, role) => {
+    acc[role.key] = role.label;
+    return acc;
+  }, {});
+  const resolveRoleLabel = (roleKey) => roleLabelMap[roleKey] || roleKey || "";
+
+  const buildSuggestionBadges = (suggestion, allSuggestions) => {
+    const safeList = Array.isArray(allSuggestions) ? allSuggestions : [];
+    if (!safeList.length || !suggestion) return [];
+    const minChange = Math.min(...safeList.map((item) => Number(item?.changeScore || 0)));
+    const maxFixed = Math.max(...safeList.map((item) => Number(item?.fixedCount || 0)));
+    const badges = [];
+    if (Number(suggestion.changeScore || 0) <= minChange) {
+      badges.push({ label: "Ít thay đổi nhất", tone: "safe" });
+    }
+    if (Number(suggestion.fixedCount || 0) >= maxFixed) {
+      badges.push({ label: "Dễ đạt chuẩn nhất", tone: "quick" });
+    }
+    if (suggestion.id === "text_lightness") {
+      badges.push({ label: "Giữ nhận diện tốt", tone: "brand" });
+    }
+    if (Number(suggestion.changeScore || 0) >= minChange + 12) {
+      badges.push({ label: "Táo bạo hơn", tone: "bold" });
+    }
+    if (!badges.length) {
+      badges.push({ label: "Cân bằng", tone: "safe" });
+    }
+    return badges.slice(0, 3);
+  };
+
+  const describeSuggestionTradeoff = (suggestion) => {
+    const roles = Array.isArray(suggestion?.changedRoles)
+      ? suggestion.changedRoles.map((key) => resolveRoleLabel(key)).filter(Boolean)
+      : [];
+    const roleText = roles.length ? roles.join(", ") : "không thay vai";
+    const changeScore = Number(suggestion?.changeScore || 0);
+    const impact = changeScore <= 22
+      ? "thấp"
+      : (changeScore <= 42 ? "vừa" : "cao");
+    return `Sửa vai: ${roleText} · Lợi ích: giảm ${suggestion?.fixedCount || 0} cặp lỗi · Đánh đổi: mức thay đổi ${impact}.`;
+  };
 
   const contrastMatrix = document.createElement("details");
   contrastMatrix.className = "tc-card p-3 tc-contrast-wrap";
@@ -7562,10 +8193,12 @@ function renderPaletteCard(palette) {
   matrixTabs.appendChild(matrixSuggestBtn);
   const matrixHint = document.createElement("p");
   matrixHint.className = "text-xs tc-muted";
-  matrixHint.textContent = t("paletteTool.matrix.hint", "Tỷ lệ tương phản càng cao càng dễ đọc.");
-  matrixHint.title = t("paletteTool.matrix.tooltip", "Tỷ lệ tương phản càng cao càng dễ đọc.");
+  matrixHint.textContent = t("paletteTool.matrix.hint", "Tỷ lệ tương phản càng cao càng dễ đọc; ưu tiên xử lý cặp fail thấp nhất trước.");
+  matrixHint.title = t("paletteTool.matrix.tooltip", "Tỷ lệ tương phản càng cao càng dễ đọc; ưu tiên xử lý cặp fail thấp nhất trước.");
   const matrixGuideMeta = document.createElement("p");
   matrixGuideMeta.className = "text-xs tc-muted";
+  const matrixBottleneck = document.createElement("p");
+  matrixBottleneck.className = "text-xs tc-muted";
   const guidelineForm = document.createElement("div");
   guidelineForm.className = "tc-matrix-guideline";
   const guidelineTitle = document.createElement("p");
@@ -7697,6 +8330,7 @@ function renderPaletteCard(palette) {
   matrixBody.appendChild(matrixTabs);
   matrixBody.appendChild(matrixHint);
   matrixBody.appendChild(matrixGuideMeta);
+  matrixBody.appendChild(matrixBottleneck);
   matrixBody.appendChild(guidelineForm);
   matrixBody.appendChild(matrixList);
   matrixBody.appendChild(matrixSuggestState);
@@ -7736,6 +8370,46 @@ function renderPaletteCard(palette) {
   previewBody.appendChild(tokenCopyBtn);
   previewWrap.appendChild(previewSummary);
   previewWrap.appendChild(previewBody);
+
+  const workflowWrap = document.createElement("section");
+  workflowWrap.className = "tc-workflow-next";
+  const workflowTitle = document.createElement("p");
+  workflowTitle.className = "tc-workflow-next__title";
+  workflowTitle.textContent = "Bước tiếp theo sau khi tối ưu";
+  const workflowState = document.createElement("p");
+  workflowState.className = "tc-workflow-next__state";
+  const workflowActions = document.createElement("div");
+  workflowActions.className = "tc-workflow-next__actions";
+  const workflowUseBtn = document.createElement("button");
+  workflowUseBtn.type = "button";
+  workflowUseBtn.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  workflowUseBtn.textContent = "Đặt làm bảng phối đang dùng";
+  workflowUseBtn.addEventListener("click", () => {
+    selectPalette(palette);
+    showToast("Đã đặt làm bảng phối đang dùng.");
+  });
+  const workflowApplyPreviewBtn = document.createElement("button");
+  workflowApplyPreviewBtn.type = "button";
+  workflowApplyPreviewBtn.className = "tc-btn tc-btn-primary px-3 py-2 text-xs";
+  workflowApplyPreviewBtn.textContent = "Áp dụng phương án đang xem";
+  workflowApplyPreviewBtn.hidden = true;
+  const workflowToThread = document.createElement("a");
+  workflowToThread.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  workflowToThread.textContent = "Gửi sang World 1";
+  const workflowToGradient = document.createElement("a");
+  workflowToGradient.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  workflowToGradient.textContent = "Gửi sang World 2";
+  const workflowToCommunity = document.createElement("a");
+  workflowToCommunity.className = "tc-btn tc-chip px-3 py-2 text-xs";
+  workflowToCommunity.textContent = "Đẩy sang Cộng đồng";
+  workflowActions.appendChild(workflowUseBtn);
+  workflowActions.appendChild(workflowApplyPreviewBtn);
+  workflowActions.appendChild(workflowToThread);
+  workflowActions.appendChild(workflowToGradient);
+  workflowActions.appendChild(workflowToCommunity);
+  workflowWrap.appendChild(workflowTitle);
+  workflowWrap.appendChild(workflowState);
+  workflowWrap.appendChild(workflowActions);
 
   const roleRows = new Map();
 
@@ -8268,6 +8942,34 @@ function renderPaletteCard(palette) {
     matrixList.innerHTML = "";
     matrixSuggestList.innerHTML = "";
 
+    roleChipList.innerHTML = "";
+    roleDefs.forEach((role) => {
+      const chip = document.createElement("span");
+      chip.className = "tc-role-chip";
+      const dot = document.createElement("span");
+      dot.className = "tc-role-chip__dot";
+      dot.style.background = roleColors[role.key] || "#E2E8F0";
+      const text = document.createElement("span");
+      text.textContent = `${role.label}: ${String(roleColors[role.key] || "").toUpperCase()}`;
+      chip.appendChild(dot);
+      chip.appendChild(text);
+      roleChipList.appendChild(chip);
+    });
+
+    const failingRows = rows.filter((row) => !row.pass).sort((a, b) => a.ratio - b.ratio);
+    const weakestRow = failingRows[0] || null;
+    if (weakestRow) {
+      roleStatusLine.innerHTML = `<strong>${failingRows.length}</strong> cặp vai màu chưa đạt ngưỡng ${threshold.toFixed(1)}:1.`;
+      roleHotspotLine.hidden = false;
+      roleHotspotLine.textContent = `Nút thắt hiện tại: ${weakestRow.label} (${weakestRow.ratio.toFixed(2)}:1). Ưu tiên chỉnh ${resolveRoleLabel(weakestRow.fgRole)} trước.`;
+      matrixBottleneck.textContent = `Cặp cần ưu tiên: ${weakestRow.label} · ${weakestRow.ratio.toFixed(2)}:1 (mục tiêu ${threshold.toFixed(1)}:1).`;
+    } else {
+      roleStatusLine.innerHTML = `<strong>Đạt chuẩn</strong> cho toàn bộ cặp vai màu theo ngưỡng ${threshold.toFixed(1)}:1.`;
+      roleHotspotLine.hidden = true;
+      roleHotspotLine.textContent = "";
+      matrixBottleneck.textContent = "Không còn nút thắt contrast. Bạn có thể ưu tiên tinh chỉnh thẩm mỹ hoặc chuyển tiếp workflow.";
+    }
+
     rows.forEach((rowDef) => {
       const row = document.createElement("div");
       row.className = "tc-contrast-row";
@@ -8331,7 +9033,7 @@ function renderPaletteCard(palette) {
 
     latestGuidelineSuggestions.forEach((suggestion, index) => {
       const item = document.createElement("article");
-      item.className = "tc-contrast-row";
+      item.className = "tc-contrast-row tc-suggest-card";
       const meta = document.createElement("div");
       meta.className = "tc-contrast-meta";
       const title = document.createElement("div");
@@ -8353,6 +9055,24 @@ function renderPaletteCard(palette) {
       );
       meta.appendChild(title);
       meta.appendChild(desc);
+      const tradeoff = document.createElement("p");
+      tradeoff.className = "tc-suggest-tradeoff";
+      tradeoff.textContent = describeSuggestionTradeoff(suggestion);
+      meta.appendChild(tradeoff);
+
+      const badgeWrap = document.createElement("div");
+      badgeWrap.className = "tc-suggest-badges";
+      buildSuggestionBadges(suggestion, latestGuidelineSuggestions).forEach((badge) => {
+        const node = document.createElement("span");
+        node.className = `tc-suggest-badge tc-suggest-badge--${badge.tone || "safe"}`;
+        node.textContent = badge.label;
+        badgeWrap.appendChild(node);
+      });
+
+      const head = document.createElement("div");
+      head.className = "tc-suggest-card__head";
+      head.appendChild(meta);
+      head.appendChild(badgeWrap);
 
       const actions = document.createElement("div");
       actions.className = "tc-contrast-actions";
@@ -8377,7 +9097,7 @@ function renderPaletteCard(palette) {
       actions.appendChild(previewBtn);
       actions.appendChild(applyBtn);
 
-      item.appendChild(meta);
+      item.appendChild(head);
       item.appendChild(actions);
       matrixSuggestList.appendChild(item);
     });
@@ -8388,6 +9108,7 @@ function renderPaletteCard(palette) {
     matrixList.classList.toggle("hidden", activeMatrixTab !== "checks");
     matrixSuggestState.classList.toggle("hidden", activeMatrixTab !== "suggest");
     matrixSuggestList.classList.toggle("hidden", activeMatrixTab !== "suggest");
+    return rows;
   };
 
   const renderPreview = (roleColors) => {
@@ -8415,6 +9136,120 @@ function renderPaletteCard(palette) {
       poster.appendChild(body);
       poster.appendChild(cta);
       previewStage.appendChild(poster);
+      return;
+    }
+    if (activePreviewTab === "card") {
+      const grid = document.createElement("div");
+      grid.className = "tc-context-grid";
+
+      const cardLight = document.createElement("article");
+      cardLight.className = "tc-context-card";
+      cardLight.style.background = roleColors.surface;
+      const cardLightHead = document.createElement("div");
+      cardLightHead.className = "tc-context-card__head";
+      cardLightHead.style.background = roleColors.bg;
+      cardLightHead.style.color = roleColors.text;
+      cardLightHead.textContent = t("paletteTool.preview.card.lightTitle", "Thẻ nội dung sáng");
+      const cardLightBody = document.createElement("div");
+      cardLightBody.className = "tc-context-card__body";
+      const lightHeading = document.createElement("p");
+      lightHeading.className = "text-sm font-semibold";
+      lightHeading.style.color = roleColors.text;
+      lightHeading.textContent = t("paletteTool.preview.card.lightHeading", "Tiêu đề chính");
+      const lightDesc = document.createElement("p");
+      lightDesc.className = "tc-context-caption";
+      lightDesc.style.color = roleColors.muted;
+      lightDesc.textContent = t("paletteTool.preview.card.lightDesc", "Dùng để kiểm tra khả năng đọc trong bối cảnh light.");
+      const lightBadge = document.createElement("span");
+      lightBadge.className = "tc-context-badge";
+      lightBadge.style.background = roleColors.accent;
+      lightBadge.style.color = accentText.hex;
+      lightBadge.textContent = t("paletteTool.preview.card.lightBadge", "Nhãn nổi bật");
+      cardLightBody.appendChild(lightHeading);
+      cardLightBody.appendChild(lightDesc);
+      cardLightBody.appendChild(lightBadge);
+      cardLight.appendChild(cardLightHead);
+      cardLight.appendChild(cardLightBody);
+
+      const cardDark = document.createElement("article");
+      cardDark.className = "tc-context-card";
+      cardDark.style.background = roleColors.text;
+      const cardDarkHead = document.createElement("div");
+      cardDarkHead.className = "tc-context-card__head";
+      cardDarkHead.style.background = roleColors.accent;
+      cardDarkHead.style.color = accentText.hex;
+      cardDarkHead.textContent = t("paletteTool.preview.card.darkTitle", "Thẻ nội dung tối");
+      const cardDarkBody = document.createElement("div");
+      cardDarkBody.className = "tc-context-card__body";
+      const darkHeading = document.createElement("p");
+      darkHeading.className = "text-sm font-semibold";
+      darkHeading.style.color = roleColors.bg;
+      darkHeading.textContent = t("paletteTool.preview.card.darkHeading", "Khối thông tin phụ");
+      const darkDesc = document.createElement("p");
+      darkDesc.className = "tc-context-caption";
+      darkDesc.style.color = roleColors.surface;
+      darkDesc.textContent = t("paletteTool.preview.card.darkDesc", "So nhanh độ nổi của chữ và nút khi dùng nền tối.");
+      const darkBtn = document.createElement("button");
+      darkBtn.type = "button";
+      darkBtn.className = "tc-context-cta";
+      darkBtn.style.background = roleColors.bg;
+      darkBtn.style.color = roleColors.text;
+      darkBtn.textContent = t("paletteTool.preview.card.darkCta", "Mở chi tiết");
+      cardDarkBody.appendChild(darkHeading);
+      cardDarkBody.appendChild(darkDesc);
+      cardDarkBody.appendChild(darkBtn);
+      cardDark.appendChild(cardDarkHead);
+      cardDark.appendChild(cardDarkBody);
+
+      grid.appendChild(cardLight);
+      grid.appendChild(cardDark);
+      previewStage.appendChild(grid);
+      return;
+    }
+    if (activePreviewTab === "cta") {
+      const lab = document.createElement("div");
+      lab.className = "tc-context-cta-lab";
+      const header = document.createElement("p");
+      header.className = "tc-context-caption";
+      header.textContent = t("paletteTool.preview.cta.hint", "Kiểm tra nhanh độ nổi của CTA/nhãn trước khi áp vào trang thật.");
+      lab.appendChild(header);
+      const rows = [
+        {
+          label: t("paletteTool.preview.cta.primary", "CTA chính"),
+          bg: roleColors.accent,
+          fg: accentText.hex,
+          text: t("paletteTool.preview.cta.primaryText", "Mua ngay")
+        },
+        {
+          label: t("paletteTool.preview.cta.secondary", "CTA phụ"),
+          bg: roleColors.surface,
+          fg: roleColors.text,
+          text: t("paletteTool.preview.cta.secondaryText", "Xem thêm")
+        },
+        {
+          label: t("paletteTool.preview.cta.tag", "Nhãn trạng thái"),
+          bg: roleColors.bg,
+          fg: roleColors.text,
+          text: t("paletteTool.preview.cta.tagText", "Đang xử lý")
+        }
+      ];
+      rows.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "tc-context-cta-lab__row";
+        const label = document.createElement("span");
+        label.className = "tc-context-cta-lab__label";
+        label.textContent = item.label;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tc-context-cta";
+        btn.style.background = item.bg;
+        btn.style.color = item.fg;
+        btn.textContent = item.text;
+        row.appendChild(label);
+        row.appendChild(btn);
+        lab.appendChild(row);
+      });
+      previewStage.appendChild(lab);
       return;
     }
     const ui = document.createElement("div");
@@ -8479,17 +9314,42 @@ function renderPaletteCard(palette) {
     previewButtons.forEach((btn, key) => {
       btn.classList.toggle("tc-btn-primary", key === activePreviewTab);
     });
-    renderMatrix(roleColors);
+    const matrixRows = renderMatrix(roleColors) || [];
     let previewRoleColors = roleColors;
+    let previewSuggestion = null;
     if (previewSuggestionId) {
-      const previewSuggestion = latestGuidelineSuggestions.find((item) => item.id === previewSuggestionId) || null;
+      previewSuggestion = latestGuidelineSuggestions.find((item) => item.id === previewSuggestionId) || null;
       if (previewSuggestion?.roleColors) {
         previewRoleColors = previewSuggestion.roleColors;
       } else {
         previewSuggestionId = "";
+        previewSuggestion = null;
       }
     }
     renderPreview(previewRoleColors);
+    const selected = state.selectedPaletteId === paletteId;
+    workflowUseBtn.disabled = selected;
+    workflowUseBtn.textContent = selected
+      ? "Đang là bảng phối đang dùng"
+      : "Đặt làm bảng phối đang dùng";
+    if (previewSuggestion) {
+      workflowState.textContent = `Đang xem trước: ${previewSuggestion.title}. Có thể áp dụng ngay hoặc so tiếp với palette gốc.`;
+      workflowApplyPreviewBtn.hidden = false;
+      workflowApplyPreviewBtn.onclick = async () => {
+        await applyGuidelineSuggestion(previewSuggestion);
+      };
+    } else {
+      const failCount = matrixRows.filter((row) => !row.pass).length;
+      workflowApplyPreviewBtn.hidden = true;
+      workflowApplyPreviewBtn.onclick = null;
+      workflowState.textContent = failCount > 0
+        ? `Còn ${failCount} cặp vai màu chưa đạt chuẩn. Hãy chọn một phương án ở tab Đề xuất để tối ưu nhanh.`
+        : "Palette đã đạt chuẩn tương phản. Bạn có thể lưu, sao chép token hoặc chuyển tiếp sang World khác.";
+    }
+    const leadHex = normalizeHex(stops[roleMap.accent] || stops[0] || "#0EA5E9")?.toUpperCase() || "#0EA5E9";
+    workflowToThread.href = `./threadcolor.html?color=${encodeURIComponent(leadHex)}`;
+    workflowToGradient.href = `./gradient.html#g=${encodeURIComponent(stops.join(","))}`;
+    workflowToCommunity.href = "../spaces/community.html?from=world3_palette";
     applyPresenceBadgesInDom();
   };
 
@@ -8507,8 +9367,9 @@ function renderPaletteCard(palette) {
   card.appendChild(strip);
   card.appendChild(semanticWrap);
   card.appendChild(contrastMatrix);
-  card.appendChild(quickCopy);
   card.appendChild(previewWrap);
+  card.appendChild(workflowWrap);
+  card.appendChild(quickCopy);
   card.addEventListener("click", (event) => {
     if (event.target.closest("button")) return;
     markPresenceIntent({
@@ -8962,12 +9823,54 @@ async function init() {
       }
     }
   }
+  if (el.roomJoinInput) {
+    el.roomJoinInput.value = roomIdFromQuery || getLastRoomId() || "";
+  }
+  renderRoomFlowGuide();
+  refreshPaletteTourControls();
   loadPalettes();
   el.modeQuick?.addEventListener("click", () => {
     setPaletteWorkMode("quick");
   });
   el.modeExpert?.addEventListener("click", () => {
     setPaletteWorkMode("expert");
+  });
+  (el.startFocusButtons || []).forEach((button) => {
+    button.addEventListener("click", () => {
+      focusPaletteStartPath(button.getAttribute("data-start-focus") || "");
+    });
+  });
+  el.tourStartBtn?.addEventListener("click", () => {
+    startPaletteTour({ force: true });
+  });
+  el.tourReplayBtn?.addEventListener("click", () => {
+    startPaletteTour({ force: true });
+  });
+  el.tourDontShowBtn?.addEventListener("click", () => {
+    markPaletteTourNever();
+    showToast("Đã tắt tự động hiển thị tour cho lần truy cập tiếp theo.");
+  });
+  el.roomSoloBtn?.addEventListener("click", () => {
+    usePaletteSoloMode({ silent: false });
+  });
+  el.roomRecentBtn?.addEventListener("click", async () => {
+    const lastRoomId = getLastRoomId();
+    if (!lastRoomId) {
+      showToast("Chưa có phòng gần nhất để vào lại.");
+      return;
+    }
+    await joinPaletteRoomFromInput(lastRoomId, { silent: false });
+  });
+  el.roomCreateBtn?.addEventListener("click", async () => {
+    await createPaletteRoomFromCurrentState();
+  });
+  el.roomJoinBtn?.addEventListener("click", async () => {
+    await joinPaletteRoomFromInput(el.roomJoinInput?.value || "", { silent: false });
+  });
+  el.roomJoinInput?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    el.roomJoinBtn?.click();
   });
 
   el.hexApply?.addEventListener("click", () => {
@@ -9150,11 +10053,16 @@ async function init() {
   const firebaseApi = getFirebaseApi();
   if (typeof firebaseApi?.onAuthStateChanged === "function") {
     firebaseApi.onAuthStateChanged(() => {
+      renderRoomFlowGuide();
       loadTeamsForCurrentUser({ silent: true }).then(() => loadLibraryPresets({ silent: true }));
     });
   }
   await loadTeamsForCurrentUser({ silent: true });
   await loadLibraryPresets({ silent: true });
+  renderRoomFlowGuide();
+  window.setTimeout(() => {
+    startPaletteTour({ force: false });
+  }, 380);
 }
 
 window.addEventListener("beforeunload", cleanupRoomListener);

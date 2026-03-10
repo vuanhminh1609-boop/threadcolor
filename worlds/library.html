@@ -181,6 +181,35 @@
       font-size: 12px;
       font-weight: 600;
     }
+    .tc-library-filterbar{
+      margin-top: 1rem;
+      padding: 0.95rem;
+    }
+    .tc-library-filterrow{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .tc-library-project-wrap{
+      display: flex;
+      flex: 1 1 260px;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      min-width: min(100%, 260px);
+    }
+    .tc-library-project-wrap > select{
+      flex: 1 1 200px;
+      min-width: min(100%, 200px);
+    }
+    .tc-library-filterstate{
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .tc-library-filterstate strong{
+      color: var(--text);
+    }
     .tc-swatch{
       width: 28px;
       height: 28px;
@@ -328,7 +357,7 @@
 
 
 
-  <main class="mx-auto max-w-6xl px-4 pt-10 pb-16">
+  <main class="tc-shell pt-10 pb-16">
     <section class="tc-card p-6 md:p-8">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
@@ -371,7 +400,8 @@
             </article>
           </div>
         </section>
-        <div class="flex flex-wrap gap-3">
+        <div class="tc-card tc-library-filterbar">
+          <div class="tc-library-filterrow">
           <!-- Ô bẫy để Edge Password Manager không bám vào ô tìm kiếm -->
           <input type="text" autocomplete="username" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
           <input type="password" autocomplete="current-password" tabindex="-1" aria-hidden="true" class="tc-offscreen-trap">
@@ -385,9 +415,12 @@
             <option value="hex_swatch">HEX swatch</option>
             <option value="other">Khác</option>
           </select>
-          <select id="assetProjectFilter" class="tc-input w-full md:w-[200px]">
-            <option value="__all__">Tất cả dự án</option>
-          </select>
+            <div class="tc-library-project-wrap">
+              <select id="assetProjectFilter" class="tc-input w-full md:w-[200px]">
+                <option value="__all__">Tất cả dự án (bỏ lọc)</option>
+              </select>
+              <button id="assetProjectClear" class="tc-btn tc-chip px-3 py-2 text-xs hidden" type="button">Bỏ lọc dự án</button>
+            </div>
           <label class="flex items-center gap-2 text-xs font-semibold">
             <input id="assetMultiSelect" type="checkbox" class="h-4 w-4">
             Chọn nhiều
@@ -401,6 +434,8 @@
               <div>Ví dụ: “Tường Phòng khách — Sơn&Vải — Trắng · Mờ · Tĩnh — v01”.</div>
             </div>
           </details>
+          </div>
+          <p id="assetProjectFilterState" class="tc-muted tc-library-filterstate mt-1">Đang hiển thị tất cả dự án.</p>
         </div>
         <div class="mt-6 space-y-4">
           <div id="assetPinnedStrip" class="asset-strip hidden">

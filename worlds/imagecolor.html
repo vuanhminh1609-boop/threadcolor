@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thế giới Màu từ Ảnh</title>
+  <title data-i18n="imagecolor.meta.title">Thế giới màu ảnh</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <link rel="stylesheet" href="../assets/tones.css">
   <link rel="stylesheet" href="../assets/site_base.css">
@@ -163,6 +163,11 @@
       color: #fff;
       border-color: transparent;
     }
+    .tc-swatch-keep.is-active{
+      background: rgba(15, 118, 110, 0.18);
+      border-color: rgba(15, 118, 110, 0.55);
+      color: #0f766e;
+    }
     .tc-btn[disabled],
     .tc-btn.is-disabled{
       opacity: .5;
@@ -285,6 +290,219 @@
       z-index: 3;
     }
     .ic-region.is-visible{ display: block; }
+    .ic-decision-panel{
+      display: grid;
+      gap: 10px;
+    }
+    .ic-decision-summary{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .ic-role-grid{
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    .ic-role-item{
+      border: 1px solid var(--stroke);
+      border-radius: 0.85rem;
+      padding: 0.55rem;
+      display: grid;
+      gap: 6px;
+      background: rgba(255,255,255,0.04);
+    }
+    .ic-role-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .ic-role-color{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .ic-role-swatch{
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      flex: none;
+    }
+    .ic-dominant-strip{
+      display: flex;
+      width: 100%;
+      min-height: 20px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.08);
+    }
+    .ic-dominant-segment{
+      min-width: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.62);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.35);
+    }
+    .ic-next-action{
+      border: 1px solid var(--stroke);
+      border-radius: 0.8rem;
+      padding: 0.55rem 0.65rem;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      line-height: 1.5;
+    }
+    .tc-swatch-card{
+      min-width: 94px;
+      border: 1px solid transparent;
+      border-radius: 0.95rem;
+      padding: 0.35rem;
+      transition: border-color .2s ease, transform .15s ease, background .2s ease;
+      cursor: pointer;
+    }
+    .tc-swatch-card:hover{
+      border-color: rgb(var(--a2-rgb) / 0.45);
+      background: rgba(255,255,255,0.04);
+    }
+    .tc-swatch-card.is-selected{
+      border-color: rgb(var(--a1-rgb) / 0.6);
+      background: rgb(var(--a1-rgb) / 0.16);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.14) inset;
+    }
+    .ic-preview-legend{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .ic-preview-pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+    }
+    .ic-preview-pill .ic-role-swatch{
+      width: 12px;
+      height: 12px;
+    }
+    .ic-strategy-panel,
+    .ic-next-panel,
+    .ic-replace-panel{
+      display: grid;
+      gap: 10px;
+    }
+    .ic-strategy-grid{
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .ic-strategy-card{
+      border: 1px solid var(--stroke);
+      border-radius: 0.9rem;
+      padding: 0.65rem;
+      background: rgba(255,255,255,0.03);
+      display: grid;
+      gap: 8px;
+    }
+    .ic-strategy-card.is-active{
+      border-color: rgb(var(--a1-rgb) / 0.55);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.14) inset;
+      background: rgb(var(--a1-rgb) / 0.14);
+    }
+    .ic-strategy-preview{
+      min-height: 30px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      overflow: hidden;
+      display: flex;
+    }
+    .ic-strategy-preview span{
+      display: block;
+      flex: 1 1 0;
+      min-width: 8px;
+    }
+    .ic-strategy-actions{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .ic-replace-shell{
+      display: grid;
+      gap: 8px;
+    }
+    .ic-candidate-list{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .ic-candidate-btn{
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+    .ic-replace-actions{
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ic-next-step-list{
+      display: grid;
+      gap: 8px;
+    }
+    .ic-next-step-item{
+      border: 1px solid var(--stroke);
+      border-radius: 0.85rem;
+      padding: 0.55rem 0.65rem;
+      display: grid;
+      gap: 6px;
+      background: rgba(255,255,255,0.03);
+    }
+    .ic-next-step-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .ic-role-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 10px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.05);
+      margin-top: 2px;
+    }
+    @media (max-width: 640px){
+      .ic-role-grid{
+        grid-template-columns: 1fr;
+      }
+      .ic-strategy-grid{
+        grid-template-columns: 1fr;
+      }
+    }
     .sr-only{
       position: absolute;
       width: 1px;
@@ -309,76 +527,121 @@
 
 
 
-  <main class="mx-auto max-w-6xl px-4 pt-10 pb-16">
+  <main class="tc-shell pt-10 pb-16">
     <section class="tc-card p-6 md:p-8">
-      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between" data-tour="w7-hero">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] tc-muted">WORLD7 · IMAGECOLOR</p>
-          <h1 class="text-3xl md:text-4xl font-bold">Thế giới Màu từ Ảnh</h1>
-          <p class="mt-2 tc-muted">Tải ảnh lên, lấy mẫu màu nhanh và chuyển sang Bảng/Dải chỉ với 1 chạm.</p>
+          <p class="text-xs uppercase tracking-[0.35em] tc-muted" data-i18n="imagecolor.hero.kicker">Thế giới thứ 7</p>
+          <h1 class="text-3xl md:text-4xl font-bold" data-i18n="imagecolor.hero.title">Thế giới màu ảnh</h1>
+          <p class="mt-2 tc-muted" data-i18n="imagecolor.hero.desc">Tải ảnh, trích màu theo vùng, đánh giá vai màu và chuyển tiếp sang Thêu, In, Bảng phối, Dải chuyển hoặc Thư viện.</p>
         </div>
         <div class="inline-flex items-center gap-2 tc-chip px-3 py-2 rounded-full text-xs">
           <span class="tc-dot" aria-hidden="true"></span>
-          <span>Ảnh → Bảng phối màu</span>
+          <span data-i18n="imagecolor.hero.badge">Ảnh → Quyết định màu → Chuyển tiếp liên Thế giới</span>
         </div>
       </div>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div class="mt-5 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div class="space-y-4">
           <div id="dropzone" class="tc-card p-4 tc-dropzone">
             <div class="flex flex-col gap-2">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="text-sm font-semibold">Kéo thả ảnh vào đây</span>
-                <span class="tc-muted text-xs">hoặc</span>
-                <button id="btnChooseFile" type="button" class="tc-btn tc-chip px-3 py-2 text-xs">Chọn tệp ảnh</button>
+                <span class="text-sm font-semibold" data-i18n="imagecolor.upload.dropTitle">Kéo thả ảnh vào đây</span>
+                <span class="tc-muted text-xs" data-i18n="imagecolor.upload.or">hoặc</span>
+                <button id="btnChooseFile" type="button" class="tc-btn tc-chip px-3 py-2 text-xs" data-i18n="imagecolor.upload.chooseFile">Chọn tệp ảnh</button>
               </div>
-              <span class="tc-muted text-xs">Hỗ trợ JPG/PNG, tối đa vừa đủ để xử lý mượt.</span>
+              <span class="tc-muted text-xs" data-i18n="imagecolor.upload.hint">Hỗ trợ JPG/PNG, tối đa vừa đủ để xử lý mượt.</span>
             </div>
             <input id="imgInput" type="file" accept="image/*" class="sr-only">
           </div>
           <div class="flex items-center gap-3 flex-wrap">
             <div class="flex items-center gap-2">
-              <label class="text-sm font-semibold">Số màu</label>
+              <label class="text-sm font-semibold" data-i18n="imagecolor.controls.paletteSize">Số màu</label>
               <select id="paletteSize" class="tc-input w-[120px]">
-                <option value="5">5 màu</option>
-                <option value="8" selected>8 màu</option>
-                <option value="12">12 màu</option>
+                <option value="5" data-i18n="imagecolor.controls.palette5">5 màu</option>
+                <option value="8" selected data-i18n="imagecolor.controls.palette8">8 màu</option>
+                <option value="12" data-i18n="imagecolor.controls.palette12">12 màu</option>
               </select>
             </div>
-            <button id="btnSample" class="tc-btn tc-btn-primary px-4 py-2">Lấy mẫu màu</button>
+            <button id="btnSample" class="tc-btn tc-btn-primary px-4 py-2" data-i18n="imagecolor.controls.sample">Lấy mẫu màu</button>
           </div>
           <div class="tc-card p-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <p class="text-sm font-semibold">Preset trích màu</p>
-              <p class="tc-muted text-xs">Chọn ngữ cảnh để đổi ưu tiên trích màu + preview.</p>
+              <p class="text-sm font-semibold" data-i18n="imagecolor.presets.title">Thiết lập trích màu</p>
+              <p class="tc-muted text-xs" data-i18n="imagecolor.presets.hint">Chọn ngữ cảnh để đổi ưu tiên trích màu và xem trước.</p>
             </div>
             <div id="imageExtractPresetGroup" class="ic-extract-presets mt-2">
-              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="brand">Brand</button>
-              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="interior">Ảnh nội thất</button>
-              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="fashion">Ảnh thời trang</button>
-              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="embroidery">Ảnh thêu</button>
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="brand" data-i18n="imagecolor.presets.brand">Nhận diện thương hiệu</button>
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="interior" data-i18n="imagecolor.presets.interior">Ảnh nội thất</button>
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="fashion" data-i18n="imagecolor.presets.fashion">Ảnh thời trang</button>
+              <button type="button" class="tc-btn tc-chip px-3 py-2 text-xs ic-extract-preset" data-image-preset="embroidery" data-i18n="imagecolor.presets.embroidery">Ảnh thêu</button>
             </div>
-            <p id="imagePresetHint" class="tc-muted text-xs mt-2">Brand: ưu tiên dải nhận diện và điểm nhấn chính/phụ.</p>
+            <p id="imagePresetHint" class="tc-muted text-xs mt-2" data-i18n="imagecolor.presets.hints.brand">Nhận diện thương hiệu: ưu tiên dải nhận diện và điểm nhấn chính/phụ.</p>
           </div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <button id="btnRegion" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Khoanh vùng</button>
-            <button id="btnRegionClear" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Xoá vùng</button>
-            <span id="regionStatus" class="tc-muted text-xs">Chưa chọn vùng.</span>
+          <div class="flex items-center gap-2 flex-wrap" data-tour="w7-region">
+            <button id="btnRegion" class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-i18n="imagecolor.controls.region">Khoanh vùng</button>
+            <button id="btnRegionClear" class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-i18n="imagecolor.controls.regionClear">Xoá vùng</button>
+            <span id="regionStatus" class="tc-muted text-xs" data-i18n="imagecolor.regionStatus.empty">Chưa chọn vùng.</span>
           </div>
           <div id="swatchGrid" class="flex flex-wrap gap-3"></div>
-          <div class="flex flex-wrap gap-2">
-            <button id="btnToPalette" class="tc-btn tc-chip px-4 py-2">Tạo Bảng phối màu</button>
-            <button id="btnToGradient" class="tc-btn tc-chip px-4 py-2">Tạo Dải chuyển màu</button>
-            <button id="btnSaveLibrary" class="tc-btn tc-chip px-4 py-2">Lưu vào Thư viện</button>
-            <button id="btnUseLibrary" class="tc-btn tc-chip px-4 py-2">Dùng từ Thư viện</button>
-            <button id="btnShare" class="tc-btn tc-chip px-4 py-2">Chia sẻ</button>
+          <div id="paletteDecisionPanel" class="tc-card p-4 ic-decision-panel">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-sm font-semibold" data-i18n="imagecolor.decision.title">Bản đồ quyết định bảng màu</p>
+              <span class="tc-muted text-xs" data-i18n="imagecolor.decision.badge">Mức quyết định</span>
+            </div>
+            <p id="decisionSummary" class="ic-decision-summary" data-i18n="imagecolor.decision.empty">Chưa có bảng màu để đánh giá vai màu. Hãy tải ảnh và bấm Lấy mẫu màu.</p>
+            <div id="decisionRoleGrid" class="ic-role-grid"></div>
+            <div id="dominantStrip" class="ic-dominant-strip"></div>
+            <p id="nextActionHint" class="ic-next-action" data-i18n="imagecolor.decision.nextPlaceholder">Gợi ý bước tiếp theo sẽ hiển thị sau khi có bảng màu.</p>
+          </div>
+          <div id="strategyComparePanel" class="tc-card p-4 ic-strategy-panel">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-sm font-semibold" data-i18n="imagecolor.strategies.title">So sánh chiến lược trích màu</p>
+              <span class="tc-muted text-xs" data-i18n="imagecolor.strategies.badge">So sánh song song</span>
+            </div>
+            <p class="tc-muted text-xs" data-i18n="imagecolor.strategies.hint">Chọn nhanh phương án Cân bằng, Chủ đạo rõ hoặc Tương phản cao rồi áp dụng ngay.</p>
+            <div id="strategyCompareGrid" class="ic-strategy-grid"></div>
+          </div>
+          <div id="replacePanel" class="tc-card p-4 ic-replace-panel hidden" aria-hidden="true">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-sm font-semibold" data-i18n="imagecolor.replace.title">Thay màu đang chọn</p>
+              <span id="replaceSourceHex" class="tc-chip px-2 py-1 rounded-full text-xs">#000000</span>
+            </div>
+            <div class="ic-replace-shell">
+              <p class="tc-muted text-xs" data-i18n="imagecolor.replace.candidatesLabel">Gợi ý từ ảnh</p>
+              <div id="replaceCandidateList" class="ic-candidate-list"></div>
+              <p id="replaceCandidatesEmpty" class="tc-muted text-xs hidden" data-i18n="imagecolor.replace.candidatesEmpty">Chưa có gợi ý từ ảnh. Bạn có thể nhập HEX thủ công.</p>
+              <label class="text-xs font-semibold" for="replaceHexInput" data-i18n="imagecolor.replace.manualLabel">Nhập HEX để thay</label>
+              <input id="replaceHexInput" class="tc-input" type="text" maxlength="7" placeholder="#A1B2C3" data-i18n-placeholder="imagecolor.replace.manualPlaceholder">
+            </div>
+            <div class="ic-replace-actions">
+              <button id="btnReplaceApply" type="button" class="tc-btn tc-chip px-3 py-2 text-xs" data-i18n="imagecolor.replace.apply">Áp dụng thay màu</button>
+              <button id="btnReplaceCancel" type="button" class="tc-btn tc-chip px-3 py-2 text-xs" data-i18n="imagecolor.replace.cancel">Đóng</button>
+            </div>
+          </div>
+          <div id="handoffActions" class="flex flex-wrap gap-2" data-tour="w7-handoff">
+            <button id="btnToPalette" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.toPalette">Tạo Bảng phối màu</button>
+            <button id="btnToGradient" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.toGradient">Tạo Dải chuyển màu</button>
+            <button id="btnToPrint" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.toPrint">Mở In lưới (World 4)</button>
+            <button id="btnSaveLibrary" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.saveLibrary">Lưu vào Thư viện</button>
+            <button id="btnUseLibrary" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.useLibrary">Dùng từ Thư viện</button>
+            <button id="btnShare" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.share">Chia sẻ</button>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button id="btnCopyCss" class="tc-btn tc-chip px-4 py-2">Sao chép CSS vars</button>
-            <button id="btnCopyJson" class="tc-btn tc-chip px-4 py-2">Sao chép JSON tokens</button>
-            <button id="btnSharePalette" class="tc-btn tc-chip px-4 py-2">Sao chép link Palette</button>
-            <button id="btnShareGradient" class="tc-btn tc-chip px-4 py-2">Sao chép link Gradient</button>
+            <button id="btnCopyCss" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.copyCss">Sao chép biến CSS</button>
+            <button id="btnCopyJson" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.copyJson">Sao chép token JSON</button>
+            <button id="btnSharePalette" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.sharePalette">Sao chép liên kết Bảng phối</button>
+            <button id="btnShareGradient" class="tc-btn tc-chip px-4 py-2" data-i18n="imagecolor.actions.shareGradient">Sao chép liên kết Dải chuyển</button>
+            <button id="btnOpenTour" class="tc-btn tc-chip px-4 py-2" type="button" data-i18n="imagecolor.tour.review">Xem lại hướng dẫn</button>
           </div>
+          <div id="nextStepPanel" class="tc-card p-4 ic-next-panel">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-sm font-semibold" data-i18n="imagecolor.next.title">Bước tiếp theo nên dùng</p>
+              <span class="tc-muted text-xs" data-i18n="imagecolor.next.badge">Gợi ý theo ngữ cảnh</span>
+            </div>
+            <div id="nextStepList" class="ic-next-step-list"></div>
+          </div>
+          <p id="handoffHint" class="tc-muted text-xs" data-i18n="imagecolor.handoff.hint">Chuyển tiếp nhanh: Bảng phối/Dải chuyển để sáng tạo, Màu thêu để tra chỉ, In lưới để chuẩn bị in, Thư viện để lưu tài sản.</p>
           <p id="statusText" class="text-xs tc-muted"></p>
         </div>
         <div class="space-y-4">
@@ -389,39 +652,49 @@
               <div id="loupeLabel" class="ic-loupe-label">#FFFFFF</div>
             </div>
             <div id="regionBox" class="ic-region" aria-hidden="true"></div>
-            <div id="imagePreviewPlaceholder" class="ic-preview-placeholder text-sm">Ảnh xem trước</div>
+            <div id="imagePreviewPlaceholder" class="ic-preview-placeholder text-sm" data-i18n="imagecolor.preview.placeholder">Ảnh xem trước</div>
+          </div>
+          <div class="ic-preview-legend">
+            <span class="ic-preview-pill"><span id="legendDominantSwatch" class="ic-role-swatch"></span><span id="legendDominantText" data-i18n="imagecolor.preview.legend.dominant">Chủ đạo</span></span>
+            <span class="ic-preview-pill"><span id="legendAccentSwatch" class="ic-role-swatch"></span><span id="legendAccentText" data-i18n="imagecolor.preview.legend.accent">Nhấn</span></span>
+            <span class="ic-preview-pill"><span id="legendNeutralSwatch" class="ic-role-swatch"></span><span id="legendNeutralText" data-i18n="imagecolor.preview.legend.neutral">Trung tính</span></span>
           </div>
           <div id="mockupGrid" class="ic-mockup-grid sm:grid sm:grid-cols-3">
             <div class="ic-mockup-card" id="mockupUi">
-              <div class="ic-mockup-label">UI Card</div>
+              <div class="ic-mockup-label" data-i18n="imagecolor.preview.mockups.ui">Mẫu giao diện</div>
               <div class="ic-mockup-body">
                 <div class="ic-mockup-pill" data-role="title"></div>
                 <div class="ic-mockup-pill" data-role="subtitle"></div>
                 <div class="ic-mockup-button" data-role="cta"></div>
               </div>
+              <p id="mockupUiNote" class="tc-muted text-[11px] px-3 pb-3" data-i18n="imagecolor.preview.notes.ui">Dùng để kiểm tra độ nổi CTA và độ đọc phần tiêu đề.</p>
             </div>
             <div class="ic-mockup-card" id="mockupPoster">
-              <div class="ic-mockup-label">Poster</div>
+              <div class="ic-mockup-label" data-i18n="imagecolor.preview.mockups.poster">Mẫu áp phích</div>
               <div class="ic-mockup-body ic-mockup-poster">
                 <div class="ic-mockup-pill" data-role="poster-title"></div>
                 <div class="ic-mockup-pill" data-role="poster-sub"></div>
               </div>
+              <p id="mockupPosterNote" class="tc-muted text-[11px] px-3 pb-3" data-i18n="imagecolor.preview.notes.poster">Quan sát nhịp chuyển giữa màu chủ đạo và màu nền để kiểm soát cảm xúc ảnh.</p>
             </div>
             <div class="ic-mockup-card" id="mockupFabric">
-              <div class="ic-mockup-label">Vải</div>
+              <div class="ic-mockup-label" data-i18n="imagecolor.preview.mockups.fabric">Mẫu vải</div>
               <div class="ic-mockup-body ic-mockup-fabric"></div>
+              <p id="mockupFabricNote" class="tc-muted text-[11px] px-3 pb-3" data-i18n="imagecolor.preview.notes.fabric">Xem trước màu trên bề mặt vải để quyết định chuyển sang Thêu hoặc In lưới.</p>
             </div>
           </div>
         </div>
       </div>
 
       <section class="mt-6 tc-card p-4">
-        <h2 class="text-sm font-semibold">Liên thông nhanh</h2>
-        <p class="tc-muted text-xs mt-1">Chuyển màu sang World khác theo chuẩn ?color / #p / #g / #c.</p>
+        <h2 class="text-sm font-semibold" data-i18n="imagecolor.links.title">Liên thông nhanh</h2>
+        <p class="tc-muted text-xs mt-1" data-i18n="imagecolor.links.desc">Chuyển màu sang Thế giới khác theo chuẩn ?color / #p / #g / #c.</p>
         <div class="mt-3 flex flex-wrap gap-2">
-          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./palette.html#p=%23F472B6,%230EA5A8,%23F59E0B">Tạo Palette</a>
-          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./gradient.html#g=%23F472B6,%230EA5A8,%23F59E0B">Tạo Gradient</a>
-          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./threadcolor.html?color=%23F472B6">Mở ở Thêu</a>
+          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./palette.html#p=%23F472B6,%230EA5A8,%23F59E0B" data-i18n="imagecolor.links.palette">Tạo Bảng phối</a>
+          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./gradient.html#g=%23F472B6,%230EA5A8,%23F59E0B" data-i18n="imagecolor.links.gradient">Tạo Dải chuyển</a>
+          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./printcolor.html#c=F472B6,0EA5A8,F59E0B" data-i18n="imagecolor.links.print">Mở ở In lưới</a>
+          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./threadcolor.html?color=%23F472B6" data-i18n="imagecolor.links.thread">Mở ở Màu thêu</a>
+          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./library.html" data-i18n="imagecolor.links.library">Mở Thư viện</a>
         </div>
       </section>
     </section>
@@ -431,11 +704,34 @@
   <div id="toast" class="tc-toast"></div>
   <script>
     window.addEventListener("DOMContentLoaded", () => {
+      const tt = (key, fallback, params) => {
+        return window.tcI18n?.t?.(key, fallback, params) || fallback;
+      };
       const presets = {
-        brand: { size: "8", focus: "mockupUi", hint: "Brand: ưu tiên dải nhận diện và điểm nhấn chính/phụ." },
-        interior: { size: "8", focus: "mockupPoster", hint: "Ảnh nội thất: ưu tiên nền trung tính và các màu điểm nhấn không gian." },
-        fashion: { size: "12", focus: "mockupPoster", hint: "Ảnh thời trang: ưu tiên dải màu có nhịp chuyển rõ cho bộ sưu tập." },
-        embroidery: { size: "5", focus: "mockupFabric", hint: "Ảnh thêu: ưu tiên cụm màu cô đọng, dễ chuyển sang chỉ thêu." }
+        brand: {
+          size: "8",
+          focus: "mockupUi",
+          hintKey: "imagecolor.presets.hints.brand",
+          hintFallback: "Nhận diện thương hiệu: ưu tiên dải nhận diện và điểm nhấn chính/phụ."
+        },
+        interior: {
+          size: "8",
+          focus: "mockupPoster",
+          hintKey: "imagecolor.presets.hints.interior",
+          hintFallback: "Ảnh nội thất: ưu tiên nền trung tính và các màu điểm nhấn không gian."
+        },
+        fashion: {
+          size: "12",
+          focus: "mockupPoster",
+          hintKey: "imagecolor.presets.hints.fashion",
+          hintFallback: "Ảnh thời trang: ưu tiên dải màu có nhịp chuyển rõ cho bộ sưu tập."
+        },
+        embroidery: {
+          size: "5",
+          focus: "mockupFabric",
+          hintKey: "imagecolor.presets.hints.embroidery",
+          hintFallback: "Ảnh thêu: ưu tiên cụm màu cô đọng, dễ chuyển sang chỉ thêu."
+        }
       };
       const group = document.getElementById("imageExtractPresetGroup");
       const buttons = Array.from(group?.querySelectorAll("[data-image-preset]") || []);
@@ -456,7 +752,7 @@
           paletteSize.value = cfg.size;
         }
         if (hint) {
-          hint.textContent = cfg.hint;
+          hint.textContent = tt(cfg.hintKey, cfg.hintFallback);
         }
         cards.forEach((card) => {
           card.classList.toggle("is-focus", card.id === cfg.focus);
@@ -475,6 +771,8 @@
     });
   </script>
 
+  <script src="../i18n.js"></script>
+  <script src="../scripts/onboarding_tour.js"></script>
   <script type="module" src="../auth.js"></script>
   <script type="module" src="../scripts/workbench_bridge.js"></script>
   <script type="module" src="../scripts/imagecolor.js"></script>

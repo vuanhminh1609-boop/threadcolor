@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thế giới Bảng phối màu</title>
+  <title>Studio tối ưu bảng phối màu</title>
   <link rel="stylesheet" href="../assets/dist/tailwind.css">
   <link rel="stylesheet" href="../assets/tones.css">
   <link rel="stylesheet" href="../assets/site_base.css">
@@ -63,6 +63,52 @@
       justify-content: flex-end;
       gap: .45rem;
     }
+    .tc-role-status{
+      border: 1px solid rgba(148,163,184,.34);
+      border-radius: .82rem;
+      background: rgba(255,255,255,.5);
+      padding: .52rem .58rem;
+      display: grid;
+      gap: .42rem;
+    }
+    .tc-role-status__line{
+      margin: 0;
+      font-size: .7rem;
+      line-height: 1.4;
+      color: var(--text);
+    }
+    .tc-role-status__line strong{
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-role-status__line--warn{
+      color: #9f1239;
+    }
+    .tc-role-chip-list{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+    .tc-role-chip{
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      border: 1px solid rgba(148,163,184,.34);
+      border-radius: 999px;
+      background: rgba(255,255,255,.66);
+      padding: .16rem .42rem;
+      font-size: .64rem;
+      color: var(--text);
+      line-height: 1.2;
+      max-width: 100%;
+    }
+    .tc-role-chip__dot{
+      width: .55rem;
+      height: .55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.14);
+      flex: 0 0 auto;
+    }
     .tc-contrast-list{
       display: grid;
       gap: .5rem;
@@ -110,6 +156,61 @@
       flex-wrap: wrap;
       gap: .4rem;
       margin-top: -.1rem;
+    }
+    .tc-suggest-card{
+      align-items: flex-start;
+      flex-direction: column;
+      gap: .42rem;
+    }
+    .tc-suggest-card__head{
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .45rem;
+      flex-wrap: wrap;
+    }
+    .tc-suggest-badges{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .32rem;
+    }
+    .tc-suggest-badge{
+      font-size: .62rem;
+      font-weight: 700;
+      line-height: 1.2;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.4);
+      background: rgba(255,255,255,.76);
+      color: var(--text);
+      padding: .16rem .45rem;
+      white-space: nowrap;
+    }
+    .tc-suggest-badge--safe{
+      border-color: rgba(37,99,235,.36);
+      background: rgba(219,234,254,.68);
+      color: #1d4ed8;
+    }
+    .tc-suggest-badge--quick{
+      border-color: rgba(22,163,74,.34);
+      background: rgba(220,252,231,.62);
+      color: #166534;
+    }
+    .tc-suggest-badge--brand{
+      border-color: rgba(124,58,237,.34);
+      background: rgba(243,232,255,.7);
+      color: #6d28d9;
+    }
+    .tc-suggest-badge--bold{
+      border-color: rgba(190,24,93,.34);
+      background: rgba(251,207,232,.66);
+      color: #9d174d;
+    }
+    .tc-suggest-tradeoff{
+      margin: 0;
+      font-size: .67rem;
+      color: var(--text-muted);
+      line-height: 1.35;
     }
     .tc-preview-tabs{
       display: flex;
@@ -266,6 +367,79 @@
       display: grid;
       gap: .62rem;
     }
+    .tc-context-grid{
+      display: grid;
+      gap: .6rem;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    }
+    .tc-context-card{
+      border: 1px solid var(--stroke);
+      border-radius: .92rem;
+      overflow: hidden;
+      background: rgba(255,255,255,.45);
+    }
+    .tc-context-card__head{
+      padding: .45rem .56rem;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .tc-context-card__body{
+      padding: .6rem;
+      display: grid;
+      gap: .45rem;
+    }
+    .tc-context-caption{
+      margin: 0;
+      font-size: .67rem;
+      line-height: 1.36;
+      color: var(--text-muted);
+    }
+    .tc-context-cta-lab{
+      display: grid;
+      gap: .5rem;
+    }
+    .tc-context-cta-lab__row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .45rem;
+      border: 1px solid var(--stroke);
+      border-radius: .72rem;
+      padding: .42rem .5rem;
+      background: rgba(255,255,255,.4);
+    }
+    .tc-context-cta-lab__label{
+      font-size: .67rem;
+      color: var(--text-muted);
+    }
+    .tc-workflow-next{
+      border: 1px solid rgba(14,165,233,.32);
+      border-radius: .9rem;
+      background: linear-gradient(140deg, rgba(14,165,233,.1), rgba(255,255,255,.56));
+      padding: .62rem .7rem;
+      display: grid;
+      gap: .45rem;
+    }
+    .tc-workflow-next__title{
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .01em;
+    }
+    .tc-workflow-next__state{
+      margin: 0;
+      font-size: .68rem;
+      color: var(--text-muted);
+      line-height: 1.34;
+    }
+    .tc-workflow-next__actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .36rem;
+    }
     .tc-image-drop{
       position: relative;
       display: grid;
@@ -344,6 +518,34 @@
       gap: .5rem;
       margin-top: .55rem;
     }
+    .tc-onboarding-zone{
+      margin-top: 1rem;
+      border: 1px solid var(--stroke);
+      border-radius: 1rem;
+      background: rgba(255,255,255,.34);
+      box-shadow: 0 14px 32px rgba(15,23,42,.08);
+      padding: .95rem 1rem;
+      display: grid;
+      gap: .75rem;
+    }
+    .tc-onboarding-zone__head{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .tc-onboarding-zone__actions{
+      display: flex;
+      gap: .45rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .tc-onboarding-zone__quick{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
     .tc-palette-workmode{
       display: grid;
       gap: .65rem;
@@ -375,6 +577,74 @@
     .tc-palette-workmode-hint{
       font-size: .73rem;
       color: var(--text-muted);
+    }
+    .tc-expert-primer{
+      margin-top: .75rem;
+      border: 1px solid rgba(14,165,233,.28);
+      border-radius: 1rem;
+      background: linear-gradient(145deg, rgba(14,165,233,.12), rgba(255,255,255,.38));
+      padding: .8rem .92rem;
+      display: grid;
+      gap: .62rem;
+    }
+    .tc-expert-primer__head{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .62rem;
+    }
+    .tc-expert-primer__state{
+      margin: 0;
+      font-size: .72rem;
+      color: var(--text);
+      background: rgba(255,255,255,.52);
+      border: 1px solid rgba(148,163,184,.34);
+      border-radius: .8rem;
+      padding: .36rem .52rem;
+      max-width: 100%;
+    }
+    .tc-expert-primer__actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: .42rem;
+    }
+    .tc-expert-primer__join{
+      display: grid;
+      gap: .32rem;
+    }
+    .tc-expert-primer__join-row{
+      display: flex;
+      align-items: center;
+      gap: .42rem;
+      flex-wrap: wrap;
+    }
+    .tc-review-hint-grid{
+      margin-top: .6rem;
+      display: grid;
+      gap: .5rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .tc-review-hint{
+      border: 1px solid rgba(148,163,184,.35);
+      border-radius: .85rem;
+      background: rgba(255,255,255,.42);
+      padding: .56rem .62rem;
+      display: grid;
+      gap: .2rem;
+      min-width: 0;
+    }
+    .tc-review-hint__title{
+      margin: 0;
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tc-review-hint__desc{
+      margin: 0;
+      font-size: .7rem;
+      color: var(--text-muted);
+      line-height: 1.35;
     }
     .tc-library-mode-row{
       display: flex;
@@ -1141,6 +1411,59 @@
       justify-content: flex-end;
       gap: .38rem;
     }
+    .tc-preset-detail-sheet{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      align-items: end;
+      max-height: min(90vh, 980px);
+      overflow: hidden;
+      padding: 0 .65rem .55rem;
+    }
+    .tc-preset-detail-card{
+      border-top-left-radius: 1.35rem;
+      border-top-right-radius: 1.35rem;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      max-height: min(88vh, 900px);
+      overflow: hidden;
+    }
+    .tc-preset-detail-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      padding: .85rem .95rem .75rem;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(255,255,255,.64);
+      backdrop-filter: blur(6px);
+    }
+    .tc-preset-detail-body{
+      min-height: 0;
+      overflow-y: auto;
+      padding: .72rem .95rem .4rem;
+      display: grid;
+      gap: .65rem;
+      scrollbar-gutter: stable;
+      overscroll-behavior: contain;
+    }
+    .tc-preset-detail-foot{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--stroke);
+      padding: .62rem .95rem .72rem;
+      background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.78));
+    }
+    .tc-preset-detail-foot__hint{
+      font-size: .68rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
     #portalMenu[data-open="0"],
     #worldMenu[data-open="0"]{ display: none; }
     #portalMenu,
@@ -1214,6 +1537,16 @@
         grid-column: 1 / -1;
         justify-content: flex-start;
       }
+      .tc-suggest-card__head{
+        flex-direction: column;
+      }
+      .tc-workflow-next{
+        padding: .58rem .62rem;
+      }
+      .tc-workflow-next__actions .tc-btn{
+        width: 100%;
+        justify-content: center;
+      }
       .tc-matrix-guideline__grid{
         grid-template-columns: minmax(0, 1fr);
       }
@@ -1221,6 +1554,41 @@
         top: auto;
         bottom: .75rem;
         transform: translateX(-50%);
+      }
+      .tc-onboarding-zone{
+        padding: .8rem .82rem;
+      }
+      .tc-onboarding-zone__actions{
+        justify-content: flex-start;
+      }
+      .tc-onboarding-zone__actions .tc-btn{
+        width: 100%;
+        justify-content: center;
+      }
+      .tc-expert-primer{
+        padding: .72rem .78rem;
+      }
+      .tc-expert-primer__state{
+        width: 100%;
+      }
+      .tc-expert-primer__join-row{
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .tc-preset-detail-sheet{
+        padding: 0 .25rem .25rem;
+      }
+      .tc-preset-detail-card{
+        max-height: 90vh;
+      }
+      .tc-preset-detail-head{
+        padding: .72rem .82rem .62rem;
+      }
+      .tc-preset-detail-body{
+        padding: .6rem .82rem .32rem;
+      }
+      .tc-preset-detail-foot{
+        padding: .56rem .82rem .62rem;
       }
       .tc-approval-modal__dialog{
         top: auto;
@@ -1269,7 +1637,7 @@
     }
   </style>
 </head>
-<body class="font-sans" data-enable-hex-inspector="1">
+<body class="font-sans" data-enable-hex-inspector="1" data-hexhub-fab="0">
         <div id="tcTopbarMount"></div>
   <svg class="sr-only" width="0" height="0" aria-hidden="true" focusable="false">
     <defs>
@@ -1315,8 +1683,8 @@
       <header class="tc-palette-header">
         <div class="tc-palette-header-main">
           <p class="text-xs uppercase tracking-[0.35em] tc-muted">World3 · Palette</p>
-          <h1 class="text-3xl md:text-4xl font-bold">Thế giới Bảng phối màu</h1>
-          <p class="mt-2 tc-muted">Các ô màu rời đặt cạnh nhau, nhấn để sao chép.</p>
+          <h1 class="text-3xl md:text-4xl font-bold">Studio tối ưu bảng phối màu</h1>
+          <p class="mt-2 tc-muted">Tối ưu bảng phối theo vai màu, kiểm tra độ đọc, xem thử bối cảnh thật và chuyển tiếp nhanh sang các World khác.</p>
         </div>
         <div class="tc-palette-header-side">
           <div class="tc-palette-header-cta">
@@ -1334,6 +1702,25 @@
           <button id="paletteShare" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Chia sẻ</button>
         </div>
       </header>
+      <section id="paletteOnboardingZone" class="tc-onboarding-zone" data-tour="palette-intro">
+        <div class="tc-onboarding-zone__head">
+          <div>
+            <p class="text-xs uppercase tracking-[0.26em] tc-muted">Hướng dẫn người mới</p>
+            <h2 class="text-base font-semibold">Vào việc trong chưa đến 1 phút</h2>
+            <p class="tc-muted text-sm mt-1">Flow chuẩn: chọn hoặc tạo palette → gán vai màu → xử lý nút thắt contrast → xem preview bối cảnh → áp dụng và chuyển tiếp.</p>
+          </div>
+          <div class="tc-onboarding-zone__actions">
+            <button id="paletteTourStart" class="tc-btn tc-btn-primary px-4 py-2 text-sm" type="button">Bắt đầu tour</button>
+            <button id="paletteTourDontShow" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Đừng hiện lại</button>
+            <button id="paletteTourReplay" class="tc-btn tc-chip px-4 py-2 text-sm" type="button">Xem lại hướng dẫn</button>
+          </div>
+        </div>
+        <div class="tc-onboarding-zone__quick" id="paletteStartPaths" data-tour="palette-start-paths">
+          <button class="tc-chip tc-btn px-3 py-2 text-xs" type="button" data-start-focus="style">Tôi muốn tạo nhanh từ công cụ gợi ý</button>
+          <button class="tc-chip tc-btn px-3 py-2 text-xs" type="button" data-start-focus="preset">Tôi muốn chọn từ mẫu palette sẵn</button>
+          <button class="tc-chip tc-btn px-3 py-2 text-xs" type="button" data-start-focus="expert">Tôi cần chế độ chuyên gia và phòng cộng tác</button>
+        </div>
+      </section>
       <section id="paletteWorkMode" class="tc-palette-workmode" aria-label="Chế độ làm việc">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <h2 class="text-sm font-semibold">Chế độ tạo bảng phối</h2>
@@ -1343,24 +1730,54 @@
           <button id="paletteModeQuick" class="tc-palette-workmode-btn is-active" type="button" data-palette-workmode="quick">Tạo nhanh</button>
           <button id="paletteModeExpert" class="tc-palette-workmode-btn" type="button" data-palette-workmode="expert">Chế độ chuyên gia</button>
         </div>
-        <p id="paletteModeHint" class="tc-palette-workmode-hint">Tạo nhanh: tập trung các thao tác tạo và chọn palette trong 1 luồng gọn.</p>
+        <p id="paletteModeHint" class="tc-palette-workmode-hint">Tạo nhanh: tập trung tạo/chọn palette rồi kiểm tra ngay contrast và preview.</p>
+      </section>
+      <section id="paletteExpertPrimer" class="tc-expert-primer hidden" aria-live="polite" data-palette-mode-target="expert" data-tour="palette-expert">
+        <div class="tc-expert-primer__head">
+          <div>
+            <h2 class="text-sm font-semibold m-0">Chế độ chuyên gia · Phòng cộng tác</h2>
+            <p id="paletteRoomFlowHint" class="tc-muted text-xs mt-1">Bạn có thể làm việc một mình hoặc vào phòng bằng liên kết <code>?room=...</code>. Tạo phòng mới yêu cầu đăng nhập.</p>
+          </div>
+          <p id="paletteRoomFlowState" class="tc-expert-primer__state">Bạn đang làm việc một mình.</p>
+        </div>
+        <div class="tc-expert-primer__actions">
+          <button id="paletteRoomSoloBtn" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Dùng một mình</button>
+          <button id="paletteRoomRecentBtn" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Vào phòng gần nhất</button>
+          <button id="paletteRoomCreateBtn" class="tc-btn tc-btn-primary px-3 py-2 text-xs" type="button">Tạo phòng mới</button>
+        </div>
+        <div class="tc-expert-primer__join">
+          <label class="text-xs font-semibold" for="paletteRoomJoinInput">Vào phòng bằng mã/link</label>
+          <div class="tc-expert-primer__join-row">
+            <input
+              id="paletteRoomJoinInput"
+              class="tc-input flex-1 text-sm"
+              type="text"
+              placeholder="Ví dụ: room_mau_2026 hoặc ?room=room_mau_2026"
+              autocomplete="off"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
+            >
+            <button id="paletteRoomJoinBtn" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Vào phòng</button>
+          </div>
+        </div>
       </section>
       <section id="paletteRoomBar" class="tc-room-bar hidden" aria-live="polite" data-palette-mode-target="expert">
         <div class="tc-room-bar__lead">
           <p id="paletteRoomLabel" class="tc-room-bar__label">Phòng chỉnh sửa</p>
-          <p id="paletteRoomName" class="tc-room-bar__title">Đang chuẩn bị...</p>
+          <p id="paletteRoomName" class="tc-room-bar__title">Chưa kết nối phòng</p>
         </div>
         <div class="tc-room-bar__tail">
-          <p id="paletteRoomStatus" class="tc-room-bar__status">Đang chuẩn bị kết nối phòng...</p>
+          <p id="paletteRoomStatus" class="tc-room-bar__status">Đang làm việc một mình. Kết nối phòng khi cần cộng tác thời gian thực.</p>
           <div id="paletteRoomPresence" class="tc-room-bar__presence"></div>
         </div>
       </section>
       <div class="tc-room-layout">
         <div class="tc-room-layout-main">
-      <section class="tc-palette-zone" id="paletteStyleHub">
+      <section class="tc-palette-zone" id="paletteStyleHub" data-tour="palette-start">
         <div class="tc-palette-zone-head">
-          <h2 class="tc-palette-zone-title">Phong cách tạo palette</h2>
-          <p class="tc-muted text-sm">Chọn nhanh 1 cách tạo phù hợp, mở chi tiết khi cần.</p>
+          <h2 class="tc-palette-zone-title">Khu chọn cách bắt đầu</h2>
+          <p class="tc-muted text-sm">Chọn một lối vào: gợi ý theo mục tiêu, brief, HEX hoặc ảnh.</p>
         </div>
         <div class="tc-palette-cards">
           <article class="tc-palette-card tc-palette-card--primary" id="paletteFullscreenCard">
@@ -1574,10 +1991,20 @@
         </div>
       </div>
 
-      <section class="tc-palette-zone" id="palettePresetHub">
+      <section class="tc-palette-zone" id="palettePresetHub" data-tour="palette-presets">
         <div class="tc-palette-zone-head">
-          <h2 class="tc-palette-zone-title">Mẫu Palette sẵn có</h2>
-          <p class="tc-muted text-sm">Chọn 1 bảng để xem 5 ô màu mẫu và thao tác nhanh.</p>
+          <h2 class="tc-palette-zone-title">Khu mẫu palette sẵn</h2>
+          <p class="tc-muted text-sm">Chọn 1 bảng để tối ưu theo vai màu, đọc nhanh nút thắt contrast và quyết định phương án sửa phù hợp.</p>
+          <div id="paletteReviewHint" class="tc-review-hint-grid">
+            <div id="paletteReviewContrastHint" class="tc-review-hint" data-tour="palette-contrast">
+              <p class="tc-review-hint__title">Đọc nút thắt contrast ở đâu?</p>
+              <p class="tc-review-hint__desc">Mở chi tiết preset để xem cặp nào đang fail, vai nào nên chỉnh trước và phương án ít phá nhận diện nhất.</p>
+            </div>
+            <div id="paletteReviewPreviewHint" class="tc-review-hint" data-tour="palette-preview">
+              <p class="tc-review-hint__title">Preview bối cảnh ở đâu?</p>
+              <p class="tc-review-hint__desc">Trong chi tiết preset có tab Giao diện/Áp phích/Thẻ nội dung/CTA để kiểm tra trước khi chuyển sang World khác.</p>
+            </div>
+          </div>
         </div>
         <div id="paletteEmpty" class="mt-3 hidden">
           <div class="tc-card p-6 text-center">
@@ -1614,54 +2041,14 @@
         <div id="paletteLibraryGrid" class="tc-library-grid mt-3"></div>
       </section>
 
-      <details class="tc-card p-4">
-        <summary class="cursor-pointer font-semibold">Hướng dẫn rõ ràng cho người mới</summary>
-        <div class="mt-3 space-y-4 text-sm tc-muted leading-relaxed">
-          <div>
-            <p class="font-semibold text-[13px] text-white">Thao tác nhanh</p>
-            <ol class="mt-2 space-y-2">
-              <li>1) Chọn một bảng phối bất kỳ để xem 5 ô màu mẫu.</li>
-              <li>2) Bấm vào ô màu để sao chép nhanh HEX khi cần áp dụng.</li>
-              <li>3) Dùng “Lưu vào Thư viện” để giữ lại bảng phối cho dự án.</li>
-            </ol>
-          </div>
-          <div>
-            <p class="font-semibold text-[13px] text-white">Định nghĩa nhanh</p>
-            <ul class="mt-2 space-y-2">
-              <li><strong>Tỷ lệ tương phản</strong>: mức chênh lệch sáng tối giữa nền và chữ, ảnh hưởng khả năng đọc.</li>
-              <li><strong>Quy tắc hài hoà màu</strong>: cách phối màu theo vòng màu (bổ túc, tương đồng, bộ ba…).</li>
-              <li><strong>Sắc độ</strong>: biến thể sáng hơn (tint) hoặc tối hơn (shade) của một màu gốc.</li>
-              <li><strong>Tiêu chuẩn WCAG</strong>: hướng dẫn khả năng tiếp cận web, trong đó có ngưỡng tương phản.</li>
-            </ul>
-          </div>
-          <div>
-            <p class="font-semibold text-[13px] text-white">Quy trình chuẩn</p>
-            <ol class="mt-2 space-y-2">
-              <li>1) Xác định màu chủ đạo → chọn 1 bảng phối gần nhất.</li>
-              <li>2) Kiểm tra tương phản chữ/nền ở các màu chính.</li>
-              <li>3) Điều chỉnh sắc độ (sáng/tối) để đạt cân bằng và nhịp thị giác.</li>
-              <li>4) Xuất token/HEX để triển khai UI hoặc tài liệu.</li>
-            </ol>
-          </div>
-          <div>
-            <p class="font-semibold text-[13px] text-white">Lỗi thường gặp</p>
-            <ul class="mt-2 space-y-2">
-              <li>Phối quá nhiều màu mạnh khiến giao diện rối và khó đọc.</li>
-              <li>Không kiểm tra tương phản, dẫn đến chữ bị chìm.</li>
-              <li>Dùng sai quy tắc hài hoà khiến cảm xúc lệch mục tiêu.</li>
-              <li>Không lưu bảng phối nên khó tái sử dụng theo dự án.</li>
-            </ul>
-          </div>
-        </div>
-      </details>
-
-      <section class="tc-card p-4">
-        <h3 class="text-sm font-semibold">Liên thông nhanh</h3>
+      <section id="paletteReviewZone" class="tc-card p-4" data-tour="palette-next">
+        <h3 class="text-sm font-semibold">Khu kiểm tra / preview / liên thông</h3>
         <p class="tc-muted text-xs mt-1">Chuyển màu sang World khác theo chuẩn ?color / #p / #g / #c.</p>
         <div class="mt-3 flex flex-wrap gap-2">
           <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./gradient.html#g=%23F472B6,%230EA5A8,%23F59E0B">Tạo Gradient</a>
           <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./printcolor.html#c=%23F472B6">Mở ở In</a>
           <a class="tc-btn tc-chip px-4 py-2 text-sm" href="./threadcolor.html?color=%23F472B6">Mở ở Thêu</a>
+          <a class="tc-btn tc-chip px-4 py-2 text-sm" href="../spaces/community.html?from=world3_palette">Mở Cộng đồng</a>
         </div>
       </section>
         </div>
@@ -1715,13 +2102,17 @@
 
   <div id="palettePresetDetail" class="fixed inset-0 z-[90] hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/55" data-preset-close></div>
-    <div class="absolute bottom-0 left-0 right-0 max-h-[82vh] overflow-hidden">
-      <div class="tc-card rounded-t-3xl p-4 sm:p-5 max-w-3xl mx-auto overflow-y-auto max-h-[82vh]">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-semibold">Chi tiết palette</p>
+    <div class="tc-preset-detail-sheet">
+      <div class="tc-card tc-preset-detail-card max-w-3xl mx-auto">
+        <div class="tc-preset-detail-head">
+          <p class="text-sm font-semibold m-0">Chi tiết palette</p>
           <button class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-preset-close>Đóng</button>
         </div>
-        <div id="palettePresetDetailBody" class="mt-3 grid gap-3"></div>
+        <div id="palettePresetDetailBody" class="tc-preset-detail-body"></div>
+        <div class="tc-preset-detail-foot">
+          <span id="palettePresetDetailScrollHint" class="tc-preset-detail-foot__hint">Kéo xuống để xem thêm contrast, preview và token.</span>
+          <button class="tc-btn tc-chip px-3 py-2 text-xs" type="button" data-preset-close>Đóng chi tiết</button>
+        </div>
       </div>
     </div>
   </div>

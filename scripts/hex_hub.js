@@ -193,8 +193,15 @@ const createUI = () => {
   ensureStyle();
   const existingFab = document.getElementById(FAB_ID);
   const hasTrigger = Boolean(document.querySelector("[data-hexhub-open]"));
+  const disableFab =
+    String(document.body?.dataset?.hexhubFab || "").trim() === "0" ||
+    String(document.documentElement?.dataset?.hexhubFab || "").trim() === "0";
   let fab = existingFab;
-  if (!fab && !hasTrigger) {
+  if (disableFab && fab) {
+    fab.remove();
+    fab = null;
+  }
+  if (!fab && !hasTrigger && !disableFab) {
     fab = document.createElement("button");
     fab.id = FAB_ID;
     fab.className = "tc-hexhub-fab";

@@ -49,6 +49,11 @@ const elements = {
   companionPreview: document.getElementById("pfCompanionPreview"),
   openPalette: document.getElementById("pfOpenPalette"),
   openGradient: document.getElementById("pfOpenGradient"),
+  openPrint: document.getElementById("pfOpenPrint"),
+  presetContext: document.getElementById("pfPresetContext"),
+  materialHint: document.getElementById("pfMaterialHint"),
+  decisionHint: document.getElementById("pfDecisionHint"),
+  previewHint: document.getElementById("pfPreviewHint"),
   photoDetails: document.getElementById("pfPhotoDetails"),
   photoInput: document.getElementById("pfPhotoInput"),
   photoCanvas: document.getElementById("pfPhotoCanvas"),
@@ -97,7 +102,7 @@ let previewRenderSeq = 0;
 let rafScheduled = false;
 
 const state = {
-  mode: "paint",
+  mode: "fabric",
   presetId: "",
   presetLabel: "",
   compareMode: "off",
@@ -174,6 +179,7 @@ const objectLabels = {
 
 const fabricLabels = {
   cotton: "Cotton",
+  polycotton: "Poly-cotton",
   linen: "Linen",
   denim: "Denim",
   silk: "Lụa",
@@ -195,6 +201,7 @@ const paintPresets = {
 
 const fabricApplications = {
   cotton: "Áo mặc hằng ngày",
+  polycotton: "Đồng phục dễ dùng",
   linen: "Rèm phòng",
   denim: "Trang phục street",
   silk: "Trang phục tiệc",
@@ -205,6 +212,26 @@ const compareModeLabels = {
   off: "Tắt",
   ab: "A/B",
   tri: "Triptych"
+};
+
+const workflowLabels = {
+  embroidery: "Hợp thêu",
+  screen: "Hợp in lưới",
+  uniform: "Đồng phục",
+  premium: "Vải cao cấp",
+  paint_support: "Sơn phụ trợ"
+};
+
+const toneLabels = {
+  sang: "Sáng",
+  trung_tinh: "Trung tính",
+  toi: "Tối"
+};
+
+const temperatureLabels = {
+  am: "Ấm",
+  trung_tinh: "Cân bằng",
+  lanh: "Lạnh"
 };
 
 const paintPresetButtons = [
@@ -230,6 +257,9 @@ const goalPresets = [
     id: "bedroom_calm",
     label: "Phòng ngủ thư giãn",
     mode: "paint",
+    workflow: "paint_support",
+    tone: "trung_tinh",
+    temperature: "am",
     scene: "bedroom",
     surface: "tuong",
     lighting: "am",
@@ -240,6 +270,9 @@ const goalPresets = [
     id: "living_luxe",
     label: "Phòng khách sang",
     mode: "paint",
+    workflow: "paint_support",
+    tone: "sang",
+    temperature: "trung_tinh",
     scene: "living",
     surface: "tuong",
     lighting: "tu_nhien",
@@ -250,6 +283,9 @@ const goalPresets = [
     id: "facade_clean",
     label: "Mặt tiền sạch",
     mode: "paint",
+    workflow: "paint_support",
+    tone: "trung_tinh",
+    temperature: "lanh",
     scene: "facade",
     surface: "gach",
     lighting: "trang",
@@ -260,6 +296,9 @@ const goalPresets = [
     id: "streetwear",
     label: "Áo streetwear",
     mode: "fabric",
+    workflow: "screen",
+    tone: "toi",
+    temperature: "lanh",
     object: "shirt",
     fabricType: "denim",
     lighting: "trang",
@@ -271,12 +310,71 @@ const goalPresets = [
     id: "curtain_minimal",
     label: "Rèm tối giản",
     mode: "fabric",
+    workflow: "embroidery",
+    tone: "trung_tinh",
+    temperature: "trung_tinh",
     object: "curtain",
     fabricType: "linen",
     lighting: "tu_nhien",
     finish: "mo",
     texture: "min",
     accentShift: -8
+  },
+  {
+    id: "uniform_dark_screen",
+    label: "Đồng phục nền tối",
+    mode: "fabric",
+    workflow: "screen",
+    tone: "toi",
+    temperature: "lanh",
+    object: "shirt",
+    fabricType: "polycotton",
+    lighting: "trang",
+    finish: "mo",
+    texture: "tho",
+    accentShift: 16
+  },
+  {
+    id: "uniform_light_embroidery",
+    label: "Logo thêu nền sáng",
+    mode: "fabric",
+    workflow: "embroidery",
+    tone: "sang",
+    temperature: "am",
+    object: "shirt",
+    fabricType: "cotton",
+    lighting: "tu_nhien",
+    finish: "mo",
+    texture: "min",
+    accentShift: -10
+  },
+  {
+    id: "basic_neutral",
+    label: "Vải basic trung tính",
+    mode: "fabric",
+    workflow: "uniform",
+    tone: "trung_tinh",
+    temperature: "trung_tinh",
+    object: "shirt",
+    fabricType: "polycotton",
+    lighting: "tu_nhien",
+    finish: "mo",
+    texture: "min",
+    accentShift: -4
+  },
+  {
+    id: "premium_soft_luxe",
+    label: "Vải cao cấp mềm sáng",
+    mode: "fabric",
+    workflow: "premium",
+    tone: "sang",
+    temperature: "am",
+    object: "sofa",
+    fabricType: "silk",
+    lighting: "am",
+    finish: "bong",
+    texture: "min",
+    accentShift: 12
   }
 ];
 
@@ -434,6 +532,49 @@ const deriveCompanionColors = (hex, presetId) => {
   const trim = shiftHue(base, 0, -12, 10);
   const accent = shiftHue(base, accentShift, 12, -4);
   return { main: base, trim, accent };
+};
+
+const classifyHexProfile = (hex) => {
+  const safe = normalizeHex(hex) || defaultHex;
+  const { r, g, b } = hexToRgb(safe);
+  const hsl = rgbToHsl(r, g, b);
+  let tone = "trung_tinh";
+  if (hsl.l >= 68) tone = "sang";
+  else if (hsl.l <= 36) tone = "toi";
+  let temperature = "trung_tinh";
+  if ((hsl.h >= 15 && hsl.h <= 75) || (hsl.h >= 330 || hsl.h <= 10)) temperature = "am";
+  else if (hsl.h >= 160 && hsl.h <= 260) temperature = "lanh";
+  return { tone, temperature };
+};
+
+const buildFabricHints = () => {
+  const fabricType = elements.fabricType?.value || "cotton";
+  const texture = elements.texture?.value || "min";
+  const object = elements.object?.value || "shirt";
+  const profile = classifyHexProfile(elements.hex?.value || defaultHex);
+  const fabricLabel = fabricLabels[fabricType] || fabricType;
+  const objectLabel = objectLabels[object] || object;
+  const toneLabel = toneLabels[profile.tone] || "Trung tính";
+  const tempLabel = temperatureLabels[profile.temperature] || "Cân bằng";
+
+  let workflow = "Nền này cân bằng, có thể đi cả Thêu và In lưới.";
+  if (profile.tone === "toi") {
+    workflow = "Nền tối: ưu tiên kiểm tra underbase ở World 4 trước khi in hàng loạt.";
+  } else if (profile.tone === "sang" && texture === "min") {
+    workflow = "Nền sáng mịn: hợp thêu logo tinh gọn, dễ giữ chi tiết chỉ.";
+  } else if (texture === "tho") {
+    workflow = "Nền vân thô: hợp in lưới hoặc thêu nổi; nên tăng tương phản màu nhấn.";
+  }
+
+  const decision = `${toneLabel} · ${tempLabel} · ${fabricLabel} (${objectLabel}). ${workflow}`;
+  const material = `Đánh giá nhanh: ${fabricLabel} · ${texture === "tho" ? "vân thô" : "vân mịn"} · hợp nhất cho ${profile.tone === "toi" ? "in lưới nền tối" : "thêu/in đồng phục"}.`;
+  const preview = profile.tone === "toi"
+    ? "Preview đang ở nền tối: kiểm tra kỹ lớp nhấn và vùng chữ trước khi gửi sang In lưới."
+    : "Preview đang ở nền sáng/trung tính: ưu tiên giữ nhận diện màu chính khi gửi sang Thêu hoặc Thư viện.";
+  const presetContext = state.mode === "fabric"
+    ? "Đang lọc ưu tiên preset Vải để ra quyết định nhanh cho đồng phục, in lưới và thêu."
+    : "Đang xem preset Sơn phụ trợ. Chuyển lại tab Vải để chốt nền vật liệu trước khi handoff.";
+  return { decision, material, preview, presetContext };
 };
 
 const setStatus = (message) => {
@@ -826,6 +967,21 @@ const handleOpenGradient = () => {
   window.location.href = `gradient.html${query}#g=${payload}`;
 };
 
+const handleOpenPrint = () => {
+  const colors = getCompanionList().map((hex) => hex.replace("#", ""));
+  if (!colors.length) {
+    setStatus("Chưa đủ màu để mở In lưới.");
+    return;
+  }
+  const payload = encodeURIComponent(colors.join(","));
+  const query = composeHandoff({
+    from: HANDOFF_FROM,
+    intent: "open",
+    projectId: getCurrentProject()
+  });
+  window.location.href = `printcolor.html${query}#c=${payload}`;
+};
+
 const renderSpec = (spec) => {
   if (!elements.spec) return;
   const typeLabel = typeLabels[spec.type] || spec.type;
@@ -1019,12 +1175,54 @@ const loadLastPreset = () => {
 const renderPresets = () => {
   if (!elements.presets) return;
   elements.presets.innerHTML = "";
-  goalPresets.forEach((preset) => {
+  const preferredMode = state.mode === "fabric" ? "fabric" : "paint";
+  const orderedPresets = [
+    ...goalPresets.filter((preset) => preset.mode === preferredMode),
+    ...goalPresets.filter((preset) => preset.mode !== preferredMode)
+  ];
+  orderedPresets.forEach((preset) => {
     const btn = document.createElement("button");
     btn.type = "button";
     const isActive = state.presetId === preset.id;
-    btn.className = `tc-btn tc-chip px-3 py-2 text-xs${isActive ? " tc-btn-primary" : ""}`;
-    btn.textContent = preset.label;
+    btn.className = `tc-btn tc-chip pf-preset-btn${isActive ? " tc-btn-primary" : ""}`;
+    btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+    const title = document.createElement("span");
+    title.className = "pf-preset-title";
+    title.textContent = preset.label;
+    const meta = document.createElement("span");
+    meta.className = "pf-preset-meta";
+    const modeBadge = document.createElement("span");
+    modeBadge.className = `pf-preset-badge ${preset.mode === "fabric" ? "is-fabric" : "is-paint"}`;
+    modeBadge.textContent = preset.mode === "fabric" ? "Vải" : "Sơn";
+    meta.appendChild(modeBadge);
+    const workflow = workflowLabels[preset.workflow];
+    if (workflow) {
+      const workflowBadge = document.createElement("span");
+      workflowBadge.className = "pf-preset-badge";
+      workflowBadge.textContent = workflow;
+      meta.appendChild(workflowBadge);
+    }
+    const tone = toneLabels[preset.tone];
+    if (tone) {
+      const toneBadge = document.createElement("span");
+      toneBadge.className = "pf-preset-badge";
+      toneBadge.textContent = tone;
+      meta.appendChild(toneBadge);
+    }
+    const temperature = temperatureLabels[preset.temperature];
+    if (temperature) {
+      const temperatureBadge = document.createElement("span");
+      temperatureBadge.className = "pf-preset-badge";
+      temperatureBadge.textContent = temperature;
+      meta.appendChild(temperatureBadge);
+    }
+    if (preset.mode !== preferredMode) {
+      const secondary = document.createElement("span");
+      secondary.className = "pf-preset-badge is-secondary";
+      secondary.textContent = "Phụ trợ";
+      meta.appendChild(secondary);
+    }
+    btn.append(title, meta);
     btn.addEventListener("click", () => applyGoalPreset(preset));
     elements.presets.appendChild(btn);
   });
@@ -1106,7 +1304,7 @@ const renderTriptych = () => {
   });
 };
 
-const getTextureSettings = (type, surface, textureLevel, textureScale, finish) => {
+const getTextureSettings = (type, surface, textureLevel, textureScale, finish, fabricType) => {
   const levelFactor = textureLevel === "tho" ? 1.2 : 0.8;
   const scale = Math.max(1, Math.min(10, textureScale || 5));
   const scaleFactor = 0.7 + scale * 0.05;
@@ -1114,9 +1312,22 @@ const getTextureSettings = (type, surface, textureLevel, textureScale, finish) =
   if (surface === "xi_mang") surfaceFactor = 1.25;
   if (surface === "gach") surfaceFactor = 1.35;
   if (surface === "go") surfaceFactor = 1.15;
+  const fabricFactorMap = {
+    cotton: 0.98,
+    polycotton: 1.05,
+    linen: 1.18,
+    denim: 1.22,
+    silk: 0.74,
+    wool: 1.26
+  };
+  const fabricFactor = type === "fabric" ? (fabricFactorMap[fabricType] || 1) : 1;
   const glossFactor = finish === "bong" ? 0.7 : 1;
-  const textureOpacity = Math.min(0.35, 0.12 * levelFactor * surfaceFactor * glossFactor);
-  const noiseFrequency = (type === "fabric" ? 0.9 : 0.75) * scaleFactor;
+  const textureOpacity = type === "fabric"
+    ? Math.min(0.5, 0.16 * levelFactor * fabricFactor * glossFactor * (0.7 + scale * 0.04))
+    : Math.min(0.35, 0.12 * levelFactor * surfaceFactor * glossFactor);
+  const noiseFrequency = type === "fabric"
+    ? (0.95 + (textureLevel === "tho" ? 0.16 : 0)) * scaleFactor * fabricFactor
+    : 0.75 * scaleFactor;
   return { textureOpacity: Number(textureOpacity.toFixed(2)), noiseFrequency: Number(noiseFrequency.toFixed(2)) };
 };
 
@@ -1228,10 +1439,28 @@ const updateSummaryBar = () => {
     const finish = state.mode === "paint" ? elements.finish?.value : elements.finishFabric?.value;
     const lighting = state.mode === "paint" ? elements.lighting?.value : elements.lightingFabric?.value;
     const texture = state.mode === "paint" ? "—" : (elements.texture?.value || "min");
+    const fabricType = elements.fabricType?.value || "";
     const finishLabel = finishLabels[finish] || finish;
     const lightingLabel = lightingLabels[lighting] || lighting;
     const textureLabel = state.mode === "paint" ? "" : ` · ${texture === "tho" ? "Thô" : "Mịn"}`;
-    elements.summaryMaterial.textContent = `${finishLabel} · ${lightingLabel}${textureLabel}`;
+    const fabricLabel = state.mode === "paint" ? "" : ` · ${fabricLabels[fabricType] || "Vải"}`;
+    elements.summaryMaterial.textContent = `${finishLabel} · ${lightingLabel}${textureLabel}${fabricLabel}`;
+  }
+};
+
+const updateFabricGuidance = () => {
+  const hints = buildFabricHints();
+  if (elements.decisionHint) {
+    elements.decisionHint.textContent = hints.decision;
+  }
+  if (elements.materialHint) {
+    elements.materialHint.textContent = hints.material;
+  }
+  if (elements.previewHint) {
+    elements.previewHint.textContent = hints.preview;
+  }
+  if (elements.presetContext) {
+    elements.presetContext.textContent = hints.presetContext;
   }
 };
 
@@ -1253,6 +1482,7 @@ const updatePreview = async () => {
   const surface = elements.surface?.value || "tuong";
   const scene = elements.scene?.value || "living";
   const object = elements.object?.value || "shirt";
+  const fabricType = elements.fabricType?.value || "cotton";
   const textureLevel = activeTab === "paint" ? "min" : elements.texture?.value || "min";
   const textureScale = Number(elements.textureScale?.value || 5);
   const compareValue = `${Number(elements.compare?.value || 60)}%`;
@@ -1266,7 +1496,8 @@ const updatePreview = async () => {
     surface,
     textureLevel,
     textureScale,
-    finish
+    finish,
+    fabricType
   );
   const colorA = applyLighting(state.compareColors.A || defaultHex, lighting);
   const colorB = applyLighting(state.compareColors.B || state.compareColors.A || defaultHex, lighting);
@@ -1319,6 +1550,7 @@ const exportPreviewPng = async () => {
   const surface = elements.surface?.value || "tuong";
   const scene = elements.scene?.value || "living";
   const object = elements.object?.value || "shirt";
+  const fabricType = elements.fabricType?.value || "cotton";
   const textureLevel = activeTab === "paint" ? "min" : elements.texture?.value || "min";
   const textureScale = Number(elements.textureScale?.value || 5);
   const compareValue = Number(elements.compare?.value || 60);
@@ -1334,7 +1566,8 @@ const exportPreviewPng = async () => {
     surface,
     textureLevel,
     textureScale,
-    finish
+    finish,
+    fabricType
   );
   const colorA = applyLighting(state.compareColors.A || defaultHex, lighting);
   const colorB = applyLighting(state.compareColors.B || state.compareColors.A || defaultHex, lighting);
@@ -1413,6 +1646,7 @@ const syncUI = () => {
   renderSpec(spec);
   updatePreview().catch(() => {});
   updatePaintCalc();
+  updateFabricGuidance();
   renderPresets();
 };
 
@@ -1979,6 +2213,7 @@ const bindEvents = () => {
   });
   elements.openPalette?.addEventListener("click", handleOpenPalette);
   elements.openGradient?.addEventListener("click", handleOpenGradient);
+  elements.openPrint?.addEventListener("click", handleOpenPrint);
   elements.useLibrary?.addEventListener("click", () => {
     const payload = composeHandoff({
       from: HANDOFF_FROM,
@@ -2067,7 +2302,7 @@ const init = () => {
   if (lastPreset) {
     applyGoalPreset(lastPreset);
   } else {
-    updateTabs("paint");
+    updateTabs("fabric");
   }
   if (elements.photoDetails?.open) {
     initPhotoMode();

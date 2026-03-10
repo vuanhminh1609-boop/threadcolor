@@ -124,6 +124,9 @@
 | Mẫu gợi ý | Mẫu gợi ý | Bộ câu brief mẫu để chọn nhanh theo ngành hoặc mục tiêu. |
 | Ngăn kéo dưới | Ngăn kéo dưới | Hộp trượt từ cạnh dưới màn hình để chọn nội dung trên mobile. |
 | Giữ chạm (long-press) | Giữ chạm | Thao tác nhấn giữ ~300–500ms trên mobile để gọi hành động phụ. |
+| Tour hướng dẫn từng bước | Tour hướng dẫn từng bước | Lớp onboarding có spotlight theo từng bước, giúp người mới nắm đúng luồng thao tác ngay lần đầu vào World. |
+| Tự bật lần đầu | Tự bật lần đầu | Cơ chế tự mở tour cho người dùng mới ở lần truy cập đầu tiên, sau đó ghi nhớ để không làm phiền lặp lại. |
+| Đừng hiện lại | Đừng hiện lại | Tuỳ chọn trong tour để lưu trạng thái không tự mở lại trên các lần truy cập sau. |
 | Độ chói tương đối (relative luminance) | Độ chói tương đối | Thước đo độ sáng chuẩn hoá của màu để phân loại và tính tương phản theo WCAG. |
 | Kho HEX | Kho HEX | Kho tra cứu tập trung cho mọi mã màu dạng #RRGGBB trong hệ sinh thái. |
 | Hồ sơ màu | Hồ sơ màu | Màn hiển thị chi tiết một màu: mã, chuyển đổi, gợi ý sử dụng và hành động liên quan. |
@@ -149,6 +152,9 @@
 | LPI | LPI | Lines Per Inch – mật độ đường tram trên mỗi inch, ảnh hưởng độ mịn. |
 | Góc tram | Góc tram | Góc xoay của chấm/đường tram cho từng kênh CMYK để giảm moiré. |
 | Tăng tram (dot gain) | Tăng tram (dot gain) | Hiện tượng chấm mực nở to khi in, làm tối/đậm hơn bản gốc. |
+| Preset đơn hàng xưởng | Preset đơn hàng xưởng | Bộ thiết lập sẵn theo loại job in lưới đồng phục (nền áo, underbase, tram, dot gain) để áp dụng nhanh và giảm thao tác lặp. |
+| Thứ tự lớp in | Thứ tự lớp in | Thứ tự chạy từng lớp mực (underbase, màu chính, highlight, hỗ trợ) trên phiếu kỹ thuật để xưởng in theo đúng quy trình. |
+| Phiếu kỹ thuật in lưới | Phiếu kỹ thuật in lưới | Tài liệu xuất PDF/CSV/JSON chứa thông tin job, màu spot, lớp in và thông số tram để giao tiếp chuẩn giữa thiết kế và xưởng in. |
 | Mật độ lưới (mesh count) | Mật độ lưới (mesh count) | Số sợi lưới trên một inch, quyết định độ mịn và lượng mực đi qua. |
 | Chuyển đổi CMYK xấp xỉ | Chuyển đổi CMYK xấp xỉ | Quy đổi RGB/HEX sang CMYK theo công thức gần đúng, chưa hiệu chỉnh ICC. |
 | ICC profile | Hồ sơ ICC | Hồ sơ màu mô tả thiết bị in/hiển thị để chuyển đổi màu chính xác. |
@@ -171,9 +177,26 @@
 | Use-case | Ngữ cảnh sử dụng | Bối cảnh mục tiêu của người dùng (Web/UI, Branding, Textile, Print) để hệ thống chọn preset và cách xem trước phù hợp. |
 | Quick mode | Chế độ Tạo nhanh | Chế độ ưu tiên thao tác cốt lõi, giảm nhiễu tính năng nâng cao để người mới ra kết quả nhanh. |
 | Expert mode | Chế độ chuyên gia | Chế độ mở thêm công cụ nâng cao và không gian cộng tác cho người dùng đã quen workflow. |
+| Palette optimization studio | Studio tối ưu bảng phối | Cách tổ chức World 3 theo luồng tối ưu: gán vai màu, tìm nút thắt contrast, nhận đề xuất sửa và chuyển tiếp workflow. |
+| Decision engine | Bộ máy hỗ trợ quyết định | Lớp gợi ý có giải thích mục tiêu, lợi ích và đánh đổi để người dùng chọn phương án sửa phù hợp thay vì chỉ xem chỉ số khô. |
+| Role bottleneck | Nút thắt vai màu | Cặp vai màu có tỷ lệ tương phản thấp nhất trong ma trận, cần ưu tiên xử lý trước để cải thiện độ đọc nhanh nhất. |
+| Room workflow | Luồng phòng cộng tác | Luồng trạng thái cộng tác trong World 3: làm một mình, kết nối phòng, vào phòng thành công hoặc báo lỗi phòng không hợp lệ. |
+| Solo mode | Chế độ một mình | Chế độ làm việc không gắn phòng, vẫn dùng đầy đủ công cụ palette nhưng không đồng bộ thời gian thực với thành viên khác. |
+| Room link (`?room=...`) | Liên kết phòng | Liên kết chứa tham số `room` để mở trực tiếp đúng phòng cộng tác và đồng bộ đúng ngữ cảnh làm việc. |
 | Asset hub | Trung tâm tài sản | Khu tổng hợp tài sản nóng, phân loại, gợi ý hành động tiếp theo và mốc thời gian cập nhật trong Thư viện. |
 | Asset timeline | Dòng thời gian tài sản | Danh sách mốc cập nhật theo thời gian để theo dõi vòng đời và nhịp sử dụng tài sản. |
 | Next-action hint | Gợi ý dùng tiếp | Gợi ý bước kế tiếp phù hợp với loại tài sản đang chọn để giữ luồng liên thông không bị đứt. |
+| Fabric-first strategy | Chiến lược ưu tiên Màu vải | Định hướng đặt quyết định nền vải lên trước để toàn bộ thao tác preview, in và thêu đi đúng ngữ cảnh vật liệu ngay từ đầu. |
+| Material decision flow | Luồng quyết định vật liệu | Chuỗi thao tác chốt màu nền vật liệu: chọn vải, xem preview texture, đánh giá hợp in/thêu rồi mới chuyển tiếp sang World khác. |
+| Cross-world handoff CTA | CTA chuyển tiếp liên Thế giới | Nút hành động đưa dữ liệu màu hiện tại sang World khác theo chuẩn handoff để workflow không bị đứt đoạn. |
+| Decision-grade palette | Palette mức quyết định | Bảng palette được nâng từ mức xem màu sang mức ra quyết định bằng cách làm rõ vai màu chủ đạo, màu nhấn và màu trung tính. |
+| Dominant strip | Thanh tỷ trọng màu | Thanh hiển thị tỷ lệ xuất hiện của từng màu trong ảnh để nhìn nhanh màu nào đang chi phối. |
+| Handoff chain | Chuỗi chuyển tiếp liên Thế giới | Trình tự chuyển tiếp màu qua nhiều World theo mục tiêu (ví dụ: ImageColor → Printcolor → Library) để giữ mạch workflow liền mạch. |
+| Color lock | Khóa màu | Trạng thái khóa cứng một màu để khi trích lại hoặc đổi chiến lược, màu đó vẫn được giữ nguyên trong palette. |
+| Soft keep | Giữ ưu tiên | Trạng thái ưu tiên giữ một màu trong palette nhưng linh hoạt hơn khóa cứng, có thể bị thay khi thiếu chỗ. |
+| Color replace | Thay màu | Hành động thay một màu trong palette bằng màu gợi ý từ ảnh hoặc HEX thủ công mà không phá toàn bộ bảng màu. |
+| Parallel extraction strategies | So sánh chiến lược trích màu song song | Cơ chế tạo và so sánh nhiều phương án trích màu cùng lúc (cân bằng, chủ đạo rõ, tương phản cao) để chọn nhanh phương án phù hợp. |
+| Context-aware handoff | Handoff theo ngữ cảnh | Gợi ý điểm chuyển tiếp sang World tiếp theo dựa trên đặc trưng palette hiện tại thay vì chỉ hiển thị danh sách nút tĩnh. |
 
 ---
 
@@ -339,6 +362,8 @@
 | Object URL (URL đối tượng: đường dẫn tạm để hiển thị file local) | Object URL | Đường dẫn tạm do trình duyệt tạo để xem trước file local (ảnh/âm thanh) mà không cần upload. |
 | Hover từng ký tự (hiệu ứng tương tác trên từng chữ/ký tự) | Hover từng ký tự | Hiệu ứng hover áp lên từng chữ/ký tự riêng lẻ để tạo cảm giác sống động. |
 | Container chuẩn (khung bề rộng thống nhất cho layout) | Container chuẩn | Khung bề rộng thống nhất cho các section để giữ nhịp và căn lề nhất quán. |
+| Lớp token khung shell | Lớp token khung shell | Lớp CSS dùng biến token chiều ngang/padding (`--tc-shell-*`) để đồng bộ bề rộng giữa topbar và vùng nội dung chính. |
+| Bỏ lọc dự án | Bỏ lọc dự án | Thao tác đưa bộ lọc dự án về trạng thái “Tất cả dự án”, chỉ mở rộng phạm vi hiển thị và không xoá dữ liệu tài sản. |
 | SVG inline (nhúng SVG trực tiếp trong HTML) | SVG inline | Nhúng SVG trực tiếp trong HTML để dễ style theo CSS và tránh phụ thuộc file ngoài. |
 | Scrim (lớp phủ mờ tăng tương phản chữ) | Scrim | Lớp phủ mờ đặt sau chữ để tăng tương phản và cải thiện khả năng đọc. |
 | Ink token (token màu chữ theo sắc thái) | Ink token | Biến màu chữ theo sắc thái để giữ tương phản đồng đều giữa các theme. |
@@ -766,3 +791,6 @@ Ví dụ hiển thị sai: ký tự bị vỡ dấu do đọc sai mã hoá
 | Remix lineage (chuỗi nguồn gốc remix) | Dòng dõi remix | Tập metadata ghi lại nguồn gốc của bản remix như asset gốc, bài gốc, người remix và thời điểm remix. |
 | Local-first architecture (kiến trúc ưu tiên dữ liệu cục bộ) | Kiến trúc local-first | Cách tổ chức dữ liệu ưu tiên đọc/ghi local trước để UI vẫn chạy mượt khi chưa có backend hoàn chỉnh. |
 | Quick actions per item (thao tác nhanh theo từng item) | Hành động nhanh theo item | Nhóm thao tác tức thời ngay trên mỗi card feed như Lưu, Remix, Dùng ngay để giảm số bước điều hướng. |
+| Game palette preset (preset bảng màu theo game) | Preset bảng màu theo game | Bộ bảng màu dựng sẵn cho từng trò chơi, cho phép đổi nhanh giữa mặc định, thân thiện mù màu và tương phản cao. |
+| Per-game palette editor (trình chỉnh màu theo game) | Trình chỉnh màu theo game | Khu chỉnh màu riêng cho từng game để thay từng ô màu, áp preset nhanh và khôi phục mặc định mà không ảnh hưởng game khác. |
+| Colorblind marker overlay (lớp ký hiệu hỗ trợ mù màu) | Lớp ký hiệu hỗ trợ mù màu | Lớp ký hiệu số và hoa văn phủ trực tiếp lên quân màu để tăng khả năng phân biệt khi bật chế độ hỗ trợ mù màu. |

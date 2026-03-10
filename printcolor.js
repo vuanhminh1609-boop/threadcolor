@@ -23,6 +23,60 @@ const RICH_BLACK_PRESETS = {
   newsprint: { name: "Đen mảng - Báo", cmyk: { c: 40, m: 30, y: 30, k: 100 } }
 };
 
+const SCREEN_LAYER_LABELS = {
+  main: "Màu chính",
+  underbase: "Underbase",
+  highlight: "Highlight",
+  support: "Choke/Spot support"
+};
+
+const SCREEN_JOB_PRESETS = {
+  dark_2c_underbase: {
+    name: "Áo tối 2 màu + underbase",
+    profilePreset: "screen_spot",
+    fabricTone: "dark",
+    underbase: true,
+    underbaseType: "choke",
+    coverage: 95,
+    halftoneMode: "spot",
+    halftoneLpi: 45,
+    dotGain: 40
+  },
+  light_1c: {
+    name: "Áo sáng 1 màu",
+    profilePreset: "screen_spot",
+    fabricTone: "light",
+    underbase: false,
+    underbaseType: "full",
+    coverage: 100,
+    halftoneMode: "spot",
+    halftoneLpi: 55,
+    dotGain: 25
+  },
+  logo_3c: {
+    name: "Logo đồng phục 3 màu",
+    profilePreset: "screen_spot",
+    fabricTone: "mid",
+    underbase: true,
+    underbaseType: "spot",
+    coverage: 90,
+    halftoneMode: "spot",
+    halftoneLpi: 55,
+    dotGain: 30
+  },
+  process_4c_reference: {
+    name: "Process 4 màu tham chiếu",
+    profilePreset: "screen_process",
+    fabricTone: "light",
+    underbase: false,
+    underbaseType: "full",
+    coverage: 100,
+    halftoneMode: "process",
+    halftoneLpi: 65,
+    dotGain: 35
+  }
+};
+
 const elements = {
   input: document.getElementById("hexInput"),
   apply: document.getElementById("hexApply"),
@@ -59,6 +113,8 @@ const elements = {
   cmykMode: document.getElementById("cmykMode"),
   screenMode: document.getElementById("screenMode"),
   screenSpotFromHex: document.getElementById("screenSpotFromHex"),
+  screenJobPreset: document.getElementById("screenJobPreset"),
+  screenApplyJobPreset: document.getElementById("screenApplyJobPreset"),
   screenSpotList: document.getElementById("screenSpotList"),
   screenSpotEmpty: document.getElementById("screenSpotEmpty"),
   screenFabricTone: document.getElementById("screenFabricTone"),
@@ -140,8 +196,9 @@ const state = {
   iccLoading: false,
   qcEntries: [],
   qcErrors: 0,
-  printMode: "cmyk",
+  printMode: "screen",
   spotItems: [],
+  screenJobPreset: "dark_2c_underbase",
   screenFabricTone: "light",
   screenUnderbase: false,
   screenUnderbaseType: "full",
@@ -875,6 +932,7 @@ const buildPresetSnapshot = () => ({
   richBlackPreset: state.richBlackPreset,
   darkFabric: state.darkFabric,
   printMode: state.printMode,
+  screenJobPreset: elements.screenJobPreset?.value || state.screenJobPreset,
   screenFabricTone: elements.screenFabricTone?.value || state.screenFabricTone,
   screenUnderbase: elements.screenUnderbase?.checked ?? state.screenUnderbase,
   screenUnderbaseType: elements.screenUnderbaseType?.value || state.screenUnderbaseType,
@@ -933,6 +991,10 @@ const applyPresetData = (data) => {
   if (data.printMode) {
     setPrintMode(data.printMode);
   }
+  if (elements.screenJobPreset && data.screenJobPreset) {
+    state.screenJobPreset = data.screenJobPreset;
+    elements.screenJobPreset.value = data.screenJobPreset;
+  }
   if (elements.screenFabricTone && data.screenFabricTone) {
     state.screenFabricTone = data.screenFabricTone;
     elements.screenFabricTone.value = data.screenFabricTone;
@@ -968,6 +1030,7 @@ const applyPresetData = (data) => {
   updateIccStatus();
   if (state.iccSelectedId !== "srgb") loadIccEngine();
   applyScreenPreset(state.screenHalftoneLpi);
+  updateScreenDecisionNote();
   rebuildItems();
   renderSpotList();
 };
@@ -1314,11 +1377,76 @@ const setPrintMode = (mode) => {
   if (elements.printModeCmyk) {
     elements.printModeCmyk.classList.toggle("tc-btn-primary", state.printMode === "cmyk");
     elements.printModeCmyk.classList.toggle("tc-chip", state.printMode !== "cmyk");
+    elements.printModeCmyk.setAttribute("aria-pressed", String(state.printMode === "cmyk"));
   }
   if (elements.printModeScreen) {
     elements.printModeScreen.classList.toggle("tc-btn-primary", state.printMode === "screen");
     elements.printModeScreen.classList.toggle("tc-chip", state.printMode !== "screen");
+    elements.printModeScreen.setAttribute("aria-pressed", String(state.printMode === "screen"));
   }
+  if (state.printMode === "screen") {
+    updateScreenDecisionNote();
+  }
+};
+
+const getScreenLayerLabel = (value) => SCREEN_LAYER_LABELS[value] || SCREEN_LAYER_LABELS.main;
+
+const updateScreenDecisionNote = () => {
+  if (!elements.screenNote) return;
+  const toneLabel = state.screenFabricTone === "dark"
+    ? "Nền áo tối"
+    : state.screenFabricTone === "mid"
+      ? "Nền áo trung tính"
+      : "Nền áo sáng";
+  const underbaseLabel = state.screenUnderbase
+    ? `Đang bật underbase ${state.screenUnderbaseType === "choke" ? "choke" : state.screenUnderbaseType}.`
+    : "Chưa bật underbase.";
+  const processLabel = state.screenHalftoneMode === "process" ? "Process CMYK" : "Spot";
+  let decisionHint = "";
+  if (state.screenFabricTone === "dark" && !state.screenUnderbase) {
+    decisionHint = "Nên bật underbase trắng để giữ tông màu trên áo tối.";
+  } else if (state.screenFabricTone !== "dark" && state.screenUnderbase) {
+    decisionHint = "Nền sáng/trung tính có thể giảm underbase để tiết kiệm lớp in.";
+  } else {
+    decisionHint = "Thiết lập hiện tại phù hợp cho chạy test bản in đầu.";
+  }
+  elements.screenNote.textContent = `${toneLabel}. ${underbaseLabel} Tram ${processLabel} ${state.screenHalftoneLpi} LPI, dot gain ${state.screenDotGain}% · ${decisionHint}`;
+};
+
+const applyScreenJobPreset = (presetKey) => {
+  const preset = SCREEN_JOB_PRESETS[presetKey];
+  if (!preset) return;
+  state.screenJobPreset = presetKey;
+  setPrintMode("screen");
+  if (elements.profilePreset && preset.profilePreset) {
+    elements.profilePreset.value = preset.profilePreset;
+    const profile = PROFILE_PRESETS[preset.profilePreset];
+    if (profile?.tac) {
+      state.tacLimit = profile.tac;
+      if (elements.tacRange) elements.tacRange.value = String(profile.tac);
+      updateTacDisplay();
+      renderTable();
+    }
+    updateProfileNote(preset.profilePreset);
+  }
+  state.screenFabricTone = preset.fabricTone;
+  state.screenUnderbase = Boolean(preset.underbase);
+  state.screenUnderbaseType = preset.underbaseType;
+  state.screenCoverage = preset.coverage;
+  state.screenHalftoneMode = preset.halftoneMode;
+  state.screenHalftoneLpi = preset.halftoneLpi;
+  state.screenDotGain = preset.dotGain;
+  if (elements.screenFabricTone) elements.screenFabricTone.value = state.screenFabricTone;
+  if (elements.screenUnderbase) elements.screenUnderbase.checked = state.screenUnderbase;
+  if (elements.screenUnderbaseType) elements.screenUnderbaseType.value = state.screenUnderbaseType;
+  if (elements.screenCoverage) elements.screenCoverage.value = String(state.screenCoverage);
+  if (elements.screenHalftoneMode) elements.screenHalftoneMode.value = state.screenHalftoneMode;
+  if (elements.screenHalftoneLpi) elements.screenHalftoneLpi.value = String(state.screenHalftoneLpi);
+  if (elements.screenDotGain) elements.screenDotGain.value = String(state.screenDotGain);
+  applyScreenPreset(state.screenHalftoneLpi);
+  updateDotGainUI();
+  updateScreenDecisionNote();
+  showToast(`Đã áp dụng preset xưởng: ${preset.name}.`);
 };
 
 const renderSpotList = () => {
@@ -1326,10 +1454,15 @@ const renderSpotList = () => {
   elements.screenSpotList.innerHTML = "";
   const items = state.spotItems || [];
   elements.screenSpotEmpty.classList.toggle("hidden", items.length > 0);
-  items.forEach((item) => {
+  items.forEach((item, idx) => {
     const row = document.createElement("div");
     row.className = "flex flex-wrap items-center gap-2 tc-chip px-3 py-2";
     row.dataset.spotId = item.id;
+
+    const order = document.createElement("span");
+    order.className = "tc-badge";
+    order.textContent = `Lớp ${idx + 1}`;
+    row.appendChild(order);
 
     const swatch = document.createElement("span");
     swatch.className = "tc-swatch";
@@ -1345,8 +1478,21 @@ const renderSpotList = () => {
     name.type = "text";
     name.className = "tc-input !min-h-0 !py-2 !px-2 w-[120px]";
     name.value = item.name || "";
+    name.placeholder = "Tên mực nội bộ";
     name.dataset.spotField = "name";
     row.appendChild(name);
+
+    const layer = document.createElement("select");
+    layer.className = "tc-input !min-h-0 !py-2 !px-2 w-[170px]";
+    layer.dataset.spotField = "layerType";
+    Object.entries(SCREEN_LAYER_LABELS).forEach(([value, label]) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      layer.appendChild(option);
+    });
+    layer.value = item.layerType && SCREEN_LAYER_LABELS[item.layerType] ? item.layerType : "main";
+    row.appendChild(layer);
 
     const passes = document.createElement("input");
     passes.type = "number";
@@ -1386,11 +1532,13 @@ const buildSpotItemsFromHex = () => {
   state.spotItems = list.map((hex, idx) => ({
     id: `${Date.now()}_${idx}`,
     hex,
-    name: `M\u00e0u ${idx + 1}`,
+    name: `Mực ${idx + 1}`,
+    layerType: "main",
     passes: 1,
     note: ""
   }));
   renderSpotList();
+  updateScreenDecisionNote();
 };
 
 const updateSpotField = (target) => {
@@ -1404,6 +1552,10 @@ const updateSpotField = (target) => {
     const next = Number(target.value || 1);
     item.passes = Number.isNaN(next) ? 1 : Math.max(1, next);
     target.value = String(item.passes);
+    return;
+  }
+  if (field === "layerType") {
+    item.layerType = SCREEN_LAYER_LABELS[target.value] ? target.value : "main";
     return;
   }
   item[field] = target.value;
@@ -1444,6 +1596,7 @@ const loadScreenPresets = async () => {
   }
   applyScreenPreset(state.screenHalftoneLpi);
   updateDotGainUI();
+  updateScreenDecisionNote();
 };
 const updateProfileNote = (presetKey) => {
   if (!elements.profileNote) return;
@@ -2082,7 +2235,7 @@ const renderScreenReportView = (report) => {
     const top = sorted.slice(0, 20);
     top.forEach((row) => {
       const line = document.createElement("div");
-      line.textContent = `${row.hex} \u00b7 ${row.name || ""} \u00b7 ${row.passes || 1} l\u1ea7n`;
+      line.textContent = `${row.hex} \u00b7 ${row.name || ""} \u00b7 ${getScreenLayerLabel(row.layerType)} \u00b7 ${row.passes || 1} lần`;
       list.appendChild(line);
     });
     container.appendChild(list);
@@ -2098,7 +2251,7 @@ const renderScreenReportView = (report) => {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    ["Th\u1ee9 t\u1ef1", "M\u00e0u", "T\u00ean", "L\u01b0\u1ee3t in", "Ghi ch\u00fa"].forEach((label) => {
+    ["Th\u1ee9 tự", "Màu", "Tên", "Lớp in", "Lượt in", "Ghi chú"].forEach((label) => {
       const th = document.createElement("th");
       th.textContent = label;
       headRow.appendChild(th);
@@ -2110,7 +2263,7 @@ const renderScreenReportView = (report) => {
       const tr = document.createElement("tr");
       tr.className = "qc-report-row";
       const td = document.createElement("td");
-      td.colSpan = 5;
+      td.colSpan = 6;
       td.textContent = "Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u.";
       tr.appendChild(td);
       tbody.appendChild(tr);
@@ -2130,6 +2283,8 @@ const renderScreenReportView = (report) => {
         colorCell.appendChild(hexSpan);
         const nameCell = document.createElement("td");
         nameCell.textContent = row.name || "";
+        const layerCell = document.createElement("td");
+        layerCell.textContent = getScreenLayerLabel(row.layerType);
         const passCell = document.createElement("td");
         passCell.textContent = row.passes || 1;
         const noteCell = document.createElement("td");
@@ -2137,6 +2292,7 @@ const renderScreenReportView = (report) => {
         tr.appendChild(orderCell);
         tr.appendChild(colorCell);
         tr.appendChild(nameCell);
+        tr.appendChild(layerCell);
         tr.appendChild(passCell);
         tr.appendChild(noteCell);
         tbody.appendChild(tr);
@@ -2241,6 +2397,8 @@ const buildScreenReport = () => {
   const createdBy = window.tcAuth?.currentUser?.email || "";
   const rows = (state.spotItems || []).map((item, idx) => ({
     order: idx + 1,
+    layerType: item.layerType || "main",
+    layerLabel: getScreenLayerLabel(item.layerType),
     hex: item.hex,
     name: item.name || "",
     passes: item.passes || 1,
@@ -2330,9 +2488,10 @@ const formatScreenFilename = () => {
 };
 
 const exportScreenCsv = (report) => {
-  const header = "order,hex,name,passes,note";
+  const header = "order,layerType,hex,name,passes,note";
   const rows = report.rows.map((row) => [
     row.order,
+    row.layerType || "main",
     row.hex,
     row.name || "",
     row.passes || 1,
@@ -2551,6 +2710,16 @@ const bindEvents = () => {
       showToast("Đã xóa danh sách.");
     });
   }
+  if (elements.printModeCmyk) {
+    elements.printModeCmyk.addEventListener("click", () => {
+      setPrintMode("cmyk");
+    });
+  }
+  if (elements.printModeScreen) {
+    elements.printModeScreen.addEventListener("click", () => {
+      setPrintMode("screen");
+    });
+  }
   if (elements.profilePreset) {
     elements.profilePreset.addEventListener("change", () => {
       const preset = PROFILE_PRESETS[elements.profilePreset.value];
@@ -2728,6 +2897,91 @@ const bindEvents = () => {
   if (elements.exportCopy) {
     elements.exportCopy.textContent = "Xuất Bản thông số";
     elements.exportCopy.addEventListener("click", exportData);
+  }
+  if (elements.screenSpotFromHex) {
+    elements.screenSpotFromHex.addEventListener("click", () => {
+      buildSpotItemsFromHex();
+      if (state.spotItems.length) {
+        showToast(`Đã tạo ${state.spotItems.length} màu spot từ danh sách HEX.`);
+      }
+    });
+  }
+  if (elements.screenJobPreset) {
+    elements.screenJobPreset.addEventListener("change", () => {
+      state.screenJobPreset = elements.screenJobPreset.value || state.screenJobPreset;
+    });
+  }
+  if (elements.screenApplyJobPreset) {
+    elements.screenApplyJobPreset.addEventListener("click", () => {
+      applyScreenJobPreset(elements.screenJobPreset?.value || state.screenJobPreset);
+    });
+  }
+  if (elements.screenSpotList) {
+    const applyFieldChange = (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement || target instanceof HTMLSelectElement)) return;
+      if (!target.dataset.spotField) return;
+      updateSpotField(target);
+    };
+    elements.screenSpotList.addEventListener("input", applyFieldChange);
+    elements.screenSpotList.addEventListener("change", applyFieldChange);
+    elements.screenSpotList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-spot-action='delete']");
+      if (!button) return;
+      const row = button.closest("[data-spot-id]");
+      const id = row?.dataset.spotId;
+      if (!id) return;
+      state.spotItems = state.spotItems.filter((item) => item.id !== id);
+      renderSpotList();
+      updateScreenDecisionNote();
+    });
+  }
+  if (elements.screenFabricTone) {
+    elements.screenFabricTone.addEventListener("change", () => {
+      state.screenFabricTone = elements.screenFabricTone.value;
+      updateScreenDecisionNote();
+    });
+  }
+  if (elements.screenUnderbase) {
+    elements.screenUnderbase.addEventListener("change", () => {
+      state.screenUnderbase = elements.screenUnderbase.checked;
+      updateScreenDecisionNote();
+    });
+  }
+  if (elements.screenUnderbaseType) {
+    elements.screenUnderbaseType.addEventListener("change", () => {
+      state.screenUnderbaseType = elements.screenUnderbaseType.value;
+      updateScreenDecisionNote();
+    });
+  }
+  if (elements.screenCoverage) {
+    elements.screenCoverage.addEventListener("input", () => {
+      const value = Number(elements.screenCoverage.value || state.screenCoverage);
+      const safe = Number.isNaN(value) ? 100 : Math.min(200, Math.max(10, value));
+      state.screenCoverage = safe;
+      elements.screenCoverage.value = String(safe);
+      updateScreenDecisionNote();
+    });
+  }
+  if (elements.screenHalftoneMode) {
+    elements.screenHalftoneMode.addEventListener("change", () => {
+      state.screenHalftoneMode = elements.screenHalftoneMode.value === "process" ? "process" : "spot";
+      updateScreenDecisionNote();
+    });
+  }
+  if (elements.screenHalftoneLpi) {
+    elements.screenHalftoneLpi.addEventListener("change", () => {
+      const next = Number(elements.screenHalftoneLpi.value || state.screenHalftoneLpi);
+      state.screenHalftoneLpi = Number.isNaN(next) ? 55 : next;
+      applyScreenPreset(state.screenHalftoneLpi);
+      updateScreenDecisionNote();
+    });
+  }
+  if (elements.screenDotGain) {
+    elements.screenDotGain.addEventListener("input", () => {
+      updateDotGainUI();
+      updateScreenDecisionNote();
+    });
   }
   if (elements.qcExport) {
     elements.qcExport.addEventListener("click", () => {
@@ -2934,6 +3188,21 @@ if (!initReportView()) {
   initPreflight();
   initTopbarHeight();
   setPrintMode(state.printMode);
+  if (elements.screenJobPreset) {
+    elements.screenJobPreset.value = state.screenJobPreset;
+  }
+  if (elements.screenFabricTone) {
+    elements.screenFabricTone.value = state.screenFabricTone;
+  }
+  if (elements.screenUnderbase) {
+    elements.screenUnderbase.checked = state.screenUnderbase;
+  }
+  if (elements.screenUnderbaseType) {
+    elements.screenUnderbaseType.value = state.screenUnderbaseType;
+  }
+  if (elements.screenCoverage) {
+    elements.screenCoverage.value = String(state.screenCoverage);
+  }
   renderSpotList();
   if (elements.screenHalftoneMode) {
     elements.screenHalftoneMode.value = state.screenHalftoneMode;
@@ -2945,6 +3214,7 @@ if (!initReportView()) {
     elements.screenDotGain.value = String(state.screenDotGain);
   }
   loadScreenPresets();
+  updateScreenDecisionNote();
   applyFromHash();
 
   window.addEventListener("hashchange", () => {
