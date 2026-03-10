@@ -7,7 +7,16 @@ const ASSET_STORAGE_KEY = "tc_asset_library_v1";
 const PROJECT_STORAGE_KEY = "tc_project_current";
 const FEED_STORAGE_KEY = "tc_community_feed";
 const HANDOFF_FROM = "imagecolor";
+const TOUR_SEEN_KEY = "tc_w7_tour_seen_v1";
+const TOUR_NEVER_KEY = "tc_w7_tour_never_v1";
+const LOCK_LIMIT = 4;
+const KEEP_LIMIT = 6;
 const incomingHandoff = resolveIncoming({ search: window.location.search, hash: window.location.hash });
+
+const t = (key, fallback = "", params) => {
+  const fullKey = `imagecolor.${key}`;
+  return window.tcI18n?.t?.(fullKey, fallback, params) || fallback;
+};
 
 const elements = {
   input: document.getElementById("imgInput"),
@@ -20,6 +29,7 @@ const elements = {
   btnSample: document.getElementById("btnSample"),
   btnToPalette: document.getElementById("btnToPalette"),
   btnToGradient: document.getElementById("btnToGradient"),
+  btnToPrint: document.getElementById("btnToPrint"),
   btnSave: document.getElementById("btnSaveLibrary"),
   btnUseLibrary: document.getElementById("btnUseLibrary"),
   btnShare: document.getElementById("btnShare"),
@@ -27,6 +37,7 @@ const elements = {
   btnCopyJson: document.getElementById("btnCopyJson"),
   btnSharePalette: document.getElementById("btnSharePalette"),
   btnShareGradient: document.getElementById("btnShareGradient"),
+  btnOpenTour: document.getElementById("btnOpenTour"),
   btnRegion: document.getElementById("btnRegion"),
   btnRegionClear: document.getElementById("btnRegionClear"),
   regionStatus: document.getElementById("regionStatus"),
@@ -40,7 +51,32 @@ const elements = {
   regionBox: document.getElementById("regionBox"),
   mockupUi: document.getElementById("mockupUi"),
   mockupPoster: document.getElementById("mockupPoster"),
-  mockupFabric: document.getElementById("mockupFabric")
+  mockupFabric: document.getElementById("mockupFabric"),
+  mockupUiNote: document.getElementById("mockupUiNote"),
+  mockupPosterNote: document.getElementById("mockupPosterNote"),
+  mockupFabricNote: document.getElementById("mockupFabricNote"),
+  decisionPanel: document.getElementById("paletteDecisionPanel"),
+  decisionSummary: document.getElementById("decisionSummary"),
+  decisionRoleGrid: document.getElementById("decisionRoleGrid"),
+  dominantStrip: document.getElementById("dominantStrip"),
+  nextActionHint: document.getElementById("nextActionHint"),
+  handoffHint: document.getElementById("handoffHint"),
+  strategyCompareGrid: document.getElementById("strategyCompareGrid"),
+  strategyComparePanel: document.getElementById("strategyComparePanel"),
+  replacePanel: document.getElementById("replacePanel"),
+  replaceSourceHex: document.getElementById("replaceSourceHex"),
+  replaceCandidateList: document.getElementById("replaceCandidateList"),
+  replaceCandidatesEmpty: document.getElementById("replaceCandidatesEmpty"),
+  replaceHexInput: document.getElementById("replaceHexInput"),
+  btnReplaceApply: document.getElementById("btnReplaceApply"),
+  btnReplaceCancel: document.getElementById("btnReplaceCancel"),
+  nextStepList: document.getElementById("nextStepList"),
+  legendDominantSwatch: document.getElementById("legendDominantSwatch"),
+  legendDominantText: document.getElementById("legendDominantText"),
+  legendAccentSwatch: document.getElementById("legendAccentSwatch"),
+  legendAccentText: document.getElementById("legendAccentText"),
+  legendNeutralSwatch: document.getElementById("legendNeutralSwatch"),
+  legendNeutralText: document.getElementById("legendNeutralText")
 };
 
 const state = {
@@ -48,7 +84,12 @@ const state = {
   imageName: "",
   palette: [],
   lockedHexes: new Set(),
+  keptHexes: new Set(),
   dominantShare: {},
+  strategyVariants: [],
+  activeStrategyId: "balanced",
+  imageCandidates: [],
+  replaceTargetHex: "",
   samplePixels: [],
   pickCanvas: null,
   pickCtx: null,
@@ -62,7 +103,8 @@ const state = {
   regionDrag: null,
   worker: null,
   workerReady: false,
-  sampleToken: 0
+  sampleToken: 0,
+  selectedHex: ""
 };
 
 let imageLoadSeq = 0;
@@ -76,6 +118,7 @@ const setActionButtonsEnabled = (enabled) => {
   const buttons = [
     elements.btnToPalette,
     elements.btnToGradient,
+    elements.btnToPrint,
     elements.btnSave,
     elements.btnShare,
     elements.btnCopyCss,
@@ -145,11 +188,11 @@ const setRegionActive = (active) => {
     elements.btnRegion.classList.toggle("is-active", state.regionActive);
   }
   if (state.regionActive) {
-    setRegionStatus("Kéo để khoanh vùng cần lấy mẫu.");
+    setRegionStatus(t("regionStatus.draw", "Kéo để khoanh vùng cần lấy mẫu."));
   } else if (state.region) {
-    setRegionStatus("Đang lấy mẫu trong vùng đã chọn.");
+    setRegionStatus(t("regionStatus.applied", "Đang lấy mẫu trong vùng đã chọn."));
   } else {
-    setRegionStatus("Chưa chọn vùng.");
+    setRegionStatus(t("regionStatus.empty", "Chưa chọn vùng."));
   }
 };
 
@@ -219,7 +262,10 @@ const endRegionSelection = () => {
     return;
   }
   setRegionActive(false);
-  setRegionStatus(`Đang lấy mẫu trong vùng ${Math.round(state.region.w)}×${Math.round(state.region.h)}px.`);
+  setRegionStatus(t("regionStatus.size", "Đang lấy mẫu trong vùng {width}×{height}px.", {
+    width: Math.round(state.region.w),
+    height: Math.round(state.region.h)
+  }));
   if (state.image) sampleImage();
 };
 
@@ -240,7 +286,7 @@ const isLoggedIn = () => {
 const publishToFeed = (asset) => {
   if (!asset) return false;
   if (!isLoggedIn()) {
-    showToast("Cần đăng nhập để chia sẻ.");
+    showToast(t("toasts.needLoginShare", "Cần đăng nhập để chia sẻ."));
     return false;
   }
   try {
@@ -253,14 +299,14 @@ const publishToFeed = (asset) => {
       createdAt: new Date().toISOString()
     });
     localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(next));
-    showToast("Đã đăng lên Cộng đồng. Bấm để xem.", {
+    showToast(t("toasts.sharedToCommunity", "Đã đăng lên Cộng đồng. Bấm để xem."), {
       onClick: () => {
         window.location.href = "../spaces/community.html#feed";
       }
     });
     return true;
   } catch (_err) {
-    showToast("Không thể chia sẻ.");
+    showToast(t("toasts.shareFailed", "Không thể chia sẻ."));
     return false;
   }
 };
@@ -291,6 +337,198 @@ const adjustRgb = (hex, amount) => {
   return rgbToHex(r + amount, g + amount, b + amount);
 };
 
+const rgbToHsl = (r, g, b) => {
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const delta = max - min;
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (delta !== 0) {
+    s = delta / (1 - Math.abs(2 * l - 1));
+    switch (max) {
+      case rn:
+        h = ((gn - bn) / delta) % 6;
+        break;
+      case gn:
+        h = (bn - rn) / delta + 2;
+        break;
+      default:
+        h = (rn - gn) / delta + 4;
+        break;
+    }
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  return { h, s: s * 100, l: l * 100 };
+};
+
+const getHexProfile = (hex) => {
+  const normalized = normalizeHex(hex);
+  if (!normalized) return { s: 0, l: 0, h: 0 };
+  const { r, g, b } = hexToRgb(normalized);
+  return rgbToHsl(r, g, b);
+};
+
+const colorDistance = (hexA, hexB) => {
+  const a = hexToRgb(hexA);
+  const b = hexToRgb(hexB);
+  const dr = a.r - b.r;
+  const dg = a.g - b.g;
+  const db = a.b - b.b;
+  return Math.sqrt(dr * dr + dg * dg + db * db);
+};
+
+const relativeLuminance = (hex) => {
+  const { r, g, b } = hexToRgb(hex);
+  const toLinear = (v) => {
+    const n = v / 255;
+    return n <= 0.03928 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+  };
+  const rl = toLinear(r);
+  const gl = toLinear(g);
+  const bl = toLinear(b);
+  return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+};
+
+const contrastRatio = (hexA, hexB) => {
+  const l1 = relativeLuminance(hexA);
+  const l2 = relativeLuminance(hexB);
+  const [maxL, minL] = l1 >= l2 ? [l1, l2] : [l2, l1];
+  return Number(((maxL + 0.05) / (minL + 0.05)).toFixed(2));
+};
+
+const buildColorBins = (pixels, step = 22) => {
+  const bins = new Map();
+  if (!Array.isArray(pixels) || !pixels.length) return [];
+  pixels.forEach(([r, g, b]) => {
+    const qr = Math.round(r / step) * step;
+    const qg = Math.round(g / step) * step;
+    const qb = Math.round(b / step) * step;
+    const key = `${qr}_${qg}_${qb}`;
+    const item = bins.get(key) || { r: 0, g: 0, b: 0, count: 0 };
+    item.r += r;
+    item.g += g;
+    item.b += b;
+    item.count += 1;
+    bins.set(key, item);
+  });
+  return Array.from(bins.values())
+    .map((item) => {
+      const r = item.r / item.count;
+      const g = item.g / item.count;
+      const b = item.b / item.count;
+      const hex = rgbToHex(r, g, b);
+      return {
+        hex,
+        count: item.count,
+        ...getHexProfile(hex),
+        luminance: relativeLuminance(hex)
+      };
+    })
+    .sort((a, b) => b.count - a.count);
+};
+
+const pickDistinctHexes = (candidates, desired, minDistance = 28) => {
+  const output = [];
+  (candidates || []).forEach((item) => {
+    if (output.length >= desired) return;
+    const hex = typeof item === "string" ? item : item?.hex;
+    if (!hex || output.includes(hex)) return;
+    if (!output.length || output.every((seed) => colorDistance(seed, hex) >= minDistance)) {
+      output.push(hex);
+    }
+  });
+  return output;
+};
+
+const buildImageCandidates = (pixels, { limit = 18 } = {}) => {
+  const bins = buildColorBins(pixels);
+  const shortlisted = pickDistinctHexes(bins, limit, 24);
+  return shortlisted.map(normalizeHex).filter(Boolean);
+};
+
+const getDecisionModel = () => {
+  if (!state.palette.length) return null;
+  const shares = state.dominantShare || {};
+  const byShare = state.palette.slice().sort((a, b) => (shares[b] || 0) - (shares[a] || 0));
+  const dominant = byShare[0] || state.palette[0];
+  const accent = state.palette
+    .slice()
+    .sort((a, b) => getHexProfile(b).s - getHexProfile(a).s)[0] || dominant;
+  const neutralCandidates = state.palette
+    .slice()
+    .sort((a, b) => {
+      const pa = getHexProfile(a);
+      const pb = getHexProfile(b);
+      const scoreA = Math.abs(pa.l - 55) + pa.s * 0.75;
+      const scoreB = Math.abs(pb.l - 55) + pb.s * 0.75;
+      return scoreA - scoreB;
+    });
+  const neutral = neutralCandidates[0] || dominant;
+  const selected = normalizeHex(state.selectedHex) || dominant;
+  const dominantProfile = getHexProfile(dominant);
+  const accentProfile = getHexProfile(accent);
+  const dominantShare = shares[dominant] ?? "--";
+  let summary = t(
+    "decision.summaryOnly",
+    "Màu chủ đạo {dominant} đang chiếm ưu thế {share}% trong ảnh.",
+    { dominant, share: dominantShare }
+  );
+  if (accent !== dominant) {
+    summary = t(
+      "decision.summaryWithAccent",
+      "Màu chủ đạo {dominant} đang chiếm ưu thế {share}% trong ảnh. Màu nhấn {accent} phù hợp để tạo điểm tập trung.",
+      { dominant, share: dominantShare, accent }
+    );
+  }
+  let nextAction = t(
+    "decision.next.default",
+    "Tiếp theo: chuyển sang Bảng phối màu để tinh chỉnh vai màu rồi lưu vào Thư viện."
+  );
+  if (dominantProfile.l < 36) {
+    nextAction = t(
+      "decision.next.dark",
+      "Nền ảnh nghiêng tối: ưu tiên mở In lưới để kiểm tra lớp lót trắng trước khi in."
+    );
+  } else if (accentProfile.s > 62) {
+    nextAction = t(
+      "decision.next.vivid",
+      "Màu nhấn bão hoà cao: chuyển sang Dải chuyển màu hoặc mở Màu thêu để tra chỉ tương ứng."
+    );
+  } else if (dominantProfile.l > 70) {
+    nextAction = t(
+      "decision.next.light",
+      "Nền sáng/trung tính: phù hợp thêu logo; mở Màu thêu để kiểm tra độ nổi chỉ."
+    );
+  }
+  const handoff = t(
+    "decision.handoff",
+    "Luồng chuyển tiếp gợi ý: {first} → {second} → Thư viện.",
+    {
+      first: dominantProfile.l < 36
+        ? t("links.print", "Mở ở In lưới")
+        : t("links.palette", "Tạo Bảng phối"),
+      second: accentProfile.s > 62
+        ? t("links.gradient", "Tạo Dải chuyển")
+        : t("links.thread", "Mở ở Màu thêu")
+    }
+  );
+  return {
+    dominant,
+    accent,
+    neutral,
+    selected,
+    summary,
+    nextAction,
+    handoff,
+    byShare
+  };
+};
+
 const buildSeedPalette = (baseHex, count) => {
   const steps = [-40, -20, 0, 20, 40, 60, -60];
   const list = [];
@@ -303,33 +541,163 @@ const buildSeedPalette = (baseHex, count) => {
 };
 
 const getLockedList = () => Array.from(state.lockedHexes || []);
+const getKeptList = () => Array.from(state.keptHexes || []);
 
 const toggleLockHex = (hex, force) => {
   if (!hex) return false;
   const isLocked = state.lockedHexes.has(hex);
   const next = force === true ? true : force === false ? false : !isLocked;
   if (next) {
-    if (state.lockedHexes.size >= 4 && !isLocked) {
-      showToast("Chỉ giữ tối đa 4 màu.");
+    if (state.lockedHexes.size >= LOCK_LIMIT && !isLocked) {
+      showToast(t("toasts.lockLimit", "Chỉ khóa tối đa {count} màu.", { count: LOCK_LIMIT }));
       return false;
     }
     state.lockedHexes.add(hex);
+    state.keptHexes.delete(hex);
   } else {
     state.lockedHexes.delete(hex);
   }
   return true;
 };
 
-const applyLocksToPalette = (palette, count) => {
+const toggleKeepHex = (hex, force) => {
+  if (!hex) return false;
+  if (state.lockedHexes.has(hex) && force !== false) return true;
+  const isKept = state.keptHexes.has(hex);
+  const next = force === true ? true : force === false ? false : !isKept;
+  if (next) {
+    if (state.keptHexes.size >= KEEP_LIMIT && !isKept) {
+      showToast(t("toasts.keepLimit", "Chỉ giữ ưu tiên tối đa {count} màu.", { count: KEEP_LIMIT }));
+      return false;
+    }
+    state.keptHexes.add(hex);
+  } else {
+    state.keptHexes.delete(hex);
+  }
+  return true;
+};
+
+const applyPreferencesToPalette = (palette, count, options = {}) => {
+  const skipHexes = new Set((options.skipHexes || []).map((hex) => normalizeHex(hex)).filter(Boolean));
   const locked = getLockedList();
+  const kept = getKeptList();
   const next = [];
   locked.forEach((hex) => {
-    if (!next.includes(hex)) next.push(hex);
+    if (!skipHexes.has(hex) && !next.includes(hex)) next.push(hex);
+  });
+  kept.forEach((hex) => {
+    if (!skipHexes.has(hex) && !next.includes(hex)) next.push(hex);
   });
   palette.forEach((hex) => {
-    if (!next.includes(hex)) next.push(hex);
+    if (!hex || skipHexes.has(hex) || next.includes(hex)) return;
+    next.push(hex);
   });
   return next.slice(0, count);
+};
+
+const applyLocksToPalette = (palette, count) => applyPreferencesToPalette(palette, count);
+
+const syncPreferenceSetsToPalette = () => {
+  const paletteSet = new Set(state.palette);
+  Array.from(state.lockedHexes).forEach((hex) => {
+    if (!paletteSet.has(hex)) state.lockedHexes.delete(hex);
+  });
+  Array.from(state.keptHexes).forEach((hex) => {
+    if (!paletteSet.has(hex) || state.lockedHexes.has(hex)) state.keptHexes.delete(hex);
+  });
+};
+
+const remapPreferenceHex = (fromHex, toHex) => {
+  if (!fromHex || !toHex || fromHex === toHex) return;
+  const hadLock = state.lockedHexes.has(fromHex);
+  const hadKeep = state.keptHexes.has(fromHex);
+  state.lockedHexes.delete(fromHex);
+  state.keptHexes.delete(fromHex);
+  if (hadLock) {
+    state.lockedHexes.add(toHex);
+  } else if (hadKeep) {
+    state.keptHexes.add(toHex);
+  }
+};
+
+const buildStrategyVariants = (basePalette, count) => {
+  const normalizedBase = (basePalette || []).map((hex) => normalizeHex(hex)).filter(Boolean);
+  if (!normalizedBase.length) return [];
+  const bins = buildColorBins(state.samplePixels);
+  const fromBins = bins.map((item) => item.hex);
+  const fillFrom = [...normalizedBase, ...fromBins].filter((hex, idx, arr) => arr.indexOf(hex) === idx);
+
+  const balancedPalette = pickDistinctHexes(normalizedBase.length ? normalizedBase : fillFrom, count, 14);
+  for (const next of fillFrom) {
+    if (balancedPalette.length >= count) break;
+    if (!balancedPalette.includes(next)) balancedPalette.push(next);
+  }
+
+  const dominantCandidates = bins
+    .slice()
+    .sort((a, b) => b.count - a.count);
+  const dominantPalette = pickDistinctHexes(dominantCandidates, count, 20);
+  for (const next of fillFrom) {
+    if (dominantPalette.length >= count) break;
+    if (!dominantPalette.includes(next)) dominantPalette.push(next);
+  }
+
+  const byDark = bins.slice().sort((a, b) => a.luminance - b.luminance);
+  const byLight = bins.slice().sort((a, b) => b.luminance - a.luminance);
+  const bySat = bins.slice().sort((a, b) => b.s - a.s);
+  const contrastSeed = [];
+  if (byDark[0]?.hex) contrastSeed.push(byDark[0].hex);
+  if (byLight[0]?.hex && !contrastSeed.includes(byLight[0].hex)) contrastSeed.push(byLight[0].hex);
+  if (bySat[0]?.hex && !contrastSeed.includes(bySat[0].hex)) contrastSeed.push(bySat[0].hex);
+  const contrastPool = [...contrastSeed, ...fromBins, ...normalizedBase]
+    .filter((hex, idx, arr) => arr.indexOf(hex) === idx);
+  const contrastPalette = [];
+  while (contrastPalette.length < count && contrastPool.length) {
+    if (!contrastPalette.length) {
+      contrastPalette.push(contrastPool.shift());
+      continue;
+    }
+    let bestHex = null;
+    let bestScore = -1;
+    contrastPool.forEach((hex) => {
+      const distanceScore = Math.min(...contrastPalette.map((seed) => colorDistance(seed, hex)));
+      const lumScore = Math.min(...contrastPalette.map((seed) => Math.abs(relativeLuminance(seed) - relativeLuminance(hex)) * 255));
+      const score = distanceScore * 0.7 + lumScore * 0.3;
+      if (score > bestScore) {
+        bestScore = score;
+        bestHex = hex;
+      }
+    });
+    if (!bestHex) break;
+    contrastPalette.push(bestHex);
+    const idx = contrastPool.indexOf(bestHex);
+    if (idx >= 0) contrastPool.splice(idx, 1);
+  }
+  for (const next of fillFrom) {
+    if (contrastPalette.length >= count) break;
+    if (!contrastPalette.includes(next)) contrastPalette.push(next);
+  }
+
+  return [
+    {
+      id: "balanced",
+      name: t("strategies.items.balanced.name", "Cân bằng"),
+      desc: t("strategies.items.balanced.desc", "Giữ nhịp màu hài hòa để dùng đa ngữ cảnh."),
+      palette: applyPreferencesToPalette(balancedPalette, count)
+    },
+    {
+      id: "dominant",
+      name: t("strategies.items.dominant.name", "Chủ đạo rõ"),
+      desc: t("strategies.items.dominant.desc", "Ưu tiên màu chiếm tỉ trọng cao để giữ tinh thần ảnh gốc."),
+      palette: applyPreferencesToPalette(dominantPalette, count)
+    },
+    {
+      id: "contrast",
+      name: t("strategies.items.contrast.name", "Tương phản cao"),
+      desc: t("strategies.items.contrast.desc", "Đẩy độ tách lớp màu để dễ đọc và dễ in."),
+      palette: applyPreferencesToPalette(contrastPalette, count)
+    }
+  ];
 };
 
 const computeDominantShare = (palette, pixels) => {
@@ -360,14 +728,17 @@ const computeDominantShare = (palette, pixels) => {
 };
 
 const getPaletteRoles = () => {
-  const main = state.palette[0] || "#94A3B8";
-  const secondary = state.palette[1] || adjustRgb(main, 30);
-  const accent = state.palette[2] || adjustRgb(main, -30);
+  const model = getDecisionModel();
+  const main = model?.dominant || state.palette[0] || "#94A3B8";
+  const secondary = model?.neutral || state.palette[1] || adjustRgb(main, 30);
+  const accent = model?.accent || state.palette[2] || adjustRgb(main, -30);
   return { main, secondary, accent };
 };
 
 const updateMockups = () => {
   const { main, secondary, accent } = getPaletteRoles();
+  const ratioUi = contrastRatio(main, secondary);
+  const ratioCta = contrastRatio(accent, secondary);
   if (elements.mockupUi) {
     const body = elements.mockupUi.querySelector(".ic-mockup-body");
     if (body) body.style.background = secondary;
@@ -377,6 +748,15 @@ const updateMockups = () => {
     if (title) title.style.background = main;
     if (subtitle) subtitle.style.background = adjustRgb(secondary, -20);
     if (cta) cta.style.background = accent;
+  }
+  if (elements.mockupUiNote) {
+    const key = ratioUi >= 4.5
+      ? "preview.notes.uiStrong"
+      : "preview.notes.uiWeak";
+    const fallback = ratioUi >= 4.5
+      ? "Bố cục UI đạt độ đọc tốt giữa tiêu đề và nền."
+      : "Độ đọc UI còn thấp, nên chỉnh lại màu chủ đạo hoặc nền phụ.";
+    elements.mockupUiNote.textContent = `${t(key, fallback)} (${ratioUi}:1)`;
   }
   if (elements.mockupPoster) {
     const body = elements.mockupPoster.querySelector(".ic-mockup-body");
@@ -388,6 +768,15 @@ const updateMockups = () => {
     if (title) title.style.background = accent;
     if (subtitle) subtitle.style.background = "rgba(255,255,255,0.6)";
   }
+  if (elements.mockupPosterNote) {
+    const key = ratioCta >= 3.5
+      ? "preview.notes.posterStrong"
+      : "preview.notes.posterWeak";
+    const fallback = ratioCta >= 3.5
+      ? "Màu nhấn tách nền tốt, phù hợp dùng làm điểm gọi hành động."
+      : "Màu nhấn chưa tách nền rõ, cân nhắc tăng tương phản cho áp phích.";
+    elements.mockupPosterNote.textContent = `${t(key, fallback)} (${ratioCta}:1)`;
+  }
   if (elements.mockupFabric) {
     const body = elements.mockupFabric.querySelector(".ic-mockup-body");
     if (body) {
@@ -395,6 +784,318 @@ const updateMockups = () => {
       body.style.boxShadow = `inset 0 0 0 2px ${accent}`;
     }
   }
+  if (elements.mockupFabricNote) {
+    const mainProfile = getHexProfile(main);
+    const tipKey = mainProfile.l < 40
+      ? "preview.notes.fabricDark"
+      : mainProfile.l > 68
+        ? "preview.notes.fabricLight"
+        : "preview.notes.fabricMid";
+    const fallback = mainProfile.l < 40
+      ? "Nền vải tối: ưu tiên kiểm tra underbase trước khi in."
+      : mainProfile.l > 68
+        ? "Nền vải sáng: phù hợp thêu logo nổi với màu nhấn hiện tại."
+        : "Nền vải trung tính: dễ chuyển tiếp sang cả Thêu và In lưới.";
+    elements.mockupFabricNote.textContent = t(tipKey, fallback);
+  }
+};
+
+const updateLegend = ({ dominant, accent, neutral }) => {
+  const applyLegend = (swatch, textNode, label, hex) => {
+    if (swatch) swatch.style.background = hex || "transparent";
+    if (textNode) {
+      textNode.textContent = hex ? `${label}: ${hex}` : label;
+    }
+  };
+  applyLegend(
+    elements.legendDominantSwatch,
+    elements.legendDominantText,
+    t("preview.legend.dominant", "Chủ đạo"),
+    dominant
+  );
+  applyLegend(
+    elements.legendAccentSwatch,
+    elements.legendAccentText,
+    t("preview.legend.accent", "Nhấn"),
+    accent
+  );
+  applyLegend(
+    elements.legendNeutralSwatch,
+    elements.legendNeutralText,
+    t("preview.legend.neutral", "Trung tính"),
+    neutral
+  );
+};
+
+const renderDecisionPanel = () => {
+  if (!elements.decisionSummary || !elements.decisionRoleGrid || !elements.dominantStrip || !elements.nextActionHint) {
+    return;
+  }
+  const model = getDecisionModel();
+  if (!model) {
+    elements.decisionSummary.textContent = t(
+      "decision.empty",
+      "Chưa có bảng màu để đánh giá vai màu. Hãy tải ảnh và bấm Lấy mẫu màu."
+    );
+    elements.decisionRoleGrid.innerHTML = "";
+    elements.dominantStrip.innerHTML = "";
+    elements.nextActionHint.textContent = t(
+      "decision.nextPlaceholder",
+      "Gợi ý bước tiếp theo sẽ hiển thị sau khi có bảng màu."
+    );
+    if (elements.handoffHint) {
+      elements.handoffHint.textContent = t(
+        "handoff.hint",
+        "Chuyển tiếp nhanh: Bảng phối/Dải chuyển để sáng tạo, Màu thêu để tra chỉ, In lưới để chuẩn bị in, Thư viện để lưu tài sản."
+      );
+    }
+    updateLegend({ dominant: "", accent: "", neutral: "" });
+    return;
+  }
+
+  const roleRows = [
+    {
+      role: t("decision.roles.dominant", "Màu chủ đạo"),
+      note: t("decision.notes.share", "Chiếm {percent}%", {
+        percent: state.dominantShare?.[model.dominant] ?? "--"
+      }),
+      hex: model.dominant
+    },
+    {
+      role: t("decision.roles.accent", "Màu nhấn"),
+      note: t("decision.notes.saturation", "Độ bão hòa {value}%", {
+        value: Math.round(getHexProfile(model.accent).s)
+      }),
+      hex: model.accent
+    },
+    {
+      role: t("decision.roles.neutral", "Màu nền trung tính"),
+      note: t("decision.notes.lightness", "Độ sáng {value}%", {
+        value: Math.round(getHexProfile(model.neutral).l)
+      }),
+      hex: model.neutral
+    }
+  ];
+
+  elements.decisionSummary.textContent = model.summary;
+  elements.decisionRoleGrid.innerHTML = roleRows
+    .map((item) => `
+      <article class="ic-role-item">
+        <div class="ic-role-head">
+          <span>${item.role}</span>
+          <span>${item.note}</span>
+        </div>
+        <div class="ic-role-color">
+          <span class="ic-role-swatch" style="background:${item.hex}"></span>
+          <strong>${item.hex}</strong>
+        </div>
+      </article>
+    `)
+    .join("");
+
+  const shareSegments = model.byShare
+    .map((hex) => {
+      const percent = state.dominantShare?.[hex] || 0;
+      const flex = Math.max(1, percent);
+      return `<span class="ic-dominant-segment" style="flex:${flex} 1 0;background:${hex}" title="${hex} · ${percent}%">${percent}%</span>`;
+    })
+    .join("");
+  elements.dominantStrip.innerHTML = shareSegments;
+  elements.nextActionHint.textContent = model.nextAction;
+  if (elements.handoffHint) {
+    elements.handoffHint.textContent = model.handoff;
+  }
+  updateLegend({
+    dominant: model.dominant,
+    accent: model.accent,
+    neutral: model.neutral
+  });
+};
+
+const refreshStrategyVariants = ({ resetActive = false } = {}) => {
+  const count = Number(elements.paletteSize?.value || state.palette.length || 8);
+  state.strategyVariants = buildStrategyVariants(state.palette, count);
+  if (!state.strategyVariants.length) {
+    state.activeStrategyId = "balanced";
+    return;
+  }
+  const existing = state.strategyVariants.some((item) => item.id === state.activeStrategyId);
+  if (resetActive || !existing) {
+    state.activeStrategyId = state.strategyVariants[0].id;
+  }
+};
+
+const renderStrategyPanel = () => {
+  if (!elements.strategyCompareGrid || !elements.strategyComparePanel) return;
+  if (!state.palette.length || !state.strategyVariants.length) {
+    elements.strategyCompareGrid.innerHTML = `<p class="tc-muted text-xs">${t("strategies.empty", "Hãy trích màu trước để so sánh chiến lược.")}</p>`;
+    return;
+  }
+  elements.strategyCompareGrid.innerHTML = state.strategyVariants
+    .map((strategy) => {
+      const isActive = strategy.id === state.activeStrategyId;
+      const preview = strategy.palette
+        .map((hex) => `<span style="background:${hex}" title="${hex}"></span>`)
+        .join("");
+      return `
+        <article class="ic-strategy-card ${isActive ? "is-active" : ""}" data-strategy-card="${strategy.id}">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="text-xs font-semibold">${strategy.name}</p>
+              <p class="tc-muted text-[11px] leading-relaxed">${strategy.desc}</p>
+            </div>
+            <span class="tc-muted text-[10px]">${strategy.palette.length}</span>
+          </div>
+          <div class="ic-strategy-preview">${preview}</div>
+          <div class="ic-strategy-actions">
+            <span class="tc-muted text-[11px]">${strategy.palette.slice(0, 3).join(" · ")}</span>
+            <button type="button" class="tc-btn tc-chip px-2 py-1 text-[11px]" data-strategy-apply="${strategy.id}">
+              ${t("strategies.apply", "Áp dụng")}
+            </button>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+};
+
+const getContextualRecommendations = (model) => {
+  if (!model) return [];
+  const dominantProfile = getHexProfile(model.dominant);
+  const accentProfile = getHexProfile(model.accent);
+  const contrastDA = contrastRatio(model.dominant, model.accent);
+  const contrastDN = contrastRatio(model.dominant, model.neutral);
+  const list = [];
+  if (dominantProfile.l < 40 || contrastDA < 2.6) {
+    list.push({
+      id: "print",
+      action: "print",
+      title: t("next.items.print.title", "Mở In lưới (World 4)"),
+      reason: t("next.items.print.reason", "Ảnh có nền đậm hoặc tương phản thấp; nên kiểm tra underbase và thứ tự lớp in."),
+      priority: 100
+    });
+  }
+  if (accentProfile.s > 58) {
+    list.push({
+      id: "gradient",
+      action: "gradient",
+      title: t("next.items.gradient.title", "Chuyển sang Dải chuyển (World 2)"),
+      reason: t("next.items.gradient.reason", "Màu nhấn bão hòa cao phù hợp tạo dải chuyển giàu cảm xúc."),
+      priority: 90
+    });
+  }
+  if (contrastDN >= 2.2) {
+    list.push({
+      id: "thread",
+      action: "thread",
+      title: t("next.items.thread.title", "Mở Màu thêu (World 1)"),
+      reason: t("next.items.thread.reason", "Cặp chủ đạo và trung tính tách lớp ổn, thuận lợi để tra mã chỉ nhanh."),
+      priority: 80
+    });
+  }
+  list.push({
+    id: "palette",
+    action: "palette",
+    title: t("next.items.palette.title", "Tinh chỉnh ở Bảng phối (World 3)"),
+    reason: t("next.items.palette.reason", "Dùng khi cần chốt vai màu và tối ưu độ đọc trước khi triển khai."),
+    priority: 70
+  });
+  list.push({
+    id: "library",
+    action: "library-save",
+    title: t("next.items.library.title", "Lưu vào Thư viện (World 5)"),
+    reason: t("next.items.library.reason", "Giữ lại như một asset để tái sử dụng cho dự án tiếp theo."),
+    priority: 60
+  });
+  return list
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, 3);
+};
+
+const renderNextStepPanel = () => {
+  if (!elements.nextStepList) return;
+  const model = getDecisionModel();
+  if (!model) {
+    elements.nextStepList.innerHTML = `<p class="tc-muted text-xs">${t("next.empty", "Sau khi có bảng màu, hệ thống sẽ gợi ý 2-3 bước chuyển tiếp phù hợp nhất.")}</p>`;
+    return;
+  }
+  const recommendations = getContextualRecommendations(model);
+  if (!recommendations.length) {
+    elements.nextStepList.innerHTML = `<p class="tc-muted text-xs">${t("next.empty", "Sau khi có bảng màu, hệ thống sẽ gợi ý 2-3 bước chuyển tiếp phù hợp nhất.")}</p>`;
+    return;
+  }
+  elements.nextStepList.innerHTML = recommendations
+    .map((item, index) => `
+      <article class="ic-next-step-item">
+        <div class="ic-next-step-head">
+          <strong class="text-xs">${item.title}</strong>
+          <span class="tc-muted text-[10px]">${t("next.priority", "Ưu tiên {index}", { index: index + 1 })}</span>
+        </div>
+        <p class="tc-muted text-[11px] leading-relaxed">${item.reason}</p>
+        <button type="button" class="tc-btn tc-chip px-2 py-1 text-[11px] self-start" data-next-action="${item.action}">
+          ${t("next.useNow", "Dùng ngay")}
+        </button>
+      </article>
+    `)
+    .join("");
+};
+
+const closeReplacePanel = () => {
+  state.replaceTargetHex = "";
+  if (elements.replacePanel) {
+    elements.replacePanel.classList.add("hidden");
+    elements.replacePanel.setAttribute("aria-hidden", "true");
+  }
+  if (elements.replaceHexInput) {
+    elements.replaceHexInput.value = "";
+  }
+};
+
+const openReplacePanel = (hex) => {
+  const sourceHex = normalizeHex(hex);
+  if (!sourceHex || !elements.replacePanel || !elements.replaceSourceHex || !elements.replaceCandidateList) return;
+  state.replaceTargetHex = sourceHex;
+  elements.replaceSourceHex.textContent = sourceHex;
+  if (elements.replaceHexInput) {
+    elements.replaceHexInput.value = sourceHex;
+  }
+  const count = Number(elements.paletteSize?.value || state.palette.length || 8);
+  const candidatePool = state.imageCandidates
+    .filter((candidate) => !state.palette.includes(candidate) && candidate !== sourceHex)
+    .slice(0, Math.max(6, count));
+  elements.replaceCandidateList.innerHTML = candidatePool
+    .map((candidate) => `<button type="button" class="ic-candidate-btn" data-replace-candidate="${candidate}" style="background:${candidate}" title="${candidate}" aria-label="${candidate}"></button>`)
+    .join("");
+  if (elements.replaceCandidatesEmpty) {
+    elements.replaceCandidatesEmpty.classList.toggle("hidden", candidatePool.length > 0);
+  }
+  elements.replacePanel.classList.remove("hidden");
+  elements.replacePanel.setAttribute("aria-hidden", "false");
+};
+
+const replacePaletteHex = (sourceHex, targetHex) => {
+  const source = normalizeHex(sourceHex);
+  const target = normalizeHex(targetHex);
+  if (!source || !target || source === target) return false;
+  const idx = state.palette.indexOf(source);
+  if (idx < 0) return false;
+  const next = state.palette.slice();
+  next[idx] = target;
+  const dedup = next.filter((hex, index) => next.indexOf(hex) === index);
+  const count = Number(elements.paletteSize?.value || state.palette.length || dedup.length);
+  state.palette = applyPreferencesToPalette(dedup, count, { skipHexes: [source] });
+  for (const candidate of state.imageCandidates) {
+    if (state.palette.length >= count) break;
+    if (!state.palette.includes(candidate)) state.palette.push(candidate);
+  }
+  remapPreferenceHex(source, target);
+  state.selectedHex = target;
+  syncPreferenceSetsToPalette();
+  state.dominantShare = computeDominantShare(state.palette, state.samplePixels);
+  refreshStrategyVariants();
+  renderPalette();
+  showToast(t("toasts.replaced", "Đã thay {from} thành {to}.", { from: source, to: target }));
+  return true;
 };
 
 const addPickedColor = (hex, { lock = false } = {}) => {
@@ -455,11 +1156,11 @@ const setSampleLoading = (isLoading) => {
   if (!elements.btnSample) return;
   if (isLoading) {
     elements.btnSample.dataset.label ||= elements.btnSample.textContent;
-    elements.btnSample.textContent = "Đang lấy mẫu…";
+    elements.btnSample.textContent = t("sampleLoading", "Đang lấy mẫu…");
     elements.btnSample.disabled = true;
     return;
   }
-  elements.btnSample.textContent = elements.btnSample.dataset.label || "Lấy mẫu màu";
+  elements.btnSample.textContent = elements.btnSample.dataset.label || t("controls.sample", "Lấy mẫu màu");
   elements.btnSample.disabled = false;
 };
 
@@ -580,7 +1281,7 @@ const initWorker = () => {
       state.dominantShare = computeDominantShare(state.palette, state.samplePixels);
       renderPalette();
       setSampleLoading(false);
-      showToast(`Đã lấy ${state.palette.length} màu từ ảnh.`);
+      showToast(t("status.sampled", "Đã lấy {count} màu từ ảnh.", { count: state.palette.length }));
     };
     worker.onerror = () => {
       state.workerReady = false;
@@ -629,7 +1330,7 @@ const fallbackSampleFromPixels = () => {
   const count = Number(elements.paletteSize?.value || 8);
   if (!state.samplePixels.length) {
     setSampleLoading(false);
-    showToast("Không có dữ liệu ảnh để lấy mẫu.");
+    showToast(t("toasts.noImageData", "Không có dữ liệu ảnh để lấy mẫu."));
     return;
   }
   const paletteRaw = pickPalette(state.samplePixels, count).map(normalizeHex).filter(Boolean);
@@ -637,12 +1338,12 @@ const fallbackSampleFromPixels = () => {
   state.dominantShare = computeDominantShare(state.palette, state.samplePixels);
   renderPalette();
   setSampleLoading(false);
-  showToast(`Đã lấy ${state.palette.length} màu từ ảnh.`);
+  showToast(t("status.sampled", "Đã lấy {count} màu từ ảnh.", { count: state.palette.length }));
 };
 
 const sampleImage = () => {
   if (!state.image) {
-    showToast("Hãy tải ảnh trước khi lấy mẫu.");
+    showToast(t("toasts.needImageBeforeSample", "Hãy tải ảnh trước khi lấy mẫu."));
     return;
   }
   if (!elements.canvas) return;
@@ -652,6 +1353,7 @@ const sampleImage = () => {
     const imageData = buildSampleImageData();
     if (!imageData) throw new Error("no-sample");
     state.samplePixels = pixelsFromImageData(imageData);
+    state.imageCandidates = buildImageCandidates(state.samplePixels, { limit: 24 });
     initWorker();
     if (state.workerReady && state.worker) {
       state.sampleToken += 1;
@@ -667,7 +1369,7 @@ const sampleImage = () => {
     }
     fallbackSampleFromPixels();
   } catch (_err) {
-    showToast("Có lỗi khi lấy mẫu màu.");
+    showToast(t("toasts.sampleError", "Có lỗi khi lấy mẫu màu."));
     setSampleLoading(false);
   } finally {
     if (!state.workerReady) {
@@ -680,15 +1382,36 @@ const renderPalette = () => {
   if (!elements.swatchGrid) return;
   elements.swatchGrid.innerHTML = "";
   if (!state.palette.length) {
-    setStatus("Chưa có bảng phối màu. Hãy tải ảnh và bấm Lấy mẫu màu.");
+    state.selectedHex = "";
+    state.strategyVariants = [];
+    closeReplacePanel();
+    setStatus(t("status.noPalette", "Chưa có bảng màu. Hãy tải ảnh và bấm Lấy mẫu màu."));
     setActionButtonsEnabled(false);
+    renderDecisionPanel();
+    renderStrategyPanel();
+    renderNextStepPanel();
     updateMockups();
     return;
   }
   state.dominantShare = computeDominantShare(state.palette, state.samplePixels);
+  syncPreferenceSetsToPalette();
+  if (state.replaceTargetHex && !state.palette.includes(state.replaceTargetHex)) {
+    closeReplacePanel();
+  }
+  if (!state.palette.includes(state.selectedHex)) {
+    state.selectedHex = state.palette[0];
+  }
+  refreshStrategyVariants();
+  const model = getDecisionModel();
   state.palette.forEach((hex) => {
     const card = document.createElement("div");
     card.className = "tc-swatch-card";
+    card.dataset.hexCard = hex;
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    if (state.selectedHex === hex) {
+      card.classList.add("is-selected");
+    }
 
     const swatch = document.createElement("div");
     swatch.className = "tc-swatch";
@@ -700,6 +1423,22 @@ const renderPalette = () => {
     const percent = state.dominantShare?.[hex];
     share.textContent = Number.isFinite(percent) ? `${percent}%` : "--";
 
+    const roleBadge = document.createElement("span");
+    roleBadge.className = "ic-role-badge";
+    if (model?.dominant === hex) {
+      roleBadge.textContent = t("decision.roles.dominant", "Màu chủ đạo");
+    } else if (model?.accent === hex) {
+      roleBadge.textContent = t("decision.roles.accent", "Màu nhấn");
+    } else if (model?.neutral === hex) {
+      roleBadge.textContent = t("decision.roles.neutral", "Màu nền trung tính");
+    } else if (state.keptHexes.has(hex)) {
+      roleBadge.textContent = t("swatch.kept", "Đang giữ ưu tiên");
+    } else if (state.lockedHexes.has(hex)) {
+      roleBadge.textContent = t("swatch.locked", "Đang khóa");
+    } else {
+      roleBadge.textContent = t("swatch.unassigned", "Màu hỗ trợ");
+    }
+
     const actions = document.createElement("div");
     actions.className = "tc-swatch-actions";
 
@@ -708,25 +1447,50 @@ const renderPalette = () => {
     copyBtn.className = "tc-swatch-btn";
     copyBtn.dataset.hex = hex;
     copyBtn.dataset.hexAction = "copy";
-    copyBtn.textContent = "Copy HEX";
+    copyBtn.textContent = t("swatch.copyHex", "Sao chép HEX");
 
     const lockBtn = document.createElement("button");
     lockBtn.type = "button";
     lockBtn.className = "tc-swatch-btn tc-swatch-lock";
     lockBtn.dataset.hex = hex;
     lockBtn.dataset.hexAction = "lock";
-    lockBtn.textContent = state.lockedHexes.has(hex) ? "Đang giữ" : "Giữ màu";
+    lockBtn.textContent = state.lockedHexes.has(hex)
+      ? t("swatch.locked", "Đang khóa")
+      : t("swatch.lock", "Khóa");
     if (state.lockedHexes.has(hex)) lockBtn.classList.add("is-active");
+
+    const keepBtn = document.createElement("button");
+    keepBtn.type = "button";
+    keepBtn.className = "tc-swatch-btn tc-swatch-keep";
+    keepBtn.dataset.hex = hex;
+    keepBtn.dataset.hexAction = "keep";
+    keepBtn.textContent = state.keptHexes.has(hex)
+      ? t("swatch.kept", "Đang giữ ưu tiên")
+      : t("swatch.keep", "Giữ");
+    if (state.keptHexes.has(hex)) keepBtn.classList.add("is-active");
+
+    const replaceBtn = document.createElement("button");
+    replaceBtn.type = "button";
+    replaceBtn.className = "tc-swatch-btn";
+    replaceBtn.dataset.hex = hex;
+    replaceBtn.dataset.hexAction = "replace";
+    replaceBtn.textContent = t("swatch.replace", "Thay");
 
     actions.appendChild(copyBtn);
     actions.appendChild(lockBtn);
+    actions.appendChild(keepBtn);
+    actions.appendChild(replaceBtn);
     card.appendChild(swatch);
     card.appendChild(share);
+    card.appendChild(roleBadge);
     card.appendChild(actions);
     elements.swatchGrid.appendChild(card);
   });
-  setStatus(`Đã lấy ${state.palette.length} màu từ ảnh.`);
+  setStatus(t("status.sampled", "Đã lấy {count} màu từ ảnh.", { count: state.palette.length }));
   setActionButtonsEnabled(true);
+  renderDecisionPanel();
+  renderStrategyPanel();
+  renderNextStepPanel();
   updateMockups();
 };
 
@@ -763,6 +1527,8 @@ const handleFile = async (file) => {
   try {
     state.imageName = file.name || "Ảnh";
     state.lockedHexes.clear();
+    state.keptHexes.clear();
+    state.replaceTargetHex = "";
     const stored = await uploadImage(file, {
       sourceWorld: "imagecolor",
       purpose: "preview",
@@ -794,11 +1560,11 @@ const handleFile = async (file) => {
     };
     img.onerror = () => {
       cleanup();
-      showToast("Không thể tải ảnh để xử lý.");
+      showToast(t("toasts.loadImageError", "Không thể tải ảnh để xử lý."));
     };
     img.src = dataUrl;
   } catch (_err) {
-    showToast("Không thể đọc ảnh. Vui lòng thử lại.");
+    showToast(t("toasts.readImageError", "Không thể đọc ảnh. Vui lòng thử lại."));
   }
 };
 
@@ -917,7 +1683,7 @@ const buildAssetSpec = async () => {
 const saveToLibrary = async () => {
   const spec = await buildAssetSpec();
   if (!spec) {
-    showToast("Chưa có bảng phối màu để lưu.");
+    showToast(t("toasts.noPaletteSave", "Chưa có bảng phối màu để lưu."));
     return;
   }
   try {
@@ -926,9 +1692,9 @@ const saveToLibrary = async () => {
     const next = Array.isArray(list) ? list : [];
     next.unshift(spec);
     localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(next));
-    showToast("Đã lưu vào Thư viện.");
+    showToast(t("toasts.savedLibrary", "Đã lưu vào Thư viện."));
   } catch (_err) {
-    showToast("Không thể lưu vào Thư viện.");
+    showToast(t("toasts.saveLibraryError", "Không thể lưu vào Thư viện."));
   }
 };
 
@@ -942,6 +1708,69 @@ const toGradientWorld = () => {
   if (!state.palette.length) return;
   const payload = state.palette.map((hex) => hex.replace("#", "")).join(",");
   window.location.href = `../worlds/gradient.html#g=${encodeURIComponent(payload)}`;
+};
+
+const toPrintWorld = () => {
+  if (!state.palette.length) return;
+  const payload = state.palette.map((hex) => hex.replace("#", "")).join(",");
+  window.location.href = `../worlds/printcolor.html#c=${encodeURIComponent(payload)}`;
+};
+
+const buildWorld7TourConfig = () => {
+  return {
+    id: "world7-imagecolor",
+    force: false,
+    storageSeenKey: TOUR_SEEN_KEY,
+    storageNeverKey: TOUR_NEVER_KEY,
+    labels: {
+      dialog: t("tour.dialogLabel", "Hướng dẫn World 7"),
+      prev: t("tour.labels.prev", "Quay lại"),
+      skip: t("tour.labels.skip", "Bỏ qua"),
+      dontShow: t("tour.labels.dontShow", "Đừng hiện lại"),
+      next: t("tour.labels.next", "Tiếp"),
+      done: t("tour.labels.done", "Hoàn tất"),
+      step: t("tour.labels.step", "Bước {current}/{total}")
+    },
+    steps: [
+      {
+        id: "hero",
+        selector: "[data-tour='w7-hero']",
+        title: t("tour.steps.hero.title", "Thế giới màu ảnh dùng để làm gì?"),
+        desc: t("tour.steps.hero.desc", "Đây là điểm vào để chuyển ảnh thành bảng màu có thể dùng ngay cho thêu, in và lưu tài sản.")
+      },
+      {
+        id: "upload",
+        selector: "#dropzone",
+        title: t("tour.steps.upload.title", "Tải ảnh hoặc kéo thả"),
+        desc: t("tour.steps.upload.desc", "Bắt đầu bằng một ảnh tham chiếu. Bạn có thể kéo thả trực tiếp để xử lý nhanh.")
+      },
+      {
+        id: "region",
+        selector: "#btnRegion",
+        title: t("tour.steps.region.title", "Khoanh vùng và lấy mẫu"),
+        desc: t("tour.steps.region.desc", "Dùng Khoanh vùng khi chỉ muốn trích màu ở khu vực trọng tâm thay vì toàn ảnh.")
+      },
+      {
+        id: "decision",
+        selector: "#paletteDecisionPanel",
+        title: t("tour.steps.decision.title", "Đọc bảng màu mức quyết định"),
+        desc: t("tour.steps.decision.desc", "Theo dõi màu chủ đạo, màu nhấn và màu nền trung tính để chốt nhanh phương án dùng tiếp.")
+      },
+      {
+        id: "handoff",
+        selector: "#handoffActions",
+        title: t("tour.steps.handoff.title", "Chuyển tiếp sang Thế giới khác"),
+        desc: t("tour.steps.handoff.desc", "Từ đây bạn có thể mở Thêu, In lưới, Bảng phối, Dải chuyển hoặc lưu vào Thư viện.")
+      }
+    ]
+  };
+};
+
+const startWorld7Tour = ({ force = false } = {}) => {
+  if (typeof window.tcOnboardingTour?.startTour !== "function") return;
+  const config = buildWorld7TourConfig();
+  config.force = Boolean(force);
+  window.tcOnboardingTour.startTour(config);
 };
 
 const bindEvents = () => {
@@ -973,7 +1802,7 @@ const bindEvents = () => {
   elements.btnSample?.addEventListener("click", sampleImage);
   elements.btnRegion?.addEventListener("click", () => {
     if (!state.image) {
-      showToast("Hãy tải ảnh trước khi khoanh vùng.");
+      showToast(t("toasts.needImageBeforeRegion", "Hãy tải ảnh trước khi khoanh vùng."));
       return;
     }
     setRegionActive(!state.regionActive);
@@ -984,6 +1813,28 @@ const bindEvents = () => {
   });
   elements.btnToPalette?.addEventListener("click", toPaletteWorld);
   elements.btnToGradient?.addEventListener("click", toGradientWorld);
+  elements.btnToPrint?.addEventListener("click", toPrintWorld);
+  elements.btnOpenTour?.addEventListener("click", () => {
+    startWorld7Tour({ force: true });
+  });
+  elements.btnReplaceApply?.addEventListener("click", () => {
+    const sourceHex = state.replaceTargetHex;
+    const targetHex = normalizeHex(elements.replaceHexInput?.value || "");
+    if (!sourceHex || !targetHex) {
+      showToast(t("toasts.needReplaceHex", "Hãy chọn hoặc nhập mã HEX hợp lệ để thay."));
+      return;
+    }
+    const ok = replacePaletteHex(sourceHex, targetHex);
+    if (ok) closeReplacePanel();
+  });
+  elements.btnReplaceCancel?.addEventListener("click", closeReplacePanel);
+  elements.replaceCandidateList?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-replace-candidate]");
+    if (!btn || !elements.replaceHexInput) return;
+    const hex = normalizeHex(btn.dataset.replaceCandidate || "");
+    if (!hex) return;
+    elements.replaceHexInput.value = hex;
+  });
   elements.btnSave?.addEventListener("click", () => {
     void saveToLibrary();
   });
@@ -999,7 +1850,7 @@ const bindEvents = () => {
     void (async () => {
       const spec = await buildAssetSpec();
       if (!spec) {
-        showToast("Chưa có bảng phối màu để chia sẻ.");
+        showToast(t("toasts.noPaletteShare", "Chưa có bảng phối màu để chia sẻ."));
         return;
       }
       publishToFeed(spec);
@@ -1008,48 +1859,133 @@ const bindEvents = () => {
   elements.btnCopyCss?.addEventListener("click", async () => {
     if (!state.palette.length) return;
     const ok = await copyText(buildCssVars(state.palette));
-    showToast(ok ? "Đã sao chép CSS vars." : "Không thể sao chép.");
+    showToast(ok ? t("toasts.copiedCss", "Đã sao chép biến CSS.") : t("toasts.copyFailed", "Không thể sao chép."));
   });
   elements.btnCopyJson?.addEventListener("click", async () => {
     if (!state.palette.length) return;
     const ok = await copyText(buildJsonTokens(state.palette));
-    showToast(ok ? "Đã sao chép JSON tokens." : "Không thể sao chép.");
+    showToast(ok ? t("toasts.copiedJson", "Đã sao chép token JSON.") : t("toasts.copyFailed", "Không thể sao chép."));
   });
   elements.btnSharePalette?.addEventListener("click", async () => {
     if (!state.palette.length) return;
     const ok = await copyText(buildPaletteShareLink(state.palette));
-    showToast(ok ? "Đã sao chép link Palette." : "Không thể sao chép link.");
+    showToast(ok ? t("toasts.copiedPaletteLink", "Đã sao chép liên kết Bảng phối.") : t("toasts.copyLinkFailed", "Không thể sao chép liên kết."));
   });
   elements.btnShareGradient?.addEventListener("click", async () => {
     if (!state.palette.length) return;
     const ok = await copyText(buildGradientShareLink(state.palette));
-    showToast(ok ? "Đã sao chép link Gradient." : "Không thể sao chép link.");
+    showToast(ok ? t("toasts.copiedGradientLink", "Đã sao chép liên kết Dải chuyển.") : t("toasts.copyLinkFailed", "Không thể sao chép liên kết."));
   });
   elements.paletteSize?.addEventListener("change", () => {
     if (state.image) sampleImage();
   });
   elements.swatchGrid?.addEventListener("click", async (event) => {
     const target = event.target.closest("[data-hex-action]");
-    if (!target) return;
-    const hex = target.dataset.hex;
-    const action = target.dataset.hexAction;
-    if (!hex || !action) return;
-    if (action === "copy") {
-      try {
-        const ok = await copyText(hex);
-        showToast(ok ? `Đã sao chép ${hex}.` : "Không thể sao chép.");
-      } catch (_err) {
-        showToast("Không thể sao chép. Hãy thử lại.");
+    if (target) {
+      const hex = target.dataset.hex;
+      const action = target.dataset.hexAction;
+      if (!hex || !action) return;
+      if (action === "copy") {
+        try {
+          const ok = await copyText(hex);
+          showToast(ok
+            ? t("toasts.copiedHex", "Đã sao chép {hex}.", { hex })
+            : t("toasts.copyFailed", "Không thể sao chép."));
+        } catch (_err) {
+          showToast(t("toasts.copyRetry", "Không thể sao chép. Hãy thử lại."));
+        }
+        return;
+      }
+      if (action === "lock") {
+        const ok = toggleLockHex(hex);
+        if (!ok) return;
+        const count = Number(elements.paletteSize?.value || state.palette.length);
+        state.palette = applyLocksToPalette(state.palette, count);
+        syncPreferenceSetsToPalette();
+        renderPalette();
+        showToast(state.lockedHexes.has(hex)
+          ? t("toasts.lockOn", "Đã khóa màu {hex}.", { hex })
+          : t("toasts.lockOff", "Đã bỏ khóa màu."));
+      }
+      if (action === "keep") {
+        if (state.lockedHexes.has(hex)) {
+          showToast(t("toasts.keepSkipLocked", "Màu này đang khóa cứng, không cần giữ ưu tiên."));
+          return;
+        }
+        const ok = toggleKeepHex(hex);
+        if (!ok) return;
+        const count = Number(elements.paletteSize?.value || state.palette.length);
+        state.palette = applyPreferencesToPalette(state.palette, count);
+        syncPreferenceSetsToPalette();
+        renderPalette();
+        showToast(state.keptHexes.has(hex)
+          ? t("toasts.keepOn", "Đã giữ ưu tiên màu {hex}.", { hex })
+          : t("toasts.keepOff", "Đã bỏ giữ ưu tiên."));
+      }
+      if (action === "replace") {
+        openReplacePanel(hex);
       }
       return;
     }
-    if (action === "lock") {
-      const ok = toggleLockHex(hex);
-      if (!ok) return;
-      const count = Number(elements.paletteSize?.value || state.palette.length);
-      state.palette = applyLocksToPalette(state.palette, count);
+    const swatchCard = event.target.closest("[data-hex-card]");
+    if (!swatchCard) return;
+    const selectedHex = normalizeHex(swatchCard.dataset.hexCard || "");
+    if (!selectedHex) return;
+    if (state.selectedHex !== selectedHex) {
+      state.selectedHex = selectedHex;
       renderPalette();
-      showToast(state.lockedHexes.has(hex) ? `Đã giữ màu ${hex}.` : "Đã bỏ giữ màu.");
+      showToast(t("toasts.focusColor", "Đang tập trung màu {hex}.", { hex: selectedHex }), { duration: 1200 });
+    }
+  });
+  elements.swatchGrid?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const card = event.target.closest("[data-hex-card]");
+    if (!card) return;
+    event.preventDefault();
+    const selectedHex = normalizeHex(card.dataset.hexCard || "");
+    if (!selectedHex) return;
+    state.selectedHex = selectedHex;
+    renderPalette();
+  });
+  elements.strategyCompareGrid?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-strategy-apply]");
+    if (!btn) return;
+    const strategyId = btn.dataset.strategyApply || "";
+    const strategy = state.strategyVariants.find((item) => item.id === strategyId);
+    if (!strategy) return;
+    state.activeStrategyId = strategyId;
+    const count = Number(elements.paletteSize?.value || strategy.palette.length || 8);
+    state.palette = applyPreferencesToPalette(strategy.palette, count);
+    syncPreferenceSetsToPalette();
+    state.selectedHex = state.palette[0] || "";
+    state.dominantShare = computeDominantShare(state.palette, state.samplePixels);
+    renderPalette();
+    showToast(t("toasts.strategyApplied", "Đã áp dụng chiến lược: {name}.", { name: strategy.name }));
+  });
+  elements.nextStepList?.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-next-action]");
+    if (!btn) return;
+    const action = btn.dataset.nextAction || "";
+    if (action === "palette") {
+      toPaletteWorld();
+      return;
+    }
+    if (action === "gradient") {
+      toGradientWorld();
+      return;
+    }
+    if (action === "thread") {
+      if (!state.palette.length) return;
+      const target = state.palette[0]?.replace("#", "") || "";
+      window.location.href = `../worlds/threadcolor.html?color=%23${encodeURIComponent(target)}`;
+      return;
+    }
+    if (action === "print") {
+      toPrintWorld();
+      return;
+    }
+    if (action === "library-save") {
+      void saveToLibrary();
     }
   });
 
@@ -1083,7 +2019,21 @@ const bindEvents = () => {
     const hex = getHexAtPoint(point);
     if (!hex) return;
     addPickedColor(hex, { lock: event.shiftKey });
-    showToast(event.shiftKey ? `Đã giữ màu ${hex}.` : `Đã thêm ${hex}.`);
+    showToast(event.shiftKey
+      ? t("toasts.lockOn", "Đã khóa màu {hex}.", { hex })
+      : t("toasts.addColor", "Đã thêm {hex}.", { hex }));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!elements.replacePanel || elements.replacePanel.classList.contains("hidden")) return;
+    const inPanel = event.target.closest("#replacePanel");
+    const inReplaceAction = event.target.closest("[data-hex-action='replace']");
+    if (inPanel || inReplaceAction) return;
+    closeReplacePanel();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    closeReplacePanel();
   });
 
   window.addEventListener("resize", () => {
@@ -1102,8 +2052,9 @@ const applyHexesFromHub = (detail) => {
     const unique = combined.filter((hex, idx) => combined.indexOf(hex) === idx);
     const count = Number(elements.paletteSize?.value || unique.length);
     state.palette = applyLocksToPalette(unique, count);
+    refreshStrategyVariants();
     renderPalette();
-    setStatus("Đã thêm màu từ Kho HEX.");
+    setStatus(t("status.fromHexAppend", "Đã thêm màu từ Kho HEX."));
     return;
   }
   if (normalized.length >= 2) {
@@ -1114,14 +2065,22 @@ const applyHexesFromHub = (detail) => {
     const seeded = buildSeedPalette(normalized[0], count);
     state.palette = applyLocksToPalette(seeded, count);
   }
+  refreshStrategyVariants({ resetActive: true });
   renderPalette();
-  setStatus("Đã nhận màu từ Kho HEX.");
+  setStatus(t("status.fromHexReplace", "Đã nhận màu từ Kho HEX."));
 };
 
 setPreview("");
-setRegionStatus("Chưa chọn vùng.");
+setRegionStatus(t("regionStatus.empty", "Chưa chọn vùng."));
+if (elements.replaceHexInput) {
+  elements.replaceHexInput.placeholder = t("replace.manualPlaceholder", "#A1B2C3");
+}
 renderPalette();
 bindEvents();
+window.startWorld7Tour = startWorld7Tour;
+window.setTimeout(() => {
+  startWorld7Tour();
+}, 220);
 
 window.addEventListener("tc:hex-apply", (event) => {
   applyHexesFromHub(event?.detail);

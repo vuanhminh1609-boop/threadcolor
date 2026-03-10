@@ -44,6 +44,8 @@ const elements = {
   search: document.getElementById("assetSearch"),
   filter: document.getElementById("assetFilter"),
   projectFilter: document.getElementById("assetProjectFilter"),
+  projectClear: document.getElementById("assetProjectClear"),
+  projectFilterState: document.getElementById("assetProjectFilterState"),
   grid: document.getElementById("assetGrid"),
   pinnedStrip: document.getElementById("assetPinnedStrip"),
   pinnedList: document.getElementById("assetPinnedList"),
@@ -827,9 +829,41 @@ const loadProjectPrefs = () => {
   }
 };
 
+const updateProjectFilterUI = () => {
+  const activeProject = String(state.projectFilter || "").trim();
+  const hasProjectFilter = activeProject.length > 0;
+  if (elements.projectClear) {
+    elements.projectClear.classList.toggle("hidden", !hasProjectFilter);
+    elements.projectClear.disabled = !hasProjectFilter;
+    elements.projectClear.classList.toggle("opacity-60", !hasProjectFilter);
+    elements.projectClear.classList.toggle("cursor-not-allowed", !hasProjectFilter);
+  }
+  if (!elements.projectFilterState) return;
+  if (hasProjectFilter) {
+    elements.projectFilterState.innerHTML = `Đang lọc theo dự án: <strong>${escapeHTML(activeProject)}</strong>.`;
+    return;
+  }
+  elements.projectFilterState.textContent = "Đang hiển thị tất cả dự án.";
+};
+
+const setProjectFilterValue = (value, options = {}) => {
+  const normalized = String(value || "").trim();
+  state.projectFilter = normalized && normalized !== "__all__" ? normalized : "";
+  if (elements.projectFilter) {
+    elements.projectFilter.value = state.projectFilter || "__all__";
+  }
+  updateProjectFilterUI();
+  if (options.render !== false) {
+    renderGrid();
+  }
+  if (options.toast) {
+    showToast(state.projectFilter ? `Đang lọc theo dự án: ${state.projectFilter}.` : "Đã bỏ lọc dự án.");
+  }
+};
+
 const syncProjectFilter = () => {
   if (!elements.projectFilter) return;
-  const options = ["T\u1ea5t c\u1ea3 d\u1ef1 \u00e1n", ...new Set([state.currentProject, ...state.recentProjects].filter(Boolean))];
+  const options = ["Tất cả dự án (bỏ lọc)", ...new Set([state.currentProject, ...state.recentProjects].filter(Boolean))];
   elements.projectFilter.innerHTML = options.map((label, index) => {
     const value = index === 0 ? "__all__" : label;
     return `<option value="${value}">${label}</option>`;
@@ -838,6 +872,7 @@ const syncProjectFilter = () => {
     state.projectFilter = state.currentProject;
   }
   elements.projectFilter.value = state.projectFilter || "__all__";
+  updateProjectFilterUI();
 };
 
 const loadAssets = () => {
@@ -2201,8 +2236,11 @@ const bindEvents = () => {
   elements.search?.addEventListener("keydown", handleSearchEscape);
   elements.filter?.addEventListener("change", renderGrid);
   elements.projectFilter?.addEventListener("change", () => {
-    state.projectFilter = elements.projectFilter.value === "__all__" ? "" : elements.projectFilter.value;
-    renderGrid();
+    setProjectFilterValue(elements.projectFilter.value, { render: true, toast: false });
+  });
+  elements.projectClear?.addEventListener("click", () => {
+    if (!state.projectFilter) return;
+    setProjectFilterValue("__all__", { render: true, toast: true });
   });
   elements.assetMultiSelect?.addEventListener("change", () => {
     state.assetMultiSelect = elements.assetMultiSelect.checked;

@@ -83,7 +83,7 @@
         },
       paintfabric: {
         hero: {
-          tagline: "Ưu tiên chất liệu · Lưu nhanh"
+          tagline: "Màu vải là mũi nhọn · liên thông thêu/in/thư viện"
         },
         labels: {
           scene: "Bối cảnh",
@@ -822,6 +822,270 @@
           pasteCss: "Hãy dán CSS gradient trước khi nhập."
         }
       },
+      imagecolor: {
+        meta: {
+          title: "Thế giới màu ảnh"
+        },
+        hero: {
+          kicker: "Thế giới thứ 7",
+          title: "Thế giới màu ảnh",
+          desc: "Tải ảnh, trích màu theo vùng, đánh giá vai màu và chuyển tiếp sang Thêu, In, Bảng phối, Dải chuyển hoặc Thư viện.",
+          badge: "Ảnh → Quyết định màu → Chuyển tiếp liên Thế giới"
+        },
+        upload: {
+          dropTitle: "Kéo thả ảnh vào đây",
+          or: "hoặc",
+          chooseFile: "Chọn tệp ảnh",
+          hint: "Hỗ trợ JPG/PNG, tối đa vừa đủ để xử lý mượt."
+        },
+        controls: {
+          paletteSize: "Số màu",
+          palette5: "5 màu",
+          palette8: "8 màu",
+          palette12: "12 màu",
+          sample: "Lấy mẫu màu",
+          region: "Khoanh vùng",
+          regionClear: "Xoá vùng"
+        },
+        presets: {
+          title: "Thiết lập trích màu",
+          hint: "Chọn ngữ cảnh để đổi ưu tiên trích màu và xem trước.",
+          brand: "Nhận diện thương hiệu",
+          interior: "Ảnh nội thất",
+          fashion: "Ảnh thời trang",
+          embroidery: "Ảnh thêu",
+          hints: {
+            brand: "Nhận diện thương hiệu: ưu tiên dải nhận diện và điểm nhấn chính/phụ.",
+            interior: "Ảnh nội thất: ưu tiên nền trung tính và các màu điểm nhấn không gian.",
+            fashion: "Ảnh thời trang: ưu tiên dải màu có nhịp chuyển rõ cho bộ sưu tập.",
+            embroidery: "Ảnh thêu: ưu tiên cụm màu cô đọng, dễ chuyển sang chỉ thêu."
+          }
+        },
+        swatch: {
+          copyHex: "Sao chép HEX",
+          lock: "Khóa",
+          locked: "Đang khóa",
+          keep: "Giữ",
+          kept: "Đang giữ ưu tiên",
+          replace: "Thay",
+          unassigned: "Màu hỗ trợ"
+        },
+        strategies: {
+          title: "So sánh chiến lược trích màu",
+          badge: "So sánh song song",
+          hint: "Chọn nhanh phương án Cân bằng, Chủ đạo rõ hoặc Tương phản cao rồi áp dụng ngay.",
+          empty: "Hãy trích màu trước để so sánh chiến lược.",
+          apply: "Áp dụng",
+          items: {
+            balanced: {
+              name: "Cân bằng",
+              desc: "Giữ nhịp màu hài hòa để dùng đa ngữ cảnh."
+            },
+            dominant: {
+              name: "Chủ đạo rõ",
+              desc: "Ưu tiên màu chiếm tỉ trọng cao để giữ tinh thần ảnh gốc."
+            },
+            contrast: {
+              name: "Tương phản cao",
+              desc: "Đẩy độ tách lớp màu để dễ đọc và dễ in."
+            }
+          }
+        },
+        replace: {
+          title: "Thay màu đang chọn",
+          candidatesLabel: "Gợi ý từ ảnh",
+          candidatesEmpty: "Chưa có gợi ý từ ảnh. Bạn có thể nhập HEX thủ công.",
+          manualLabel: "Nhập HEX để thay",
+          manualPlaceholder: "#A1B2C3",
+          apply: "Áp dụng thay màu",
+          cancel: "Đóng"
+        },
+        next: {
+          title: "Bước tiếp theo nên dùng",
+          badge: "Gợi ý theo ngữ cảnh",
+          empty: "Sau khi có bảng màu, hệ thống sẽ gợi ý 2-3 bước chuyển tiếp phù hợp nhất.",
+          priority: "Ưu tiên {index}",
+          useNow: "Dùng ngay",
+          items: {
+            print: {
+              title: "Mở In lưới (World 4)",
+              reason: "Ảnh có nền đậm hoặc tương phản thấp; nên kiểm tra underbase và thứ tự lớp in."
+            },
+            gradient: {
+              title: "Chuyển sang Dải chuyển (World 2)",
+              reason: "Màu nhấn bão hòa cao phù hợp tạo dải chuyển giàu cảm xúc."
+            },
+            thread: {
+              title: "Mở Màu thêu (World 1)",
+              reason: "Cặp chủ đạo và trung tính tách lớp ổn, thuận lợi để tra mã chỉ nhanh."
+            },
+            palette: {
+              title: "Tinh chỉnh ở Bảng phối (World 3)",
+              reason: "Dùng khi cần chốt vai màu và tối ưu độ đọc trước khi triển khai."
+            },
+            library: {
+              title: "Lưu vào Thư viện (World 5)",
+              reason: "Giữ lại như một asset để tái sử dụng cho dự án tiếp theo."
+            }
+          }
+        },
+        decision: {
+          title: "Bản đồ quyết định bảng màu",
+          badge: "Mức quyết định",
+          empty: "Chưa có bảng màu để đánh giá vai màu. Hãy tải ảnh và bấm Lấy mẫu màu.",
+          nextPlaceholder: "Gợi ý bước tiếp theo sẽ hiển thị sau khi có bảng màu.",
+          summaryOnly: "Màu chủ đạo {dominant} đang chiếm ưu thế {share}% trong ảnh.",
+          summaryWithAccent: "Màu chủ đạo {dominant} đang chiếm ưu thế {share}% trong ảnh. Màu nhấn {accent} phù hợp để tạo điểm tập trung.",
+          roles: {
+            dominant: "Màu chủ đạo",
+            accent: "Màu nhấn",
+            neutral: "Màu nền trung tính"
+          },
+          notes: {
+            share: "Chiếm {percent}%",
+            saturation: "Độ bão hòa {value}%",
+            lightness: "Độ sáng {value}%"
+          },
+          next: {
+            default: "Tiếp theo: chuyển sang Bảng phối màu để tinh chỉnh vai màu rồi lưu vào Thư viện.",
+            dark: "Nền ảnh nghiêng tối: ưu tiên mở In lưới để kiểm tra lớp lót trắng trước khi in.",
+            vivid: "Màu nhấn bão hoà cao: chuyển sang Dải chuyển màu hoặc mở Màu thêu để tra chỉ tương ứng.",
+            light: "Nền sáng/trung tính: phù hợp thêu logo; mở Màu thêu để kiểm tra độ nổi chỉ."
+          },
+          handoff: "Luồng chuyển tiếp gợi ý: {first} → {second} → Thư viện."
+        },
+        actions: {
+          toPalette: "Tạo Bảng phối màu",
+          toGradient: "Tạo Dải chuyển màu",
+          toPrint: "Mở In lưới (World 4)",
+          saveLibrary: "Lưu vào Thư viện",
+          useLibrary: "Dùng từ Thư viện",
+          share: "Chia sẻ",
+          copyCss: "Sao chép biến CSS",
+          copyJson: "Sao chép token JSON",
+          sharePalette: "Sao chép liên kết Bảng phối",
+          shareGradient: "Sao chép liên kết Dải chuyển"
+        },
+        handoff: {
+          hint: "Chuyển tiếp nhanh: Bảng phối/Dải chuyển để sáng tạo, Màu thêu để tra chỉ, In lưới để chuẩn bị in, Thư viện để lưu tài sản."
+        },
+        preview: {
+          placeholder: "Ảnh xem trước",
+          legend: {
+            dominant: "Chủ đạo",
+            accent: "Nhấn",
+            neutral: "Trung tính"
+          },
+          mockups: {
+            ui: "Mẫu giao diện",
+            poster: "Mẫu áp phích",
+            fabric: "Mẫu vải"
+          },
+          notes: {
+            ui: "Dùng để kiểm tra độ nổi CTA và độ đọc phần tiêu đề.",
+            poster: "Quan sát nhịp chuyển giữa màu chủ đạo và màu nền để kiểm soát cảm xúc ảnh.",
+            fabric: "Xem trước màu trên bề mặt vải để quyết định chuyển sang Thêu hoặc In lưới.",
+            uiStrong: "Bố cục UI đạt độ đọc tốt giữa tiêu đề và nền.",
+            uiWeak: "Độ đọc UI còn thấp, nên chỉnh lại màu chủ đạo hoặc nền phụ.",
+            posterStrong: "Màu nhấn tách nền tốt, phù hợp dùng làm điểm gọi hành động.",
+            posterWeak: "Màu nhấn chưa tách nền rõ, cân nhắc tăng tương phản cho áp phích.",
+            fabricDark: "Nền vải tối: ưu tiên kiểm tra underbase trước khi in.",
+            fabricLight: "Nền vải sáng: phù hợp thêu logo nổi với màu nhấn hiện tại.",
+            fabricMid: "Nền vải trung tính: dễ chuyển tiếp sang cả Thêu và In lưới."
+          }
+        },
+        links: {
+          title: "Liên thông nhanh",
+          desc: "Chuyển màu sang Thế giới khác theo chuẩn ?color / #p / #g / #c.",
+          palette: "Tạo Bảng phối",
+          gradient: "Tạo Dải chuyển",
+          print: "Mở ở In lưới",
+          thread: "Mở ở Màu thêu",
+          library: "Mở Thư viện"
+        },
+        status: {
+          noPalette: "Chưa có bảng màu. Hãy tải ảnh và bấm Lấy mẫu màu.",
+          sampled: "Đã lấy {count} màu từ ảnh.",
+          fromHexAppend: "Đã thêm màu từ Kho HEX.",
+          fromHexReplace: "Đã nhận màu từ Kho HEX."
+        },
+        regionStatus: {
+          draw: "Kéo để khoanh vùng cần lấy mẫu.",
+          applied: "Đang lấy mẫu trong vùng đã chọn.",
+          empty: "Chưa chọn vùng.",
+          size: "Đang lấy mẫu trong vùng {width}×{height}px."
+        },
+        sampleLoading: "Đang lấy mẫu…",
+        toasts: {
+          needLoginShare: "Cần đăng nhập để chia sẻ.",
+          sharedToCommunity: "Đã đăng lên Cộng đồng. Bấm để xem.",
+          shareFailed: "Không thể chia sẻ.",
+          lockLimit: "Chỉ khóa tối đa {count} màu.",
+          keepLimit: "Chỉ giữ ưu tiên tối đa {count} màu.",
+          noImageData: "Không có dữ liệu ảnh để lấy mẫu.",
+          needImageBeforeSample: "Hãy tải ảnh trước khi lấy mẫu.",
+          sampleError: "Có lỗi khi lấy mẫu màu.",
+          loadImageError: "Không thể tải ảnh để xử lý.",
+          readImageError: "Không thể đọc ảnh. Vui lòng thử lại.",
+          noPaletteSave: "Chưa có bảng phối màu để lưu.",
+          savedLibrary: "Đã lưu vào Thư viện.",
+          saveLibraryError: "Không thể lưu vào Thư viện.",
+          needImageBeforeRegion: "Hãy tải ảnh trước khi khoanh vùng.",
+          noPaletteShare: "Chưa có bảng phối màu để chia sẻ.",
+          copiedCss: "Đã sao chép biến CSS.",
+          copiedJson: "Đã sao chép token JSON.",
+          copiedPaletteLink: "Đã sao chép liên kết Bảng phối.",
+          copiedGradientLink: "Đã sao chép liên kết Dải chuyển.",
+          copiedHex: "Đã sao chép {hex}.",
+          copyFailed: "Không thể sao chép.",
+          copyLinkFailed: "Không thể sao chép liên kết.",
+          copyRetry: "Không thể sao chép. Hãy thử lại.",
+          lockOn: "Đã khóa màu {hex}.",
+          lockOff: "Đã bỏ khóa màu.",
+          keepOn: "Đã giữ ưu tiên màu {hex}.",
+          keepOff: "Đã bỏ giữ ưu tiên.",
+          keepSkipLocked: "Màu này đang khóa cứng, không cần giữ ưu tiên.",
+          focusColor: "Đang tập trung màu {hex}.",
+          addColor: "Đã thêm {hex}.",
+          replaced: "Đã thay {from} thành {to}.",
+          needReplaceHex: "Hãy chọn hoặc nhập mã HEX hợp lệ để thay.",
+          strategyApplied: "Đã áp dụng chiến lược: {name}."
+        },
+        tour: {
+          review: "Xem lại hướng dẫn",
+          dialogLabel: "Hướng dẫn Thế giới màu ảnh",
+          labels: {
+            prev: "Quay lại",
+            skip: "Bỏ qua",
+            dontShow: "Đừng hiện lại",
+            next: "Tiếp",
+            done: "Hoàn tất",
+            step: "Bước {current}/{total}"
+          },
+          steps: {
+            hero: {
+              title: "Thế giới màu ảnh dùng để làm gì?",
+              desc: "Đây là điểm vào để chuyển ảnh thành bảng màu có thể dùng ngay cho thêu, in và lưu tài sản."
+            },
+            upload: {
+              title: "Tải ảnh hoặc kéo thả",
+              desc: "Bắt đầu bằng một ảnh tham chiếu. Bạn có thể kéo thả trực tiếp để xử lý nhanh."
+            },
+            region: {
+              title: "Khoanh vùng và lấy mẫu",
+              desc: "Dùng Khoanh vùng khi chỉ muốn trích màu ở khu vực trọng tâm thay vì toàn ảnh."
+            },
+            decision: {
+              title: "Đọc bảng màu mức quyết định",
+              desc: "Theo dõi màu chủ đạo, màu nhấn và màu nền trung tính để chốt nhanh phương án dùng tiếp."
+            },
+            handoff: {
+              title: "Chuyển tiếp sang Thế giới khác",
+              desc: "Từ đây bạn có thể mở Thêu, In lưới, Bảng phối, Dải chuyển hoặc lưu vào Thư viện."
+            }
+          }
+        }
+      },
       paletteTool: {
         roles: {
           title: "Phân vai màu",
@@ -838,8 +1102,8 @@
         },
         matrix: {
           title: "Ma trận tương phản",
-          hint: "Tỷ lệ tương phản càng cao càng dễ đọc.",
-          tooltip: "Tỷ lệ tương phản càng cao càng dễ đọc.",
+          hint: "Tỷ lệ tương phản càng cao càng dễ đọc; ưu tiên xử lý cặp fail thấp nhất trước.",
+          tooltip: "Tỷ lệ tương phản càng cao càng dễ đọc; ưu tiên xử lý cặp fail thấp nhất trước.",
           tabs: {
             checks: "Kiểm tra",
             suggest: "Đề xuất"
@@ -930,7 +1194,9 @@
           title: "Xem thử theo bối cảnh",
           tabs: {
             ui: "Giao diện",
-            poster: "Áp phích"
+            poster: "Áp phích",
+            card: "Thẻ nội dung",
+            cta: "CTA/Nhãn"
           },
           cvd: {
             label: "Mô phỏng mù màu",
@@ -953,6 +1219,25 @@
             title: "Áp phích giới thiệu bộ sưu tập",
             body: "Kiểm tra mức nổi bật của tiêu đề, mô tả và CTA trong bối cảnh áp phích.",
             cta: "Đăng ký ngay"
+          },
+          card: {
+            lightTitle: "Thẻ nội dung sáng",
+            lightHeading: "Tiêu đề chính",
+            lightDesc: "Dùng để kiểm tra khả năng đọc trong bối cảnh light.",
+            lightBadge: "Nhãn nổi bật",
+            darkTitle: "Thẻ nội dung tối",
+            darkHeading: "Khối thông tin phụ",
+            darkDesc: "So nhanh độ nổi của chữ và nút khi dùng nền tối.",
+            darkCta: "Mở chi tiết"
+          },
+          cta: {
+            hint: "Kiểm tra nhanh độ nổi của CTA/nhãn trước khi áp vào trang thật.",
+            primary: "CTA chính",
+            primaryText: "Mua ngay",
+            secondary: "CTA phụ",
+            secondaryText: "Xem thêm",
+            tag: "Nhãn trạng thái",
+            tagText: "Đang xử lý"
           }
         },
         extract: {

@@ -1,15 +1,46 @@
 ﻿import { resolveIncoming, normalizeHexList } from "../scripts/workbench_context.js";
 import { uploadImage } from "../scripts/storage/storage_client.js";
 const BOARD_SIZE = 9;
-const COLORS = [
-  "#ef4444",
-  "#f97316",
-  "#facc15",
-  "#22c55e",
-  "#06b6d4",
-  "#3b82f6",
-  "#a855f7"
+const CORE_GAME_COLORS = [
+  "#eb3f5b",
+  "#fa8231",
+  "#f7b731",
+  "#20bf6b",
+  "#0fb9b1",
+  "#2d98da",
+  "#3867d6",
+  "#8854d0",
+  "#eb3b9d"
 ];
+const COLORBLIND_GAME_COLORS = [
+  "#0072b2",
+  "#e69f00",
+  "#009e73",
+  "#56b4e9",
+  "#d55e00",
+  "#cc79a7",
+  "#f0e442",
+  "#1f2937",
+  "#7c3aed"
+];
+const HIGH_CONTRAST_GAME_COLORS = [
+  "#ff1744",
+  "#ff9100",
+  "#ffd600",
+  "#00c853",
+  "#00b8d4",
+  "#2962ff",
+  "#651fff",
+  "#d500f9",
+  "#111827"
+];
+const GAME_PALETTE_PRESETS = {
+  default: { label: "Mặc định", colors: CORE_GAME_COLORS },
+  colorblind: { label: "Thân thiện mù màu", colors: COLORBLIND_GAME_COLORS },
+  contrast: { label: "Tương phản cao", colors: HIGH_CONTRAST_GAME_COLORS }
+};
+const GAME_PALETTE_PRESET_ORDER = ["default", "colorblind", "contrast"];
+const COLORS = [...CORE_GAME_COLORS];
 const INITIAL_BALLS = 5;
 const LINE98_NEXT_COUNT = 3;
 const BEST_SCORE_KEY = "tc_colorplay_best";
@@ -57,26 +88,9 @@ const DAILY_CHALLENGE_ITEMS = [
 ];
 const PILL_WIDTH = 8;
 const PILL_HEIGHT = 16;
-const PILL_COLORS = [
-  "#ef4444",
-  "#3b82f6",
-  "#facc15",
-  "#22c55e",
-  "#ec4899",
-  "#f97316"
-];
+const PILL_COLORS = [...CORE_GAME_COLORS];
 const PILL_BEST_KEY = "tc_colorplay_pill_best_v1";
-const SUDOKU_COLORS = [
-  "#ef4444",
-  "#f97316",
-  "#facc15",
-  "#22c55e",
-  "#06b6d4",
-  "#3b82f6",
-  "#8b5cf6",
-  "#ec4899",
-  "#f59e0b"
-];
+const SUDOKU_COLORS = [...CORE_GAME_COLORS];
 const SUDOKU_SYMBOLS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const PILL_ORIENTS = [
   [{ dr: 0, dc: 0 }, { dr: 0, dc: 1 }],
@@ -208,7 +222,7 @@ const sudokuState = {
   selectedColor: 0,
   selectedCell: null,
   eraseMode: false,
-  showSymbols: false,
+  showSymbols: true,
   mistakes: 0,
   elapsedSeconds: 0,
   elapsedBase: 0,
@@ -292,6 +306,17 @@ function saveSettings() {
 
 function applyColorBlindMode() {
   document.body.classList.toggle("colorplay-colorblind", settings.colorBlind);
+  el.colorblind?.classList.toggle("is-active", settings.colorBlind);
+  pillEl.colorblind?.classList.toggle("is-active", settings.colorBlind);
+  if (line98Mounted) {
+    renderBoardState();
+    renderUpcoming();
+  }
+  if (pillMounted) {
+    renderPillBoard();
+    renderPillNext();
+  }
+  updateColorblindNotes();
 }
 
 const PALETTE_VARIANTS = [
@@ -523,6 +548,8 @@ const applyHexPalette = (hexes) => {
   renderUpcoming();
   renderPillBoard();
   renderPillNext();
+  renderLinePaletteEditor();
+  renderPillPaletteEditor();
   if (linePalette.expandedFromCustom || pillPalette.expandedFromCustom) {
     const targetLine = linePalette.requiredCount;
     const targetPill = pillPalette.requiredCount;
@@ -532,6 +559,206 @@ const applyHexPalette = (hexes) => {
   }
   return true;
 };
+
+function getGamePalettePreset(key) {
+  return GAME_PALETTE_PRESETS[key] || GAME_PALETTE_PRESETS.default;
+}
+
+function paletteToUpper(hex) {
+  return String(hex || "").toUpperCase();
+}
+
+function normalizeColorValue(hex, fallback = "#64748b") {
+  return normalizeHexList([hex])[0] || fallback;
+}
+
+function getPresetPaletteForCount(presetKey, count, fallback, minDistinct = 1) {
+  const preset = getGamePalettePreset(presetKey);
+  return buildPaletteForCount(preset.colors, count, fallback, { minDistinct }).colors.slice(0, count);
+}
+
+function isSamePalette(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 1) {
+    if (normalizeColorValue(a[i]).toLowerCase() !== normalizeColorValue(b[i]).toLowerCase()) return false;
+  }
+  return true;
+}
+
+function detectPalettePresetKey(colors, count, fallback, minDistinct = 1) {
+  const current = (Array.isArray(colors) ? colors : []).slice(0, count);
+  if (!current.length) return "";
+  for (const key of GAME_PALETTE_PRESET_ORDER) {
+    const presetPalette = getPresetPaletteForCount(key, count, fallback, minDistinct);
+    if (isSamePalette(current, presetPalette)) return key;
+  }
+  return "";
+}
+
+function buildPresetButtonsHtml(dataAttr, activePreset) {
+  return GAME_PALETTE_PRESET_ORDER.map((key) => {
+    const preset = getGamePalettePreset(key);
+    const activeClass = key === activePreset ? " is-active" : "";
+    return `<button type="button" class="tc-btn tc-chip px-3 py-1 text-[11px]${activeClass}" ${dataAttr}="${key}">${preset.label}</button>`;
+  }).join("");
+}
+
+function getColorblindNote() {
+  if (settings.colorBlind) {
+    return "Đang bật hỗ trợ mù màu: quân màu có thêm hoa văn và ký hiệu số để phân biệt nhanh.";
+  }
+  return "Bật hỗ trợ mù màu để thêm hoa văn và ký hiệu số cho từng quân màu.";
+}
+
+function updateColorblindNotes() {
+  if (el.colorblindHint) {
+    el.colorblindHint.textContent = getColorblindNote();
+  }
+  if (pillEl.colorblindHint) {
+    pillEl.colorblindHint.textContent = getColorblindNote();
+  }
+}
+
+function renderLinePaletteEditor() {
+  if (!el.paletteGrid || !el.palettePresets) return;
+  const colors = getLinePaletteResult().colors.slice(0, state.colorCount);
+  const activePreset = detectPalettePresetKey(colors, state.colorCount, COLORS, MIN_LINE_DISTINCT_COLORS);
+  el.palettePresets.innerHTML = buildPresetButtonsHtml("data-line98-palette-preset", activePreset);
+  el.paletteGrid.innerHTML = colors.map((hex, index) => `
+    <label class="tc-colorplay-palette-row">
+      <span class="tc-muted text-[11px]">Màu ${index + 1}</span>
+      <input type="color" class="tc-colorplay-color-input" data-line98-color-input="${index}" value="${normalizeColorValue(hex, COLORS[index % COLORS.length])}">
+      <code>${paletteToUpper(hex)}</code>
+    </label>
+  `).join("");
+}
+
+function applyLinePalette(colors, toastMessage = "") {
+  const normalized = normalizeHexList(colors);
+  state.customPalette = normalized.length ? normalized : null;
+  linePaletteCache = { key: "", result: null };
+  renderBoardState();
+  renderUpcoming();
+  renderLinePaletteEditor();
+  if (toastMessage) showToast(toastMessage);
+}
+
+function handleLinePalettePresetClick(event) {
+  const button = event.target.closest("[data-line98-palette-preset]");
+  if (!button) return;
+  const key = button.dataset.line98PalettePreset || "default";
+  const palette = getPresetPaletteForCount(key, state.colorCount, COLORS, MIN_LINE_DISTINCT_COLORS);
+  const preset = getGamePalettePreset(key);
+  applyLinePalette(palette, `Đã áp dụng bộ màu "${preset.label}" cho Line 98.`);
+}
+
+function handleLinePaletteInput(event) {
+  const input = event.target.closest("[data-line98-color-input]");
+  if (!input) return;
+  const index = Number(input.dataset.line98ColorInput);
+  if (!Number.isInteger(index) || index < 0 || index >= state.colorCount) return;
+  const colors = getLinePaletteResult().colors.slice(0, state.colorCount);
+  colors[index] = normalizeColorValue(input.value, colors[index] || COLORS[index % COLORS.length]);
+  applyLinePalette(colors);
+}
+
+function handleLinePaletteReset() {
+  applyLinePalette([], "Đã khôi phục bảng màu mặc định cho Line 98.");
+}
+
+function renderPillPaletteEditor() {
+  if (!pillEl.paletteGrid || !pillEl.palettePresets) return;
+  const colors = getPillPaletteResult().colors.slice(0, pillState.colorCount);
+  const activePreset = detectPalettePresetKey(colors, pillState.colorCount, PILL_COLORS, MIN_PILL_DISTINCT_COLORS);
+  pillEl.palettePresets.innerHTML = buildPresetButtonsHtml("data-pill-palette-preset", activePreset);
+  pillEl.paletteGrid.innerHTML = colors.map((hex, index) => `
+    <label class="tc-colorplay-palette-row">
+      <span class="tc-muted text-[11px]">Màu ${index + 1}</span>
+      <input type="color" class="tc-colorplay-color-input" data-pill-color-input="${index}" value="${normalizeColorValue(hex, PILL_COLORS[index % PILL_COLORS.length])}">
+      <code>${paletteToUpper(hex)}</code>
+    </label>
+  `).join("");
+}
+
+function applyPillPalette(colors, toastMessage = "") {
+  const normalized = normalizeHexList(colors);
+  pillState.customPalette = normalized.length ? normalized : null;
+  pillPaletteCache = { key: "", result: null };
+  renderPillBoard();
+  renderPillNext();
+  renderPillPaletteEditor();
+  if (toastMessage) showToast(toastMessage);
+}
+
+function handlePillPalettePresetClick(event) {
+  const button = event.target.closest("[data-pill-palette-preset]");
+  if (!button) return;
+  const key = button.dataset.pillPalettePreset || "default";
+  const palette = getPresetPaletteForCount(key, pillState.colorCount, PILL_COLORS, MIN_PILL_DISTINCT_COLORS);
+  const preset = getGamePalettePreset(key);
+  applyPillPalette(palette, `Đã áp dụng bộ màu "${preset.label}" cho Xếp thuốc.`);
+}
+
+function handlePillPaletteInput(event) {
+  const input = event.target.closest("[data-pill-color-input]");
+  if (!input) return;
+  const index = Number(input.dataset.pillColorInput);
+  if (!Number.isInteger(index) || index < 0 || index >= pillState.colorCount) return;
+  const colors = getPillPaletteResult().colors.slice(0, pillState.colorCount);
+  colors[index] = normalizeColorValue(input.value, colors[index] || PILL_COLORS[index % PILL_COLORS.length]);
+  applyPillPalette(colors);
+}
+
+function handlePillPaletteReset() {
+  applyPillPalette([], "Đã khôi phục bảng màu mặc định cho Xếp thuốc.");
+}
+
+function renderSudokuPaletteEditor() {
+  if (!sudokuEl.paletteEditorGrid || !sudokuEl.paletteEditorPresets) return;
+  const colors = sudokuState.colors.slice(0, 9);
+  const activePreset = detectPalettePresetKey(colors, 9, SUDOKU_COLORS, 9);
+  sudokuEl.paletteEditorPresets.innerHTML = buildPresetButtonsHtml("data-sudoku-palette-preset", activePreset);
+  sudokuEl.paletteEditorGrid.innerHTML = colors.map((hex, index) => `
+    <label class="tc-colorplay-palette-row">
+      <span class="tc-muted text-[11px]">Màu ${index + 1}</span>
+      <input type="color" class="tc-colorplay-color-input" data-sudoku-color-input="${index}" value="${normalizeColorValue(hex, SUDOKU_COLORS[index])}">
+      <code>${paletteToUpper(hex)}</code>
+    </label>
+  `).join("");
+}
+
+function applySudokuPalette(colors, toastMessage = "") {
+  const list = Array.from({ length: 9 }, (_, index) => normalizeColorValue(colors[index], SUDOKU_COLORS[index]));
+  sudokuState.colors = list;
+  renderSudokuBoard();
+  renderSudokuPalette();
+  renderSudokuPaletteEditor();
+  scheduleSudokuSave();
+  if (toastMessage) showToast(toastMessage);
+}
+
+function handleSudokuPalettePresetClick(event) {
+  const button = event.target.closest("[data-sudoku-palette-preset]");
+  if (!button) return;
+  const key = button.dataset.sudokuPalettePreset || "default";
+  const palette = getPresetPaletteForCount(key, 9, SUDOKU_COLORS, 9);
+  const preset = getGamePalettePreset(key);
+  applySudokuPalette(palette, `Đã áp dụng bộ màu "${preset.label}" cho Sudoku màu.`);
+}
+
+function handleSudokuPaletteInput(event) {
+  const input = event.target.closest("[data-sudoku-color-input]");
+  if (!input) return;
+  const index = Number(input.dataset.sudokuColorInput);
+  if (!Number.isInteger(index) || index < 0 || index > 8) return;
+  const colors = sudokuState.colors.slice(0, 9);
+  colors[index] = normalizeColorValue(input.value, colors[index] || SUDOKU_COLORS[index]);
+  applySudokuPalette(colors);
+}
+
+function handleSudokuPaletteReset() {
+  applySudokuPalette(SUDOKU_COLORS, "Đã khôi phục bảng màu mặc định cho Sudoku màu.");
+}
 
 function safeParseJSON(raw, fallback = null) {
   if (!raw) return fallback;
@@ -1217,6 +1444,14 @@ function renderBoardState() {
       const palette = getLineColors();
       ball.style.background = palette[colorIndex] || COLORS[colorIndex] || COLORS[0];
       ball.dataset.color = String(colorIndex);
+      ball.dataset.symbol = String((colorIndex % 9) + 1);
+      let marker = ball.querySelector(".tc-colorblind-mark");
+      if (!marker) {
+        marker = document.createElement("span");
+        marker.className = "tc-colorblind-mark";
+        ball.appendChild(marker);
+      }
+      marker.textContent = String((colorIndex % 9) + 1);
     }
   }
 }
@@ -1261,6 +1496,12 @@ function renderUpcoming() {
     dot.className = "tc-colorplay-next-dot";
     const hex = palette[colorIndex] || COLORS[colorIndex] || COLORS[0];
     dot.style.background = hex;
+    dot.dataset.color = String(colorIndex);
+    dot.dataset.symbol = String((colorIndex % 9) + 1);
+    const marker = document.createElement("span");
+    marker.className = "tc-colorblind-mark";
+    marker.textContent = String((colorIndex % 9) + 1);
+    dot.appendChild(marker);
     dot.setAttribute("aria-label", `Màu sắp ra ${hex.toUpperCase()}`);
     el.next.appendChild(dot);
   });
@@ -2289,7 +2530,9 @@ function handleLine98DifficultyChange() {
 function handleLine98ColorblindToggle() {
   settings.colorBlind = !settings.colorBlind;
   applyColorBlindMode();
-  el.colorblind?.classList.toggle("is-active", settings.colorBlind);
+  showToast(settings.colorBlind
+    ? "Đã bật hỗ trợ mù màu: thêm hoa văn và ký hiệu số."
+    : "Đã tắt hỗ trợ mù màu.");
   saveSettings();
 }
 
@@ -2436,6 +2679,7 @@ function resetGame() {
   renderBoardState();
   renderStats();
   renderUpcoming();
+  renderLinePaletteEditor();
   showStatus("Chạm bi để bắt đầu.");
   closeLine98Endscreen();
   saveLine98Progress();
@@ -2485,6 +2729,16 @@ function mountLine98(rootEl) {
                 </svg>
               </button>
             </div>
+            <p data-line98-colorblind-note class="tc-muted text-[11px]">Bật hỗ trợ mù màu để thêm hoa văn và ký hiệu số cho từng quân màu.</p>
+            <details class="tc-colorplay-palette-panel" data-line98-palette-panel>
+              <summary>Chọn màu cho game này</summary>
+              <p class="tc-muted text-[11px]">Bạn có thể dùng preset nhanh hoặc đổi từng màu theo ý muốn.</p>
+              <div class="tc-colorplay-palette-presets" data-line98-palette-presets></div>
+              <div class="tc-colorplay-palette-grid" data-line98-palette-grid></div>
+              <div class="tc-colorplay-palette-actions">
+                <button data-line98-action="palette-reset" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Khôi phục mặc định</button>
+              </div>
+            </details>
             <div class="tc-colorplay-daily">
               <div class="tc-colorplay-daily-row">
                 <div class="tc-colorplay-daily-meta">
@@ -2594,6 +2848,11 @@ function mountLine98(rootEl) {
     status: line98Root.querySelector('[data-line98="status"]'),
     difficulty: line98Root.querySelector('[data-line98="difficulty"]'),
     colorblind: line98Root.querySelector('[data-line98-action="colorblind"]'),
+    colorblindHint: line98Root.querySelector("[data-line98-colorblind-note]"),
+    palettePanel: line98Root.querySelector("[data-line98-palette-panel]"),
+    palettePresets: line98Root.querySelector("[data-line98-palette-presets]"),
+    paletteGrid: line98Root.querySelector("[data-line98-palette-grid]"),
+    paletteReset: line98Root.querySelector('[data-line98-action="palette-reset"]'),
     dailyBtn: line98Root.querySelector('[data-line98-action="daily"]'),
     seedBtn: line98Root.querySelector('[data-line98-action="seed"]'),
     dailySeed: line98Root.querySelector('[data-line98="daily-seed"]'),
@@ -2628,6 +2887,8 @@ function mountLine98(rootEl) {
     applyLine98Mode("normal", "");
     resetGame();
   }
+  renderLinePaletteEditor();
+  updateColorblindNotes();
   line98ResumeRequested = false;
   if (el.board) {
     el.board.addEventListener("click", handleCellClick);
@@ -2642,6 +2903,9 @@ function mountLine98(rootEl) {
   el.hintBtn?.addEventListener("click", handleHintToggle);
   el.difficulty?.addEventListener("change", handleLine98DifficultyChange);
   el.colorblind?.addEventListener("click", handleLine98ColorblindToggle);
+  el.palettePresets?.addEventListener("click", handleLinePalettePresetClick);
+  el.paletteGrid?.addEventListener("input", handleLinePaletteInput);
+  el.paletteReset?.addEventListener("click", handleLinePaletteReset);
   el.endCopy?.addEventListener("click", handleLine98EndCopy);
   el.endPng?.addEventListener("click", handleLine98EndPng);
   el.endSave?.addEventListener("click", handleLine98EndSave);
@@ -2666,6 +2930,9 @@ function unmountLine98() {
   el.hintBtn?.removeEventListener("click", handleHintToggle);
   el.difficulty?.removeEventListener("change", handleLine98DifficultyChange);
   el.colorblind?.removeEventListener("click", handleLine98ColorblindToggle);
+  el.palettePresets?.removeEventListener("click", handleLinePalettePresetClick);
+  el.paletteGrid?.removeEventListener("input", handleLinePaletteInput);
+  el.paletteReset?.removeEventListener("click", handleLinePaletteReset);
   el.endCopy?.removeEventListener("click", handleLine98EndCopy);
   el.endPng?.removeEventListener("click", handleLine98EndPng);
   el.endSave?.removeEventListener("click", handleLine98EndSave);
@@ -2806,6 +3073,14 @@ function renderPillBoard() {
       const palette = getPillColors();
       block.style.background = palette[data.colorIndex] || PILL_COLORS[data.colorIndex] || PILL_COLORS[0];
       block.dataset.color = String(data.colorIndex);
+      block.dataset.symbol = String((data.colorIndex % 9) + 1);
+      let marker = block.querySelector(".tc-colorblind-mark");
+      if (!marker) {
+        marker = document.createElement("span");
+        marker.className = "tc-colorblind-mark";
+        block.appendChild(marker);
+      }
+      marker.textContent = String((data.colorIndex % 9) + 1);
     }
   }
 }
@@ -2825,6 +3100,11 @@ function renderPillNext() {
     block.className = "tc-pill-next-block";
     block.style.background = palette[colorIndex] || PILL_COLORS[colorIndex] || PILL_COLORS[0];
     block.dataset.color = String(colorIndex);
+    block.dataset.symbol = String((colorIndex % 9) + 1);
+    const marker = document.createElement("span");
+    marker.className = "tc-colorblind-mark";
+    marker.textContent = String((colorIndex % 9) + 1);
+    block.appendChild(marker);
     pillEl.next.appendChild(block);
   });
 }
@@ -3148,7 +3428,9 @@ function handlePillDifficultyChange() {
 function handlePillColorblindToggle() {
   settings.colorBlind = !settings.colorBlind;
   applyColorBlindMode();
-  pillEl.colorblind?.classList.toggle("is-active", settings.colorBlind);
+  showToast(settings.colorBlind
+    ? "Đã bật hỗ trợ mù màu: thêm hoa văn và ký hiệu số."
+    : "Đã tắt hỗ trợ mù màu.");
   saveSettings();
 }
 
@@ -3225,6 +3507,7 @@ function resetPillGame() {
   renderPillStats();
   renderPillBoard();
   spawnPillPiece();
+  renderPillPaletteEditor();
   showPillStatus("Dùng phím để điều khiển viên thuốc.");
   startPillLoop();
   closePillEndscreen();
@@ -3384,6 +3667,16 @@ function mountPill(rootEl) {
                 </svg>
               </button>
             </div>
+            <p data-pill-colorblind-note class="tc-muted text-[11px]">Bật hỗ trợ mù màu để thêm hoa văn và ký hiệu số cho từng khối màu.</p>
+            <details class="tc-colorplay-palette-panel" data-pill-palette-panel>
+              <summary>Chọn màu cho game này</summary>
+              <p class="tc-muted text-[11px]">Áp preset nhanh hoặc tinh chỉnh từng màu rồi chơi tiếp ngay.</p>
+              <div class="tc-colorplay-palette-presets" data-pill-palette-presets></div>
+              <div class="tc-colorplay-palette-grid" data-pill-palette-grid></div>
+              <div class="tc-colorplay-palette-actions">
+                <button data-pill-action="palette-reset" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Khôi phục mặc định</button>
+              </div>
+            </details>
             <div class="tc-colorplay-controls">
               <button data-pill-action="new" class="tc-icon-btn" type="button" data-tooltip="Ván mới" aria-label="Ván mới">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -3482,6 +3775,11 @@ function mountPill(rootEl) {
     status: pillRoot.querySelector('[data-pill="status"]'),
     difficulty: pillRoot.querySelector('[data-pill="difficulty"]'),
     colorblind: pillRoot.querySelector('[data-pill-action="colorblind"]'),
+    colorblindHint: pillRoot.querySelector("[data-pill-colorblind-note]"),
+    palettePanel: pillRoot.querySelector("[data-pill-palette-panel]"),
+    palettePresets: pillRoot.querySelector("[data-pill-palette-presets]"),
+    paletteGrid: pillRoot.querySelector("[data-pill-palette-grid]"),
+    paletteReset: pillRoot.querySelector('[data-pill-action="palette-reset"]'),
     newGame: pillRoot.querySelector('[data-pill-action="new"]'),
     helpBtn: pillRoot.querySelector('[data-pill-action="help"]'),
     shortcuts: pillRoot.querySelector('[data-pill-action="shortcuts"]'),
@@ -3505,12 +3803,17 @@ function mountPill(rootEl) {
   } else {
     resetPillGame();
   }
+  renderPillPaletteEditor();
+  updateColorblindNotes();
   pillResumeRequested = false;
   pillEl.newGame?.addEventListener("click", resetPillGame);
   pillEl.helpBtn?.addEventListener("click", togglePillHelp);
   pillEl.shortcuts?.addEventListener("click", togglePillHelp);
   pillEl.difficulty?.addEventListener("change", handlePillDifficultyChange);
   pillEl.colorblind?.addEventListener("click", handlePillColorblindToggle);
+  pillEl.palettePresets?.addEventListener("click", handlePillPalettePresetClick);
+  pillEl.paletteGrid?.addEventListener("input", handlePillPaletteInput);
+  pillEl.paletteReset?.addEventListener("click", handlePillPaletteReset);
   pillEl.endCopy?.addEventListener("click", handlePillEndCopy);
   pillEl.endPng?.addEventListener("click", handlePillEndPng);
   pillEl.endSave?.addEventListener("click", handlePillEndSave);
@@ -3528,6 +3831,9 @@ function unmountPill() {
   pillEl.shortcuts?.removeEventListener("click", togglePillHelp);
   pillEl.difficulty?.removeEventListener("change", handlePillDifficultyChange);
   pillEl.colorblind?.removeEventListener("click", handlePillColorblindToggle);
+  pillEl.palettePresets?.removeEventListener("click", handlePillPalettePresetClick);
+  pillEl.paletteGrid?.removeEventListener("input", handlePillPaletteInput);
+  pillEl.paletteReset?.removeEventListener("click", handlePillPaletteReset);
   pillEl.endCopy?.removeEventListener("click", handlePillEndCopy);
   pillEl.endPng?.removeEventListener("click", handlePillEndPng);
   pillEl.endSave?.removeEventListener("click", handlePillEndSave);
@@ -3620,7 +3926,7 @@ function readSudokuSave() {
       mistakes: clampNumber(data.mistakes, 0, 9999),
       selectedColor: clampNumber(data.selectedColor, 0, 8),
       eraseMode: Boolean(data.eraseMode),
-      showSymbols: Boolean(data.showSymbols),
+      showSymbols: data.showSymbols == null ? true : Boolean(data.showSymbols),
       hintsLeft: Number.isFinite(data.hintsLeft) ? clampNumber(data.hintsLeft, 0, 99) : null
     }
   };
@@ -3644,7 +3950,7 @@ function applySudokuSave(payload) {
   sudokuState.selectedColor = Math.round(clampNumber(data.selectedColor ?? 0, 0, 8));
   sudokuState.selectedCell = null;
   sudokuState.eraseMode = Boolean(data.eraseMode);
-  sudokuState.showSymbols = Boolean(data.showSymbols);
+  sudokuState.showSymbols = data.showSymbols == null ? true : Boolean(data.showSymbols);
   sudokuState.mistakes = clampNumber(data.mistakes, 0, 9999);
   sudokuState.elapsedSeconds = clampNumber(data.elapsedSeconds, 0, 3600 * 24);
   sudokuState.startedAt = Date.now();
@@ -3664,6 +3970,7 @@ function applySudokuSave(payload) {
   if (sudokuEl.difficulty) sudokuEl.difficulty.value = sudokuState.difficulty;
   renderSudokuBoard();
   renderSudokuPalette();
+  renderSudokuPaletteEditor();
   renderSudokuMetrics();
   updateSudokuControls();
   startSudokuTimer();
@@ -4143,6 +4450,7 @@ function handleSudokuSymbolsToggle(event) {
   sudokuState.showSymbols = Boolean(event?.target?.checked);
   renderSudokuBoard();
   renderSudokuPalette();
+  scheduleSudokuSave();
 }
 
 function handleSudokuHint() {
@@ -4288,6 +4596,15 @@ function mountSudoku(rootEl) {
           </label>
         </div>
       </div>
+      <details class="tc-colorplay-palette-panel" data-sudoku-palette-panel>
+        <summary>Chọn màu cho game này</summary>
+        <p class="tc-muted text-[11px]">Đổi bộ 9 màu Sudoku để dễ nhìn và hợp mắt hơn.</p>
+        <div class="tc-colorplay-palette-presets" data-sudoku-palette-presets></div>
+        <div class="tc-colorplay-palette-grid" data-sudoku-palette-grid></div>
+        <div class="tc-colorplay-palette-actions">
+          <button data-sudoku-action="palette-reset" class="tc-btn tc-chip px-3 py-2 text-xs" type="button">Khôi phục mặc định</button>
+        </div>
+      </details>
       <p data-sudoku="status" class="tc-sudoku-status tc-muted text-xs"></p>
       <div data-sudoku="board" class="tc-sudoku-board" aria-label="Bàn Sudoku màu"></div>
       <div data-sudoku="palette" class="tc-sudoku-palette" aria-label="Bảng màu Sudoku"></div>
@@ -4314,6 +4631,10 @@ function mountSudoku(rootEl) {
     hint: sudokuRoot.querySelector('[data-sudoku-action="hint"]'),
     erase: sudokuRoot.querySelector('[data-sudoku-action="erase"]'),
     symbols: sudokuRoot.querySelector('[data-sudoku-action="symbols"]'),
+    paletteEditorPanel: sudokuRoot.querySelector("[data-sudoku-palette-panel]"),
+    paletteEditorPresets: sudokuRoot.querySelector("[data-sudoku-palette-presets]"),
+    paletteEditorGrid: sudokuRoot.querySelector("[data-sudoku-palette-grid]"),
+    paletteEditorReset: sudokuRoot.querySelector('[data-sudoku-action="palette-reset"]'),
     status: sudokuRoot.querySelector('[data-sudoku="status"]'),
     end: sudokuRoot.querySelector("[data-sudoku-end]"),
     endSummary: sudokuRoot.querySelector("[data-sudoku-end-summary]"),
@@ -4333,6 +4654,7 @@ function mountSudoku(rootEl) {
   } else {
     resetSudokuGame();
   }
+  renderSudokuPaletteEditor();
   sudokuResumeRequested = false;
   sudokuEl.board?.addEventListener("click", handleSudokuCellClick);
   sudokuEl.palette?.addEventListener("click", handleSudokuPaletteClick);
@@ -4340,6 +4662,9 @@ function mountSudoku(rootEl) {
   sudokuEl.hint?.addEventListener("click", handleSudokuHint);
   sudokuEl.erase?.addEventListener("click", handleSudokuEraseToggle);
   sudokuEl.symbols?.addEventListener("change", handleSudokuSymbolsToggle);
+  sudokuEl.paletteEditorPresets?.addEventListener("click", handleSudokuPalettePresetClick);
+  sudokuEl.paletteEditorGrid?.addEventListener("input", handleSudokuPaletteInput);
+  sudokuEl.paletteEditorReset?.addEventListener("click", handleSudokuPaletteReset);
   sudokuEl.difficulty?.addEventListener("change", handleSudokuDifficultyChange);
   sudokuEl.endClose?.addEventListener("click", handleSudokuEndClose);
   sudokuEl.endNew?.addEventListener("click", handleSudokuEndNew);
@@ -4356,6 +4681,9 @@ function unmountSudoku() {
   sudokuEl.hint?.removeEventListener("click", handleSudokuHint);
   sudokuEl.erase?.removeEventListener("click", handleSudokuEraseToggle);
   sudokuEl.symbols?.removeEventListener("change", handleSudokuSymbolsToggle);
+  sudokuEl.paletteEditorPresets?.removeEventListener("click", handleSudokuPalettePresetClick);
+  sudokuEl.paletteEditorGrid?.removeEventListener("input", handleSudokuPaletteInput);
+  sudokuEl.paletteEditorReset?.removeEventListener("click", handleSudokuPaletteReset);
   sudokuEl.difficulty?.removeEventListener("change", handleSudokuDifficultyChange);
   sudokuEl.endClose?.removeEventListener("click", handleSudokuEndClose);
   sudokuEl.endNew?.removeEventListener("click", handleSudokuEndNew);
@@ -4541,7 +4869,7 @@ function initLobby() {
   });
 
   updateLobbyStats();
-  setLobbyOpen("line98");
+  setLobbyOpen("");
 }
 
 function handleVisibilityChange() {
